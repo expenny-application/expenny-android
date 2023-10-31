@@ -1,0 +1,36 @@
+# Gradle cache
+.gradle
+
+# generated files
+bin/
+gen/
+out/
+build/
+
+# Google services json
+app/google-services.json
+
+# Release keystore
+app/expenny-release-store.jks
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# IDEA/Android Studio project files, because
+# the project can be imported from settings.gradle.kts
+*.iml
+.idea/*
+!.idea/copyright
+!/.idea/codeStyles
+/.idea/codeStyles/*
+!/.idea/codeStyles/Project.xml
+!/.idea/codeStyles/codeStyleConfig.xml
+
+# Windows thumbnail db
+.DS_Store
+
+# Android Studio captures folder
+/captures
+
+.externalNativeBuild
+.cxx

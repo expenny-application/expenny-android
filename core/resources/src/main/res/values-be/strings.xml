@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Expenny</string>
+
+    <string name="language">Беларуская</string>
+
+    <string name="select_currency_label">Выбраць валюту</string>
+    <string name="dashboard_label">Галоўная</string>
+    <string name="settings_label">Налады</string>
+    <string name="save_button">Захаваць</string>
+</resources>

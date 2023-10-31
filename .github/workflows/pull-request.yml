@@ -1,0 +1,74 @@
+name: PR workflow
+
+on:
+  pull_request:
+    branches: [ main ]
+    types: [ opened, synchronize ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# TODO Add test job when ready
+jobs:
+  build:
+    name: Build ${{ matrix.variant }} app
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        variant: [ debug, release ]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: zulu
+          cache: gradle
+
+      - name: Cache gradle
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Copy google services
+        env:
+          GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
+        run: |
+          echo "$GOOGLE_SERVICES" > app/google-services.json
+
+      - name: Grant permissions to gradlew
+        run: chmod +x ./gradlew
+
+      - name: Build ${{ matrix.variant }} APK
+        run: |
+          if [ ${{ matrix.variant }} == "debug" ]; then
+            ./gradlew assembleDebug --stacktrace
+          else
+            echo "Decoding signing keystore string" 
+            echo "$SIGNING_KEY_STORE_ENCODED_STRING" > expenny-release-store-base64.txt
+            base64 -d expenny-release-store-base64.txt > app/expenny-release-store.jks
+            rm -f expenny-release-store-base64.txt
+            if [ ! -f app/expenny-release-store.jks ]; then
+              echo "Release keystore file not found"
+              exit 1
+            fi
+            export SIGNING_KEY_ALIAS=${{ secrets.SIGNING_KEY_ALIAS }}
+            export SIGNING_KEY_PASSWORD=${{ secrets.SIGNING_KEY_PASSWORD }}
+            export SIGNING_STORE_PASSWORD=${{ secrets.SIGNING_STORE_PASSWORD }}
+            ./gradlew assembleRelease --stacktrace
+          fi
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-${{ matrix.variant }}.apk
+          path: app/build/outputs/apk/${{ matrix.variant }}/app-${{ matrix.variant }}.apk

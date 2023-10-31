@@ -1,0 +1,283 @@
+<resources>
+    <string name="app_name">Expenny</string>
+
+    <string name="en_locale" translatable="false">English</string>
+    <string name="be_locale" translatable="false">Беларуская</string>
+    <string name="ru_locale" translatable="false">Русский</string>
+    <string name="language">English</string>
+
+    <!-- Labels -->
+    <string name="search_label">Search…</string>
+    <string name="theme_label">Theme</string>
+    <string name="dark_label">Dark</string>
+    <string name="light_label">Light</string>
+    <string name="language_label">Language</string>
+    <string name="categorizations_label">Categorizations</string>
+    <string name="backup_label">Backup</string>
+    <string name="export_to_file_label">Export to file</string>
+    <string name="reminder_label">Reminder</string>
+    <string name="update_rates_label">Update rates</string>
+    <string name="set_pin_code_label">Set pin code</string>
+    <string name="use_fingerprint_label">Use fingerprint</string>
+    <string name="allow_crash_reports_label">Bug reports</string>
+    <string name="allow_analytics_label">Analytics reports</string>
+    <string name="about_label">About app</string>
+    <string name="rate_application_label">Rate application</string>
+    <string name="delete_all_data_label">Delete all data</string>
+    <string name="unknown_label">Unknown</string>
+    <string name="no_records_yet_label">No records yet</string>
+    <string name="all_accounts_label">All accounts</string>
+    <string name="general_label">General</string>
+    <string name="reports_label">Reports</string>
+    <string name="data_label">Data</string>
+    <string name="profile_label">Profile</string>
+    <string name="notifications_label">Notifications</string>
+    <string name="security_label">Security</string>
+    <string name="tracking_label">Tracking</string>
+    <string name="bank_label">Bank</string>
+    <string name="card_label">Card</string>
+    <string name="savings_label">Savings</string>
+    <string name="categories_label">Categories</string>
+    <string name="types_label">Types</string>
+    <string name="record_type_label">Record type</string>
+    <string name="without_category_label">Without category</string>
+    <string name="cash_label">Cash</string>
+    <string name="daily_label">Daily</string>
+    <string name="weekly_label">Weekly</string>
+    <string name="monthly_label">Monthly</string>
+    <string name="quarterly_label">Quarterly</string>
+    <string name="annually_label">Annually</string>
+    <string name="expense_label">Expense</string>
+    <string name="income_label">Income</string>
+    <string name="transfer_label">Transfer</string>
+    <string name="select_label">Select</string>
+    <string name="selected_label">%1$d Selected</string>
+    <string name="clone_label">Clone</string>
+    <string name="share_label">Share</string>
+    <string name="delete_label">Delete</string>
+    <string name="sort_by_label">Sort by</string>
+    <string name="sort_by_date_label">Date</string>
+    <string name="sort_by_highest_amount_label">Highest amount</string>
+    <string name="sort_by_lowest_amount_label">Lowest amount</string>
+    <string name="new_record_label">New record</string>
+    <string name="getting_started_label">Getting started</string>
+    <string name="select_currency_label">Select currency</string>
+    <string name="select_currency_code_label">Select currency code</string>
+    <string name="currency_label">Currency</string>
+    <string name="currency_code_label">Currency code</string>
+    <string name="account_name_label">Account name</string>
+    <string name="your_name_label">Your name</string>
+    <string name="name_label">Name</string>
+    <string name="color_label">Color</string>
+    <string name="balance_label">Balance</string>
+    <string name="skip_balance_setup_label">Skip balance setup</string>
+    <string name="abort_setup_label">Abort setup</string>
+    <string name="account_missing_label">Account missing</string>
+    <string name="reset_selection_question_label">Reset selection?</string>
+    <string name="change_record_type_question_label">Change type?</string>
+    <string name="delete_account_question_label">Delete this account?</string>
+    <string name="delete_record_question_label">Delete this record?</string>
+    <string name="delete_selected_record_question_label">Delete selected records?</string>
+    <string name="delete_label_question_label">Delete this label?</string>
+    <string name="delete_receipt_question_label">Delete this receipt?</string>
+    <string name="delete_currency_question_label">Delete this currency?</string>
+    <string name="amount_conversion_label">Amount conversion</string>
+    <string name="discard_changes_label">Discard changes</string>
+    <string name="add_receipt_label">Add receipt</string>
+    <string name="add_income_label">Add income</string>
+    <string name="add_expense_label">Add expense</string>
+    <string name="add_transfer_label">Add transfer</string>
+    <string name="personal_wallet_label">Personal wallet</string>
+    <string name="all_categories_label">all categories</string>
+    <string name="all_label">All</string>
+    <string name="spent_by_label">Spent by %1$s</string>
+    <string name="expenses_label">Expenses</string>
+    <string name="widgets_label">Widgets</string>
+    <string name="total_balance_label">Total balance</string>
+    <string name="last_record_label">Last record</string>
+    <string name="show_more_label">Show more</string>
+    <string name="more_label">More</string>
+    <string name="edit_label">Edit</string>
+    <string name="na_label">N/A</string>
+    <string name="no_fees_label">No fees</string>
+    <string name="no_description_label">No description</string>
+    <string name="dashboard_label">Dashboard</string>
+    <string name="account_overview_label">Account overview</string>
+    <string name="accounts_label">Accounts</string>
+    <string name="labels_label">Labels</string>
+    <string name="currencies_label">Currencies</string>
+    <string name="analytics_label">Analytics</string>
+    <string name="records_label">Records</string>
+    <string name="records_filter_label">Records filter</string>
+    <string name="budgets_label">Budgets</string>
+    <string name="settings_label">Settings</string>
+    <string name="discounts_label">Discounts</string>
+    <string name="imports_label">Imports</string>
+    <string name="currency_rates_label">Currency rates</string>
+    <string name="debts_label">Debts</string>
+    <string name="banks_connections_label">Banks connections</string>
+    <string name="add_account_label">Add account</string>
+    <string name="add_label_label">Add label</string>
+    <string name="add_record_label">Add record</string>
+    <string name="edit_label_label">Edit label</string>
+    <string name="edit_account_label">Edit account</string>
+    <string name="edit_record_label">Edit record</string>
+    <string name="add_currency_label">Add currency</string>
+    <string name="edit_currency_label">Edit currency</string>
+    <string name="menu_label">Menu</string>
+    <string name="others_label">Others</string>
+    <string name="privacy_policy_label">Privacy policy</string>
+    <string name="anonymous_label">Anonymous</string>
+    <string name="local_storage_only_label">Local storage only</string>
+    <string name="description_label">Description</string>
+    <string name="title_label">Title</string>
+    <string name="type_label">Type</string>
+    <string name="select_type_label">Select type</string>
+    <string name="select_labels_label">Select labels</string>
+    <string name="optional_label">Optional</string>
+    <string name="additions_label">Additions</string>
+    <string name="main_label">Main</string>
+    <string name="rates_label">Rates</string>
+    <string name="amount_label">Amount</string>
+    <string name="final_amount_label">Final amount</string>
+    <string name="account_label">Account</string>
+    <string name="transfer_account_label">Transfer account</string>
+    <string name="payee_payer_label">Payee/payer</string>
+    <string name="receipts_label">Receipts</string>
+    <string name="category_label">Category</string>
+    <string name="date_label">Date</string>
+    <string name="time_label">Time</string>
+    <string name="select_date_label">Select date</string>
+    <string name="select_time_label">Select time</string>
+    <string name="select_category_label">Select category</string>
+    <string name="select_account_label">Select account</string>
+    <string name="select_transfer_account_label">Select transfer account</string>
+    <string name="show_cleared_label">Show cleared</string>
+    <string name="show_posted_label">Show posted</string>
+    <string name="amount_range_label">Amount range</string>
+    <string name="text_label">Text</string>
+    <string name="date_range_label">Date range</string>
+    <string name="select_range_label">Select range</string>
+    <string name="start_date_label">Start date</string>
+    <string name="end_date_label">End date</string>
+    <string name="no_range_selected_label">No range selected</string>
+    <string name="clear_filter_label">Clear filter</string>
+    <string name="date_recurrence_label">Date recurrence</string>
+    <string name="select_language_label">Select language</string>
+    <string name="select_theme_label">Select theme</string>
+    <string name="system_default_label">System default</string>
+    <string name="start_balance_label">Start balance</string>
+
+    <!-- Dialog paragraphs -->
+    <string name="get_started_paragraph">Complete the steps bellow in order to finish initial setup</string>
+    <string name="get_started_abort_paragraph">Are you sure you want to abort setup process?</string>
+    <string name="get_started_confirmation_paragraph">Are you sure you want to continue without setting up initial cash balance?</string>
+    <string name="account_missing_paragraph">To continue, you must have at least one account created</string>
+    <string name="delete_associated_data_paragraph">Confirming will result in the deletion of all associated data with it</string>
+    <string name="change_record_type_paragraph">Changing the type will reset the previously selected transfer account</string>
+    <string name="delete_record_paragraph">Confirming will affect the change in the account balance</string>
+    <string name="delete_receipt_paragraph">Are you sure you want to delete receipt?</string>
+    <string name="delete_paragraph">It will be gone forever</string>
+    <string name="discard_changes_paragraph">Are you sure you want to discard the changes?</string>
+    <string name="set_cash_balance_paragraph">I want to setup my current cash balance</string>
+    <string name="image_source_paragraph">Please choose a way to add an image</string>
+    <string name="crash_reports_paragraph">Collect and send error logs to improve application</string>
+    <string name="analytics_reports_paragraph">Track app usage to improve user experience</string>
+    <string name="amount_conversion_paragraph">The currencies of the selected accounts differ, therefore automatic conversion is applied to the final amount using preset currency rate. You can change it whenever you want</string>
+
+    <!-- Buttons -->
+    <string name="save_button">Save</string>
+    <string name="clear_button">Clear</string>
+    <string name="reset_all_button">Reset all</string>
+    <string name="back_button">Back</string>
+    <string name="create_button">Create</string>
+    <string name="confirm_button">Confirm</string>
+    <string name="select_button">Select</string>
+    <string name="get_started_button">Get started</string>
+    <string name="set_balance_button">Set balance</string>
+    <string name="continue_button">Continue</string>
+    <string name="cancel_button">Cancel</string>
+    <string name="decline_button">Decline</string>
+    <string name="none_button">None</string>
+    <string name="delete_button">Delete</string>
+    <string name="reset_button">Reset</string>
+    <string name="discard_button">Discard</string>
+    <string name="abort_button">Abort</string>
+    <string name="camera_button">Camera</string>
+    <string name="gallery_button">Gallery</string>
+    <string name="yes_button">Yes</string>
+    <string name="no_button">No</string>
+    <string name="apply_button">Apply</string>
+    <string name="ok_button">OK</string>
+    <string name="change_button">Change</string>
+    <string name="close_button">Close</string>
+
+    <!-- Quantity -->
+    <plurals name="select_account_quantity_label">
+        <item quantity="one">Select account</item>
+        <item quantity="other">Select accounts</item>
+    </plurals>
+    <plurals name="records_quantity_label">
+        <item quantity="one">%d record</item>
+        <item quantity="other">%d records</item>
+    </plurals>
+
+    <!-- Arrays -->
+    <string-array name="time_period">
+        <item>Today</item>
+        <item>Week</item>
+        <item>Month</item>
+        <item>Quarter</item>
+        <item>Year</item>
+    </string-array>
+    <string-array name="default_categories">
+        <item>Groceries</item>
+        <item>Eateries</item>
+        <item>Housing</item>
+        <item>Purchases</item>
+        <item>Family, pets</item>
+        <item>Leisure, holidays</item>
+        <item>Self-care</item>
+        <item>Education</item>
+        <item>Investments</item>
+        <item>Financial costs</item>
+        <item>Transport</item>
+        <item>Income</item>
+        <item>Other</item>
+    </string-array>
+
+    <!-- Messages -->
+    <string name="deleted_message">Deleted successfully!</string>
+    <string name="updated_message">Updated successfully!</string>
+    <string name="created_message">Created successfully!</string>
+    <string name="saved_message">Saved successfully!</string>
+    <string name="readonly_main_currency_message">Editing of the main currency is not provided</string>
+
+    <!--Error messages-->
+    <string name="remote_rate_error">Remote exchange rate is missing</string>
+    <string name="internal_error">Oops! Something went wrong</string>
+    <string name="invalid_argument_error">Invalid argument</string>
+    <string name="initialization_error">Initialization error</string>
+    <string name="network_connection_error">Network connection error</string>
+    <string name="database_error">Internal database error</string>
+    <string name="data_not_exists_error">Data does not exist</string>
+    <string name="invalid_input_data_error">Invalid input data</string>
+    <string name="invalid_account_name_error">Invalid account name</string>
+    <string name="invalid_number_error">Should be a number</string>
+    <string name="greater_than_zero_error">Should be greater than 0</string>
+    <string name="value_constraints_error">Value doesn\'t meet the constraints</string>
+    <string name="max_photos_amount_error">Maximum number of photos is %1$d</string>
+    <string name="required_field_error">Field is required</string>
+    <string name="required_field_length_error">Required field length: [%1$d, %2$d]</string>
+    <string name="required_field_min_length_error">Required min length is %1$d</string>
+    <string name="required_field_pattern">Text does not match required pattern</string>
+    <string name="invalid_currency_error">Invalid currency</string>
+    <string name="invalid_color_value_error">Invalid color value</string>
+    <string name="required_selection_error">At least one selected item is required</string>
+    <string name="required_account_error">Having at least one account is required</string>
+    <string name="not_found_error">No data found</string>
+
+    <string name="enable_currency_rates_updates_message">Enable automatic updates of currency rates bases on European Central Bank data</string>
+    <string name="currency_rates_info_message">If the selected currency is available in the European Central Bank database, the exchange rates will be automatically set into the fields</string>
+    <string name="transfer_disclaimer_message">Transfers are not taken into account in statistics and are treated as operations with local wallets</string>
+</resources>
