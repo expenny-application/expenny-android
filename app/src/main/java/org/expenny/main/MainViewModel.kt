@@ -3,10 +3,11 @@ package org.expenny.main
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import org.expenny.core.common.types.ApplicationTheme
 import org.expenny.core.domain.repository.LocalRepository
@@ -19,12 +20,12 @@ class MainViewModel @Inject constructor(
     private val getProfileSetUp: GetProfileSetUpUseCase,
 ) : ViewModel() {
 
-    val profileState: StateFlow<ProfileState> = getProfileSetUp()
-        .map { ProfileState.Loaded }
+    val isProfileSetUp: StateFlow<Boolean?> = getProfileSetUp()
+        .onStart { delay(500) } // delay splash screen appearance
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(),
-            ProfileState.Loading
+            null
         )
 
     val theme: StateFlow<ApplicationTheme> = localRepository.isDarkMode()
@@ -40,16 +41,4 @@ class MainViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(),
             initialValue = ApplicationTheme.SystemDefault
         )
-
-    val locale: StateFlow<String> = localRepository.getLocale()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = "en"
-        )
-}
-
-sealed class ProfileState {
-    data object Loading: ProfileState()
-    data object Loaded: ProfileState()
 }

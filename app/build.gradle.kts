@@ -114,6 +114,8 @@ dependencies {
     implementation(project(":feature:settings"))
     implementation(project(":feature:accountoverview"))
 
+    implementation("androidx.constraintlayout:constraintlayout:2.1.3")
+
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)

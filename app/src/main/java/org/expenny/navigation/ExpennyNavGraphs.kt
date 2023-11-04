@@ -162,11 +162,9 @@ object ExpennyNavGraphs {
     val root = object: NavGraphSpec {
         override val route = "root"
 
-        override val startRoute = SplashScreenDestination routedIn this
+        override val startRoute = setup
 
-        override val destinationsByRoute = listOf<DestinationSpec<*>>(
-            SplashScreenDestination,
-        ).routedIn(this).associateBy { it.route }
+        override val destinationsByRoute = emptyMap<String, DestinationSpec<*>>()
 
         override val nestedNavGraphs = listOf(
             setup,

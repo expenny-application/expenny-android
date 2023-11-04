@@ -1,66 +1,90 @@
 package org.expenny.main
 
 import android.os.Bundle
-import androidx.activity.compose.setContent
+import android.view.ViewTreeObserver
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.lifecycleScope
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.ramcosta.composedestinations.spec.Route
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filterNot
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import org.expenny.R
 import org.expenny.core.common.types.ApplicationTheme
 import org.expenny.core.ui.theme.ExpennyTheme
+import org.expenny.navigation.ExpennyNavGraphs
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
+    private val viewModel by viewModels<MainViewModel>()
+    private val content by lazy { findViewById<ComposeView>(R.id.compose_root) }
+    private var isProfileSetUp: Boolean? = null
+    private var startRoute: Route = ExpennyNavGraphs.setup
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        val splashScreen = installSplashScreen()
+        installSplashScreen()
         super.onCreate(savedInstanceState)
 
+        setContentView(R.layout.activity_root)
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
-        // Stub to let main activity do initial load from datastore while splash screen is active
-        // instead of SplashScreenDestination, which might have lead to unpleasant visual delay for
-        // couple of seconds before navigation either to setup or welcome screen
-        var profileState by mutableStateOf<ProfileState>(ProfileState.Loading)
+        getInitialData()
+        addOnPreDrawListener()
+        setRootContent()
+    }
 
-        splashScreen.setKeepOnScreenCondition {
-            profileState == ProfileState.Loading
+    private fun getInitialData() {
+        lifecycleScope.launch(Dispatchers.Main) {
+            viewModel.isProfileSetUp.filterNotNull().first().also {
+                // This is needed for redirecting user either to dashboard ('tabs' nav graph)
+                // or welcome ('setup' nav graph) screen
+                startRoute = if (it) ExpennyNavGraphs.tabs else ExpennyNavGraphs.setup
+                // forcing composable content to recompose with new startRoute value
+                content.disposeComposition()
+                // waiting for composable content to be composed before dispatching onPreDraw with new isProfileSetUp value
+                delay(500)
+                isProfileSetUp = it
+            }
         }
+    }
 
-        setContent {
-            val vm: MainViewModel = hiltViewModel()
-            val theme by vm.theme.collectAsState()
-            val isDarkTheme = shouldUseDarkTheme(theme)
-            val systemUiController = rememberSystemUiController()
-
-            LaunchedEffect(Unit) {
-                lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    vm.profileState
-                        .filterNot { it == ProfileState.Loading }
-                        .onEach { profileState = it }
-                        .collect()
+    private fun addOnPreDrawListener() {
+        content.viewTreeObserver.addOnPreDrawListener(
+            object : ViewTreeObserver.OnPreDrawListener {
+                override fun onPreDraw(): Boolean {
+                    return if (isProfileSetUp != null) {
+                        content.viewTreeObserver.removeOnPreDrawListener(this)
+                        true
+                    } else {
+                        false
+                    }
                 }
             }
+        )
+    }
+
+    private fun setRootContent() {
+        content.setContent {
+            val theme by viewModel.theme.collectAsState()
+            val isDarkTheme = shouldUseDarkTheme(theme)
+            val systemUiController = rememberSystemUiController()
 
             DisposableEffect(systemUiController, isDarkTheme) {
                 systemUiController.setSystemBarsColor(
@@ -72,7 +96,7 @@ class MainActivity : AppCompatActivity() {
 
             ExpennyTheme(isDarkTheme = isDarkTheme) {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    MainScreen()
+                    MainScreen(startRoute = startRoute)
                 }
             }
         }
