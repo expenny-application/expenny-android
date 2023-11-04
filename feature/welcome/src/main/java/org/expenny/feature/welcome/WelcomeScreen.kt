@@ -15,15 +15,15 @@ fun WelcomeScreen(
 ) {
     val vm: WelcomeViewModel = hiltViewModel()
 
-    vm.screenEvent.observeWithLifecycle {
+    vm.event.observeWithLifecycle {
         when(it) {
-            is WelcomeViewModel.ScreenEvent.NavigateToGetStarted -> {
+            is Event.NavigateToGetStarted -> {
                 navigator.navigateToGetStartedScreen()
             }
         }
     }
 
     WelcomeContent(
-        onUiEvent = vm::onEvent
+        onAction = vm::onAction
     )
 }

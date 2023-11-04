@@ -64,7 +64,7 @@ internal class GetStartedViewModel @Inject constructor(
             is Action.OnConfirmationDialogConfirm -> handleOnConfirmationDialogConfirm()
             is Action.OnConfirmationDialogDismiss -> handleOnConfirmationDialogDismiss()
             is Action.OnBackClick -> handleOnBackClick()
-            is Action.OnGetStartedClick -> handleOnSubmitButtonClick()
+            is Action.OnCtaClick -> handleOnCtaClick()
         }
     }
 
@@ -157,7 +157,7 @@ internal class GetStartedViewModel @Inject constructor(
         }
     }
 
-    private fun handleOnSubmitButtonClick() = intent {
+    private fun handleOnCtaClick() = intent {
         if (state.setupCashBalanceCheckBox.value) {
             setup()
             postSideEffect(Event.NavigateToApp)
@@ -232,7 +232,7 @@ internal class GetStartedViewModel @Inject constructor(
                     .distinctUntilChanged()
                     .onEach { isFormValid ->
                         reduce {
-                            state.copy(enableSubmitButton = isFormValid)
+                            state.copy(enableCta = isFormValid)
                         }
                     }.launchIn(viewModelScope)
             }

@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.*
 import org.expenny.core.domain.usecase.profile.GetProfileSetUpUseCase
 import javax.inject.Inject
 
+@Deprecated("Moved to MainActivity")
 @HiltViewModel
 internal class SplashViewModel @Inject constructor(
     private val getProfileSetUp: GetProfileSetUpUseCase,

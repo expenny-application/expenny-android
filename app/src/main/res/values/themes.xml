@@ -12,7 +12,6 @@
     <style name="Theme.Expenny.Splash" parent="Theme.SplashScreen">
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="27">false</item>
-        <item name="windowSplashScreenAnimationDuration">3000</item>
         <item name="windowSplashScreenBackground">#005AC3</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash</item>
         <item name="postSplashScreenTheme">@style/Theme.Expenny</item>

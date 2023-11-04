@@ -36,7 +36,7 @@ import org.expenny.main.drawer.DrawerTab
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-internal fun MainScreen() {
+internal fun MainScreen(startRoute: Route) {
     val state = rememberExpennyState()
 
     val navController = state.navHostController
@@ -85,7 +85,10 @@ internal fun MainScreen() {
                 )
             },
         ) { _ ->
-            ExpennyNavigation(expennyState = state)
+            ExpennyNavigation(
+                expennyState = state,
+                startRoute = startRoute
+            )
         }
     }
 }

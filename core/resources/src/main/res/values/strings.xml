@@ -252,6 +252,8 @@
     <string name="created_message">Created successfully!</string>
     <string name="saved_message">Saved successfully!</string>
     <string name="readonly_main_currency_message">Editing of the main currency is not provided</string>
+    <string name="welcome_header_message">Welcome to Expenny! ✌️</string>
+    <string name="welcome_paragraph_message">Expenny is a finance companion app for easy personal cash flow management and analysis.</string>
 
     <!--Error messages-->
     <string name="remote_rate_error">Remote exchange rate is missing</string>

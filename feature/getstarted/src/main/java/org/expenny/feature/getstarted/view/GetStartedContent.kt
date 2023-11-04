@@ -78,15 +78,15 @@ internal fun GetStartedContent(
                 onSelectCurrencyClick = { onAction(Action.OnSelectCurrencyUnitClick) },
                 onSetupCashBalanceCheckBoxChange = { onAction(Action.OnSetupCashBalanceCheckBoxChange(it)) }
             )
-            GetStartedButton(
+            GetStartedCta(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 24.dp),
-                enabled = state.enableSubmitButton,
+                enabled = state.enableCta,
                 onClick = {
                     keyboardController?.hide()
                     focusManager.clearFocus()
-                    onAction(Action.OnGetStartedClick)
+                    onAction(Action.OnCtaClick)
                 }
             )
         }

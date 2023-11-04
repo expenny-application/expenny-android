@@ -7,27 +7,23 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import org.expenny.core.common.viewmodel.ExpennyViewModel
-import org.expenny.feature.welcome.state.WelcomeUiEvent
 import javax.inject.Inject
 
 @HiltViewModel
 internal class WelcomeViewModel @Inject constructor() : ExpennyViewModel() {
-    private val _screenEvent = MutableSharedFlow<ScreenEvent>()
-    val screenEvent: SharedFlow<ScreenEvent> = _screenEvent.asSharedFlow()
 
-    fun onEvent(event: WelcomeUiEvent) {
+    private val _event = MutableSharedFlow<Event>()
+    val event: SharedFlow<Event> = _event.asSharedFlow()
+
+    fun onAction(event: Action) {
         when (event) {
-            is WelcomeUiEvent.OnContinueClick -> handleOnContinueClick()
+            is Action.OnCtaClick -> handleOnCtaClick()
         }
     }
 
-    private fun handleOnContinueClick() {
+    private fun handleOnCtaClick() {
         viewModelScope.launch {
-            _screenEvent.emit(ScreenEvent.NavigateToGetStarted)
+            _event.emit(Event.NavigateToGetStarted)
         }
-    }
-
-    sealed interface ScreenEvent {
-        object NavigateToGetStarted : ScreenEvent
     }
 }

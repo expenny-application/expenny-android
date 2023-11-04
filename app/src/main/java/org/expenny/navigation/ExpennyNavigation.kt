@@ -11,6 +11,7 @@ import com.ramcosta.composedestinations.navigation.dependency
 import com.ramcosta.composedestinations.rememberNavHostEngine
 import com.ramcosta.composedestinations.scope.DestinationScopeWithNoDependencies
 import com.ramcosta.composedestinations.scope.resultRecipient
+import com.ramcosta.composedestinations.spec.Route
 import org.expenny.core.ui.data.navargs.LongArrayNavArg
 import org.expenny.core.ui.data.navargs.LongNavArg
 import org.expenny.core.ui.data.navargs.NavArgResult
@@ -38,6 +39,7 @@ import org.expenny.feature.recorddetails.destinations.RecordDetailsScreenDestina
 internal fun ExpennyNavigation(
     modifier: Modifier = Modifier,
     expennyState: ExpennyState,
+    startRoute: Route
 ) {
     val engine = rememberNavHostEngine(
         rootDefaultAnimations = RootNavGraphDefaultAnimations(
@@ -51,6 +53,7 @@ internal fun ExpennyNavigation(
     DestinationsNavHost(
         modifier = modifier,
         engine = engine,
+        startRoute = startRoute,
         navGraph = ExpennyNavGraphs.root,
         navController = expennyState.navHostController,
         dependenciesContainerBuilder = {
