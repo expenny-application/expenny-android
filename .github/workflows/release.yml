@@ -39,16 +39,13 @@ jobs:
           
           if [ "${{ github.event_name }}" == "pull_request" ]; then
             ref="${{ github.event.pull_request.merge_commit_sha }}"
-            firebase_group="dev"
             bump_type="p"
           else 
             ref="${{ github.event.inputs.commit_sha }}"
-            firebase_group="qa"
             bump_type="${{ github.event.inputs.bump_type }}"
           fi
 
           echo "CHECKOUT_REF=$ref" >> $GITHUB_ENV
-          echo "FIREBASE_GROUP=$firebase_group" >> $GITHUB_ENV
           echo "BUMP_TYPE=$bump_type" >> $GITHUB_ENV
 
       - name: Checkout code
@@ -129,15 +126,8 @@ jobs:
           github_token: ${{ secrets.PAT }} # Passing PAT to bypass branch protection rules
           branch: ${{ github.ref }}
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ env.VERSION_NAME }} (${{ env.VERSION_CODE }})
-          path: app/build/outputs/apk/release/app-release.apk
-
-      - name: Upload to Firebase App Distribution
+      - name: Upload release to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1.7.0
-        if: github.event_name == 'workflow_dispatch'
         with:
           appId: ${{ secrets.FIREBASE_RELEASE_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
