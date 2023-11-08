@@ -25,7 +25,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: 17
+          java-version: 11
           distribution: zulu
           cache: gradle
 
@@ -53,7 +53,6 @@ jobs:
           if [ ${{ matrix.variant }} == "debug" ]; then
             ./gradlew assembleDebug --stacktrace
           else
-            echo "Decoding signing keystore string" 
             echo "$SIGNING_KEY_STORE_ENCODED_STRING" > expenny-release-store-base64.txt
             base64 -d expenny-release-store-base64.txt > app/expenny-release-store.jks
             rm -f expenny-release-store-base64.txt
