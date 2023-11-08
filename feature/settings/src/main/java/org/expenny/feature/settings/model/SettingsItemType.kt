@@ -14,8 +14,6 @@ enum class SettingsItemType {
     UpdateRates,
     PinCode,
     Fingerprint,
-    CrashReports,
-    AnalyticsReports,
     About,
     RateApplication,
     DeleteAllData

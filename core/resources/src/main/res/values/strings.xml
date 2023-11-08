@@ -19,8 +19,6 @@
     <string name="update_rates_label">Update rates</string>
     <string name="set_pin_code_label">Set pin code</string>
     <string name="use_fingerprint_label">Use fingerprint</string>
-    <string name="allow_crash_reports_label">Bug reports</string>
-    <string name="allow_analytics_label">Analytics reports</string>
     <string name="about_label">About app</string>
     <string name="rate_application_label">Rate application</string>
     <string name="delete_all_data_label">Delete all data</string>
@@ -183,6 +181,7 @@
     <string name="image_source_paragraph">Please choose a way to add an image</string>
     <string name="crash_reports_paragraph">Collect and send error logs to improve application</string>
     <string name="analytics_reports_paragraph">Track app usage to improve user experience</string>
+    <string name="performance_reports_paragraph">Monitor app performance to help providing stable builds</string>
     <string name="amount_conversion_paragraph">The currencies of the selected accounts differ, therefore automatic conversion is applied to the final amount using preset currency rate. You can change it whenever you want</string>
 
     <!-- Buttons -->

@@ -71,35 +71,6 @@ internal fun SettingsMoreSection(
 }
 
 @Composable
-internal fun SettingsReportsSection(
-    modifier: Modifier = Modifier,
-    isCrashReportsSelected: Boolean,
-    isAnalyticsReportsSelected: Boolean,
-    onCrashReportsClick: () -> Unit,
-    onAnalyticsReportsClick: () -> Unit,
-) {
-    SettingsSection(
-        modifier = modifier.fillMaxWidth(),
-        title = stringResource(R.string.reports_label)
-    ) {
-        SectionSwitchItem(
-            title = stringResource(R.string.allow_crash_reports_label),
-            icon = painterResource(R.drawable.ic_crash),
-            description = stringResource(R.string.crash_reports_paragraph),
-            isSelected = isCrashReportsSelected,
-            onClick = onCrashReportsClick
-        )
-        SectionSwitchItem(
-            title = stringResource(R.string.allow_analytics_label),
-            icon = painterResource(R.drawable.ic_analytics_tracking),
-            description = stringResource(R.string.analytics_reports_paragraph),
-            isSelected = isAnalyticsReportsSelected,
-            onClick = onAnalyticsReportsClick
-        )
-    }
-}
-
-@Composable
 internal fun SettingsSecuritySection(
     modifier: Modifier = Modifier,
     isSetPinCodeSelected: Boolean,

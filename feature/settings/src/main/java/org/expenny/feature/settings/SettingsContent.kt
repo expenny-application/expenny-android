@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import org.expenny.feature.settings.model.SettingsItemType
-import org.expenny.feature.settings.view.SettingsReportsSection
 import org.expenny.feature.settings.view.SettingsDataSection
 import org.expenny.feature.settings.view.SettingsGeneralSection
 import org.expenny.feature.settings.view.SettingsLanguageDialog
@@ -123,12 +122,6 @@ internal fun SettingsList(
             isUseFingerprintSelected = false, // TODO
             onSetPinCodeClick = { onSettingsItemTypeClick(SettingsItemType.PinCode) },
             onUseFingerprintClick = { onSettingsItemTypeClick(SettingsItemType.Fingerprint) }
-        )
-        SettingsReportsSection(
-            isCrashReportsSelected = false, // TODO
-            isAnalyticsReportsSelected = false, // TODO
-            onCrashReportsClick = { onSettingsItemTypeClick(SettingsItemType.CrashReports) },
-            onAnalyticsReportsClick = { onSettingsItemTypeClick(SettingsItemType.AnalyticsReports) }
         )
         SettingsMoreSection(
             onAboutClick = { onSettingsItemTypeClick(SettingsItemType.About) },
