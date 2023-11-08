@@ -96,7 +96,11 @@ jobs:
         run: |
           echo "$GOOGLE_SERVICES" > app/google-services.json
 
+      - name: Grant permissions to Gradlew
+        run: chmod +x ./gradlew
+
       - name: Decode keystore
+        if: github.event_name == 'workflow_dispatch'
         env:
           SIGNING_KEY_STORE_ENCODED_STRING: ${{ secrets.SIGNING_KEY_STORE_BASE64 }}
         run: |
@@ -104,15 +108,16 @@ jobs:
           base64 -d expenny-release-store-base64.txt > app/expenny-release-store.jks
           rm -f expenny-release-store-base64.txt
 
-      - name: Grant permissions to Gradlew
-        run: chmod +x ./gradlew
-
       - name: Build release APK
+        if: github.event_name == 'workflow_dispatch'
         env:
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
         run: ./gradlew assembleRelease --stacktrace
+
+      - name: Build debug APK
+        run: ./gradlew assembleDebug --stacktrace
 
       - name: Commit changes
         run: |
@@ -126,8 +131,17 @@ jobs:
           github_token: ${{ secrets.PAT }} # Passing PAT to bypass branch protection rules
           branch: ${{ github.ref }}
 
-      - name: Upload release to Firebase App Distribution
+      - name: Upload debug build to App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1.7.0
+        with:
+          appId: ${{ secrets.FIREBASE_DEBUG_APP_ID }}
+          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+          file: app/build/outputs/apk/debug/app-debug.apk
+          groups: dev
+
+      - name: Upload release build to App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1.7.0
+        if: github.event_name == 'workflow_dispatch'
         with:
           appId: ${{ secrets.FIREBASE_RELEASE_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}

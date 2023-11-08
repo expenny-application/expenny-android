@@ -23,17 +23,17 @@ android {
 
     signingConfigs {
         getByName("debug") {
-            storeFile = keyStoreFile("expenny-debug-store.jks")
+            storeFile = project.file("expenny-debug-store.jks")
             storePassword = "android"
             keyAlias = "androiddebugkey"
             keyPassword = "android"
         }
 
         create("release") {
-            storeFile = keyStoreFile("expenny-release-store.jks", "expenny-debug-store.jks")
-            storePassword = System.getenv("SIGNING_STORE_PASSWORD") ?: "android"
-            keyAlias = System.getenv("SIGNING_KEY_ALIAS") ?: "androiddebugkey"
-            keyPassword = System.getenv("SIGNING_KEY_PASSWORD") ?: "android"
+            storeFile = project.file("expenny-release-store.jks")
+            storePassword = System.getenv("SIGNING_STORE_PASSWORD")
+            keyAlias = System.getenv("SIGNING_KEY_ALIAS")
+            keyPassword = System.getenv("SIGNING_KEY_PASSWORD")
         }
     }
 
@@ -43,7 +43,12 @@ android {
             isMinifyEnabled = false
             versionNameSuffix = "-debug"
             applicationIdSuffix = ".debug"
-            manifestPlaceholders += mapOf("appName" to "Expenny Debug")
+            manifestPlaceholders += mapOf(
+                "appName" to "Expenny Debug",
+                "crashlyticsCollectionEnabled" to "false",
+                "performanceCollectionEnabled" to "false",
+                "analyticsCollectionEnabled" to "false",
+            )
             signingConfig = signingConfigs.getByName("debug")
         }
 
@@ -51,13 +56,15 @@ android {
             isDebuggable = false
             isMinifyEnabled = true
             applicationIdSuffix = ".release"
-            manifestPlaceholders += mapOf("appName" to "Expenny")
+            manifestPlaceholders += mapOf(
+                "appName" to "Expenny",
+                "crashlyticsCollectionEnabled" to "true",
+                "performanceCollectionEnabled" to "true",
+                "analyticsCollectionEnabled" to "true",
+            )
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
 
-            // To publish on the Play store a private signing key is required, but to allow anyone
-            // who clones the code to sign and run the release variant, use the debug signing key.
-            // TODO: Abstract the signing configuration to a separate file to avoid hardcoding this.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 
@@ -157,14 +164,4 @@ configurations.configureEach {
         // Temporary workaround for https://issuetracker.google.com/174733673
         force("org.objenesis:objenesis:2.6")
     }
-}
-
-fun keyStoreFile(vararg fileNames: String): File? {
-    for (path in fileNames) {
-        val file = project.file(path)
-        if (file.exists()) {
-            return file
-        }
-    }
-    return null
 }
