@@ -119,18 +119,6 @@ jobs:
       - name: Build debug APK
         run: ./gradlew assembleDebug --stacktrace
 
-      - name: Commit changes
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git commit -a -m "Bump version to ${{ env.VERSION_NAME }}"
-
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.PAT }} # Passing PAT to bypass branch protection rules
-          branch: ${{ github.ref }}
-
       - name: Upload debug build to App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1.7.0
         with:
@@ -141,16 +129,30 @@ jobs:
 
       - name: Upload release build to App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1.7.0
-        if: github.event_name == 'workflow_dispatch'
+        if: always() && github.event_name == 'workflow_dispatch'
         with:
           appId: ${{ secrets.FIREBASE_RELEASE_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
           file: app/build/outputs/apk/release/app-release.apk
           groups: qa
 
+      - name: Commit changes
+        if: always()
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git commit -a -m "Bump version to ${{ env.VERSION_NAME }}"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        if: always()
+        with:
+          github_token: ${{ secrets.PAT }} # Passing PAT to bypass branch protection rules
+          branch: ${{ github.ref }}
+
       - name: Create release tag
         uses: ncipollo/release-action@v1
-        if: github.event_name == 'workflow_dispatch'
+        if: always() && github.event_name == 'workflow_dispatch'
         with:
           generateReleaseNotes: true
           tag: ${{ env.VERSION_NAME }}

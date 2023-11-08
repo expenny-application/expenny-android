@@ -65,9 +65,3 @@ jobs:
             export SIGNING_STORE_PASSWORD=${{ secrets.SIGNING_STORE_PASSWORD }}
             ./gradlew assembleRelease --stacktrace
           fi
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: app-${{ matrix.variant }}.apk
-          path: app/build/outputs/apk/${{ matrix.variant }}/app-${{ matrix.variant }}.apk
