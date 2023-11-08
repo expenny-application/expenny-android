@@ -53,7 +53,7 @@ jobs:
           if [ ${{ matrix.variant }} == "debug" ]; then
             ./gradlew assembleDebug --stacktrace
           else
-            echo "$SIGNING_KEY_STORE_ENCODED_STRING" > expenny-release-store-base64.txt
+            echo "${{ secrets.SIGNING_KEY_STORE_BASE64 }}" > expenny-release-store-base64.txt
             base64 -d expenny-release-store-base64.txt > app/expenny-release-store.jks
             rm -f expenny-release-store-base64.txt
             if [ ! -f app/expenny-release-store.jks ]; then
