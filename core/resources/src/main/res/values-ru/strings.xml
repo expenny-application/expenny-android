@@ -13,7 +13,7 @@
     <string name="export_to_file_label">Экспорт в файл</string>
     <string name="reminder_label">Напоминание</string>
     <string name="update_rates_label">Обновление ставок</string>
-    <string name="set_pin_code_label">Задать пин-код</string>
+    <string name="use_passcode_label">Задать пин-код</string>
     <string name="use_fingerprint_label">Использовать отпечаток</string>
     <string name="about_label">О приложении</string>
     <string name="rate_application_label">Оценить приложение</string>
@@ -66,7 +66,6 @@
     <string name="delete_label_question_label">Удалить этот ярлык?</string>
     <string name="delete_receipt_question_label">Удалить этот чек?</string>
     <string name="delete_currency_question_label">Удалить эту валюту?</string>
-    <string name="reset_selection_label">Сбросить выделение?</string>
     <string name="discard_changes_label">Отменить изменения</string>
     <string name="add_receipt_label">Добавить чек</string>
     <string name="personal_wallet_label">Личный кошелёк</string>

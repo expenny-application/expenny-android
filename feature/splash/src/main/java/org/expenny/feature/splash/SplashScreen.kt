@@ -22,7 +22,7 @@ fun SplashScreen(
 
     LaunchedEffect(isProfileStored) {
         when (isProfileStored) {
-            true -> navigator.navigateToApp()
+            true -> navigator.navigateToHome()
             false -> navigator.navigateToSetup()
             null -> {}
         }

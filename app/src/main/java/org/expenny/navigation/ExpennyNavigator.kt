@@ -24,12 +24,16 @@ import org.expenny.feature.currencies.navigation.CurrenciesListNavigator
 import org.expenny.feature.currencydetails.destinations.CurrencyDetailsScreenDestination
 import org.expenny.feature.currencydetails.navigation.CurrencyDetailsNavigator
 import org.expenny.feature.currencyunits.destinations.CurrencyUnitsListScreenDestination
+import org.expenny.feature.dashboard.destinations.DashboardScreenDestination
 import org.expenny.feature.dashboard.navigation.DashboardNavigator
 import org.expenny.feature.getstarted.navigation.GetStartedNavigator
 import org.expenny.feature.labeldetails.navigation.LabelDetailsNavigator
 import org.expenny.feature.labeldetails.destinations.LabelDetailsScreenDestination
 import org.expenny.feature.labels.destinations.LabelsListScreenDestination
 import org.expenny.feature.labels.navigation.LabelsListNavigator
+import org.expenny.feature.passcode.destinations.PasscodeScreenDestination
+import org.expenny.feature.passcode.model.PasscodeType
+import org.expenny.feature.passcode.navigation.PasscodeNavigator
 import org.expenny.feature.recorddetails.destinations.RecordDetailsScreenDestination
 import org.expenny.feature.recorddetails.navigation.RecordDetailsNavigator
 import org.expenny.feature.records.destinations.RecordsListScreenDestination
@@ -53,7 +57,8 @@ class ExpennyNavigator(
     LabelsListNavigator,
     LabelDetailsNavigator,
     SettingsNavigator,
-    CategoriesListNavigator {
+    CategoriesListNavigator,
+    PasscodeNavigator {
 
     override fun navigateToSetup() {
         navController.navigate(ExpennyNavGraphs.setup) {
@@ -63,8 +68,8 @@ class ExpennyNavigator(
         }
     }
 
-    override fun navigateToApp() {
-        navController.navigate(ExpennyNavGraphs.tabs) {
+    override fun navigateToHome() {
+        navController.navigate(ExpennyNavGraphs.home) {
             popUpTo(ExpennyNavGraphs.root.route) {
                 inclusive = true
             }
@@ -93,7 +98,7 @@ class ExpennyNavigator(
 
     override fun navigateToEditCurrencyScreen(currencyId: Long) {
         navController.navigate(
-            direction = CurrencyDetailsScreenDestination(currencyId) within navGraph
+            direction = CurrencyDetailsScreenDestination(currencyId = currencyId) within navGraph
         )
     }
 
@@ -105,13 +110,13 @@ class ExpennyNavigator(
 
     override fun navigateToEditRecordScreen(recordId: Long) {
         navController.navigate(
-            direction = RecordDetailsScreenDestination(recordId) within navGraph
+            direction = RecordDetailsScreenDestination(recordId = recordId) within navGraph
         )
     }
 
     override fun navigateToCloneRecordScreen(recordId: Long) {
         navController.navigate(
-            direction = RecordDetailsScreenDestination(recordId, isClone = true) within navGraph
+            direction = RecordDetailsScreenDestination(recordId = recordId, isClone = true) within navGraph
         )
     }
 
@@ -124,7 +129,9 @@ class ExpennyNavigator(
     }
 
     override fun navigateToEditLabelScreen(labelId: Long) {
-        navController.navigate(LabelDetailsScreenDestination(labelId) within navGraph)
+        navController.navigate(
+            direction = LabelDetailsScreenDestination(labelId = labelId) within navGraph
+        )
     }
 
     override fun navigateToAccountSelectionListScreen(selection: LongNavArg, excludeIds: LongArray?) {
@@ -148,6 +155,10 @@ class ExpennyNavigator(
         )
     }
 
+    override fun navigateToDashboardScreen() {
+        navigateToHome()
+    }
+
     override fun navigateBack() {
         if (navController.currentDestination?.route == DrawerTab.Settings.route) {
             navController.navigateFirstTab()
@@ -164,17 +175,27 @@ class ExpennyNavigator(
         navController.navigate(LabelsListScreenDestination() within navGraph)
     }
 
+    override fun navigateToCreatePasscodeScreen() {
+        navController.navigate(
+            direction = PasscodeScreenDestination(type = PasscodeType.Create) within navGraph
+        )
+    }
+
     override fun navigateToAccountsListScreen() {
         navController.navigate(AccountsListScreenDestination() within navGraph)
     }
 
     override fun navigateToRecordsListScreen(filter: RecordsListFilterNavArg?) {
         // navController.navigateTab(ExpennyNavGraphs.records)
-        navController.navigate(RecordsListScreenDestination(filter) within navGraph)
+        navController.navigate(
+            direction = RecordsListScreenDestination(filter = filter) within navGraph
+        )
     }
 
     override fun navigateToCreateRecordScreen(recordType: RecordType) {
-        navController.navigate(RecordDetailsScreenDestination(recordType = recordType) within navGraph)
+        navController.navigate(
+            direction = RecordDetailsScreenDestination(recordType = recordType) within navGraph
+        )
     }
 
     override fun navigateToCreateAccountScreen() {
@@ -191,7 +212,7 @@ class ExpennyNavigator(
 
     override fun navigateToEditAccountScreen(accountId: Long) {
         navController.navigate(
-            direction = AccountDetailsScreenDestination(accountId) within navGraph
+            direction = AccountDetailsScreenDestination(accountId = accountId) within navGraph
         )
     }
 }

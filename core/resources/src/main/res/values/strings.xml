@@ -17,7 +17,8 @@
     <string name="export_to_file_label">Export to file</string>
     <string name="reminder_label">Reminder</string>
     <string name="update_rates_label">Update rates</string>
-    <string name="set_pin_code_label">Set pin code</string>
+    <string name="set_passcode_label">Set passcode</string>
+    <string name="use_passcode_label">Use passcode</string>
     <string name="use_fingerprint_label">Use fingerprint</string>
     <string name="about_label">About app</string>
     <string name="rate_application_label">Rate application</string>
@@ -165,6 +166,9 @@
     <string name="select_theme_label">Select theme</string>
     <string name="system_default_label">System default</string>
     <string name="start_balance_label">Start balance</string>
+    <string name="confirm_passcode_label">Confirm entered passcode to finish setup</string>
+    <string name="create_passcode_label">Create 4 digit passcode</string>
+    <string name="enter_passcode_label">Enter your passcode to log in to the app</string>
 
     <!-- Dialog paragraphs -->
     <string name="get_started_paragraph">Complete the steps bellow in order to finish initial setup</string>

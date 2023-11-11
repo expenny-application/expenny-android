@@ -1,6 +1,5 @@
 package org.expenny.navigation
 
-import org.expenny.feature.splash.destinations.SplashScreenDestination
 import org.expenny.feature.welcome.destinations.WelcomeScreenDestination
 import org.expenny.feature.getstarted.destinations.GetStartedScreenDestination
 import com.ramcosta.composedestinations.dynamic.routedIn
@@ -17,6 +16,7 @@ import org.expenny.feature.currencyunits.destinations.CurrencyUnitsListScreenDes
 import org.expenny.feature.dashboard.destinations.DashboardScreenDestination
 import org.expenny.feature.labeldetails.destinations.LabelDetailsScreenDestination
 import org.expenny.feature.labels.destinations.LabelsListScreenDestination
+import org.expenny.feature.passcode.destinations.PasscodeScreenDestination
 import org.expenny.feature.recorddetails.destinations.RecordDetailsScreenDestination
 import org.expenny.feature.records.destinations.RecordsListScreenDestination
 import org.expenny.feature.settings.destinations.SettingsScreenDestination
@@ -99,7 +99,8 @@ object ExpennyNavGraphs {
             CurrencyDetailsScreenDestination,
             CurrencyUnitsListScreenDestination,
             LabelsListScreenDestination,
-            LabelDetailsScreenDestination
+            LabelDetailsScreenDestination,
+            PasscodeScreenDestination,
         ).routedIn(this).associateBy { it.route }
     }
 
@@ -132,8 +133,8 @@ object ExpennyNavGraphs {
         ).routedIn(this).associateBy { it.route }
     }
 
-    val tabs = object: NavGraphSpec {
-        override val route = "tabs"
+    val home = object: NavGraphSpec {
+        override val route = "home"
 
         override val startRoute = dashboard
 
@@ -145,6 +146,16 @@ object ExpennyNavGraphs {
             accounts,
             settings
         )
+    }
+
+    val security = object: NavGraphSpec {
+        override val route = "security"
+
+        override val startRoute = PasscodeScreenDestination routedIn this
+
+        override val destinationsByRoute = listOf<DestinationSpec<*>>(
+            PasscodeScreenDestination
+        ).routedIn(this).associateBy { it.route }
     }
 
     val setup = object: NavGraphSpec {
@@ -168,9 +179,23 @@ object ExpennyNavGraphs {
 
         override val nestedNavGraphs = listOf(
             setup,
-            tabs
+            home,
+            security
         )
     }
 
-    val navGraphs = listOf(root, setup, dashboard, analytics, records, budgets, accounts, debts, settings, rates)
+    val navGraphs = listOf(
+        root,
+        setup,
+        home,
+        security,
+        dashboard,
+        analytics,
+        records,
+        budgets,
+        accounts,
+        debts,
+        settings,
+        rates
+    )
 }

@@ -18,6 +18,19 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
                 add("implementation", project(":core:model"))
                 add("implementation", project(":core:domain"))
 
+                // TODO move to core:testing module when available
+                add("androidTestImplementation", libs.findLibrary("hilt.android.testing").get())
+                add("testImplementation", libs.findLibrary("kotlinx.coroutines.test").get())
+                add("testImplementation", libs.findLibrary("junit4").get())
+                add("androidTestImplementation", libs.findLibrary("androidx.junit").get())
+                add("androidTestImplementation", libs.findLibrary("androidx.junit.ktx").get())
+                add("androidTestImplementation", libs.findLibrary("androidx.compose.ui.test").get())
+                add("androidTestImplementation", libs.findLibrary("androidx.test.ext").get())
+                add("androidTestImplementation", libs.findLibrary("androidx.test.core").get())
+                add("androidTestImplementation", libs.findLibrary("androidx.test.espresso.core").get())
+                add("androidTestImplementation", libs.findLibrary("androidx.test.rules").get())
+                add("androidTestImplementation", libs.findLibrary("androidx.test.runner").get())
+
                 add("testImplementation", kotlin("test"))
                 add("androidTestImplementation", kotlin("test"))
 

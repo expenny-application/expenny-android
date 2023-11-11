@@ -1,6 +1,7 @@
 package org.expenny.core.common.utils
 
 object Constants {
+    const val DEFAULT_PASSCODE_LENGTH = 4
     const val CURRENCY_RATE_SCALE = 5
     const val NULL_ID = -1L
     const val DEFAULT_RESULT_CODE = 0

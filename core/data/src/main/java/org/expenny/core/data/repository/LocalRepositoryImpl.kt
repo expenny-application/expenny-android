@@ -6,7 +6,7 @@ import org.expenny.core.datastore.ExpennyDataStore.Companion.CURRENT_PROFILE_ID_
 import org.expenny.core.datastore.ExpennyDataStore.Companion.IS_DARK_MODE_KEY
 import org.expenny.core.datastore.ExpennyDataStore.Companion.IS_ONBOARDING_PASSED_KEY
 import org.expenny.core.datastore.ExpennyDataStore.Companion.IS_SETUP_PASSED_KEY
-import org.expenny.core.datastore.ExpennyDataStore.Companion.LOCALE_KEY
+import org.expenny.core.datastore.ExpennyDataStore.Companion.PASSCODE_KEY
 import org.expenny.core.domain.repository.LocalRepository
 import javax.inject.Inject
 
@@ -34,16 +34,16 @@ class LocalRepositoryImpl @Inject constructor(
         dataStore.put(IS_DARK_MODE_KEY, isDarkMode)
     }
 
-    override suspend fun setLocale(locale: String) {
-        dataStore.put(LOCALE_KEY, locale)
+    override suspend fun setPasscode(passcode: String?) {
+        if (passcode == null) {
+            dataStore.remove(PASSCODE_KEY)
+        } else {
+            dataStore.put(PASSCODE_KEY, passcode)
+        }
     }
 
     override fun isDarkMode(): Flow<Boolean?> {
         return dataStore.get(IS_DARK_MODE_KEY)
-    }
-
-    override fun getLocale(): Flow<String> {
-        return dataStore.get(LOCALE_KEY, "en")
     }
 
     override fun isSetupPassed(): Flow<Boolean> {
@@ -56,5 +56,9 @@ class LocalRepositoryImpl @Inject constructor(
 
     override fun getCurrentProfileId(): Flow<Long?> {
         return dataStore.get(CURRENT_PROFILE_ID_KEY)
+    }
+
+    override fun getPasscode(): Flow<String?> {
+        return dataStore.get(PASSCODE_KEY)
     }
 }
