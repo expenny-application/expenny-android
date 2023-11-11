@@ -73,7 +73,7 @@ internal fun SettingsMoreSection(
 @Composable
 internal fun SettingsSecuritySection(
     modifier: Modifier = Modifier,
-    isSetPinCodeSelected: Boolean,
+    isUsePasscodeSelected: Boolean,
     isUseFingerprintSelected: Boolean,
     onSetPinCodeClick: () -> Unit,
     onUseFingerprintClick: () -> Unit,
@@ -83,9 +83,9 @@ internal fun SettingsSecuritySection(
         title = stringResource(R.string.security_label)
     ) {
         SectionSwitchItem(
-            title = stringResource(R.string.set_pin_code_label),
-            icon = painterResource(R.drawable.ic_pin_code),
-            isSelected = isSetPinCodeSelected,
+            title = stringResource(R.string.use_passcode_label),
+            icon = painterResource(R.drawable.ic_passcode),
+            isSelected = isUsePasscodeSelected,
             onClick = onSetPinCodeClick
         )
         SectionSwitchItem(

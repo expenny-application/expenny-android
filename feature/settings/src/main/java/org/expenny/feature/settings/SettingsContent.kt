@@ -118,9 +118,9 @@ internal fun SettingsList(
             onUpdateRatesClick = { onSettingsItemTypeClick(SettingsItemType.UpdateRates) }
         )
         SettingsSecuritySection(
-            isSetPinCodeSelected = false, // TODO
+            isUsePasscodeSelected = state.isPasscodeEnabled,
             isUseFingerprintSelected = false, // TODO
-            onSetPinCodeClick = { onSettingsItemTypeClick(SettingsItemType.PinCode) },
+            onSetPinCodeClick = { onSettingsItemTypeClick(SettingsItemType.Passcode) },
             onUseFingerprintClick = { onSettingsItemTypeClick(SettingsItemType.Fingerprint) }
         )
         SettingsMoreSection(

@@ -5,6 +5,7 @@ import androidx.core.os.LocaleListCompat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
 import org.expenny.core.common.utils.StringResourceProvider
@@ -20,6 +21,7 @@ import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
+import org.orbitmvi.orbit.syntax.simple.repeatOnSubscription
 import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
 
@@ -40,6 +42,7 @@ class SettingsViewModel @Inject constructor(
             setSelectedLanguage()
             launch { subscribeToSelectedTheme() }
             launch { subscribeToCurrentProfile() }
+            launch { subscribeToSelectedPasscode() }
         }
     }
 
@@ -70,6 +73,15 @@ class SettingsViewModel @Inject constructor(
                     SettingsItemType.Labels -> {
                         intent {
                             postSideEffect(Event.NavigateToLabels)
+                        }
+                    }
+                    SettingsItemType.Passcode -> {
+                        intent {
+                            if (state.isPasscodeEnabled) {
+                                localRepository.setPasscode(null)
+                            } else {
+                                postSideEffect(Event.NavigateToCreatePasscode)
+                            }
                         }
                     }
                     else -> {}
@@ -120,6 +132,18 @@ class SettingsViewModel @Inject constructor(
             reduce {
                 state.copy(currentProfile = profileMapper(it))
             }
+        }
+    }
+
+    private fun subscribeToSelectedPasscode() = intent {
+        repeatOnSubscription {
+            localRepository.getPasscode()
+                .map { it != null }
+                .collect { isPasscodeSetUp ->
+                    reduce {
+                        state.copy(isPasscodeEnabled = isPasscodeSetUp)
+                    }
+                }
         }
     }
 

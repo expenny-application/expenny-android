@@ -11,6 +11,7 @@ data class State(
     val selectedLanguage: ApplicationLanguage = ApplicationLanguage.SystemDefault,
     val themes: List<ApplicationTheme> = ApplicationTheme.values().toList(),
     val selectedTheme: ApplicationTheme? = null,
+    val isPasscodeEnabled: Boolean = false,
     val dialog: Dialog? = null,
 ) {
     sealed interface Dialog {
@@ -29,6 +30,7 @@ sealed interface Action {
 }
 
 sealed interface Event {
+    object NavigateToCreatePasscode : Event
     object NavigateToCurrencies : Event
     object NavigateToLabels : Event
     object NavigateBack : Event

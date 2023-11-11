@@ -12,7 +12,7 @@ enum class SettingsItemType {
     Imports,
     Reminder,
     UpdateRates,
-    PinCode,
+    Passcode,
     Fingerprint,
     About,
     RateApplication,

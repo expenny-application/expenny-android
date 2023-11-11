@@ -29,7 +29,9 @@ fun SettingsScreen(
             Event.NavigateToCurrencies -> {
                 navigator.navigateToCurrenciesListScreen()
             }
-            else -> {}
+            Event.NavigateToCreatePasscode -> {
+                navigator.navigateToCreatePasscodeScreen()
+            }
         }
     }
 
