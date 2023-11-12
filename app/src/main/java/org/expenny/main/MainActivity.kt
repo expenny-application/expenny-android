@@ -40,6 +40,8 @@ class MainActivity : AppCompatActivity() {
     private val content by lazy { findViewById<ComposeView>(R.id.compose_root) }
     private var isReadyToProceed: Boolean = false
     private var startRoute: Route = ExpennyNavGraphs.setup
+    private val isConfigurationChangedKey = "isConfigurationChangedKey"
+    private var shouldSkipInit = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -48,19 +50,23 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_root)
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
-        getInitialData()
-        addOnPreDrawListener()
+        shouldSkipInit = savedInstanceState?.getBoolean(isConfigurationChangedKey, false) ?: false
+
+        if (!shouldSkipInit) {
+            getInitialData()
+            addOnPreDrawListener()
+        }
         setRootContent()
     }
 
     private fun getInitialData() {
         lifecycleScope.launch(Dispatchers.Main) {
-            delay(300) // delay splash screen appearance
+            delay(200) // delay splash screen appearance
             viewModel.isProfileSetUp.filterNotNull().first().also { isProfileSetUp ->
                 val isPasscodeSetUp = viewModel.isPasscodeSetUp.filterNotNull().first()
                 // This is needed for redirecting user either to dashboard, passcode or welcome screen
                 startRoute = when {
-                    isProfileSetUp && isPasscodeSetUp -> ExpennyNavGraphs.security
+                    isProfileSetUp && isPasscodeSetUp -> ExpennyNavGraphs.auth
                     isProfileSetUp && !isPasscodeSetUp -> ExpennyNavGraphs.home
                     else -> ExpennyNavGraphs.setup
                 }
@@ -76,6 +82,15 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         viewModel.verifyBiometricKeyInvalidationStatus()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        if (isChangingConfigurations) {
+            outState.putBoolean(isConfigurationChangedKey, true)
+        } else {
+            outState.putBoolean(isConfigurationChangedKey, false)
+        }
     }
 
     private fun addOnPreDrawListener() {

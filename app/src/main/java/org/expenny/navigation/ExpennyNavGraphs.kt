@@ -148,7 +148,7 @@ object ExpennyNavGraphs {
         )
     }
 
-    val security = object: NavGraphSpec {
+    val auth = object: NavGraphSpec {
         override val route = "security"
 
         override val startRoute = PasscodeScreenDestination routedIn this
@@ -180,7 +180,7 @@ object ExpennyNavGraphs {
         override val nestedNavGraphs = listOf(
             setup,
             home,
-            security
+            auth
         )
     }
 
@@ -188,7 +188,7 @@ object ExpennyNavGraphs {
         root,
         setup,
         home,
-        security,
+        auth,
         dashboard,
         analytics,
         records,
