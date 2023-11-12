@@ -26,26 +26,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import org.expenny.core.ui.theme.inputSurface
-import org.expenny.feature.passcode.model.PasscodeStatus
+import org.expenny.feature.passcode.model.PasscodeValidationResult
 import org.expenny.feature.passcode.model.PasscodeType
 
 @Composable
 internal fun PasscodeFieldsRow(
     modifier: Modifier = Modifier,
     passcodeType: PasscodeType,
-    passcodeStatus: PasscodeStatus,
+    passcodeValidationResult: PasscodeValidationResult?,
     passcodeMaxLength: Int,
     passcodeLength: Int,
 ) {
-    val fieldBoxBorderColor = when (passcodeStatus) {
-        PasscodeStatus.None -> Color.Transparent
-        PasscodeStatus.Invalid -> MaterialTheme.colorScheme.error
-        PasscodeStatus.Valid -> {
-            when (passcodeType) {
-                PasscodeType.Create -> Color.Transparent
-                else -> MaterialTheme.colorScheme.primary
-            }
+    val fieldBoxBorderColor = when (passcodeValidationResult) {
+        PasscodeValidationResult.Invalid -> MaterialTheme.colorScheme.error
+        PasscodeValidationResult.Valid -> when (passcodeType) {
+            PasscodeType.Create -> Color.Transparent
+            else -> MaterialTheme.colorScheme.primary
         }
+        else -> Color.Transparent
     }
     Row(
         modifier = modifier,

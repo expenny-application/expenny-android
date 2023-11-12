@@ -68,7 +68,7 @@ internal fun PasscodeContent(
                 ) {
                     PasscodeFieldsRow(
                         passcodeType = state.passcodeType,
-                        passcodeStatus = state.passcodeStatus,
+                        passcodeValidationResult = state.passcodeValidationResult,
                         passcodeMaxLength = state.passcodeMaxLength,
                         passcodeLength = state.passcode.length
                     )

@@ -14,7 +14,7 @@ import org.expenny.core.domain.repository.BiometricRepository
 import org.expenny.core.domain.repository.LocalRepository
 import org.expenny.core.model.biometric.CryptoPurpose
 import org.expenny.feature.passcode.model.PasscodeType.Create
-import org.expenny.feature.passcode.model.PasscodeType.Verify
+import org.expenny.feature.passcode.model.PasscodeType.Unlock
 import org.expenny.feature.passcode.navigation.PasscodeNavArgs
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -23,11 +23,12 @@ import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
 import org.expenny.core.resources.R
+import org.expenny.feature.passcode.model.PasscodeType
 import org.expenny.feature.passcode.model.PasscodeType.Confirm
-import org.expenny.feature.passcode.model.PasscodeStatus
-import org.expenny.feature.passcode.model.PasscodeStatus.None
-import org.expenny.feature.passcode.model.PasscodeStatus.Valid
-import org.expenny.feature.passcode.model.PasscodeStatus.Invalid
+import org.expenny.feature.passcode.model.PasscodeValidationResult
+import org.expenny.feature.passcode.model.PasscodeValidationResult.Valid
+import org.expenny.feature.passcode.model.PasscodeValidationResult.Invalid
+import org.orbitmvi.orbit.syntax.simple.SimpleSyntax
 
 @HiltViewModel
 class PasscodeViewModel @Inject constructor(
@@ -56,30 +57,24 @@ class PasscodeViewModel @Inject constructor(
             is Action.OnDigitClick -> handleOnDigitClick(action)
             is Action.OnBackspaceClick -> handleOnBackspaceClick()
             is Action.OnBackClick -> handleOnBackClick()
-            is Action.OnBiometricAuthenticationSuccess -> {
-                intent {
-                    reduce {
-                        state.copy(
-                            passcode = validPasscode,
-                            passcodeStatus = Valid
-                        )
-                    }
-                    delay(200)
-                    postSideEffect(Event.NavigateToDashboard)
-                }
-            }
-            is Action.OnBiometricAuthenticationError -> {
-                intent {
-                    postSideEffect(Event.ShowMessage(fromStr(action.error)))
-                }
-            }
+            is Action.OnBiometricAuthenticationSuccess -> handleOnBiometricAuthenticationSuccess()
+            is Action.OnBiometricAuthenticationError -> handleOnBiometricAuthenticationError(action)
             is Action.OnBiometricClick -> handleOnBiometricClick()
-            else -> {}
         }
     }
 
+    private fun handleOnBiometricAuthenticationSuccess() = intent {
+        setPasscode(validPasscode)
+        setPasscodeValidationResultWithPostDelay(Valid)
+        postSideEffect(Event.NavigateToDashboard)
+    }
+
+    private fun handleOnBiometricAuthenticationError(action: Action.OnBiometricAuthenticationError) = intent {
+        postSideEffect(Event.ShowMessage(fromStr(action.error)))
+    }
+
     private fun handleOnBiometricClick() {
-        if (state.passcodeStatus != Valid) {
+        if (state.passcodeValidationResult != Valid) {
             cryptoObject?.let {
                 intent {
                     postSideEffect(Event.ShowBiometricPrompt(it))
@@ -94,7 +89,7 @@ class PasscodeViewModel @Inject constructor(
 
     private fun subscribeToBiometricPreference() = intent {
         localRepository.isBiometricEnrolled().collect { isBiometricEnrolled ->
-            if (state.passcodeType == Verify) {
+            if (state.passcodeType == Unlock) {
                 if (isBiometricEnrolled) {
                     cryptoObject = biometricRepository.createCryptoObject(CryptoPurpose.Encrypt)
                     reduce { state.copy(isBiometricEnabled = true) }
@@ -108,9 +103,9 @@ class PasscodeViewModel @Inject constructor(
 
     private fun setupInitialState() = intent {
         savedStateHandle.navArgs<PasscodeNavArgs>().also { args ->
-            reduce { state.copy(passcodeType = args.type) }
+            setPasscodeType(args.type)
 
-            if (args.type == Verify) {
+            if (args.type == Unlock) {
                 localRepository.getPasscode().first().also { storedPasscode ->
                     if (storedPasscode == null) { // this must never happen
                         postSideEffect(Event.ShowMessage(fromRes(R.string.internal_error)))
@@ -124,71 +119,78 @@ class PasscodeViewModel @Inject constructor(
     }
 
     private fun handleOnBackspaceClick() = intent {
-        if (state.passcode.isNotEmpty() && state.passcodeStatus != Valid) {
-            reduce {
-                state.copy(
-                    passcode = state.passcode.dropLast(1),
-                    passcodeStatus = None
-                )
-            }
+        if (state.passcode.isNotEmpty() && state.passcodeValidationResult == null) {
+            setPasscode(state.passcode.dropLast(1))
         }
     }
 
     private fun handleOnDigitClick(action: Action.OnDigitClick) = intent {
-        if (state.passcode.length < state.passcodeMaxLength && state.passcodeStatus != Valid) {
+        if (state.passcode.length < state.passcodeMaxLength && state.passcodeValidationResult != Valid) {
             val newPasscode = state.passcode + action.digit
-            val newPasscodeStatus = getPasscodeStatus(newPasscode)
-            reduce {
-                state.copy(
-                    passcode = newPasscode,
-                    passcodeStatus = newPasscodeStatus
-                )
-            }
+            val newPasscodeStatus = getPasscodeStatus(newPasscode, state.passcodeType)
+
+            setPasscode(newPasscode)
+            setPasscodeValidationResultWithPostDelay(newPasscodeStatus)
+
             when (newPasscodeStatus) {
                 Valid -> when (state.passcodeType) {
                     Create -> {
-                        delay(200)
-                        validPasscode = state.passcode
-                        reduce {
-                            state.copy(
-                                passcodeType = Confirm,
-                                passcodeStatus = None,
-                                passcode = ""
-                            )
-                        }
+                        validPasscode = newPasscode
+                        resetPasscode()
+                        resetPasscodeValidationResult()
+                        setPasscodeType(Confirm)
                     }
                     Confirm -> {
                         localRepository.setPasscode(state.passcode)
-                        delay(200)
                         postSideEffect(Event.NavigateBack)
                     }
-                    Verify -> {
-                        delay(200)
+                    Unlock -> {
                         postSideEffect(Event.NavigateToDashboard)
                     }
                 }
                 Invalid -> {
-                    delay(200)
-                    reduce {
-                        state.copy(
-                            passcodeStatus = None,
-                            passcode = ""
-                        )
-                    }
+                    resetPasscodeValidationResult()
+                    resetPasscode()
                 }
-                else -> {}
+                else -> {
+                    // ignore
+                }
             }
         }
     }
 
-    private fun getPasscodeStatus(passcode: String): PasscodeStatus {
-        return if (state.passcodeType == Create) {
-            if (passcode.length == state.passcodeMaxLength) Valid else None
+    private suspend fun SimpleSyntax<State, Event>.setPasscodeValidationResultWithPostDelay(
+        result: PasscodeValidationResult?,
+    ) {
+        reduce { state.copy(passcodeValidationResult = result) }
+        // delay before either erasing invalid passcode or navigating to next screen if valid
+        delay(300)
+    }
+
+    private suspend fun SimpleSyntax<State, Event>.resetPasscodeValidationResult() {
+        reduce { state.copy(passcodeValidationResult = null) }
+    }
+
+    private suspend fun SimpleSyntax<State, Event>.resetPasscode() {
+        reduce { state.copy(passcode = "") }
+    }
+
+    private suspend fun SimpleSyntax<State, Event>.setPasscode(passcode: String) {
+        reduce { state.copy(passcode = passcode) }
+    }
+
+    private suspend fun SimpleSyntax<State, Event>.setPasscodeType(type: PasscodeType) {
+        reduce { state.copy(passcodeType = type) }
+    }
+
+    private fun getPasscodeStatus(passcode: String, passcodeType: PasscodeType): PasscodeValidationResult? {
+        return if (passcodeType == Create) {
+            if (passcode.length == state.passcodeMaxLength) Valid else null
         } else {
             if (passcode.length == validPasscode.length) {
                 if (passcode == validPasscode) Valid else Invalid
             } else {
-                None
+                null
             }
         }
     }

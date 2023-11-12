@@ -6,21 +6,21 @@ import org.expenny.core.common.utils.Constants
 import org.expenny.core.common.utils.StringResource
 import org.expenny.core.resources.R
 import org.expenny.feature.passcode.model.PasscodeType
-import org.expenny.feature.passcode.model.PasscodeStatus
+import org.expenny.feature.passcode.model.PasscodeValidationResult
 
 data class State(
-    val passcodeType: PasscodeType = PasscodeType.Verify,
-    val passcodeStatus: PasscodeStatus = PasscodeStatus.None,
+    val passcodeType: PasscodeType = PasscodeType.Unlock,
+    val passcodeValidationResult: PasscodeValidationResult? = null,
     val passcodeMaxLength: Int = Constants.DEFAULT_PASSCODE_LENGTH,
     val passcode: String = "",
     val isBiometricEnabled: Boolean = false,
 ) {
     val isBackspaceEnabled: Boolean = passcode.isNotEmpty()
-    val showToolbar: Boolean = passcodeType != PasscodeType.Verify
-    val showLogo: Boolean = passcodeType == PasscodeType.Verify
+    val showToolbar: Boolean = passcodeType != PasscodeType.Unlock
+    val showLogo: Boolean = passcodeType == PasscodeType.Unlock
 
     val passcodeParagraphResId: Int @StringRes get() = when (passcodeType) {
-        PasscodeType.Verify -> R.string.enter_passcode_label
+        PasscodeType.Unlock -> R.string.enter_passcode_label
         PasscodeType.Confirm -> R.string.confirm_passcode_label
         PasscodeType.Create -> R.string.create_passcode_label
     }

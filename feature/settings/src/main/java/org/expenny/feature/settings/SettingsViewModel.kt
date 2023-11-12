@@ -3,12 +3,12 @@ package org.expenny.feature.settings
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
-import org.expenny.core.common.utils.StringResourceProvider
 import org.expenny.core.common.types.ApplicationLanguage
 import org.expenny.core.common.types.ApplicationTheme
 import org.expenny.core.common.utils.StringResource
@@ -39,7 +39,6 @@ class SettingsViewModel @Inject constructor(
     private val getMainCurrency: GetMainCurrencyUseCase,
     private val getCurrentProfile: GetCurrentProfileUseCase,
     private val profileMapper: ProfileMapper,
-    private val stringProvider: StringResourceProvider,
 ) : ExpennyActionViewModel<Action>(), ContainerHost<State, Event> {
 
     override val container = container<State, Event>(
@@ -57,113 +56,95 @@ class SettingsViewModel @Inject constructor(
 
     override fun onAction(action: Action) {
         when (action) {
-            is Action.OnBackClick -> {
-                intent {
-                    postSideEffect(Event.NavigateBack)
+            is Action.OnSettingsItemTypeClick -> handleOnSettingsItemTypeClick(action)
+            is Action.OnDialogDismiss -> handleOnDialogDismiss()
+            is Action.OnLanguageSelect -> handleOnLanguageSelect(action)
+            is Action.OnThemeSelect -> handleOnThemeSelect(action)
+            is Action.OnBiometricAuthenticationSuccess -> handleOnBiometricAuthenticationSuccess()
+            is Action.OnBiometricAuthenticationError -> handleOnBiometricAuthenticationError(action)
+            is Action.OnBackClick -> handleOnBackClick()
+        }
+    }
+
+    private fun handleOnBackClick() = intent {
+        postSideEffect(Event.NavigateBack)
+    }
+
+    private fun handleOnSettingsItemTypeClick(action: Action.OnSettingsItemTypeClick) = intent {
+        when (action.type) {
+            SettingsItemType.Theme -> {
+                reduce { state.copy(dialog = State.Dialog.ThemeDialog) }
+            }
+            SettingsItemType.Language -> {
+                reduce { state.copy(dialog = State.Dialog.LanguageDialog) }
+            }
+            SettingsItemType.Currencies -> {
+                postSideEffect(Event.NavigateToCurrencies)
+            }
+            SettingsItemType.Labels -> {
+                postSideEffect(Event.NavigateToLabels)
+            }
+            SettingsItemType.Passcode -> {
+                if (state.isUsePasscodeSelected) {
+                    localRepository.setPasscode(null)
+                    localRepository.setBiometricEnrolled(false)
+                    biometricRepository.clearSecretKey()
+                } else {
+                    postSideEffect(Event.NavigateToCreatePasscode)
                 }
             }
-            is Action.OnSettingsItemTypeClick -> {
-                when (action.type) {
-                    SettingsItemType.Theme -> {
-                        intent {
-                            reduce { state.copy(dialog = State.Dialog.ThemeDialog) }
+            SettingsItemType.Biometric -> {
+                if (state.isUseBiometricSelected) {
+                    localRepository.setBiometricEnrolled(false)
+                    biometricRepository.clearSecretKey()
+                } else {
+                    val biometricStatus = getBiometricStatus()
+                    if (biometricStatus == AvailableButNotEnrolled) {
+                        postSideEffect(Event.NavigateToSystemSecuritySettings)
+                    } else if (biometricStatus == Ready) {
+                        biometricRepository.generateSecretKey()
+                        biometricRepository.createCryptoObject(CryptoPurpose.Encrypt).also {
+                            postSideEffect(Event.ShowBiometricPrompt(it))
                         }
                     }
-                    SettingsItemType.Language -> {
-                        intent {
-                            reduce { state.copy(dialog = State.Dialog.LanguageDialog) }
-                        }
-                    }
-                    SettingsItemType.Currencies -> {
-                        intent {
-                            postSideEffect(Event.NavigateToCurrencies)
-                        }
-                    }
-                    SettingsItemType.Labels -> {
-                        intent {
-                            postSideEffect(Event.NavigateToLabels)
-                        }
-                    }
-                    SettingsItemType.Passcode -> {
-                        intent {
-                            if (state.isUsePasscodeSelected) {
-                                localRepository.setPasscode(null)
-                                localRepository.setBiometricEnrolled(false)
-                                biometricRepository.clearSecretKey()
-                            } else {
-                                postSideEffect(Event.NavigateToCreatePasscode)
-                            }
-                        }
-                    }
-                    SettingsItemType.Biometric -> {
-                        intent {
-                            if (state.isUseBiometricSelected) {
-                                localRepository.setBiometricEnrolled(false)
-                                biometricRepository.clearSecretKey()
-                            } else {
-                                val biometricStatus = getBiometricStatus()
-                                if (biometricStatus == AvailableButNotEnrolled) {
-                                    postSideEffect(Event.NavigateToSystemSecuritySettings)
-                                } else if (biometricStatus == Ready) {
-                                    biometricRepository.generateSecretKey()
-                                    biometricRepository.createCryptoObject(CryptoPurpose.Encrypt).also {
-                                        postSideEffect(Event.ShowBiometricPrompt(it))
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    else -> {}
-                }
-            }
-            is Action.OnThemeDialogDismiss -> {
-                hideDialogs()
-            }
-            is Action.OnLanguageDialogDismiss -> {
-                hideDialogs()
-            }
-            is Action.OnLanguageSelect -> {
-                AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(action.language.tag))
-                intent {
-                    reduce {
-                        state.copy(
-                            selectedLanguage = action.language,
-                            dialog = null
-                        )
-                    }
-                }
-            }
-            is Action.OnThemeSelect -> {
-                intent {
-                    when (action.theme) {
-                        ApplicationTheme.Dark -> localRepository.setThemeDarkMode(true)
-                        ApplicationTheme.Light -> localRepository.setThemeDarkMode(false)
-                        ApplicationTheme.SystemDefault -> localRepository.setThemeSystemDefault()
-                    }
-                    reduce {
-                        state.copy(
-                            selectedTheme = action.theme,
-                            dialog = null
-                        )
-                    }
-                }
-            }
-            is Action.OnBiometricAuthenticationSuccess -> {
-                intent {
-                    localRepository.setBiometricEnrolled(true)
-                }
-            }
-            is Action.OnBiometricAuthenticationError -> {
-                intent {
-                    postSideEffect(Event.ShowMessage(StringResource.fromStr(action.error)))
                 }
             }
             else -> {}
         }
     }
 
-    private fun hideDialogs() = intent {
+    private fun handleOnLanguageSelect(action: Action.OnLanguageSelect): Job {
+        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(action.language.tag))
+        return intent {
+            reduce {
+                state.copy(
+                    selectedLanguage = action.language,
+                    dialog = null
+                )
+            }
+        }
+    }
+
+    private fun handleOnDialogDismiss() = intent {
         reduce { state.copy(dialog = null) }
+    }
+
+    private fun handleOnThemeSelect(action: Action.OnThemeSelect) = intent {
+        when (action.theme) {
+            ApplicationTheme.Dark -> localRepository.setThemeDarkMode(true)
+            ApplicationTheme.Light -> localRepository.setThemeDarkMode(false)
+            ApplicationTheme.SystemDefault -> localRepository.setThemeSystemDefault()
+        }
+        reduce { state.copy(selectedTheme = action.theme) }
+        handleOnDialogDismiss()
+    }
+
+    private fun handleOnBiometricAuthenticationSuccess() = intent {
+        localRepository.setBiometricEnrolled(true)
+    }
+
+    private fun handleOnBiometricAuthenticationError(action: Action.OnBiometricAuthenticationError) = intent {
+        postSideEffect(Event.ShowMessage(StringResource.fromStr(action.error)))
     }
 
     private fun subscribeToCurrentProfile() = intent {
@@ -210,7 +191,7 @@ class SettingsViewModel @Inject constructor(
             val selectedLanguage = ApplicationLanguage.tagOf(localeTag).let {
                 when (it) {
                     null -> {
-                        // Couldn't parse locale tag, fallback to system default
+                        // couldn't parse locale tag, fallback to system default
                         AppCompatDelegate.setApplicationLocales(LocaleListCompat.getEmptyLocaleList())
                         ApplicationLanguage.SystemDefault
                     }
@@ -235,6 +216,4 @@ class SettingsViewModel @Inject constructor(
                 }
             }
     }
-
-
 }

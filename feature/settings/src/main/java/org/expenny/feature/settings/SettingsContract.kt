@@ -32,8 +32,7 @@ sealed interface Action {
     class OnSettingsItemTypeClick(val type: SettingsItemType) : Action
     class OnBiometricAuthenticationError(val error: String) : Action
     object OnBiometricAuthenticationSuccess : Action
-    object OnThemeDialogDismiss : Action
-    object OnLanguageDialogDismiss : Action
+    object OnDialogDismiss : Action
     object OnBackClick : Action
 }
 

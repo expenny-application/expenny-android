@@ -55,7 +55,7 @@ internal fun SettingsContent(
                 SettingsThemeDialog(
                     selectedTheme = state.selectedTheme,
                     onThemeSelect = { onAction(Action.OnThemeSelect(it)) },
-                    onDismiss = { onAction(Action.OnThemeDialogDismiss) }
+                    onDismiss = { onAction(Action.OnDialogDismiss) }
                 )
             }
         }
@@ -64,7 +64,7 @@ internal fun SettingsContent(
                 locales = state.languages,
                 selectedLanguage = state.selectedLanguage,
                 onLanguageSelect = { onAction(Action.OnLanguageSelect(it)) },
-                onDismiss = { onAction(Action.OnLanguageDialogDismiss) }
+                onDismiss = { onAction(Action.OnDialogDismiss) }
             )
         }
         else -> {}
