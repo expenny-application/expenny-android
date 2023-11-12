@@ -3,6 +3,7 @@ package org.expenny.core.data.repository
 import kotlinx.coroutines.flow.Flow
 import org.expenny.core.datastore.ExpennyDataStore
 import org.expenny.core.datastore.ExpennyDataStore.Companion.CURRENT_PROFILE_ID_KEY
+import org.expenny.core.datastore.ExpennyDataStore.Companion.IS_BIOMETRIC_ENROLLED_KEY
 import org.expenny.core.datastore.ExpennyDataStore.Companion.IS_DARK_MODE_KEY
 import org.expenny.core.datastore.ExpennyDataStore.Companion.IS_ONBOARDING_PASSED_KEY
 import org.expenny.core.datastore.ExpennyDataStore.Companion.IS_SETUP_PASSED_KEY
@@ -42,6 +43,10 @@ class LocalRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun setBiometricEnrolled(isEnrolled: Boolean) {
+        dataStore.put(IS_BIOMETRIC_ENROLLED_KEY, isEnrolled)
+    }
+
     override fun isDarkMode(): Flow<Boolean?> {
         return dataStore.get(IS_DARK_MODE_KEY)
     }
@@ -60,5 +65,9 @@ class LocalRepositoryImpl @Inject constructor(
 
     override fun getPasscode(): Flow<String?> {
         return dataStore.get(PASSCODE_KEY)
+    }
+
+    override fun isBiometricEnrolled(): Flow<Boolean> {
+        return dataStore.get(IS_BIOMETRIC_ENROLLED_KEY, false)
     }
 }

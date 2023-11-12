@@ -18,6 +18,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,11 +31,12 @@ import org.expenny.core.ui.theme.ExpennyTheme
 internal fun PasscodeKeyboard(
     modifier: Modifier = Modifier,
     isBackspaceEnabled: Boolean,
-    isFingerScannerEnabled: Boolean,
+    isBiometricEnabled: Boolean,
     onDigitClick: (Int) -> Unit,
     onBackspaceClick: () -> Unit,
     onFingerprintClick: () -> Unit
 ) {
+    val haptic = LocalHapticFeedback.current
     val rows = 4
     val columns = 3
 
@@ -49,18 +52,27 @@ internal fun PasscodeKeyboard(
                     val digit = if (index <= 9) index else 0
                     DigitButton(
                         digit = digit,
-                        onClick = onDigitClick,
+                        onClick = {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            onDigitClick(it)
+                        },
                     )
                 } else {
                     if (index == 10) {
-                        FingerScannerButton(
-                            isEnabled = isFingerScannerEnabled,
-                            onClick = onFingerprintClick
+                        BiometricButton(
+                            isEnabled = isBiometricEnabled,
+                            onClick = {
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                onFingerprintClick()
+                            }
                         )
                     } else if (index == 12) {
                         BackspaceButton(
                             isEnabled = isBackspaceEnabled,
-                            onClick = onBackspaceClick
+                            onClick = {
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                onBackspaceClick()
+                            }
                         )
                     }
                 }
@@ -70,7 +82,7 @@ internal fun PasscodeKeyboard(
 }
 
 @Composable
-private fun FingerScannerButton(
+private fun BiometricButton(
     modifier: Modifier = Modifier,
     isEnabled: Boolean,
     onClick: () -> Unit
@@ -81,6 +93,7 @@ private fun FingerScannerButton(
 
     KeyboardButton(
         modifier = modifier,
+        isEnabled = isEnabled,
         content = {
             Icon(
                 modifier = Modifier.size(32.dp),
@@ -105,6 +118,7 @@ private fun BackspaceButton(
 
     KeyboardButton(
         modifier = modifier,
+        isEnabled = isEnabled,
         content = {
             Icon(
                 modifier = Modifier.size(32.dp),
@@ -125,6 +139,7 @@ private fun DigitButton(
 ) {
     KeyboardButton(
         modifier = modifier,
+        isEnabled = true,
         onClick = { onClick(digit) },
         content = {
             Text(
@@ -140,6 +155,7 @@ private fun DigitButton(
 @Composable
 private fun KeyboardButton(
     modifier: Modifier = Modifier,
+    isEnabled: Boolean = true,
     content: @Composable () -> Unit,
     onClick: () -> Unit,
 ) {
@@ -155,7 +171,9 @@ private fun KeyboardButton(
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = rememberRipple(bounded = false),
-                    onClick = onClick
+                    onClick = {
+                        if (isEnabled) onClick()
+                    }
                 ),
             contentAlignment = Alignment.Center
         ) {
@@ -175,7 +193,7 @@ private fun PasscodeKeyboardPreview() {
             PasscodeKeyboard(
                 modifier = Modifier.wrapContentSize(),
                 isBackspaceEnabled = true,
-                isFingerScannerEnabled = true,
+                isBiometricEnabled = true,
                 onDigitClick = {},
                 onBackspaceClick = {},
                 onFingerprintClick = {}

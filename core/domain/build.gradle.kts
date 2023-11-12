@@ -13,6 +13,7 @@ dependencies {
     implementation(project(":core:resources"))
     implementation(project(":core:model"))
 
+    implementation(libs.androidx.biometric)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.threeten)
     implementation(libs.hilt.android)

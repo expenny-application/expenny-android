@@ -14,6 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import org.expenny.core.resources.R
+import org.expenny.core.ui.components.BiometricPromptState
+import org.expenny.core.ui.components.ExpennyBiometricPrompt
 import org.expenny.core.ui.foundation.ExpennyText
 import org.expenny.core.ui.components.ExpennyLogo
 import org.expenny.feature.passcode.view.PasscodeFieldsRow
@@ -24,8 +27,17 @@ import org.expenny.feature.passcode.view.PasscodeToolbar
 internal fun PasscodeContent(
     modifier: Modifier = Modifier,
     state: State,
+    biometricPromptState: BiometricPromptState,
     onAction: (Action) -> Unit
 ) {
+    ExpennyBiometricPrompt(
+        state = biometricPromptState,
+        title = stringResource(R.string.authentication_required_label),
+        subtitle = stringResource(R.string.prove_identity_login_label),
+        onAuthenticationSuccess = { onAction(Action.OnBiometricAuthenticationSuccess) },
+        onAuthenticationError = { onAction(Action.OnBiometricAuthenticationError(it)) }
+    )
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
@@ -58,7 +70,7 @@ internal fun PasscodeContent(
                         passcodeType = state.passcodeType,
                         passcodeStatus = state.passcodeStatus,
                         passcodeMaxLength = state.passcodeMaxLength,
-                        passcodeLength = state.passcodeLength
+                        passcodeLength = state.passcode.length
                     )
                     ExpennyText(
                         text = stringResource(state.passcodeParagraphResId),
@@ -72,10 +84,10 @@ internal fun PasscodeContent(
             Box(contentAlignment = Alignment.BottomCenter) {
                 PasscodeKeyboard(
                     isBackspaceEnabled = state.isBackspaceEnabled,
-                    isFingerScannerEnabled = state.isFingerScannerEnabled,
+                    isBiometricEnabled = state.isBiometricEnabled,
                     onDigitClick = { onAction(Action.OnDigitClick(it)) },
                     onBackspaceClick = { onAction(Action.OnBackspaceClick) },
-                    onFingerprintClick = { onAction(Action.OnFingerprintClick) }
+                    onFingerprintClick = { onAction(Action.OnBiometricClick) }
                 )
             }
         }

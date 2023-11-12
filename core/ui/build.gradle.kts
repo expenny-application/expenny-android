@@ -28,6 +28,7 @@ dependencies {
 
     debugApi(libs.androidx.compose.ui.tooling)
 
+    implementation(libs.androidx.biometric)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.activity.compose)

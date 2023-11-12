@@ -74,9 +74,10 @@ internal fun SettingsMoreSection(
 internal fun SettingsSecuritySection(
     modifier: Modifier = Modifier,
     isUsePasscodeSelected: Boolean,
-    isUseFingerprintSelected: Boolean,
-    onSetPinCodeClick: () -> Unit,
-    onUseFingerprintClick: () -> Unit,
+    isUseBiometricSelected: Boolean,
+    isBiometricEnabled: Boolean,
+    onSetPasscodeClick: () -> Unit,
+    onUseBiometricClick: () -> Unit,
 ) {
     SettingsSection(
         modifier = modifier.fillMaxWidth(),
@@ -86,13 +87,14 @@ internal fun SettingsSecuritySection(
             title = stringResource(R.string.use_passcode_label),
             icon = painterResource(R.drawable.ic_passcode),
             isSelected = isUsePasscodeSelected,
-            onClick = onSetPinCodeClick
+            onClick = onSetPasscodeClick
         )
         SectionSwitchItem(
-            title = stringResource(R.string.use_fingerprint_label),
+            isEnabled = isBiometricEnabled,
+            isSelected = isUseBiometricSelected,
+            title = stringResource(R.string.use_bioemtric_label),
             icon = painterResource(R.drawable.ic_fingerprint),
-            isSelected = isUseFingerprintSelected,
-            onClick = onUseFingerprintClick
+            onClick = onUseBiometricClick
         )
     }
 }
@@ -320,14 +322,16 @@ private fun SectionSelectionItem(
 @Composable
 private fun SectionSwitchItem(
     modifier: Modifier = Modifier,
+    isEnabled: Boolean = true,
+    isSelected: Boolean,
     title: String,
     description: String? = null,
     icon: Painter,
-    isSelected: Boolean,
     onClick: () -> Unit
 ) {
     SectionItem(
         modifier = modifier,
+        isEnabled = isEnabled,
         onClick = onClick,
         leadingContent = {
             Icon(
@@ -346,6 +350,7 @@ private fun SectionSwitchItem(
         trailingContent = {
             CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
                 Switch(
+                    enabled = isEnabled,
                     checked = isSelected,
                     onCheckedChange = { onClick() }
                 )
@@ -376,15 +381,24 @@ private fun SettingsSection(
 @Composable
 private fun SectionItem(
     modifier: Modifier = Modifier,
+    isEnabled: Boolean = true,
     leadingContent: @Composable () -> Unit,
     title: @Composable () -> Unit,
     description: (@Composable () -> Unit)? = null,
     trailingContent: (@Composable () -> Unit)? = null,
     onClick: () -> Unit
 ) {
+    val primaryContentColor =
+        MaterialTheme.colorScheme.onSurface.copy(alpha = if (isEnabled) 1f else 0.38f)
+
+    val secondaryContentColor =
+        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = if (isEnabled) 1f else 0.38f)
+
     ExpennyCard(
         modifier = modifier.fillMaxWidth(),
-        onClick = onClick
+        onClick = {
+            if (isEnabled) onClick()
+        }
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
@@ -392,7 +406,7 @@ private fun SectionItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             CompositionLocalProvider(
-                LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant,
+                LocalContentColor provides secondaryContentColor,
             ) {
                 leadingContent()
             }
@@ -400,14 +414,14 @@ private fun SectionItem(
                 modifier = Modifier.weight(1f)
             ) {
                 CompositionLocalProvider(
-                    LocalContentColor provides MaterialTheme.colorScheme.onSurface,
+                    LocalContentColor provides primaryContentColor,
                     LocalTextStyle provides MaterialTheme.typography.titleMedium
                 ) {
                     title()
                 }
                 description?.let {
                     CompositionLocalProvider(
-                        LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant,
+                        LocalContentColor provides secondaryContentColor,
                         LocalTextStyle provides MaterialTheme.typography.bodyMedium
                     ) {
                         description()
@@ -416,7 +430,7 @@ private fun SectionItem(
             }
             trailingContent?.let {
                 CompositionLocalProvider(
-                    LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant,
+                    LocalContentColor provides secondaryContentColor,
                     LocalTextStyle provides MaterialTheme.typography.bodyMedium
                 ) {
                     trailingContent()

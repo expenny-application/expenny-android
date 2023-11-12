@@ -4,13 +4,13 @@ targetSdk = "34"
 minSdk = "26"
 
 accompanist = "0.30.0"
-androidDesugarJdkLibs = "2.0.3" # new
+androidDesugarJdkLibs = "2.0.3"
 androidGradlePlugin = "8.1.0"
-androidxActivity = "1.8.0-alpha06"  # new
-androidxAppCompat = "1.5.1" # new
-androidxComposeBom = "2023.06.01" # new
-androidxComposeCompiler = "1.5.0" # new
-androidxComposeRuntimeTracing = "1.0.0-alpha03" # new
+androidxActivity = "1.8.0-alpha06"
+androidxAppCompat = "1.5.1"
+androidxComposeBom = "2023.06.01"
+androidxComposeCompiler = "1.5.0"
+androidxComposeRuntimeTracing = "1.0.0-alpha03"
 androidxCore = "1.8.0"
 androidxCoreSplashscreen = "1.0.0"
 androidxDataStore = "1.0.0"
@@ -24,6 +24,7 @@ androidxTestExt = "1.1.4"
 androidxTestRules = "1.5.0"
 androidxTestRunner = "1.5.1"
 androidxUiAutomator = "2.2.0"
+biometric = "1.1.0"
 gradleVersions = "0.42.0"
 coil = "2.3.0"
 firebaseBom = "32.4.0"
@@ -98,6 +99,9 @@ androidx-lifecycle-viewModelCompose = { module = "androidx.lifecycle:lifecycle-v
 androidx-lifecycle-runtimeCompose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidxLifecycle" }
 androidx-metrics = { module = "androidx.metrics:metrics-performance", version.ref = "androidxMetrics" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "androidxNavigation" }
+androidx-biometric = { group = "androidx.biometric", name = "biometric", version.ref = "biometric" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit" }
+androidx-junit-ktx = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "junit" }
 androidx-test-core = { module = "androidx.test:core", version.ref = "androidxTestCore" }
 androidx-test-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "androidxEspresso" }
 androidx-test-ext = { module = "androidx.test.ext:junit-ktx", version.ref = "androidxTestExt" }
@@ -153,11 +157,9 @@ joda-money = { module = "org.joda:joda-money", version.ref = "jodaMoney" }
 vico-compose-m3 = { module = "com.patrykandpatrick.vico:compose-m3", version.ref = "vico" }
 orbit-core = { module = "org.orbit-mvi:orbit-viewmodel", version.ref = "orbit" }
 orbit-compose = { module = "org.orbit-mvi:orbit-compose", version.ref = "orbit" }
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 opencsv = { group = "com.opencsv", name = "opencsv", version.ref = "opencsv" }
 work = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "work" }
-androidx-junit-ktx = { group = "androidx.test.ext", name = "junit-ktx", version = "1.1.5" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

@@ -16,6 +16,8 @@ interface LocalRepository {
 
     suspend fun setPasscode(passcode: String?)
 
+    suspend fun setBiometricEnrolled(isEnrolled: Boolean)
+
     fun isDarkMode(): Flow<Boolean?>
 
     fun isSetupPassed(): Flow<Boolean>
@@ -25,4 +27,6 @@ interface LocalRepository {
     fun getCurrentProfileId(): Flow<Long?>
 
     fun getPasscode(): Flow<String?>
+
+    fun isBiometricEnrolled(): Flow<Boolean>
 }

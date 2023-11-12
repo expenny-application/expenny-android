@@ -1,6 +1,7 @@
 package org.expenny.feature.passcode
 
 import androidx.annotation.StringRes
+import androidx.biometric.BiometricPrompt.CryptoObject
 import org.expenny.core.common.utils.Constants
 import org.expenny.core.common.utils.StringResource
 import org.expenny.core.resources.R
@@ -11,10 +12,10 @@ data class State(
     val passcodeType: PasscodeType = PasscodeType.Verify,
     val passcodeStatus: PasscodeStatus = PasscodeStatus.None,
     val passcodeMaxLength: Int = Constants.DEFAULT_PASSCODE_LENGTH,
-    val passcodeLength: Int = 0,
-    val isFingerScannerEnabled: Boolean = false,
+    val passcode: String = "",
+    val isBiometricEnabled: Boolean = false,
 ) {
-    val isBackspaceEnabled: Boolean = passcodeLength > 0
+    val isBackspaceEnabled: Boolean = passcode.isNotEmpty()
     val showToolbar: Boolean = passcodeType != PasscodeType.Verify
     val showLogo: Boolean = passcodeType == PasscodeType.Verify
 
@@ -27,12 +28,15 @@ data class State(
 
 sealed interface Action {
     class OnDigitClick(val digit: Int) : Action
-    data object OnFingerprintClick : Action
+    class OnBiometricAuthenticationError(val error: String) : Action
+    data object OnBiometricAuthenticationSuccess : Action
+    data object OnBiometricClick : Action
     data object OnBackspaceClick : Action
     data object OnBackClick : Action
 }
 
 sealed interface Event {
+    class ShowBiometricPrompt(val cryptoObject: CryptoObject) : Event
     class ShowMessage(val message: StringResource) : Event
     data object NavigateToDashboard : Event
     data object NavigateBack : Event

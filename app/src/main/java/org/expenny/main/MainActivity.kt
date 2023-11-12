@@ -73,6 +73,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.verifyBiometricKeyInvalidationStatus()
+    }
+
     private fun addOnPreDrawListener() {
         content.viewTreeObserver.addOnPreDrawListener(
             object : ViewTreeObserver.OnPreDrawListener {

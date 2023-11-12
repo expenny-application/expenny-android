@@ -13,7 +13,7 @@ enum class SettingsItemType {
     Reminder,
     UpdateRates,
     Passcode,
-    Fingerprint,
+    Biometric,
     About,
     RateApplication,
     DeleteAllData

@@ -11,10 +11,16 @@ import kotlinx.coroutines.launch
 import org.expenny.core.common.utils.StringResourceProvider
 import org.expenny.core.common.types.ApplicationLanguage
 import org.expenny.core.common.types.ApplicationTheme
+import org.expenny.core.common.utils.StringResource
 import org.expenny.core.common.viewmodel.ExpennyActionViewModel
+import org.expenny.core.domain.repository.BiometricRepository
 import org.expenny.core.domain.repository.LocalRepository
+import org.expenny.core.domain.usecase.GetBiometricStatusUseCase
 import org.expenny.core.domain.usecase.currency.GetMainCurrencyUseCase
 import org.expenny.core.domain.usecase.profile.GetCurrentProfileUseCase
+import org.expenny.core.model.biometric.BiometricStatus.AvailableButNotEnrolled
+import org.expenny.core.model.biometric.BiometricStatus.Ready
+import org.expenny.core.model.biometric.CryptoPurpose
 import org.expenny.core.ui.mapper.ProfileMapper
 import org.expenny.feature.settings.model.SettingsItemType
 import org.orbitmvi.orbit.ContainerHost
@@ -28,6 +34,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val localRepository: LocalRepository,
+    private val biometricRepository: BiometricRepository,
+    private val getBiometricStatus: GetBiometricStatusUseCase,
     private val getMainCurrency: GetMainCurrencyUseCase,
     private val getCurrentProfile: GetCurrentProfileUseCase,
     private val profileMapper: ProfileMapper,
@@ -40,9 +48,10 @@ class SettingsViewModel @Inject constructor(
     ) {
         coroutineScope {
             setSelectedLanguage()
-            launch { subscribeToSelectedTheme() }
             launch { subscribeToCurrentProfile() }
-            launch { subscribeToSelectedPasscode() }
+            launch { subscribeToThemePreference() }
+            launch { subscribeToPasscodePreference() }
+            launch { subscribeToBiometricPreference() }
         }
     }
 
@@ -77,10 +86,30 @@ class SettingsViewModel @Inject constructor(
                     }
                     SettingsItemType.Passcode -> {
                         intent {
-                            if (state.isPasscodeEnabled) {
+                            if (state.isUsePasscodeSelected) {
                                 localRepository.setPasscode(null)
+                                localRepository.setBiometricEnrolled(false)
+                                biometricRepository.clearSecretKey()
                             } else {
                                 postSideEffect(Event.NavigateToCreatePasscode)
+                            }
+                        }
+                    }
+                    SettingsItemType.Biometric -> {
+                        intent {
+                            if (state.isUseBiometricSelected) {
+                                localRepository.setBiometricEnrolled(false)
+                                biometricRepository.clearSecretKey()
+                            } else {
+                                val biometricStatus = getBiometricStatus()
+                                if (biometricStatus == AvailableButNotEnrolled) {
+                                    postSideEffect(Event.NavigateToSystemSecuritySettings)
+                                } else if (biometricStatus == Ready) {
+                                    biometricRepository.generateSecretKey()
+                                    biometricRepository.createCryptoObject(CryptoPurpose.Encrypt).also {
+                                        postSideEffect(Event.ShowBiometricPrompt(it))
+                                    }
+                                }
                             }
                         }
                     }
@@ -119,6 +148,16 @@ class SettingsViewModel @Inject constructor(
                     }
                 }
             }
+            is Action.OnBiometricAuthenticationSuccess -> {
+                intent {
+                    localRepository.setBiometricEnrolled(true)
+                }
+            }
+            is Action.OnBiometricAuthenticationError -> {
+                intent {
+                    postSideEffect(Event.ShowMessage(StringResource.fromStr(action.error)))
+                }
+            }
             else -> {}
         }
     }
@@ -135,15 +174,33 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    private fun subscribeToSelectedPasscode() = intent {
+    private fun subscribeToPasscodePreference() = intent {
         repeatOnSubscription {
             localRepository.getPasscode()
                 .map { it != null }
                 .collect { isPasscodeSetUp ->
                     reduce {
-                        state.copy(isPasscodeEnabled = isPasscodeSetUp)
+                        state.copy(isUsePasscodeSelected = isPasscodeSetUp)
                     }
                 }
+        }
+    }
+
+    private fun subscribeToBiometricPreference() = intent {
+        val biometricStatus = getBiometricStatus()
+        if (biometricStatus == Ready || biometricStatus == AvailableButNotEnrolled) {
+            repeatOnSubscription {
+                localRepository.isBiometricEnrolled().collect {
+                    reduce {
+                        state.copy(
+                            isBiometricAvailable = true,
+                            isUseBiometricSelected = it
+                        )
+                    }
+                }
+            }
+        } else {
+            reduce { state.copy(isBiometricAvailable = false) }
         }
     }
 
@@ -164,7 +221,7 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    private fun subscribeToSelectedTheme() = intent {
+    private fun subscribeToThemePreference() = intent {
         localRepository.isDarkMode()
             .mapLatest {
                 when (it) {
@@ -178,4 +235,6 @@ class SettingsViewModel @Inject constructor(
                 }
             }
     }
+
+
 }

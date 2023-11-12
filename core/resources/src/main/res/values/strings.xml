@@ -19,7 +19,7 @@
     <string name="update_rates_label">Update rates</string>
     <string name="set_passcode_label">Set passcode</string>
     <string name="use_passcode_label">Use passcode</string>
-    <string name="use_fingerprint_label">Use fingerprint</string>
+    <string name="use_bioemtric_label">Use biometric</string>
     <string name="about_label">About app</string>
     <string name="rate_application_label">Rate application</string>
     <string name="delete_all_data_label">Delete all data</string>
@@ -169,6 +169,9 @@
     <string name="confirm_passcode_label">Confirm entered passcode to finish setup</string>
     <string name="create_passcode_label">Create 4 digit passcode</string>
     <string name="enter_passcode_label">Enter your passcode to log in to the app</string>
+    <string name="authentication_required_label">Authentication required</string>
+    <string name="prove_identity_set_biometric_label">Prove your identity to set biometric authentication</string>
+    <string name="prove_identity_login_label">Prove your identity to log in to the app</string>
 
     <!-- Dialog paragraphs -->
     <string name="get_started_paragraph">Complete the steps bellow in order to finish initial setup</string>
@@ -281,6 +284,7 @@
     <string name="required_selection_error">At least one selected item is required</string>
     <string name="required_account_error">Having at least one account is required</string>
     <string name="not_found_error">No data found</string>
+    <string name="authentication_failed_error">Authentication failed</string>
 
     <string name="enable_currency_rates_updates_message">Enable automatic updates of currency rates bases on European Central Bank data</string>
     <string name="currency_rates_info_message">If the selected currency is available in the European Central Bank database, the exchange rates will be automatically set into the fields</string>

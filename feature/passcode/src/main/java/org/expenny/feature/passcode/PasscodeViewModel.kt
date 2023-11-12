@@ -1,5 +1,6 @@
 package org.expenny.feature.passcode
 
+import androidx.biometric.BiometricPrompt.CryptoObject
 import androidx.lifecycle.SavedStateHandle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.coroutineScope
@@ -7,8 +8,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.expenny.core.common.utils.StringResource.Companion.fromRes
+import org.expenny.core.common.utils.StringResource.Companion.fromStr
 import org.expenny.core.common.viewmodel.ExpennyActionViewModel
+import org.expenny.core.domain.repository.BiometricRepository
 import org.expenny.core.domain.repository.LocalRepository
+import org.expenny.core.model.biometric.CryptoPurpose
 import org.expenny.feature.passcode.model.PasscodeType.Create
 import org.expenny.feature.passcode.model.PasscodeType.Verify
 import org.expenny.feature.passcode.navigation.PasscodeNavArgs
@@ -29,10 +33,11 @@ import org.expenny.feature.passcode.model.PasscodeStatus.Invalid
 class PasscodeViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val localRepository: LocalRepository,
+    private val biometricRepository: BiometricRepository,
 ) : ExpennyActionViewModel<Action>(), ContainerHost<State, Event> {
 
-    private var currentPasscode: String = ""
     private var validPasscode: String = ""
+    private var cryptoObject: CryptoObject? = null
 
     override val container = container<State, Event>(
         initialState = State(),
@@ -40,6 +45,7 @@ class PasscodeViewModel @Inject constructor(
     ) {
         coroutineScope {
             launch { setupInitialState() }
+            launch { subscribeToBiometricPreference() }
         }
     }
 
@@ -50,12 +56,54 @@ class PasscodeViewModel @Inject constructor(
             is Action.OnDigitClick -> handleOnDigitClick(action)
             is Action.OnBackspaceClick -> handleOnBackspaceClick()
             is Action.OnBackClick -> handleOnBackClick()
+            is Action.OnBiometricAuthenticationSuccess -> {
+                intent {
+                    reduce {
+                        state.copy(
+                            passcode = validPasscode,
+                            passcodeStatus = Valid
+                        )
+                    }
+                    delay(200)
+                    postSideEffect(Event.NavigateToDashboard)
+                }
+            }
+            is Action.OnBiometricAuthenticationError -> {
+                intent {
+                    postSideEffect(Event.ShowMessage(fromStr(action.error)))
+                }
+            }
+            is Action.OnBiometricClick -> handleOnBiometricClick()
             else -> {}
+        }
+    }
+
+    private fun handleOnBiometricClick() {
+        if (state.passcodeStatus != Valid) {
+            cryptoObject?.let {
+                intent {
+                    postSideEffect(Event.ShowBiometricPrompt(it))
+                }
+            }
         }
     }
 
     private fun handleOnBackClick() = intent {
         postSideEffect(Event.NavigateBack)
+    }
+
+    private fun subscribeToBiometricPreference() = intent {
+        localRepository.isBiometricEnrolled().collect { isBiometricEnrolled ->
+            if (state.passcodeType == Verify) {
+                if (isBiometricEnrolled) {
+                    cryptoObject = biometricRepository.createCryptoObject(CryptoPurpose.Encrypt)
+                    reduce { state.copy(isBiometricEnabled = true) }
+                } else {
+                    cryptoObject = null
+                    reduce { state.copy(isBiometricEnabled = false) }
+                }
+            }
+        }
     }
 
     private fun setupInitialState() = intent {
@@ -76,11 +124,10 @@ class PasscodeViewModel @Inject constructor(
     }
 
     private fun handleOnBackspaceClick() = intent {
-        if (state.passcodeLength > 0) {
-            currentPasscode = currentPasscode.dropLast(1)
+        if (state.passcode.isNotEmpty() && state.passcodeStatus != Valid) {
             reduce {
                 state.copy(
-                    passcodeLength = currentPasscode.length,
+                    passcode = state.passcode.dropLast(1),
                     passcodeStatus = None
                 )
             }
@@ -88,34 +135,30 @@ class PasscodeViewModel @Inject constructor(
     }
 
     private fun handleOnDigitClick(action: Action.OnDigitClick) = intent {
-        if (state.passcodeLength < state.passcodeMaxLength) {
-            currentPasscode += action.digit
-
-            val passcodeStatus = getPasscodeStatus()
-
+        if (state.passcode.length < state.passcodeMaxLength && state.passcodeStatus != Valid) {
+            val newPasscode = state.passcode + action.digit
+            val newPasscodeStatus = getPasscodeStatus(newPasscode)
             reduce {
                 state.copy(
-                    passcodeLength = currentPasscode.length,
-                    passcodeStatus = passcodeStatus
+                    passcode = newPasscode,
+                    passcodeStatus = newPasscodeStatus
                 )
             }
-
-            if (passcodeStatus == Valid) {
-                when (state.passcodeType) {
+            when (newPasscodeStatus) {
+                Valid -> when (state.passcodeType) {
                     Create -> {
                         delay(200)
-                        validPasscode = currentPasscode
-                        currentPasscode = ""
+                        validPasscode = state.passcode
                         reduce {
                             state.copy(
                                 passcodeType = Confirm,
                                 passcodeStatus = None,
-                                passcodeLength = 0
+                                passcode = ""
                             )
                         }
                     }
                     Confirm -> {
-                        localRepository.setPasscode(currentPasscode)
+                        localRepository.setPasscode(state.passcode)
                         delay(200)
                         postSideEffect(Event.NavigateBack)
                     }
@@ -124,16 +167,26 @@ class PasscodeViewModel @Inject constructor(
                         postSideEffect(Event.NavigateToDashboard)
                     }
                 }
+                Invalid -> {
+                    delay(200)
+                    reduce {
+                        state.copy(
+                            passcodeStatus = None,
+                            passcode = ""
+                        )
+                    }
+                }
+                else -> {}
             }
         }
     }
 
-    private fun getPasscodeStatus(): PasscodeStatus {
+    private fun getPasscodeStatus(passcode: String): PasscodeStatus {
         return if (state.passcodeType == Create) {
-            if (currentPasscode.length == state.passcodeMaxLength) Valid else None
+            if (passcode.length == state.passcodeMaxLength) Valid else None
         } else {
-            if (currentPasscode.length == validPasscode.length) {
-                if (currentPasscode == validPasscode) Valid else Invalid
+            if (passcode.length == validPasscode.length) {
+                if (passcode == validPasscode) Valid else Invalid
             } else {
                 None
             }

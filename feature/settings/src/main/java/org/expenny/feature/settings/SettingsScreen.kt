@@ -1,10 +1,15 @@
 package org.expenny.feature.settings
 
+import android.app.Activity
+import android.content.Intent
+import android.provider.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import org.expenny.core.common.ExpennySnackbarManager
+import org.expenny.core.ui.components.rememberBiometricPromptState
 import org.expenny.feature.settings.navigation.SettingsNavigator
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -17,26 +22,38 @@ fun SettingsScreen(
 ) {
     val vm: SettingsViewModel = hiltViewModel()
     val state by vm.collectAsState()
+    val activity = LocalContext.current as Activity
+    val biometricPromptState = rememberBiometricPromptState()
 
     vm.collectSideEffect {
         when (it) {
-            Event.NavigateBack -> {
+            is Event.NavigateBack -> {
                 navigator.navigateBack()
             }
-            Event.NavigateToLabels -> {
+            is Event.NavigateToLabels -> {
                 navigator.navigateToLabelsListScreen()
             }
-            Event.NavigateToCurrencies -> {
+            is Event.NavigateToCurrencies -> {
                 navigator.navigateToCurrenciesListScreen()
             }
-            Event.NavigateToCreatePasscode -> {
+            is Event.NavigateToCreatePasscode -> {
                 navigator.navigateToCreatePasscodeScreen()
+            }
+            is Event.NavigateToSystemSecuritySettings -> {
+                activity.startActivity(Intent(Settings.ACTION_SECURITY_SETTINGS))
+            }
+            is Event.ShowBiometricPrompt -> {
+                biometricPromptState.showPrompt(it.cryptoObject)
+            }
+            is Event.ShowMessage -> {
+                snackbarManager.showMessage(it.message)
             }
         }
     }
 
     SettingsContent(
         state = state,
+        biometricPromptState = biometricPromptState,
         onAction = vm::onAction
     )
 }
