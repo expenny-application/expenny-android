@@ -8,12 +8,15 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
@@ -27,6 +30,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.expenny.R
 import org.expenny.core.common.types.ApplicationTheme
+import org.expenny.core.common.utils.Constants
 import org.expenny.core.ui.theme.ExpennyTheme
 import org.expenny.navigation.ExpennyNavGraphs
 
@@ -35,8 +39,10 @@ class MainActivity : AppCompatActivity() {
 
     private val viewModel by viewModels<MainViewModel>()
     private val content by lazy { findViewById<ComposeView>(R.id.compose_root) }
-    private var isProfileSetUp: Boolean? = null
+    private var isReadyToProceed: Boolean = false
     private var startRoute: Route = ExpennyNavGraphs.setup
+    private val isConfigurationChangedKey = "isConfigurationChangedKey"
+    private var shouldSkipInit = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -45,23 +51,46 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_root)
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
-        getInitialData()
-        addOnPreDrawListener()
+        shouldSkipInit = savedInstanceState?.getBoolean(isConfigurationChangedKey, false) ?: false
+
+        if (!shouldSkipInit) {
+            getInitialData()
+            addOnPreDrawListener()
+        }
         setRootContent()
     }
 
     private fun getInitialData() {
         lifecycleScope.launch(Dispatchers.Main) {
-            viewModel.isProfileSetUp.filterNotNull().first().also {
-                // This is needed for redirecting user either to dashboard ('tabs' nav graph)
-                // or welcome ('setup' nav graph) screen
-                startRoute = if (it) ExpennyNavGraphs.tabs else ExpennyNavGraphs.setup
+            delay(200) // delay splash screen appearance
+            viewModel.isProfileSetUp.filterNotNull().first().also { isProfileSetUp ->
+                val isPasscodeSetUp = viewModel.isPasscodeSetUp.filterNotNull().first()
+                // This is needed for redirecting user either to dashboard, passcode or welcome screen
+                startRoute = when {
+                    isProfileSetUp && isPasscodeSetUp -> ExpennyNavGraphs.auth
+                    isProfileSetUp && !isPasscodeSetUp -> ExpennyNavGraphs.home
+                    else -> ExpennyNavGraphs.setup
+                }
                 // forcing composable content to recompose with new startRoute value
                 content.disposeComposition()
-                // waiting for composable content to be composed before dispatching onPreDraw with new isProfileSetUp value
-                delay(500)
-                isProfileSetUp = it
+                // waiting for composable content to be composed before dispatching onPreDraw
+                delay(Constants.DEFAULT_COMPOSITION_DELAY_MS)
+                isReadyToProceed = true
             }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.verifyBiometricKeyInvalidationStatus()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        if (isChangingConfigurations) {
+            outState.putBoolean(isConfigurationChangedKey, true)
+        } else {
+            outState.putBoolean(isConfigurationChangedKey, false)
         }
     }
 
@@ -69,7 +98,7 @@ class MainActivity : AppCompatActivity() {
         content.viewTreeObserver.addOnPreDrawListener(
             object : ViewTreeObserver.OnPreDrawListener {
                 override fun onPreDraw(): Boolean {
-                    return if (isProfileSetUp != null) {
+                    return if (isReadyToProceed) {
                         content.viewTreeObserver.removeOnPreDrawListener(this)
                         true
                     } else {
@@ -95,8 +124,13 @@ class MainActivity : AppCompatActivity() {
             }
 
             ExpennyTheme(isDarkTheme = isDarkTheme) {
-                Surface(modifier = Modifier.fillMaxSize()) {
-                    MainScreen(startRoute = startRoute)
+                CompositionLocalProvider(
+                    // default font scale instead of system one
+                    LocalDensity provides Density(LocalDensity.current.density, 1f)
+                ) {
+                    Surface(modifier = Modifier.fillMaxSize()) {
+                        MainScreen(startRoute = startRoute)
+                    }
                 }
             }
         }

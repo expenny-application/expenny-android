@@ -57,7 +57,7 @@ internal fun SettingsMoreSection(
         modifier = modifier.fillMaxWidth(),
         title = stringResource(R.string.more_label)
     ) {
-        SectionSelectionItem(
+        SectionItem(
             title = stringResource(R.string.about_label),
             icon = painterResource(R.drawable.ic_smile),
             onClick = onAboutClick
@@ -73,26 +73,28 @@ internal fun SettingsMoreSection(
 @Composable
 internal fun SettingsSecuritySection(
     modifier: Modifier = Modifier,
-    isSetPinCodeSelected: Boolean,
-    isUseFingerprintSelected: Boolean,
-    onSetPinCodeClick: () -> Unit,
-    onUseFingerprintClick: () -> Unit,
+    isUsePasscodeSelected: Boolean,
+    isUseBiometricSelected: Boolean,
+    isBiometricEnabled: Boolean,
+    onSetPasscodeClick: () -> Unit,
+    onUseBiometricClick: () -> Unit,
 ) {
     SettingsSection(
         modifier = modifier.fillMaxWidth(),
         title = stringResource(R.string.security_label)
     ) {
         SectionSwitchItem(
-            title = stringResource(R.string.set_pin_code_label),
-            icon = painterResource(R.drawable.ic_pin_code),
-            isSelected = isSetPinCodeSelected,
-            onClick = onSetPinCodeClick
+            title = stringResource(R.string.use_passcode_label),
+            icon = painterResource(R.drawable.ic_passcode),
+            isSelected = isUsePasscodeSelected,
+            onClick = onSetPasscodeClick
         )
         SectionSwitchItem(
-            title = stringResource(R.string.use_fingerprint_label),
+            isEnabled = isBiometricEnabled,
+            isSelected = isUseBiometricSelected,
+            title = stringResource(R.string.use_bioemtric_label),
             icon = painterResource(R.drawable.ic_fingerprint),
-            isSelected = isUseFingerprintSelected,
-            onClick = onUseFingerprintClick
+            onClick = onUseBiometricClick
         )
     }
 }
@@ -100,24 +102,27 @@ internal fun SettingsSecuritySection(
 @Composable
 internal fun SettingsNotificationsSection(
     modifier: Modifier = Modifier,
-    isUpdateRatesSelected: Boolean,
+    isReminderSelected: Boolean,
+    isReminderTimeEnabled: Boolean,
     onReminderClick: () -> Unit,
-    onUpdateRatesClick: () -> Unit,
+    onReminderTimeClick: () -> Unit,
 ) {
     SettingsSection(
         modifier = modifier.fillMaxWidth(),
         title = stringResource(R.string.notifications_label)
     ) {
-        SectionSelectionItem(
+        SectionSwitchItem(
             title = stringResource(R.string.reminder_label),
             icon = painterResource(R.drawable.ic_reminder),
+            isSelected = isReminderSelected,
             onClick = onReminderClick
         )
-        SectionSwitchItem(
-            title = stringResource(R.string.update_rates_label),
-            icon = painterResource(R.drawable.ic_update),
-            isSelected = isUpdateRatesSelected,
-            onClick = onUpdateRatesClick
+        SectionSelectionItem(
+            isEnabled = isReminderTimeEnabled,
+            title = stringResource(R.string.reminder_time_label),
+            icon = painterResource(R.drawable.ic_timewatch),
+            value = "",
+            onClick = onReminderTimeClick
         )
     }
 }
@@ -126,27 +131,21 @@ internal fun SettingsNotificationsSection(
 internal fun SettingsDataSection(
     modifier: Modifier = Modifier,
     onBackupClick: () -> Unit,
-    onExportClick: () -> Unit,
-    onImportsClick: () -> Unit
+    onImportsExportsClick: () -> Unit,
 ) {
     SettingsSection(
         modifier = modifier.fillMaxWidth(),
         title = stringResource(R.string.data_label)
     ) {
-        SectionSelectionItem(
+        SectionItem(
             title = stringResource(R.string.backup_label),
             icon = painterResource(R.drawable.ic_storage),
             onClick = onBackupClick
         )
-        SectionSelectionItem(
-            title = stringResource(R.string.export_to_file_label),
-            icon = painterResource(R.drawable.ic_export),
-            onClick = onExportClick
-        )
-        SectionSelectionItem(
-            title = stringResource(R.string.imports_label),
-            icon = painterResource(R.drawable.ic_imports),
-            onClick = onImportsClick
+        SectionItem(
+            title = stringResource(R.string.import_and_export_label),
+            icon = painterResource(R.drawable.ic_import_export),
+            onClick = onImportsExportsClick
         )
     }
 }
@@ -178,17 +177,17 @@ internal fun SettingsGeneralSection(
             value = theme?.label.orEmpty(),
             onClick = onThemeClick
         )
-        SectionSelectionItem(
+        SectionItem(
             title = stringResource(R.string.categorizations_label),
             icon = painterResource(R.drawable.ic_rule),
             onClick = onCategorizationClick
         )
-        SectionSelectionItem(
+        SectionItem(
             title = stringResource(R.string.currencies_label),
             icon = painterResource(R.drawable.ic_money),
             onClick = onCurrenciesClick
         )
-        SectionSelectionItem(
+        SectionItem(
             title = stringResource(R.string.labels_label),
             icon = painterResource(R.drawable.ic_label_outlined),
             onClick = onLabelsClick
@@ -284,6 +283,7 @@ private fun SectionActionItem(
 @Composable
 private fun SectionSelectionItem(
     modifier: Modifier = Modifier,
+    isEnabled: Boolean = true,
     title: String,
     icon: Painter,
     value: String = "",
@@ -291,6 +291,7 @@ private fun SectionSelectionItem(
 ) {
     SectionItem(
         modifier = modifier,
+        isEnabled = isEnabled,
         onClick = onClick,
         leadingContent = {
             Icon(
@@ -320,14 +321,16 @@ private fun SectionSelectionItem(
 @Composable
 private fun SectionSwitchItem(
     modifier: Modifier = Modifier,
+    isEnabled: Boolean = true,
+    isSelected: Boolean,
     title: String,
     description: String? = null,
     icon: Painter,
-    isSelected: Boolean,
     onClick: () -> Unit
 ) {
     SectionItem(
         modifier = modifier,
+        isEnabled = isEnabled,
         onClick = onClick,
         leadingContent = {
             Icon(
@@ -346,12 +349,97 @@ private fun SectionSwitchItem(
         trailingContent = {
             CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
                 Switch(
+                    enabled = isEnabled,
                     checked = isSelected,
                     onCheckedChange = { onClick() }
                 )
             }
         }
     )
+}
+
+@Composable
+private fun SectionItem(
+    modifier: Modifier = Modifier,
+    title: String,
+    icon: Painter,
+    onClick: () -> Unit
+) {
+    SectionItem(
+        modifier = modifier,
+        onClick = onClick,
+        leadingContent = {
+            Icon(
+                painter = icon,
+                contentDescription = null
+            )
+        },
+        title = {
+            ExpennyText(text = title)
+        }
+    )
+}
+
+@Composable
+private fun SectionItem(
+    modifier: Modifier = Modifier,
+    isEnabled: Boolean = true,
+    leadingContent: @Composable () -> Unit,
+    title: @Composable () -> Unit,
+    description: (@Composable () -> Unit)? = null,
+    trailingContent: (@Composable () -> Unit)? = null,
+    onClick: () -> Unit
+) {
+    val primaryContentColor =
+        MaterialTheme.colorScheme.onSurface.copy(alpha = if (isEnabled) 1f else 0.38f)
+
+    val secondaryContentColor =
+        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = if (isEnabled) 1f else 0.38f)
+
+    ExpennyCard(
+        modifier = modifier.fillMaxWidth(),
+        onClick = {
+            if (isEnabled) onClick()
+        }
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            CompositionLocalProvider(
+                LocalContentColor provides secondaryContentColor,
+            ) {
+                leadingContent()
+            }
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                CompositionLocalProvider(
+                    LocalContentColor provides primaryContentColor,
+                    LocalTextStyle provides MaterialTheme.typography.titleMedium
+                ) {
+                    title()
+                }
+                description?.let {
+                    CompositionLocalProvider(
+                        LocalContentColor provides secondaryContentColor,
+                        LocalTextStyle provides MaterialTheme.typography.bodyMedium
+                    ) {
+                        description()
+                    }
+                }
+            }
+            trailingContent?.let {
+                CompositionLocalProvider(
+                    LocalContentColor provides secondaryContentColor,
+                    LocalTextStyle provides MaterialTheme.typography.bodyMedium
+                ) {
+                    trailingContent()
+                }
+            }
+        }
+    }
 }
 
 @Composable
@@ -369,59 +457,6 @@ private fun SettingsSection(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             sectionItems()
-        }
-    }
-}
-
-@Composable
-private fun SectionItem(
-    modifier: Modifier = Modifier,
-    leadingContent: @Composable () -> Unit,
-    title: @Composable () -> Unit,
-    description: (@Composable () -> Unit)? = null,
-    trailingContent: (@Composable () -> Unit)? = null,
-    onClick: () -> Unit
-) {
-    ExpennyCard(
-        modifier = modifier.fillMaxWidth(),
-        onClick = onClick
-    ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            CompositionLocalProvider(
-                LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant,
-            ) {
-                leadingContent()
-            }
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                CompositionLocalProvider(
-                    LocalContentColor provides MaterialTheme.colorScheme.onSurface,
-                    LocalTextStyle provides MaterialTheme.typography.titleMedium
-                ) {
-                    title()
-                }
-                description?.let {
-                    CompositionLocalProvider(
-                        LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant,
-                        LocalTextStyle provides MaterialTheme.typography.bodyMedium
-                    ) {
-                        description()
-                    }
-                }
-            }
-            trailingContent?.let {
-                CompositionLocalProvider(
-                    LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant,
-                    LocalTextStyle provides MaterialTheme.typography.bodyMedium
-                ) {
-                    trailingContent()
-                }
-            }
         }
     }
 }

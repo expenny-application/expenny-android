@@ -62,7 +62,7 @@ internal fun NavController.navigateTab(tabNavGraph: NavGraphSpec) {
         // Pop up to start NavGraph tab route
         // to avoid building up a large stack of destinations on the back stack
         // popUpTo(AppNavGraphs.tabs.startRoute.startDestination.route) {
-        popUpTo(ExpennyNavGraphs.tabs.route) {
+        popUpTo(ExpennyNavGraphs.home.route) {
             inclusive = false
             saveState = true
         }
@@ -75,7 +75,7 @@ internal fun NavController.navigateTab(tabNavGraph: NavGraphSpec) {
 
 private fun NavDestination.tabNavGraph(): NavGraphSpec {
     hierarchy.forEach { destination ->
-        ExpennyNavGraphs.tabs.nestedNavGraphs.forEach { navGraph ->
+        ExpennyNavGraphs.home.nestedNavGraphs.forEach { navGraph ->
             if (destination.route == navGraph.route) {
                 return navGraph
             }
@@ -88,7 +88,7 @@ private fun NavDestination.tabNavGraph(): NavGraphSpec {
 internal fun NavDestination.navGraph(): NavGraphSpec {
     hierarchy.forEach { destination ->
         if (destination.route in DrawerTab.routes) {
-            ExpennyNavGraphs.tabs.nestedNavGraphs.forEach { navGraph ->
+            ExpennyNavGraphs.home.nestedNavGraphs.forEach { navGraph ->
                 if (destination.route == navGraph.route) {
                     return navGraph
                 }

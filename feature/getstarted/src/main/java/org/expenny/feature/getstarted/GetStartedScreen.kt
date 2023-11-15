@@ -41,7 +41,7 @@ fun GetStartedScreen(
     vm.collectSideEffect {
         when (it) {
             is Event.ShowMessage -> snackbarManager.showMessage(it.message)
-            is Event.NavigateToApp -> navigator.navigateToApp()
+            is Event.NavigateToApp -> navigator.navigateToHome()
             is Event.NavigateToCurrencyUnitsSelectionList -> navigator.navigateToCurrencyUnitSelectionListScreen(it.selectedId)
             is Event.NavigateBack -> navigator.navigateBack()
         }

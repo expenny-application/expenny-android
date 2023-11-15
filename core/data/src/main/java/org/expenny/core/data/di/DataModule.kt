@@ -1,11 +1,16 @@
 package org.expenny.core.data.di
 
+import android.content.Context
+import androidx.biometric.BiometricManager
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import org.expenny.core.data.*
 import org.expenny.core.data.repository.AccountRepositoryImpl
+import org.expenny.core.data.repository.BiometricRepositoryImpl
 import org.expenny.core.data.repository.CategoryRepositoryImpl
 import org.expenny.core.data.repository.CurrencyRateRepositoryImpl
 import org.expenny.core.data.repository.CurrencyRepositoryImpl
@@ -21,41 +26,52 @@ import org.expenny.core.domain.repository.*
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class DataModule {
+interface DataModule {
 
     @Binds
-    abstract fun bindAccountRepository(accountRepositoryImpl: AccountRepositoryImpl): AccountRepository
+    fun bindAccountRepository(accountRepositoryImpl: AccountRepositoryImpl): AccountRepository
 
     @Binds
-    abstract fun bindCategoryRepository(categoryRepositoryImpl: CategoryRepositoryImpl): CategoryRepository
+    fun bindCategoryRepository(categoryRepositoryImpl: CategoryRepositoryImpl): CategoryRepository
 
     @Binds
-    abstract fun bindCurrencyRepository(currencyRepositoryImpl: CurrencyRepositoryImpl): CurrencyRepository
+    fun bindCurrencyRepository(currencyRepositoryImpl: CurrencyRepositoryImpl): CurrencyRepository
 
     @Binds
-    abstract fun bindCurrencyUnitRepository(currencyUnitRepositoryImpl: CurrencyUnitRepositoryImpl): CurrencyUnitRepository
+    fun bindCurrencyUnitRepository(currencyUnitRepositoryImpl: CurrencyUnitRepositoryImpl): CurrencyUnitRepository
 
     @Binds
-    abstract fun bindLocalRepository(localRepositoryImpl: LocalRepositoryImpl): LocalRepository
+    fun bindLocalRepository(localRepositoryImpl: LocalRepositoryImpl): LocalRepository
 
     @Binds
-    abstract fun bindProfileRepository(profileRepositoryImpl: ProfileRepositoryImpl): ProfileRepository
+    fun bindProfileRepository(profileRepositoryImpl: ProfileRepositoryImpl): ProfileRepository
 
     @Binds
-    abstract fun bindRecordRepository(recordRepositoryImpl: RecordRepositoryImpl): RecordRepository
+    fun bindRecordRepository(recordRepositoryImpl: RecordRepositoryImpl): RecordRepository
 
     @Binds
-    abstract fun bindCurrencyRateRepository(currencyRateRepositoryImpl: CurrencyRateRepositoryImpl): CurrencyRateRepository
+    fun bindCurrencyRateRepository(currencyRateRepositoryImpl: CurrencyRateRepositoryImpl): CurrencyRateRepository
 
     @Binds
-    abstract fun bindLabelRepository(labelRepositoryImpl: LabelRepositoryImpl): LabelRepository
+    fun bindLabelRepository(labelRepositoryImpl: LabelRepositoryImpl): LabelRepository
 
     @Binds
-    abstract fun bindRecordLabelRepository(recordLabelRepositoryImpl: RecordLabelRepositoryImpl): RecordLabelRepository
+    fun bindRecordLabelRepository(recordLabelRepositoryImpl: RecordLabelRepositoryImpl): RecordLabelRepository
 
     @Binds
-    abstract fun bindRecordFileRepository(recordFileRepositoryImpl: RecordFileRepositoryImpl): RecordFileRepository
+    fun bindRecordFileRepository(recordFileRepositoryImpl: RecordFileRepositoryImpl): RecordFileRepository
 
     @Binds
-    abstract fun bindFileRepository(fileRepositoryImpl: FileRepositoryImpl): FileRepository
+    fun bindFileRepository(fileRepositoryImpl: FileRepositoryImpl): FileRepository
+
+    @Binds
+    fun bindBiometricRepository(biometricRepositoryImpl: BiometricRepositoryImpl): BiometricRepository
+
+    companion object {
+
+        @Provides
+        fun provideBiometricManager(@ApplicationContext context: Context): BiometricManager {
+            return BiometricManager.from(context)
+        }
+    }
 }

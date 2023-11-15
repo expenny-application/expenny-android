@@ -18,6 +18,7 @@ dependencies {
     implementation(project(":core:database"))
     implementation(project(":core:datastore"))
 
+    implementation(libs.androidx.biometric)
     implementation(libs.androidx.core.ktx)
     implementation(libs.threeten)
     implementation(libs.room.runtime)

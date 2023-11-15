@@ -42,7 +42,7 @@ internal fun SettingsContent(
                 SettingsThemeDialog(
                     selectedTheme = state.selectedTheme,
                     onThemeSelect = { onAction(Action.OnThemeSelect(it)) },
-                    onDismiss = { onAction(Action.OnThemeDialogDismiss) }
+                    onDismiss = { onAction(Action.OnDialogDismiss) }
                 )
             }
         }
@@ -51,7 +51,7 @@ internal fun SettingsContent(
                 locales = state.languages,
                 selectedLanguage = state.selectedLanguage,
                 onLanguageSelect = { onAction(Action.OnLanguageSelect(it)) },
-                onDismiss = { onAction(Action.OnLanguageDialogDismiss) }
+                onDismiss = { onAction(Action.OnDialogDismiss) }
             )
         }
         else -> {}
@@ -109,19 +109,20 @@ internal fun SettingsList(
         )
         SettingsDataSection(
             onBackupClick = { onSettingsItemTypeClick(SettingsItemType.Backup) },
-            onExportClick = { onSettingsItemTypeClick(SettingsItemType.Export) },
-            onImportsClick = { onSettingsItemTypeClick(SettingsItemType.Imports) }
+            onImportsExportsClick = { onSettingsItemTypeClick(SettingsItemType.ImportsExports) },
         )
         SettingsNotificationsSection(
-            isUpdateRatesSelected = false, // TODO
+            isReminderSelected = false, // TODO
+            isReminderTimeEnabled = false, // TODO
             onReminderClick = { onSettingsItemTypeClick(SettingsItemType.Reminder) },
-            onUpdateRatesClick = { onSettingsItemTypeClick(SettingsItemType.UpdateRates) }
+            onReminderTimeClick = { onSettingsItemTypeClick(SettingsItemType.ReminderTime) },
         )
         SettingsSecuritySection(
-            isSetPinCodeSelected = false, // TODO
-            isUseFingerprintSelected = false, // TODO
-            onSetPinCodeClick = { onSettingsItemTypeClick(SettingsItemType.PinCode) },
-            onUseFingerprintClick = { onSettingsItemTypeClick(SettingsItemType.Fingerprint) }
+            isUsePasscodeSelected = state.isUsePasscodeSelected,
+            isUseBiometricSelected = state.isUseBiometricSelected,
+            isBiometricEnabled = state.isBiometricEnabled,
+            onSetPasscodeClick = { onSettingsItemTypeClick(SettingsItemType.Passcode) },
+            onUseBiometricClick = { onSettingsItemTypeClick(SettingsItemType.Biometric) }
         )
         SettingsMoreSection(
             onAboutClick = { onSettingsItemTypeClick(SettingsItemType.About) },

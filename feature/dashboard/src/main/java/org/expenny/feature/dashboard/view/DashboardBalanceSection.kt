@@ -132,7 +132,7 @@ private fun LastRecordItem(
         contentAlignment = Alignment.Center
     ) {
         if (lastRecord == null) {
-            val strokeColor = MaterialTheme.colorScheme.onSurfaceVariant
+            val strokeColor = MaterialTheme.colorScheme.outline
             val strokeCornerRadius = 8.dp
 
             Canvas(modifier = Modifier.fillMaxSize()) {

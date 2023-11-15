@@ -14,11 +14,12 @@
     <string name="language_label">Language</string>
     <string name="categorizations_label">Categorizations</string>
     <string name="backup_label">Backup</string>
-    <string name="export_to_file_label">Export to file</string>
+    <string name="import_and_export_label">Import &amp; Export</string>
     <string name="reminder_label">Reminder</string>
-    <string name="update_rates_label">Update rates</string>
-    <string name="set_pin_code_label">Set pin code</string>
-    <string name="use_fingerprint_label">Use fingerprint</string>
+    <string name="reminder_time_label">Reminder time</string>
+    <string name="set_passcode_label">Set passcode</string>
+    <string name="use_passcode_label">Use passcode</string>
+    <string name="use_bioemtric_label">Use biometric</string>
     <string name="about_label">About app</string>
     <string name="rate_application_label">Rate application</string>
     <string name="delete_all_data_label">Delete all data</string>
@@ -80,6 +81,7 @@
     <string name="delete_receipt_question_label">Delete this receipt?</string>
     <string name="delete_currency_question_label">Delete this currency?</string>
     <string name="amount_conversion_label">Amount conversion</string>
+    <string name="passcode_setup_label">Passcode setup</string>
     <string name="discard_changes_label">Discard changes</string>
     <string name="add_receipt_label">Add receipt</string>
     <string name="add_income_label">Add income</string>
@@ -110,7 +112,6 @@
     <string name="budgets_label">Budgets</string>
     <string name="settings_label">Settings</string>
     <string name="discounts_label">Discounts</string>
-    <string name="imports_label">Imports</string>
     <string name="currency_rates_label">Currency rates</string>
     <string name="debts_label">Debts</string>
     <string name="banks_connections_label">Banks connections</string>
@@ -165,6 +166,11 @@
     <string name="select_theme_label">Select theme</string>
     <string name="system_default_label">System default</string>
     <string name="start_balance_label">Start balance</string>
+    <string name="confirm_passcode_label">Confirm entered passcode to finish setup</string>
+    <string name="create_passcode_label">Create 4 digit passcode</string>
+    <string name="enter_passcode_label">Enter your passcode to log in to the app</string>
+    <string name="authentication_required_label">Authentication required</string>
+    <string name="prove_identity_login_label">Prove your identity to log in to the app</string>
 
     <!-- Dialog paragraphs -->
     <string name="get_started_paragraph">Complete the steps bellow in order to finish initial setup</string>
@@ -183,6 +189,7 @@
     <string name="analytics_reports_paragraph">Track app usage to improve user experience</string>
     <string name="performance_reports_paragraph">Monitor app performance to help providing stable builds</string>
     <string name="amount_conversion_paragraph">The currencies of the selected accounts differ, therefore automatic conversion is applied to the final amount using preset currency rate. You can change it whenever you want</string>
+    <string name="passcode_setup_paragraph">Ensure your passcode meets length criteria. Remember, the passcode cannot be reset if forgotten, so it\'s crucial to save or memorize it securely</string>
 
     <!-- Buttons -->
     <string name="save_button">Save</string>
@@ -277,6 +284,7 @@
     <string name="required_selection_error">At least one selected item is required</string>
     <string name="required_account_error">Having at least one account is required</string>
     <string name="not_found_error">No data found</string>
+    <string name="authentication_failed_error">Authentication failed</string>
 
     <string name="enable_currency_rates_updates_message">Enable automatic updates of currency rates bases on European Central Bank data</string>
     <string name="currency_rates_info_message">If the selected currency is available in the European Central Bank database, the exchange rates will be automatically set into the fields</string>

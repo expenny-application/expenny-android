@@ -120,6 +120,7 @@ dependencies {
     implementation(project(":feature:labeldetails"))
     implementation(project(":feature:settings"))
     implementation(project(":feature:accountoverview"))
+    implementation(project(":feature:passcode"))
 
     implementation("androidx.constraintlayout:constraintlayout:2.1.3")
 

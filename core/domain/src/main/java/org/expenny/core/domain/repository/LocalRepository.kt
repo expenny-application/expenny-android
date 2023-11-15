@@ -14,15 +14,19 @@ interface LocalRepository {
 
     suspend fun setThemeDarkMode(isDarkMode: Boolean)
 
-    suspend fun setLocale(locale: String)
+    suspend fun setPasscode(passcode: String?)
+
+    suspend fun setBiometricEnrolled(isEnrolled: Boolean)
 
     fun isDarkMode(): Flow<Boolean?>
-
-    fun getLocale(): Flow<String>
 
     fun isSetupPassed(): Flow<Boolean>
 
     fun isOnboardingPassed(): Flow<Boolean>
 
     fun getCurrentProfileId(): Flow<Long?>
+
+    fun getPasscode(): Flow<String?>
+
+    fun isBiometricEnrolled(): Flow<Boolean>
 }

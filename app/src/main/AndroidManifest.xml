@@ -14,6 +14,7 @@
         android:label="${appName}"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
+        android:screenOrientation="portrait"
         android:theme="@style/Theme.Expenny.Splash">
         <activity
             android:name="org.expenny.custom.ExpennyExceptionActivity"

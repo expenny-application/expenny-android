@@ -15,7 +15,8 @@ class ExpennyDataStore @Inject constructor(
 ) {
     companion object {
         val CURRENT_PROFILE_ID_KEY = longPreferencesKey(name = "current_profile_id")
-        val LOCALE_KEY = stringPreferencesKey(name = "locale")
+        val PASSCODE_KEY = stringPreferencesKey(name = "passcode")
+        val IS_BIOMETRIC_ENROLLED_KEY = booleanPreferencesKey(name = "is_biometric_enrolled")
         val IS_DARK_MODE_KEY = booleanPreferencesKey(name = "is_dark_mode")
         val IS_ONBOARDING_PASSED_KEY = booleanPreferencesKey(name = "onboarding_passed")
         val IS_SETUP_PASSED_KEY = booleanPreferencesKey(name = "setup_passed")
