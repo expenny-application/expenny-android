@@ -14,6 +14,7 @@ data class State(
     val passcodeMaxLength: Int = Constants.DEFAULT_PASSCODE_LENGTH,
     val passcode: String = "",
     val isBiometricEnabled: Boolean = false,
+    val showInfoDialog: Boolean = false
 ) {
     val isBackspaceEnabled: Boolean = passcode.isNotEmpty()
     val showToolbar: Boolean = passcodeType != PasscodeType.Unlock
@@ -32,6 +33,8 @@ sealed interface Action {
     data object OnBiometricAuthenticationSuccess : Action
     data object OnBiometricClick : Action
     data object OnBackspaceClick : Action
+    data object OnInfoDialogDismiss : Action
+    data object OnInfoClick : Action
     data object OnBackClick : Action
 }
 

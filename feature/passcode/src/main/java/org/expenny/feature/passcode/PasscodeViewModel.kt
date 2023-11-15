@@ -58,10 +58,12 @@ class PasscodeViewModel @Inject constructor(
         when (action) {
             is Action.OnDigitClick -> handleOnDigitClick(action)
             is Action.OnBackspaceClick -> handleOnBackspaceClick()
-            is Action.OnBackClick -> handleOnBackClick()
             is Action.OnBiometricAuthenticationSuccess -> handleOnBiometricAuthenticationSuccess()
             is Action.OnBiometricAuthenticationError -> handleOnBiometricAuthenticationError(action)
             is Action.OnBiometricClick -> handleOnBiometricClick()
+            is Action.OnInfoDialogDismiss -> handleOnInfoDialogDismiss()
+            is Action.OnInfoClick -> handleOnInfoClick()
+            is Action.OnBackClick -> handleOnBackClick()
         }
     }
 
@@ -81,6 +83,18 @@ class PasscodeViewModel @Inject constructor(
             intent {
                 postSideEffect(Event.ShowBiometricPrompt(cryptoObject))
             }
+        }
+    }
+
+    private fun handleOnInfoClick() = intent {
+        reduce {
+            state.copy(showInfoDialog = true)
+        }
+    }
+
+    private fun handleOnInfoDialogDismiss() = intent {
+        reduce {
+            state.copy(showInfoDialog = false)
         }
     }
 

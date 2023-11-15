@@ -16,7 +16,8 @@ import org.expenny.core.ui.foundation.ExpennyToolbar
 @Composable
 internal fun PasscodeToolbar(
     modifier: Modifier = Modifier,
-    onBackClick: () -> Unit
+    onInfoClick: () -> Unit,
+    onBackClick: () -> Unit,
 ) {
     ExpennyToolbar(
         modifier = modifier,
@@ -24,6 +25,15 @@ internal fun PasscodeToolbar(
             IconButton(onClick = onBackClick) {
                 Icon(
                     painter = painterResource(R.drawable.ic_arrow_back),
+                    tint = MaterialTheme.colorScheme.onSurface,
+                    contentDescription = null
+                )
+            }
+        },
+        actions = {
+            IconButton(onClick = onInfoClick) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_info),
                     tint = MaterialTheme.colorScheme.onSurface,
                     contentDescription = null
                 )

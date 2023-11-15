@@ -81,6 +81,7 @@
     <string name="delete_receipt_question_label">Delete this receipt?</string>
     <string name="delete_currency_question_label">Delete this currency?</string>
     <string name="amount_conversion_label">Amount conversion</string>
+    <string name="passcode_setup_label">Passcode setup</string>
     <string name="discard_changes_label">Discard changes</string>
     <string name="add_receipt_label">Add receipt</string>
     <string name="add_income_label">Add income</string>
@@ -188,6 +189,7 @@
     <string name="analytics_reports_paragraph">Track app usage to improve user experience</string>
     <string name="performance_reports_paragraph">Monitor app performance to help providing stable builds</string>
     <string name="amount_conversion_paragraph">The currencies of the selected accounts differ, therefore automatic conversion is applied to the final amount using preset currency rate. You can change it whenever you want</string>
+    <string name="passcode_setup_paragraph">Ensure your passcode meets length criteria. Remember, the passcode cannot be reset if forgotten, so it\'s crucial to save or memorize it securely</string>
 
     <!-- Buttons -->
     <string name="save_button">Save</string>

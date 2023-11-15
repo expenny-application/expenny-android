@@ -20,6 +20,7 @@ import org.expenny.core.ui.components.ExpennyBiometricPrompt
 import org.expenny.core.ui.foundation.ExpennyText
 import org.expenny.core.ui.components.ExpennyLogo
 import org.expenny.feature.passcode.view.PasscodeFieldsRow
+import org.expenny.feature.passcode.view.PasscodeInfoDialog
 import org.expenny.feature.passcode.view.PasscodeKeyboard
 import org.expenny.feature.passcode.view.PasscodeToolbar
 
@@ -38,11 +39,20 @@ internal fun PasscodeContent(
         onAuthenticationError = { onAction(Action.OnBiometricAuthenticationError(it)) }
     )
 
+    if (state.showInfoDialog) {
+        PasscodeInfoDialog(
+            onDismiss = { onAction(Action.OnInfoDialogDismiss) }
+        )
+    }
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
             if (state.showToolbar) {
-                PasscodeToolbar(onBackClick = { onAction(Action.OnBackClick) })
+                PasscodeToolbar(
+                    onInfoClick = { onAction(Action.OnInfoClick) },
+                    onBackClick = { onAction(Action.OnBackClick) }
+                )
             }
         },
         containerColor = MaterialTheme.colorScheme.surface
