@@ -10,9 +10,8 @@
     <string name="language_label">Язык</string>
     <string name="categorizations_label">Категоризации</string>
     <string name="backup_label">Резервная копия</string>
-    <string name="export_to_file_label">Экспорт в файл</string>
+    <string name="import_and_export_label">Экспорт в файл</string>
     <string name="reminder_label">Напоминание</string>
-    <string name="update_rates_label">Обновление ставок</string>
     <string name="use_passcode_label">Задать пин-код</string>
     <string name="use_bioemtric_label">Использовать отпечаток</string>
     <string name="about_label">О приложении</string>
@@ -91,7 +90,6 @@
     <string name="budgets_label">Бюджеты</string>
     <string name="settings_label">Настройки</string>
     <string name="discounts_label">Дисконты</string>
-    <string name="imports_label">Импорты</string>
     <string name="currency_rates_label">Валютные ставки</string>
     <string name="debts_label">Долги</string>
     <string name="add_account_label">Добавить счёт</string>

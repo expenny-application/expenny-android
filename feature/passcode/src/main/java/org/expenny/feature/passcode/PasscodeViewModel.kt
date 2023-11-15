@@ -1,17 +1,19 @@
 package org.expenny.feature.passcode
 
-import androidx.biometric.BiometricPrompt.CryptoObject
 import androidx.lifecycle.SavedStateHandle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import org.expenny.core.common.utils.Constants
 import org.expenny.core.common.utils.StringResource.Companion.fromRes
 import org.expenny.core.common.utils.StringResource.Companion.fromStr
 import org.expenny.core.common.viewmodel.ExpennyActionViewModel
-import org.expenny.core.domain.repository.BiometricRepository
-import org.expenny.core.domain.repository.LocalRepository
+import org.expenny.core.domain.usecase.preferences.GetBiometricCryptoObjectUseCase
+import org.expenny.core.domain.usecase.preferences.GetBiometricEnrolledUseCase
+import org.expenny.core.domain.usecase.preferences.GetPasscodeUseCase
+import org.expenny.core.domain.usecase.preferences.SetPasscodeUseCase
 import org.expenny.core.model.biometric.CryptoPurpose
 import org.expenny.feature.passcode.model.PasscodeType.Create
 import org.expenny.feature.passcode.model.PasscodeType.Unlock
@@ -33,12 +35,14 @@ import org.orbitmvi.orbit.syntax.simple.SimpleSyntax
 @HiltViewModel
 class PasscodeViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
-    private val localRepository: LocalRepository,
-    private val biometricRepository: BiometricRepository,
+    private val getBiometricEnrolled: GetBiometricEnrolledUseCase,
+    private val getBiometricCryptoObject: GetBiometricCryptoObjectUseCase,
+    private val getPasscode: GetPasscodeUseCase,
+    private val setPasscode: SetPasscodeUseCase,
 ) : ExpennyActionViewModel<Action>(), ContainerHost<State, Event> {
 
     private var validPasscode: String = ""
-    private var cryptoObject: CryptoObject? = null
+    private val state get() = container.stateFlow.value
 
     override val container = container<State, Event>(
         initialState = State(),
@@ -49,8 +53,6 @@ class PasscodeViewModel @Inject constructor(
             launch { subscribeToBiometricPreference() }
         }
     }
-
-    private val state get() = container.stateFlow.value
 
     override fun onAction(action: Action) {
         when (action) {
@@ -64,7 +66,7 @@ class PasscodeViewModel @Inject constructor(
     }
 
     private fun handleOnBiometricAuthenticationSuccess() = intent {
-        setPasscode(validPasscode)
+        setPasscodeField(validPasscode)
         setPasscodeValidationResultWithPostDelay(Valid)
         postSideEffect(Event.NavigateToDashboard)
     }
@@ -75,10 +77,9 @@ class PasscodeViewModel @Inject constructor(
 
     private fun handleOnBiometricClick() {
         if (state.passcodeValidationResult != Valid) {
-            cryptoObject?.let {
-                intent {
-                    postSideEffect(Event.ShowBiometricPrompt(it))
-                }
+            val cryptoObject = getBiometricCryptoObject(CryptoPurpose.Encrypt)
+            intent {
+                postSideEffect(Event.ShowBiometricPrompt(cryptoObject))
             }
         }
     }
@@ -88,14 +89,12 @@ class PasscodeViewModel @Inject constructor(
     }
 
     private fun subscribeToBiometricPreference() = intent {
-        localRepository.isBiometricEnrolled().collect { isBiometricEnrolled ->
+        getBiometricEnrolled().collect { isBiometricEnrolled ->
             if (state.passcodeType == Unlock) {
+                reduce { state.copy(isBiometricEnabled = isBiometricEnrolled) }
                 if (isBiometricEnrolled) {
-                    cryptoObject = biometricRepository.createCryptoObject(CryptoPurpose.Encrypt)
-                    reduce { state.copy(isBiometricEnabled = true) }
-                } else {
-                    cryptoObject = null
-                    reduce { state.copy(isBiometricEnabled = false) }
+                    delay(Constants.DEFAULT_COMPOSITION_DELAY_MS)
+                    handleOnBiometricClick()
                 }
             }
         }
@@ -106,7 +105,7 @@ class PasscodeViewModel @Inject constructor(
             setPasscodeType(args.type)
 
             if (args.type == Unlock) {
-                localRepository.getPasscode().first().also { storedPasscode ->
+                getPasscode().first().also { storedPasscode ->
                     if (storedPasscode == null) { // this must never happen
                         postSideEffect(Event.ShowMessage(fromRes(R.string.internal_error)))
                         postSideEffect(Event.NavigateBack)
@@ -120,7 +119,7 @@ class PasscodeViewModel @Inject constructor(
 
     private fun handleOnBackspaceClick() = intent {
         if (state.passcode.isNotEmpty() && state.passcodeValidationResult == null) {
-            setPasscode(state.passcode.dropLast(1))
+            setPasscodeField(state.passcode.dropLast(1))
         }
     }
 
@@ -129,19 +128,19 @@ class PasscodeViewModel @Inject constructor(
             val newPasscode = state.passcode + action.digit
             val newPasscodeStatus = getPasscodeStatus(newPasscode, state.passcodeType)
 
-            setPasscode(newPasscode)
+            setPasscodeField(newPasscode)
             setPasscodeValidationResultWithPostDelay(newPasscodeStatus)
 
             when (newPasscodeStatus) {
                 Valid -> when (state.passcodeType) {
                     Create -> {
                         validPasscode = newPasscode
-                        resetPasscode()
+                        resetPasscodeField()
                         resetPasscodeValidationResult()
                         setPasscodeType(Confirm)
                     }
                     Confirm -> {
-                        localRepository.setPasscode(state.passcode)
+                        setPasscode(state.passcode)
                         postSideEffect(Event.NavigateBack)
                     }
                     Unlock -> {
@@ -150,7 +149,7 @@ class PasscodeViewModel @Inject constructor(
                 }
                 Invalid -> {
                     resetPasscodeValidationResult()
-                    resetPasscode()
+                    resetPasscodeField()
                 }
                 else -> {
                     // ignore
@@ -171,11 +170,11 @@ class PasscodeViewModel @Inject constructor(
         reduce { state.copy(passcodeValidationResult = null) }
     }
 
-    private suspend fun SimpleSyntax<State, Event>.resetPasscode() {
+    private suspend fun SimpleSyntax<State, Event>.resetPasscodeField() {
         reduce { state.copy(passcode = "") }
     }
 
-    private suspend fun SimpleSyntax<State, Event>.setPasscode(passcode: String) {
+    private suspend fun SimpleSyntax<State, Event>.setPasscodeField(passcode: String) {
         reduce { state.copy(passcode = passcode) }
     }
 

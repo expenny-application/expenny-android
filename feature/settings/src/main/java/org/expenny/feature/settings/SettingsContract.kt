@@ -1,6 +1,5 @@
 package org.expenny.feature.settings
 
-import androidx.biometric.BiometricPrompt.CryptoObject
 import org.expenny.core.common.types.ApplicationLanguage
 import org.expenny.core.common.types.ApplicationTheme
 import org.expenny.core.common.utils.StringResource
@@ -30,15 +29,12 @@ sealed interface Action {
     class OnThemeSelect(val theme: ApplicationTheme) : Action
     class OnLanguageSelect(val language: ApplicationLanguage) : Action
     class OnSettingsItemTypeClick(val type: SettingsItemType) : Action
-    class OnBiometricAuthenticationError(val error: String) : Action
-    object OnBiometricAuthenticationSuccess : Action
     object OnDialogDismiss : Action
     object OnBackClick : Action
 }
 
 sealed interface Event {
     class ShowMessage(val message: StringResource) : Event
-    class ShowBiometricPrompt(val cryptoObject: CryptoObject) : Event
     object NavigateToCreatePasscode : Event
     object NavigateToSystemSecuritySettings : Event
     object NavigateToCurrencies : Event

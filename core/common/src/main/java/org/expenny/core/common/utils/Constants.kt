@@ -12,5 +12,6 @@ object Constants {
     const val DEFAULT_YEAR_FORMAT = "yyyy"
     const val DEFAULT_FIELD_MIN_LENGTH = 2
     const val DEFAULT_FIELD_MAX_LENGTH = 128
+    const val DEFAULT_COMPOSITION_DELAY_MS = 300L
     const val MONETARY_PATTERN = "^(?:0|[1-9]\\d{0,2}(?:,?\\d{3})*)(?:\\.\\d+)?\$"
 }

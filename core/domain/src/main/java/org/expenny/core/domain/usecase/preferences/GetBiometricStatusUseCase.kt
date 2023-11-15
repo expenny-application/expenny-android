@@ -1,4 +1,4 @@
-package org.expenny.core.domain.usecase
+package org.expenny.core.domain.usecase.preferences
 
 import org.expenny.core.domain.repository.BiometricRepository
 import org.expenny.core.model.biometric.BiometricStatus

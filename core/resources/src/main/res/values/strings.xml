@@ -14,9 +14,9 @@
     <string name="language_label">Language</string>
     <string name="categorizations_label">Categorizations</string>
     <string name="backup_label">Backup</string>
-    <string name="export_to_file_label">Export to file</string>
+    <string name="import_and_export_label">Import &amp; Export</string>
     <string name="reminder_label">Reminder</string>
-    <string name="update_rates_label">Update rates</string>
+    <string name="reminder_time_label">Reminder time</string>
     <string name="set_passcode_label">Set passcode</string>
     <string name="use_passcode_label">Use passcode</string>
     <string name="use_bioemtric_label">Use biometric</string>
@@ -111,7 +111,6 @@
     <string name="budgets_label">Budgets</string>
     <string name="settings_label">Settings</string>
     <string name="discounts_label">Discounts</string>
-    <string name="imports_label">Imports</string>
     <string name="currency_rates_label">Currency rates</string>
     <string name="debts_label">Debts</string>
     <string name="banks_connections_label">Banks connections</string>
@@ -170,7 +169,6 @@
     <string name="create_passcode_label">Create 4 digit passcode</string>
     <string name="enter_passcode_label">Enter your passcode to log in to the app</string>
     <string name="authentication_required_label">Authentication required</string>
-    <string name="prove_identity_set_biometric_label">Prove your identity to set biometric authentication</string>
     <string name="prove_identity_login_label">Prove your identity to log in to the app</string>
 
     <!-- Dialog paragraphs -->

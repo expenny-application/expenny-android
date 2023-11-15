@@ -12,6 +12,8 @@ import kotlinx.coroutines.launch
 import org.expenny.core.common.types.ApplicationTheme
 import org.expenny.core.domain.repository.BiometricRepository
 import org.expenny.core.domain.repository.LocalRepository
+import org.expenny.core.domain.usecase.preferences.GetBiometricInvalidatedUseCase
+import org.expenny.core.domain.usecase.preferences.SetBiometricEnrolledUseCase
 import org.expenny.core.domain.usecase.profile.GetProfileSetUpUseCase
 import javax.inject.Inject
 
@@ -19,7 +21,8 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val localRepository: LocalRepository,
     private val getProfileSetUp: GetProfileSetUpUseCase,
-    private val biometricRepository: BiometricRepository
+    private val getBiometricInvalidated: GetBiometricInvalidatedUseCase,
+    private val setBiometricEnrolled: SetBiometricEnrolledUseCase,
 ) : ViewModel() {
 
     val isProfileSetUp: StateFlow<Boolean?> = getProfileSetUp()
@@ -52,10 +55,9 @@ class MainViewModel @Inject constructor(
         )
 
     fun verifyBiometricKeyInvalidationStatus() {
-        if (biometricRepository.isBiometricInvalidated()) {
-            biometricRepository.clearSecretKey()
+        if (getBiometricInvalidated()) {
             viewModelScope.launch {
-                localRepository.setBiometricEnrolled(false)
+                setBiometricEnrolled(false)
             }
         }
     }

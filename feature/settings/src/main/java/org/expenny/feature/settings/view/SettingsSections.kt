@@ -57,7 +57,7 @@ internal fun SettingsMoreSection(
         modifier = modifier.fillMaxWidth(),
         title = stringResource(R.string.more_label)
     ) {
-        SectionSelectionItem(
+        SectionItem(
             title = stringResource(R.string.about_label),
             icon = painterResource(R.drawable.ic_smile),
             onClick = onAboutClick
@@ -102,24 +102,27 @@ internal fun SettingsSecuritySection(
 @Composable
 internal fun SettingsNotificationsSection(
     modifier: Modifier = Modifier,
-    isUpdateRatesSelected: Boolean,
+    isReminderSelected: Boolean,
+    isReminderTimeEnabled: Boolean,
     onReminderClick: () -> Unit,
-    onUpdateRatesClick: () -> Unit,
+    onReminderTimeClick: () -> Unit,
 ) {
     SettingsSection(
         modifier = modifier.fillMaxWidth(),
         title = stringResource(R.string.notifications_label)
     ) {
-        SectionSelectionItem(
+        SectionSwitchItem(
             title = stringResource(R.string.reminder_label),
             icon = painterResource(R.drawable.ic_reminder),
+            isSelected = isReminderSelected,
             onClick = onReminderClick
         )
-        SectionSwitchItem(
-            title = stringResource(R.string.update_rates_label),
-            icon = painterResource(R.drawable.ic_update),
-            isSelected = isUpdateRatesSelected,
-            onClick = onUpdateRatesClick
+        SectionSelectionItem(
+            isEnabled = isReminderTimeEnabled,
+            title = stringResource(R.string.reminder_time_label),
+            icon = painterResource(R.drawable.ic_timewatch),
+            value = "",
+            onClick = onReminderTimeClick
         )
     }
 }
@@ -128,27 +131,21 @@ internal fun SettingsNotificationsSection(
 internal fun SettingsDataSection(
     modifier: Modifier = Modifier,
     onBackupClick: () -> Unit,
-    onExportClick: () -> Unit,
-    onImportsClick: () -> Unit
+    onImportsExportsClick: () -> Unit,
 ) {
     SettingsSection(
         modifier = modifier.fillMaxWidth(),
         title = stringResource(R.string.data_label)
     ) {
-        SectionSelectionItem(
+        SectionItem(
             title = stringResource(R.string.backup_label),
             icon = painterResource(R.drawable.ic_storage),
             onClick = onBackupClick
         )
-        SectionSelectionItem(
-            title = stringResource(R.string.export_to_file_label),
-            icon = painterResource(R.drawable.ic_export),
-            onClick = onExportClick
-        )
-        SectionSelectionItem(
-            title = stringResource(R.string.imports_label),
-            icon = painterResource(R.drawable.ic_imports),
-            onClick = onImportsClick
+        SectionItem(
+            title = stringResource(R.string.import_and_export_label),
+            icon = painterResource(R.drawable.ic_import_export),
+            onClick = onImportsExportsClick
         )
     }
 }
@@ -180,17 +177,17 @@ internal fun SettingsGeneralSection(
             value = theme?.label.orEmpty(),
             onClick = onThemeClick
         )
-        SectionSelectionItem(
+        SectionItem(
             title = stringResource(R.string.categorizations_label),
             icon = painterResource(R.drawable.ic_rule),
             onClick = onCategorizationClick
         )
-        SectionSelectionItem(
+        SectionItem(
             title = stringResource(R.string.currencies_label),
             icon = painterResource(R.drawable.ic_money),
             onClick = onCurrenciesClick
         )
-        SectionSelectionItem(
+        SectionItem(
             title = stringResource(R.string.labels_label),
             icon = painterResource(R.drawable.ic_label_outlined),
             onClick = onLabelsClick
@@ -286,6 +283,7 @@ private fun SectionActionItem(
 @Composable
 private fun SectionSelectionItem(
     modifier: Modifier = Modifier,
+    isEnabled: Boolean = true,
     title: String,
     icon: Painter,
     value: String = "",
@@ -293,6 +291,7 @@ private fun SectionSelectionItem(
 ) {
     SectionItem(
         modifier = modifier,
+        isEnabled = isEnabled,
         onClick = onClick,
         leadingContent = {
             Icon(
@@ -360,22 +359,25 @@ private fun SectionSwitchItem(
 }
 
 @Composable
-private fun SettingsSection(
+private fun SectionItem(
     modifier: Modifier = Modifier,
     title: String,
-    sectionItems: @Composable ColumnScope.() -> Unit
+    icon: Painter,
+    onClick: () -> Unit
 ) {
-    ExpennySection(
+    SectionItem(
         modifier = modifier,
-        title = title
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            sectionItems()
+        onClick = onClick,
+        leadingContent = {
+            Icon(
+                painter = icon,
+                contentDescription = null
+            )
+        },
+        title = {
+            ExpennyText(text = title)
         }
-    }
+    )
 }
 
 @Composable
@@ -436,6 +438,25 @@ private fun SectionItem(
                     trailingContent()
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun SettingsSection(
+    modifier: Modifier = Modifier,
+    title: String,
+    sectionItems: @Composable ColumnScope.() -> Unit
+) {
+    ExpennySection(
+        modifier = modifier,
+        title = title
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            sectionItems()
         }
     }
 }

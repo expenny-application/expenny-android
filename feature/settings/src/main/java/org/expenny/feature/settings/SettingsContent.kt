@@ -14,9 +14,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import org.expenny.core.ui.components.ExpennyBiometricPrompt
 import org.expenny.feature.settings.model.SettingsItemType
 import org.expenny.feature.settings.view.SettingsDataSection
 import org.expenny.feature.settings.view.SettingsGeneralSection
@@ -27,27 +25,16 @@ import org.expenny.feature.settings.view.SettingsProfileSection
 import org.expenny.feature.settings.view.SettingsSecuritySection
 import org.expenny.feature.settings.view.SettingsSensitiveSection
 import org.expenny.feature.settings.view.SettingsThemeDialog
-import org.expenny.core.resources.R
-import org.expenny.core.ui.components.BiometricPromptState
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun SettingsContent(
     state: State,
-    biometricPromptState: BiometricPromptState,
     onAction: (Action) -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val scrollState = rememberScrollState()
-
-    ExpennyBiometricPrompt(
-        state = biometricPromptState,
-        title = stringResource(R.string.authentication_required_label),
-        subtitle = stringResource(R.string.prove_identity_set_biometric_label),
-        onAuthenticationSuccess = { onAction(Action.OnBiometricAuthenticationSuccess) },
-        onAuthenticationError = { onAction(Action.OnBiometricAuthenticationError(it)) }
-    )
 
     when (state.dialog) {
         is State.Dialog.ThemeDialog -> {
@@ -122,13 +109,13 @@ internal fun SettingsList(
         )
         SettingsDataSection(
             onBackupClick = { onSettingsItemTypeClick(SettingsItemType.Backup) },
-            onExportClick = { onSettingsItemTypeClick(SettingsItemType.Export) },
-            onImportsClick = { onSettingsItemTypeClick(SettingsItemType.Imports) }
+            onImportsExportsClick = { onSettingsItemTypeClick(SettingsItemType.ImportsExports) },
         )
         SettingsNotificationsSection(
-            isUpdateRatesSelected = false, // TODO
+            isReminderSelected = false, // TODO
+            isReminderTimeEnabled = false, // TODO
             onReminderClick = { onSettingsItemTypeClick(SettingsItemType.Reminder) },
-            onUpdateRatesClick = { onSettingsItemTypeClick(SettingsItemType.UpdateRates) }
+            onReminderTimeClick = { onSettingsItemTypeClick(SettingsItemType.ReminderTime) },
         )
         SettingsSecuritySection(
             isUsePasscodeSelected = state.isUsePasscodeSelected,

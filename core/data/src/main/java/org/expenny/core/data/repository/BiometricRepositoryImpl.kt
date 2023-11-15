@@ -35,25 +35,6 @@ class BiometricRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun isBiometricInvalidated(): Boolean {
-        // To check if any new biometric has been enrolled or removed since last creation of secretKeyAlias
-        // create a cipher with that key and try to init the cipher.
-        // The init call should trigger a KeyPermanentlyInvalidatedException.
-        return if (isKeyPresent()) {
-            try {
-                val bytes = ByteArray(16)
-                Random.nextBytes(bytes)
-                createCryptoObject(CryptoPurpose.Decrypt, bytes)
-                false
-            } catch (e: KeyPermanentlyInvalidatedException) {
-                Timber.i(e)
-                true
-            }
-        } else {
-            false
-        }
-    }
-
     override fun createCryptoObject(purpose: CryptoPurpose, iv: ByteArray?): CryptoObject {
         val cipher = getCipher()
         val secretKey = getSecretKey()
@@ -82,17 +63,17 @@ class BiometricRepositoryImpl @Inject constructor(
     }
 
     override fun clearSecretKey() {
-        if (isKeyPresent()) {
+        if (isSecretKeyPresent()) {
             getKeystore().deleteEntry(secretKeyAlias)
         }
     }
 
-    private fun getSecretKey(): SecretKey {
-        return getKeystore().getKey(secretKeyAlias, null) as SecretKey
+    override fun isSecretKeyPresent(): Boolean{
+        return getKeystore().isKeyEntry(secretKeyAlias)
     }
 
-    private fun isKeyPresent(): Boolean{
-        return getKeystore().isKeyEntry(secretKeyAlias)
+    private fun getSecretKey(): SecretKey {
+        return getKeystore().getKey(secretKeyAlias, null) as SecretKey
     }
 
     private fun getKeystore(): KeyStore {

@@ -6,8 +6,8 @@ import org.expenny.core.model.biometric.CryptoPurpose
 
 interface BiometricRepository {
     fun getBiometricStatus(): BiometricStatus
-    fun isBiometricInvalidated(): Boolean
     fun createCryptoObject(purpose: CryptoPurpose, iv: ByteArray? = null): CryptoObject
     fun generateSecretKey()
     fun clearSecretKey()
+    fun isSecretKeyPresent(): Boolean
 }

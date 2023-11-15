@@ -23,7 +23,6 @@ fun SettingsScreen(
     val vm: SettingsViewModel = hiltViewModel()
     val state by vm.collectAsState()
     val activity = LocalContext.current as Activity
-    val biometricPromptState = rememberBiometricPromptState()
 
     vm.collectSideEffect {
         when (it) {
@@ -42,9 +41,6 @@ fun SettingsScreen(
             is Event.NavigateToSystemSecuritySettings -> {
                 activity.startActivity(Intent(Settings.ACTION_SECURITY_SETTINGS))
             }
-            is Event.ShowBiometricPrompt -> {
-                biometricPromptState.showPrompt(it.cryptoObject)
-            }
             is Event.ShowMessage -> {
                 snackbarManager.showMessage(it.message)
             }
@@ -53,7 +49,6 @@ fun SettingsScreen(
 
     SettingsContent(
         state = state,
-        biometricPromptState = biometricPromptState,
         onAction = vm::onAction
     )
 }

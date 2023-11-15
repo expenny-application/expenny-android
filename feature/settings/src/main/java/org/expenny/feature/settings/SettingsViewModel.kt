@@ -11,33 +11,34 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
 import org.expenny.core.common.types.ApplicationLanguage
 import org.expenny.core.common.types.ApplicationTheme
-import org.expenny.core.common.utils.StringResource
 import org.expenny.core.common.viewmodel.ExpennyActionViewModel
-import org.expenny.core.domain.repository.BiometricRepository
 import org.expenny.core.domain.repository.LocalRepository
-import org.expenny.core.domain.usecase.GetBiometricStatusUseCase
+import org.expenny.core.domain.usecase.preferences.GetBiometricStatusUseCase
 import org.expenny.core.domain.usecase.currency.GetMainCurrencyUseCase
+import org.expenny.core.domain.usecase.preferences.DeletePasscodeUseCase
+import org.expenny.core.domain.usecase.preferences.GetBiometricEnrolledUseCase
+import org.expenny.core.domain.usecase.preferences.SetBiometricEnrolledUseCase
 import org.expenny.core.domain.usecase.profile.GetCurrentProfileUseCase
 import org.expenny.core.model.biometric.BiometricStatus.AvailableButNotEnrolled
 import org.expenny.core.model.biometric.BiometricStatus.Ready
-import org.expenny.core.model.biometric.CryptoPurpose
 import org.expenny.core.ui.mapper.ProfileMapper
 import org.expenny.feature.settings.model.SettingsItemType
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
-import org.orbitmvi.orbit.syntax.simple.repeatOnSubscription
 import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val localRepository: LocalRepository,
-    private val biometricRepository: BiometricRepository,
-    private val getBiometricStatus: GetBiometricStatusUseCase,
     private val getMainCurrency: GetMainCurrencyUseCase,
     private val getCurrentProfile: GetCurrentProfileUseCase,
+    private val getBiometricStatus: GetBiometricStatusUseCase,
+    private val setBiometricEnrolled: SetBiometricEnrolledUseCase,
+    private val getBiometricEnrolled: GetBiometricEnrolledUseCase,
+    private val deletePasscode: DeletePasscodeUseCase,
     private val profileMapper: ProfileMapper,
 ) : ExpennyActionViewModel<Action>(), ContainerHost<State, Event> {
 
@@ -60,8 +61,6 @@ class SettingsViewModel @Inject constructor(
             is Action.OnDialogDismiss -> handleOnDialogDismiss()
             is Action.OnLanguageSelect -> handleOnLanguageSelect(action)
             is Action.OnThemeSelect -> handleOnThemeSelect(action)
-            is Action.OnBiometricAuthenticationSuccess -> handleOnBiometricAuthenticationSuccess()
-            is Action.OnBiometricAuthenticationError -> handleOnBiometricAuthenticationError(action)
             is Action.OnBackClick -> handleOnBackClick()
         }
     }
@@ -86,26 +85,21 @@ class SettingsViewModel @Inject constructor(
             }
             SettingsItemType.Passcode -> {
                 if (state.isUsePasscodeSelected) {
-                    localRepository.setPasscode(null)
-                    localRepository.setBiometricEnrolled(false)
-                    biometricRepository.clearSecretKey()
+                    deletePasscode()
+                    setBiometricEnrolled(false)
                 } else {
                     postSideEffect(Event.NavigateToCreatePasscode)
                 }
             }
             SettingsItemType.Biometric -> {
                 if (state.isUseBiometricSelected) {
-                    localRepository.setBiometricEnrolled(false)
-                    biometricRepository.clearSecretKey()
+                    setBiometricEnrolled(false)
                 } else {
                     val biometricStatus = getBiometricStatus()
                     if (biometricStatus == AvailableButNotEnrolled) {
                         postSideEffect(Event.NavigateToSystemSecuritySettings)
                     } else if (biometricStatus == Ready) {
-                        biometricRepository.generateSecretKey()
-                        biometricRepository.createCryptoObject(CryptoPurpose.Encrypt).also {
-                            postSideEffect(Event.ShowBiometricPrompt(it))
-                        }
+                        setBiometricEnrolled(true)
                     }
                 }
             }
@@ -139,14 +133,6 @@ class SettingsViewModel @Inject constructor(
         handleOnDialogDismiss()
     }
 
-    private fun handleOnBiometricAuthenticationSuccess() = intent {
-        localRepository.setBiometricEnrolled(true)
-    }
-
-    private fun handleOnBiometricAuthenticationError(action: Action.OnBiometricAuthenticationError) = intent {
-        postSideEffect(Event.ShowMessage(StringResource.fromStr(action.error)))
-    }
-
     private fun subscribeToCurrentProfile() = intent {
         getCurrentProfile().first()!!.also {
             reduce {
@@ -156,28 +142,24 @@ class SettingsViewModel @Inject constructor(
     }
 
     private fun subscribeToPasscodePreference() = intent {
-        repeatOnSubscription {
-            localRepository.getPasscode()
-                .map { it != null }
-                .collect { isPasscodeSetUp ->
-                    reduce {
-                        state.copy(isUsePasscodeSelected = isPasscodeSetUp)
-                    }
+        localRepository.getPasscode()
+            .map { it != null }
+            .collect { isPasscodeSetUp ->
+                reduce {
+                    state.copy(isUsePasscodeSelected = isPasscodeSetUp)
                 }
-        }
+            }
     }
 
     private fun subscribeToBiometricPreference() = intent {
         val biometricStatus = getBiometricStatus()
         if (biometricStatus == Ready || biometricStatus == AvailableButNotEnrolled) {
-            repeatOnSubscription {
-                localRepository.isBiometricEnrolled().collect {
-                    reduce {
-                        state.copy(
-                            isBiometricAvailable = true,
-                            isUseBiometricSelected = it
-                        )
-                    }
+            getBiometricEnrolled().collect {
+                reduce {
+                    state.copy(
+                        isBiometricAvailable = true,
+                        isUseBiometricSelected = it
+                    )
                 }
             }
         } else {

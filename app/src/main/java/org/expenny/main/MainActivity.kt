@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.expenny.R
 import org.expenny.core.common.types.ApplicationTheme
+import org.expenny.core.common.utils.Constants
 import org.expenny.core.ui.theme.ExpennyTheme
 import org.expenny.navigation.ExpennyNavGraphs
 
@@ -73,7 +74,7 @@ class MainActivity : AppCompatActivity() {
                 // forcing composable content to recompose with new startRoute value
                 content.disposeComposition()
                 // waiting for composable content to be composed before dispatching onPreDraw
-                delay(300)
+                delay(Constants.DEFAULT_COMPOSITION_DELAY_MS)
                 isReadyToProceed = true
             }
         }
