@@ -285,8 +285,13 @@
     <string name="required_account_error">Having at least one account is required</string>
     <string name="not_found_error">No data found</string>
     <string name="authentication_failed_error">Authentication failed</string>
-
     <string name="enable_currency_rates_updates_message">Enable automatic updates of currency rates bases on European Central Bank data</string>
     <string name="currency_rates_info_message">If the selected currency is available in the European Central Bank database, the exchange rates will be automatically set into the fields</string>
     <string name="transfer_disclaimer_message">Transfers are not taken into account in statistics and are treated as operations with local wallets</string>
+
+    <!-- Notification -->
+    <string name="reminder_channel_description">The channel aims to empower users to stay in control of their finances by prompting them to record and categorize their expenses regularly</string>
+    <string name="reminder_channel_name">Reminder</string>
+    <string name="reminder_notification_title">Hey Friend!</string>
+    <string name="reminder_notification_body">Just a gentle nudge to give your cash flow a quick check-in today</string>
 </resources>

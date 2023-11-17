@@ -1,11 +1,16 @@
 package org.expenny
 
 import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import dagger.hilt.android.HiltAndroidApp
+import org.expenny.core.common.utils.Constants
 import timber.log.Timber
 import javax.inject.Inject
+import org.expenny.core.resources.R
 
 @HiltAndroidApp
 class ExpennyApplication : Application(), Configuration.Provider {
@@ -19,9 +24,7 @@ class ExpennyApplication : Application(), Configuration.Provider {
         // ExpennyExceptionHandler.init(this, ExpennyExceptionActivity::class.java)
 
         Timber.plant(object : Timber.DebugTree() {
-            /**
-             * Override [createStackElementTag] to include a add a "method name" to the tag.
-             */
+            // override createStackElementTag to include a add a "method name" to the tag.
             override fun createStackElementTag(element: StackTraceElement): String {
                 return String.format(
                     "%s:%s",
@@ -30,6 +33,8 @@ class ExpennyApplication : Application(), Configuration.Provider {
                 )
             }
         })
+
+        registerNotificationChannels()
     }
 
     // https://developer.android.com/training/dependency-injection/hilt-jetpack#workmanager
@@ -37,5 +42,16 @@ class ExpennyApplication : Application(), Configuration.Provider {
         return Configuration.Builder()
             .setWorkerFactory(workerFactory)
             .build()
+    }
+
+    private fun registerNotificationChannels() {
+        val name = getString(R.string.reminder_channel_name)
+        val description = getString(R.string.reminder_channel_description)
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val channel = NotificationChannel(Constants.REMINDER_NOTIFICATION_CHANNEL_ID, name, importance)
+        channel.description = description
+
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
     }
 }
