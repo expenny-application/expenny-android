@@ -1,18 +1,33 @@
 package org.expenny.core.data.repository
 
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.WorkManager
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.runBlocking
+import org.expenny.core.common.utils.Constants
 import org.expenny.core.datastore.ExpennyDataStore
 import org.expenny.core.datastore.ExpennyDataStore.Companion.CURRENT_PROFILE_ID_KEY
 import org.expenny.core.datastore.ExpennyDataStore.Companion.IS_BIOMETRIC_ENROLLED_KEY
 import org.expenny.core.datastore.ExpennyDataStore.Companion.IS_DARK_MODE_KEY
 import org.expenny.core.datastore.ExpennyDataStore.Companion.IS_ONBOARDING_PASSED_KEY
+import org.expenny.core.datastore.ExpennyDataStore.Companion.IS_REMINDER_ENABLED_KEY
 import org.expenny.core.datastore.ExpennyDataStore.Companion.IS_SETUP_PASSED_KEY
 import org.expenny.core.datastore.ExpennyDataStore.Companion.PASSCODE_KEY
+import org.expenny.core.datastore.ExpennyDataStore.Companion.REMINDER_TIME_UTC_KEY
 import org.expenny.core.domain.repository.LocalRepository
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.ZoneId
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 class LocalRepositoryImpl @Inject constructor(
-    private val dataStore: ExpennyDataStore
+    private val dataStore: ExpennyDataStore,
+    private val workManager: WorkManager
 ) : LocalRepository {
 
     override suspend fun setOnboardingPassed() {
@@ -47,6 +62,15 @@ class LocalRepositoryImpl @Inject constructor(
         dataStore.put(IS_BIOMETRIC_ENROLLED_KEY, isEnrolled)
     }
 
+    override suspend fun setReminderEnabled(isEnabled: Boolean) {
+        dataStore.put(IS_REMINDER_ENABLED_KEY, isEnabled)
+    }
+
+    override suspend fun setReminderTime(time: LocalTime) {
+        val timeString = time.format(DateTimeFormatter.ofPattern(Constants.DEFAULT_REMINDER_TIME_FORMAT))
+        dataStore.put(REMINDER_TIME_UTC_KEY, timeString)
+    }
+
     override fun isDarkMode(): Flow<Boolean?> {
         return dataStore.get(IS_DARK_MODE_KEY)
     }
@@ -69,5 +93,15 @@ class LocalRepositoryImpl @Inject constructor(
 
     override fun isBiometricEnrolled(): Flow<Boolean> {
         return dataStore.get(IS_BIOMETRIC_ENROLLED_KEY, false)
+    }
+
+    override fun getReminderEnabled(): Flow<Boolean> {
+        return dataStore.get(IS_REMINDER_ENABLED_KEY, false)
+    }
+
+    override fun getReminderTime(): Flow<LocalTime> {
+        return dataStore.get(REMINDER_TIME_UTC_KEY, Constants.DEFAULT_REMINDER_TIME).map { timeUtc ->
+            return@map LocalTime.parse(timeUtc, DateTimeFormatter.ofPattern(Constants.DEFAULT_REMINDER_TIME_FORMAT))
+        }
     }
 }

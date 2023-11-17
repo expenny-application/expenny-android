@@ -2,6 +2,7 @@ package org.expenny.core.data.di
 
 import android.content.Context
 import androidx.biometric.BiometricManager
+import androidx.work.WorkManager
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -22,7 +23,9 @@ import org.expenny.core.data.repository.ProfileRepositoryImpl
 import org.expenny.core.data.repository.RecordFileRepositoryImpl
 import org.expenny.core.data.repository.RecordLabelRepositoryImpl
 import org.expenny.core.data.repository.RecordRepositoryImpl
+import org.expenny.core.data.repository.WorkRepositoryImpl
 import org.expenny.core.domain.repository.*
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -67,11 +70,20 @@ interface DataModule {
     @Binds
     fun bindBiometricRepository(biometricRepositoryImpl: BiometricRepositoryImpl): BiometricRepository
 
+    @Binds
+    fun bindWorkRepository(workRepositoryImpl: WorkRepositoryImpl): WorkRepository
+
     companion object {
 
         @Provides
         fun provideBiometricManager(@ApplicationContext context: Context): BiometricManager {
             return BiometricManager.from(context)
+        }
+
+        @Provides
+        @Singleton
+        internal fun provideWorkManager(@ApplicationContext applicationContext: Context): WorkManager {
+            return WorkManager.getInstance(applicationContext)
         }
     }
 }

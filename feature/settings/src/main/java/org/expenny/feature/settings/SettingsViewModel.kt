@@ -5,6 +5,7 @@ import androidx.core.os.LocaleListCompat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
@@ -15,9 +16,13 @@ import org.expenny.core.common.viewmodel.ExpennyActionViewModel
 import org.expenny.core.domain.repository.LocalRepository
 import org.expenny.core.domain.usecase.preferences.GetBiometricStatusUseCase
 import org.expenny.core.domain.usecase.currency.GetMainCurrencyUseCase
-import org.expenny.core.domain.usecase.preferences.DeletePasscodeUseCase
-import org.expenny.core.domain.usecase.preferences.GetBiometricEnrolledUseCase
-import org.expenny.core.domain.usecase.preferences.SetBiometricEnrolledUseCase
+import org.expenny.core.domain.usecase.preferences.DeletePasscodePreferenceUseCase
+import org.expenny.core.domain.usecase.preferences.GetBiometricPreferenceUseCase
+import org.expenny.core.domain.usecase.preferences.GetReminderPreferenceUseCase
+import org.expenny.core.domain.usecase.preferences.GetReminderTimePreferenceUseCase
+import org.expenny.core.domain.usecase.preferences.SetBiometricPreferenceUseCase
+import org.expenny.core.domain.usecase.preferences.SetReminderPreferenceUseCase
+import org.expenny.core.domain.usecase.preferences.SetReminderTimePreferenceUseCase
 import org.expenny.core.domain.usecase.profile.GetCurrentProfileUseCase
 import org.expenny.core.model.biometric.BiometricStatus.AvailableButNotEnrolled
 import org.expenny.core.model.biometric.BiometricStatus.Ready
@@ -36,9 +41,13 @@ class SettingsViewModel @Inject constructor(
     private val getMainCurrency: GetMainCurrencyUseCase,
     private val getCurrentProfile: GetCurrentProfileUseCase,
     private val getBiometricStatus: GetBiometricStatusUseCase,
-    private val setBiometricEnrolled: SetBiometricEnrolledUseCase,
-    private val getBiometricEnrolled: GetBiometricEnrolledUseCase,
-    private val deletePasscode: DeletePasscodeUseCase,
+    private val setBiometricPreference: SetBiometricPreferenceUseCase,
+    private val getBiometricPreference: GetBiometricPreferenceUseCase,
+    private val deletePasscodePreference: DeletePasscodePreferenceUseCase,
+    private val getReminderPreference: GetReminderPreferenceUseCase,
+    private val getReminderTimePreference: GetReminderTimePreferenceUseCase,
+    private val setReminderPreference: SetReminderPreferenceUseCase,
+    private val setReminderTimePreference: SetReminderTimePreferenceUseCase,
     private val profileMapper: ProfileMapper,
 ) : ExpennyActionViewModel<Action>(), ContainerHost<State, Event> {
 
@@ -52,6 +61,8 @@ class SettingsViewModel @Inject constructor(
             launch { subscribeToThemePreference() }
             launch { subscribeToPasscodePreference() }
             launch { subscribeToBiometricPreference() }
+            launch { subscribeToReminderTimePreference() }
+            launch { subscribeToReminderPreference() }
         }
     }
 
@@ -61,8 +72,13 @@ class SettingsViewModel @Inject constructor(
             is Action.OnDialogDismiss -> handleOnDialogDismiss()
             is Action.OnLanguageSelect -> handleOnLanguageSelect(action)
             is Action.OnThemeSelect -> handleOnThemeSelect(action)
+            is Action.OnReminderTimeChange -> handleOnReminderTimeChange(action)
             is Action.OnBackClick -> handleOnBackClick()
         }
+    }
+
+    private fun handleOnReminderTimeChange(action: Action.OnReminderTimeChange) = intent {
+        setReminderTimePreference(action.time)
     }
 
     private fun handleOnBackClick() = intent {
@@ -85,23 +101,29 @@ class SettingsViewModel @Inject constructor(
             }
             SettingsItemType.Passcode -> {
                 if (state.isUsePasscodeSelected) {
-                    deletePasscode()
-                    setBiometricEnrolled(false)
+                    deletePasscodePreference()
+                    setBiometricPreference(false)
                 } else {
                     postSideEffect(Event.NavigateToCreatePasscode)
                 }
             }
             SettingsItemType.Biometric -> {
                 if (state.isUseBiometricSelected) {
-                    setBiometricEnrolled(false)
+                    setBiometricPreference(false)
                 } else {
                     val biometricStatus = getBiometricStatus()
                     if (biometricStatus == AvailableButNotEnrolled) {
                         postSideEffect(Event.NavigateToSystemSecuritySettings)
                     } else if (biometricStatus == Ready) {
-                        setBiometricEnrolled(true)
+                        setBiometricPreference(true)
                     }
                 }
+            }
+            SettingsItemType.Reminder -> {
+                setReminderPreference(!state.isReminderSelected)
+            }
+            SettingsItemType.ReminderTime -> {
+                reduce { state.copy(dialog = State.Dialog.ReminderTimeDialog) }
             }
             else -> {}
         }
@@ -154,7 +176,7 @@ class SettingsViewModel @Inject constructor(
     private fun subscribeToBiometricPreference() = intent {
         val biometricStatus = getBiometricStatus()
         if (biometricStatus == Ready || biometricStatus == AvailableButNotEnrolled) {
-            getBiometricEnrolled().collect {
+            getBiometricPreference().collect {
                 reduce {
                     state.copy(
                         isBiometricAvailable = true,
@@ -164,6 +186,22 @@ class SettingsViewModel @Inject constructor(
             }
         } else {
             reduce { state.copy(isBiometricAvailable = false) }
+        }
+    }
+
+    private fun subscribeToReminderTimePreference() = intent {
+        getReminderTimePreference().collect {
+            reduce {
+                state.copy(reminderTime = it)
+            }
+        }
+    }
+
+    private fun subscribeToReminderPreference() = intent {
+        getReminderPreference().collect {
+            reduce {
+                state.copy(isReminderTimeEnabled = it, isReminderSelected = it)
+            }
         }
     }
 

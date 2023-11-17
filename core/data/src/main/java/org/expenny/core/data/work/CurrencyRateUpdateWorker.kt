@@ -1,4 +1,4 @@
-package org.expenny.core.data.worker
+package org.expenny.core.data.work
 
 import android.annotation.SuppressLint
 import android.app.NotificationChannel

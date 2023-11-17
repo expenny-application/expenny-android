@@ -10,10 +10,9 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.expenny.core.common.types.ApplicationTheme
-import org.expenny.core.domain.repository.BiometricRepository
 import org.expenny.core.domain.repository.LocalRepository
 import org.expenny.core.domain.usecase.preferences.GetBiometricInvalidatedUseCase
-import org.expenny.core.domain.usecase.preferences.SetBiometricEnrolledUseCase
+import org.expenny.core.domain.usecase.preferences.SetBiometricPreferenceUseCase
 import org.expenny.core.domain.usecase.profile.GetProfileSetUpUseCase
 import javax.inject.Inject
 
@@ -22,7 +21,7 @@ class MainViewModel @Inject constructor(
     private val localRepository: LocalRepository,
     private val getProfileSetUp: GetProfileSetUpUseCase,
     private val getBiometricInvalidated: GetBiometricInvalidatedUseCase,
-    private val setBiometricEnrolled: SetBiometricEnrolledUseCase,
+    private val setBiometricEnrolled: SetBiometricPreferenceUseCase,
 ) : ViewModel() {
 
     val isProfileSetUp: StateFlow<Boolean?> = getProfileSetUp()

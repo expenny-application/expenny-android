@@ -1,13 +1,14 @@
 package org.expenny.core.domain.usecase.preferences
 
+import kotlinx.coroutines.flow.Flow
 import org.expenny.core.domain.repository.LocalRepository
 import javax.inject.Inject
 
-class DeletePasscodeUseCase @Inject constructor(
+class GetBiometricPreferenceUseCase @Inject constructor(
     private val localRepository: LocalRepository
 ) {
 
-    suspend operator fun invoke() {
-        localRepository.setPasscode(null)
+    operator fun invoke(): Flow<Boolean> {
+        return localRepository.isBiometricEnrolled()
     }
 }
