@@ -87,7 +87,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.verifyBiometricKeyInvalidationStatus()
+        viewModel.verifyBiometricInvalidationStatus()
         viewModel.verifyAlarmsRevokeStatus()
     }
 

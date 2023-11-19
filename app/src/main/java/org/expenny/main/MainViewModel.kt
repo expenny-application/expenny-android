@@ -14,7 +14,9 @@ import org.expenny.core.common.types.ApplicationTheme
 import org.expenny.core.domain.repository.LocalRepository
 import org.expenny.core.domain.usecase.preferences.GetBiometricInvalidatedUseCase
 import org.expenny.core.domain.usecase.preferences.GetCanSendAlarmsUseCase
+import org.expenny.core.domain.usecase.preferences.GetPasscodePreferenceUseCase
 import org.expenny.core.domain.usecase.preferences.GetReminderPreferenceUseCase
+import org.expenny.core.domain.usecase.preferences.GetThemePreferenceUseCase
 import org.expenny.core.domain.usecase.preferences.SetBiometricPreferenceUseCase
 import org.expenny.core.domain.usecase.preferences.SetReminderPreferenceUseCase
 import org.expenny.core.domain.usecase.profile.GetProfileSetUpUseCase
@@ -23,8 +25,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val localRepository: LocalRepository,
-    private val getProfileSetUp: GetProfileSetUpUseCase,
+    getPasscodePreference: GetPasscodePreferenceUseCase,
+    getThemePreference: GetThemePreferenceUseCase,
+    getProfileSetUp: GetProfileSetUpUseCase,
     private val getBiometricInvalidated: GetBiometricInvalidatedUseCase,
     private val setBiometricEnrolled: SetBiometricPreferenceUseCase,
     private val getCanSendAlarms: GetCanSendAlarmsUseCase,
@@ -34,37 +37,30 @@ class MainViewModel @Inject constructor(
 
     val isProfileSetUp: StateFlow<Boolean?> = getProfileSetUp()
         .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(),
-            null
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = null
         )
 
-    val isPasscodeSetUp: StateFlow<Boolean?> = localRepository.getPasscode()
+    val isPasscodeSetUp: StateFlow<Boolean?> = getPasscodePreference()
         .map { it != null }
         .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(),
-            null
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = null
         )
 
-    val theme: StateFlow<ApplicationTheme> = localRepository.isDarkMode()
-        .mapLatest {
-            when (it) {
-                true -> ApplicationTheme.Dark
-                false -> ApplicationTheme.Light
-                null -> ApplicationTheme.SystemDefault
-            }
-        }
+    val theme: StateFlow<ApplicationTheme> = getThemePreference()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(),
             initialValue = ApplicationTheme.SystemDefault
         )
 
-    fun verifyBiometricKeyInvalidationStatus() {
+    fun verifyBiometricInvalidationStatus() {
         if (getBiometricInvalidated()) {
             viewModelScope.launch {
-                Timber.i("Biometric setting was invalidated")
+                Timber.i("Biometric key was invalidated")
                 setBiometricEnrolled(false)
             }
         }
@@ -75,7 +71,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             if (getReminderPreference().first()) {
                 if (!getCanSendAlarms()) {
-                    Timber.i("Exact alarm setting was revoked")
+                    Timber.i("Alarm setting was revoked")
                     setReminderPreference(false)
                 }
             }
