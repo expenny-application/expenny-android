@@ -88,6 +88,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         viewModel.verifyBiometricKeyInvalidationStatus()
+        viewModel.verifyAlarmsRevokeStatus()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

@@ -5,7 +5,6 @@ import androidx.core.os.LocaleListCompat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
@@ -18,6 +17,7 @@ import org.expenny.core.domain.usecase.preferences.GetBiometricStatusUseCase
 import org.expenny.core.domain.usecase.currency.GetMainCurrencyUseCase
 import org.expenny.core.domain.usecase.preferences.DeletePasscodePreferenceUseCase
 import org.expenny.core.domain.usecase.preferences.GetBiometricPreferenceUseCase
+import org.expenny.core.domain.usecase.preferences.GetCanSendAlarmsUseCase
 import org.expenny.core.domain.usecase.preferences.GetReminderPreferenceUseCase
 import org.expenny.core.domain.usecase.preferences.GetReminderTimePreferenceUseCase
 import org.expenny.core.domain.usecase.preferences.SetBiometricPreferenceUseCase
@@ -48,6 +48,7 @@ class SettingsViewModel @Inject constructor(
     private val getReminderTimePreference: GetReminderTimePreferenceUseCase,
     private val setReminderPreference: SetReminderPreferenceUseCase,
     private val setReminderTimePreference: SetReminderTimePreferenceUseCase,
+    private val getCanSendAlarms: GetCanSendAlarmsUseCase,
     private val profileMapper: ProfileMapper,
 ) : ExpennyActionViewModel<Action>(), ContainerHost<State, Event> {
 
@@ -120,7 +121,11 @@ class SettingsViewModel @Inject constructor(
                 }
             }
             SettingsItemType.Reminder -> {
-                setReminderPreference(!state.isReminderSelected)
+                if (getCanSendAlarms()) {
+                    setReminderPreference(!state.isReminderSelected)
+                } else {
+                    postSideEffect(Event.NavigateToSystemAlarmSettings)
+                }
             }
             SettingsItemType.ReminderTime -> {
                 reduce { state.copy(dialog = State.Dialog.ReminderTimeDialog) }

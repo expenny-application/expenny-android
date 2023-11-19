@@ -1,4 +1,4 @@
-package org.expenny.core.data.work
+package org.expenny.core.data.tasks.worker
 
 import android.annotation.SuppressLint
 import android.app.NotificationChannel
@@ -22,7 +22,7 @@ import org.expenny.core.resources.R
 import timber.log.Timber
 
 @HiltWorker
-class CurrencyRateUpdateWorker @AssistedInject constructor(
+class CurrencyRateSyncWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParameters: WorkerParameters,
     private val database: ExpennyDatabase,
@@ -38,7 +38,7 @@ class CurrencyRateUpdateWorker @AssistedInject constructor(
     val NOTIFICATION_ID = 1
 
     companion object {
-        val TAG = CurrencyRateUpdateWorker::class.java.simpleName
+        val TAG = CurrencyRateSyncWorker::class.java.simpleName
     }
 
     override suspend fun doWork(): Result {

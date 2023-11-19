@@ -50,6 +50,7 @@ sealed interface Event {
     class ShowMessage(val message: StringResource) : Event
     object NavigateToCreatePasscode : Event
     object NavigateToSystemSecuritySettings : Event
+    object NavigateToSystemAlarmSettings : Event
     object NavigateToCurrencies : Event
     object NavigateToLabels : Event
     object NavigateBack : Event

@@ -1,6 +1,7 @@
 package org.expenny
 
 import android.app.Application
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -8,6 +9,7 @@ import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import dagger.hilt.android.HiltAndroidApp
 import org.expenny.core.common.utils.Constants
+import org.expenny.core.common.utils.Constants.REMINDER_NOTIFICATION_CHANNEL_ID
 import timber.log.Timber
 import javax.inject.Inject
 import org.expenny.core.resources.R
@@ -47,9 +49,13 @@ class ExpennyApplication : Application(), Configuration.Provider {
     private fun registerNotificationChannels() {
         val name = getString(R.string.reminder_channel_name)
         val description = getString(R.string.reminder_channel_description)
-        val importance = NotificationManager.IMPORTANCE_DEFAULT
-        val channel = NotificationChannel(Constants.REMINDER_NOTIFICATION_CHANNEL_ID, name, importance)
-        channel.description = description
+        val importance = NotificationManager.IMPORTANCE_HIGH
+        val channel = NotificationChannel(REMINDER_NOTIFICATION_CHANNEL_ID, name, importance).apply {
+            this.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+            this.description = description
+            this.enableVibration(true)
+            this.enableLights(true)
+        }
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)

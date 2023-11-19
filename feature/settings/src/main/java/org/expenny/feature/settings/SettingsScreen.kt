@@ -1,5 +1,6 @@
 package org.expenny.feature.settings
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.provider.Settings
@@ -14,6 +15,7 @@ import org.expenny.feature.settings.navigation.SettingsNavigator
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
+@SuppressLint("InlinedApi")
 @Destination
 @Composable
 fun SettingsScreen(
@@ -40,6 +42,9 @@ fun SettingsScreen(
             }
             is Event.NavigateToSystemSecuritySettings -> {
                 activity.startActivity(Intent(Settings.ACTION_SECURITY_SETTINGS))
+            }
+            is Event.NavigateToSystemAlarmSettings -> {
+                activity.startActivity(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM))
             }
             is Event.ShowMessage -> {
                 snackbarManager.showMessage(it.message)

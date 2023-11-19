@@ -16,6 +16,7 @@
     <string name="backup_label">Backup</string>
     <string name="import_and_export_label">Import &amp; Export</string>
     <string name="reminder_label">Reminder</string>
+    <string name="push_notification_label">Push-notification</string>
     <string name="reminder_time_label">Reminder time</string>
     <string name="set_passcode_label">Set passcode</string>
     <string name="use_passcode_label">Use passcode</string>
@@ -171,6 +172,8 @@
     <string name="enter_passcode_label">Enter your passcode to log in to the app</string>
     <string name="authentication_required_label">Authentication required</string>
     <string name="prove_identity_login_label">Prove your identity to log in to the app</string>
+    <string name="push_notification_description_label">Helps to stay instantly informed about important events</string>
+    <string name="reminder_notification_description_label">Ensures you stay reminded about recording your daily cash flow</string>
 
     <!-- Dialog paragraphs -->
     <string name="get_started_paragraph">Complete the steps bellow in order to finish initial setup</string>
