@@ -172,7 +172,6 @@
     <string name="enter_passcode_label">Enter your passcode to log in to the app</string>
     <string name="authentication_required_label">Authentication required</string>
     <string name="prove_identity_login_label">Prove your identity to log in to the app</string>
-    <string name="push_notification_description_label">Helps to stay instantly informed about important events</string>
     <string name="reminder_notification_description_label">Ensures you stay reminded about recording your daily cash flow</string>
 
     <!-- Dialog paragraphs -->

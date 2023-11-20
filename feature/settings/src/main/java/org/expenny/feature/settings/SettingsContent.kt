@@ -122,11 +122,9 @@ internal fun SettingsList(
             onImportsExportsClick = { onSettingsItemTypeClick(SettingsItemType.ImportsExports) },
         )
         SettingsNotificationsSection(
-            isPushSelected = false, // todo
             isReminderSelected = state.isReminderSelected,
             isReminderTimeEnabled = state.isReminderTimeEnabled,
             reminderTime = state.reminderTimeString,
-            onPushClick = { onSettingsItemTypeClick(SettingsItemType.PushNotification) },
             onReminderClick = { onSettingsItemTypeClick(SettingsItemType.Reminder) },
             onReminderTimeClick = { onSettingsItemTypeClick(SettingsItemType.ReminderTime) },
         )

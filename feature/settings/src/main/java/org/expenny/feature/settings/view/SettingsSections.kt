@@ -102,11 +102,9 @@ internal fun SettingsSecuritySection(
 @Composable
 internal fun SettingsNotificationsSection(
     modifier: Modifier = Modifier,
-    isPushSelected: Boolean,
     isReminderSelected: Boolean,
     isReminderTimeEnabled: Boolean,
     reminderTime: String,
-    onPushClick: () -> Unit,
     onReminderClick: () -> Unit,
     onReminderTimeClick: () -> Unit,
 ) {
@@ -114,13 +112,6 @@ internal fun SettingsNotificationsSection(
         modifier = modifier.fillMaxWidth(),
         title = stringResource(R.string.notifications_label)
     ) {
-        SectionSwitchItem(
-            title = stringResource(R.string.push_notification_label),
-            icon = painterResource(R.drawable.ic_push_notification),
-            description = stringResource(R.string.push_notification_description_label),
-            isSelected = isPushSelected,
-            onClick = onPushClick
-        )
         SectionSwitchItem(
             title = stringResource(R.string.reminder_label),
             icon = painterResource(R.drawable.ic_reminder),

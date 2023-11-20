@@ -9,7 +9,6 @@ enum class SettingsItemType {
     Labels,
     Backup,
     ImportsExports,
-    PushNotification,
     Reminder,
     ReminderTime,
     Passcode,
