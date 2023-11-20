@@ -11,9 +11,9 @@ import org.expenny.core.common.utils.StringResource.Companion.fromRes
 import org.expenny.core.common.utils.StringResource.Companion.fromStr
 import org.expenny.core.common.viewmodel.ExpennyActionViewModel
 import org.expenny.core.domain.usecase.preferences.GetBiometricCryptoObjectUseCase
-import org.expenny.core.domain.usecase.preferences.GetBiometricEnrolledUseCase
-import org.expenny.core.domain.usecase.preferences.GetPasscodeUseCase
-import org.expenny.core.domain.usecase.preferences.SetPasscodeUseCase
+import org.expenny.core.domain.usecase.preferences.GetBiometricPreferenceUseCase
+import org.expenny.core.domain.usecase.preferences.GetPasscodePreferenceUseCase
+import org.expenny.core.domain.usecase.preferences.SetPasscodePreferenceUseCase
 import org.expenny.core.model.biometric.CryptoPurpose
 import org.expenny.feature.passcode.model.PasscodeType.Create
 import org.expenny.feature.passcode.model.PasscodeType.Unlock
@@ -35,10 +35,10 @@ import org.orbitmvi.orbit.syntax.simple.SimpleSyntax
 @HiltViewModel
 class PasscodeViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
-    private val getBiometricEnrolled: GetBiometricEnrolledUseCase,
+    private val getBiometricPreference: GetBiometricPreferenceUseCase,
     private val getBiometricCryptoObject: GetBiometricCryptoObjectUseCase,
-    private val getPasscode: GetPasscodeUseCase,
-    private val setPasscode: SetPasscodeUseCase,
+    private val getPasscodePreference: GetPasscodePreferenceUseCase,
+    private val setPasscodePreference: SetPasscodePreferenceUseCase,
 ) : ExpennyActionViewModel<Action>(), ContainerHost<State, Event> {
 
     private var validPasscode: String = ""
@@ -103,7 +103,7 @@ class PasscodeViewModel @Inject constructor(
     }
 
     private fun subscribeToBiometricPreference() = intent {
-        getBiometricEnrolled().collect { isBiometricEnrolled ->
+        getBiometricPreference().collect { isBiometricEnrolled ->
             if (state.passcodeType == Unlock) {
                 reduce { state.copy(isBiometricEnabled = isBiometricEnrolled) }
                 if (isBiometricEnrolled) {
@@ -119,7 +119,7 @@ class PasscodeViewModel @Inject constructor(
             setPasscodeType(args.type)
 
             if (args.type == Unlock) {
-                getPasscode().first().also { storedPasscode ->
+                getPasscodePreference().first().also { storedPasscode ->
                     if (storedPasscode == null) { // this must never happen
                         postSideEffect(Event.ShowMessage(fromRes(R.string.internal_error)))
                         postSideEffect(Event.NavigateBack)
@@ -154,7 +154,7 @@ class PasscodeViewModel @Inject constructor(
                         setPasscodeType(Confirm)
                     }
                     Confirm -> {
-                        setPasscode(state.passcode)
+                        setPasscodePreference(state.passcode)
                         postSideEffect(Event.NavigateBack)
                     }
                     Unlock -> {

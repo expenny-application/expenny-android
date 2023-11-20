@@ -39,10 +39,10 @@ class MainActivity : AppCompatActivity() {
 
     private val viewModel by viewModels<MainViewModel>()
     private val content by lazy { findViewById<ComposeView>(R.id.compose_root) }
-    private var isReadyToProceed: Boolean = false
+    private var isContentReadyToBeDrawn: Boolean = false
     private var startRoute: Route = ExpennyNavGraphs.setup
     private val isConfigurationChangedKey = "isConfigurationChangedKey"
-    private var shouldSkipInit = false
+    private val isPassedInitKey = "isPassedInitKey"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -51,16 +51,21 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_root)
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
-        shouldSkipInit = savedInstanceState?.getBoolean(isConfigurationChangedKey, false) ?: false
+        val isConfigurationChanged = savedInstanceState?.getBoolean(isConfigurationChangedKey, false) ?: false
+        val isPassedInit = savedInstanceState?.getBoolean(isPassedInitKey, false) ?: false
+        val shouldSkipInit = isConfigurationChanged && isPassedInit
 
-        if (!shouldSkipInit) {
-            getInitialData()
-            addOnPreDrawListener()
+        if (shouldSkipInit) {
+            isContentReadyToBeDrawn = true
+        } else {
+            init { isContentReadyToBeDrawn = true }
         }
+
+        addOnPreDrawListener()
         setRootContent()
     }
 
-    private fun getInitialData() {
+    private fun init(onComplete: () -> Unit) {
         lifecycleScope.launch(Dispatchers.Main) {
             delay(200) // delay splash screen appearance
             viewModel.isProfileSetUp.filterNotNull().first().also { isProfileSetUp ->
@@ -75,30 +80,31 @@ class MainActivity : AppCompatActivity() {
                 content.disposeComposition()
                 // waiting for composable content to be composed before dispatching onPreDraw
                 delay(Constants.DEFAULT_COMPOSITION_DELAY_MS)
-                isReadyToProceed = true
+                onComplete()
             }
         }
     }
 
     override fun onResume() {
         super.onResume()
-        viewModel.verifyBiometricKeyInvalidationStatus()
+        viewModel.verifyBiometricInvalidationStatus()
+        viewModel.verifyAlarmsRevokeStatus()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
+        outState.putBoolean(isConfigurationChangedKey, isChangingConfigurations)
+        // required for edge case when configuration change is happening
+        // while isContentReadyToBeDrawn is still false
+        outState.putBoolean(isPassedInitKey, isContentReadyToBeDrawn)
+
         super.onSaveInstanceState(outState)
-        if (isChangingConfigurations) {
-            outState.putBoolean(isConfigurationChangedKey, true)
-        } else {
-            outState.putBoolean(isConfigurationChangedKey, false)
-        }
     }
 
     private fun addOnPreDrawListener() {
         content.viewTreeObserver.addOnPreDrawListener(
             object : ViewTreeObserver.OnPreDrawListener {
                 override fun onPreDraw(): Boolean {
-                    return if (isReadyToProceed) {
+                    return if (isContentReadyToBeDrawn) {
                         content.viewTreeObserver.removeOnPreDrawListener(this)
                         true
                     } else {

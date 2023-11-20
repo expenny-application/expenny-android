@@ -4,7 +4,7 @@ import org.expenny.core.domain.repository.BiometricRepository
 import org.expenny.core.domain.repository.LocalRepository
 import javax.inject.Inject
 
-class SetBiometricEnrolledUseCase @Inject constructor(
+class SetBiometricPreferenceUseCase @Inject constructor(
     private val localRepository: LocalRepository,
     private val biometricRepository: BiometricRepository
 ) {

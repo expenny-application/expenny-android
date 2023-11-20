@@ -4,11 +4,11 @@ import kotlinx.coroutines.flow.Flow
 import org.expenny.core.domain.repository.LocalRepository
 import javax.inject.Inject
 
-class GetPasscodeUseCase @Inject constructor(
+class GetReminderPreferenceUseCase @Inject constructor(
     private val localRepository: LocalRepository
 ) {
 
-    operator fun invoke(): Flow<String?> {
-        return localRepository.getPasscode()
+    operator fun invoke(): Flow<Boolean> {
+        return localRepository.getReminderEnabled()
     }
 }

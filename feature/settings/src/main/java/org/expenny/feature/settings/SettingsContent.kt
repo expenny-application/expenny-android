@@ -15,6 +15,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import org.expenny.core.common.extensions.toLocalTime
+import org.expenny.core.common.extensions.toTimeString
+import org.expenny.core.ui.components.ExpennyTimePicker
 import org.expenny.feature.settings.model.SettingsItemType
 import org.expenny.feature.settings.view.SettingsDataSection
 import org.expenny.feature.settings.view.SettingsGeneralSection
@@ -51,6 +54,13 @@ internal fun SettingsContent(
                 locales = state.languages,
                 selectedLanguage = state.selectedLanguage,
                 onLanguageSelect = { onAction(Action.OnLanguageSelect(it)) },
+                onDismiss = { onAction(Action.OnDialogDismiss) }
+            )
+        }
+        is State.Dialog.ReminderTimeDialog -> {
+            ExpennyTimePicker(
+                currentTime = state.reminderTime,
+                onSelect = { onAction(Action.OnReminderTimeChange(it)) },
                 onDismiss = { onAction(Action.OnDialogDismiss) }
             )
         }
@@ -112,8 +122,9 @@ internal fun SettingsList(
             onImportsExportsClick = { onSettingsItemTypeClick(SettingsItemType.ImportsExports) },
         )
         SettingsNotificationsSection(
-            isReminderSelected = false, // TODO
-            isReminderTimeEnabled = false, // TODO
+            isReminderSelected = state.isReminderSelected,
+            isReminderTimeEnabled = state.isReminderTimeEnabled,
+            reminderTime = state.reminderTimeString,
             onReminderClick = { onSettingsItemTypeClick(SettingsItemType.Reminder) },
             onReminderTimeClick = { onSettingsItemTypeClick(SettingsItemType.ReminderTime) },
         )

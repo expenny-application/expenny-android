@@ -1,7 +1,9 @@
 package org.expenny.core.data.di
 
+import android.app.AlarmManager
 import android.content.Context
 import androidx.biometric.BiometricManager
+import androidx.work.WorkManager
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -22,7 +24,10 @@ import org.expenny.core.data.repository.ProfileRepositoryImpl
 import org.expenny.core.data.repository.RecordFileRepositoryImpl
 import org.expenny.core.data.repository.RecordLabelRepositoryImpl
 import org.expenny.core.data.repository.RecordRepositoryImpl
+import org.expenny.core.data.repository.AlarmRepositoryImpl
+import org.expenny.core.data.repository.WorkRepositoryImpl
 import org.expenny.core.domain.repository.*
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -67,11 +72,29 @@ interface DataModule {
     @Binds
     fun bindBiometricRepository(biometricRepositoryImpl: BiometricRepositoryImpl): BiometricRepository
 
+    @Binds
+    fun bindWorkRepository(workRepositoryImpl: WorkRepositoryImpl): WorkRepository
+
+    @Binds
+    fun bindReminderRepository(alarmRepositoryImpl: AlarmRepositoryImpl): AlarmRepository
+
     companion object {
 
         @Provides
         fun provideBiometricManager(@ApplicationContext context: Context): BiometricManager {
             return BiometricManager.from(context)
+        }
+
+        @Provides
+        @Singleton
+        internal fun provideWorkManager(@ApplicationContext applicationContext: Context): WorkManager {
+            return WorkManager.getInstance(applicationContext)
+        }
+
+        @Provides
+        @Singleton
+        internal fun provideAlarmManager(@ApplicationContext applicationContext: Context): AlarmManager {
+            return applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         }
     }
 }

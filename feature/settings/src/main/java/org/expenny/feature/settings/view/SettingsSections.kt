@@ -104,6 +104,7 @@ internal fun SettingsNotificationsSection(
     modifier: Modifier = Modifier,
     isReminderSelected: Boolean,
     isReminderTimeEnabled: Boolean,
+    reminderTime: String,
     onReminderClick: () -> Unit,
     onReminderTimeClick: () -> Unit,
 ) {
@@ -114,6 +115,7 @@ internal fun SettingsNotificationsSection(
         SectionSwitchItem(
             title = stringResource(R.string.reminder_label),
             icon = painterResource(R.drawable.ic_reminder),
+            description = stringResource(R.string.reminder_notification_description_label),
             isSelected = isReminderSelected,
             onClick = onReminderClick
         )
@@ -121,7 +123,7 @@ internal fun SettingsNotificationsSection(
             isEnabled = isReminderTimeEnabled,
             title = stringResource(R.string.reminder_time_label),
             icon = painterResource(R.drawable.ic_timewatch),
-            value = "",
+            value = reminderTime,
             onClick = onReminderTimeClick
         )
     }

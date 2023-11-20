@@ -1,6 +1,7 @@
 package org.expenny.core.domain.repository
 
 import kotlinx.coroutines.flow.Flow
+import java.time.LocalTime
 
 interface LocalRepository {
 
@@ -18,6 +19,10 @@ interface LocalRepository {
 
     suspend fun setBiometricEnrolled(isEnrolled: Boolean)
 
+    suspend fun setReminderEnabled(isEnabled: Boolean)
+
+    suspend fun setReminderTime(time: LocalTime)
+
     fun isDarkMode(): Flow<Boolean?>
 
     fun isSetupPassed(): Flow<Boolean>
@@ -29,4 +34,8 @@ interface LocalRepository {
     fun getPasscode(): Flow<String?>
 
     fun isBiometricEnrolled(): Flow<Boolean>
+
+    fun getReminderEnabled(): Flow<Boolean>
+
+    fun getReminderTime(): Flow<LocalTime>
 }
