@@ -2,7 +2,6 @@ package org.expenny.core.database.dao
 
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
 import org.expenny.core.database.model.embedded.SettlementCurrencyEmbedded
 import org.expenny.core.database.model.entity.SettlementCurrencyEntity
 

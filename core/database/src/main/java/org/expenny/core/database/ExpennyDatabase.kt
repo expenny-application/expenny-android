@@ -29,7 +29,7 @@ import org.expenny.core.database.utils.UriConverter
         LabelEntity::class,
         FileEntity::class,
     ],
-    version = 3,
+    version = 4,
 )
 @TypeConverters(
     BigDecimalConverter::class,
