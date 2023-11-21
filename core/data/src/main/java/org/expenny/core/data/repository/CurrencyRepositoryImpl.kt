@@ -16,7 +16,6 @@ import org.expenny.core.model.currency.CurrencyUpdate
 import javax.inject.Inject
 
 class CurrencyRepositoryImpl @Inject constructor(
-    @ApplicationContext private val context: Context,
     private val database: ExpennyDatabase,
     private val localRepository: LocalRepository,
 ) : CurrencyRepository {
@@ -50,6 +49,12 @@ class CurrencyRepositoryImpl @Inject constructor(
 
     override suspend fun updateCurrency(currency: CurrencyUpdate) {
         settlementCurrencyDao.update(currency.toEntity())
+    }
+
+    override suspend fun updateCurrencies(currencies: List<CurrencyUpdate>) {
+        database.withTransaction {
+            currencies.forEach { settlementCurrencyDao.update(it.toEntity()) }
+        }
     }
 
     override suspend fun deleteCurrency(id: Long) {
