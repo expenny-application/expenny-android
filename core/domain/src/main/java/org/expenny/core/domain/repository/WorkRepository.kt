@@ -1,8 +1,7 @@
 package org.expenny.core.domain.repository
 
 interface WorkRepository {
-
-    fun enqueueCurrencyRateSyncWork()
-
-    fun cancelCurrencyRateSyncWork()
+    fun enqueueCurrencySyncWork()
+    fun cancelCurrencySyncWork()
+    fun isCurrencySyncWorkEnqueued(): Boolean
 }

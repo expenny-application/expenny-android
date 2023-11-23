@@ -12,7 +12,8 @@ import javax.inject.Inject
 class CreateCurrencyUseCase @Inject constructor(
     private val getCurrentProfile: GetCurrentProfileUseCase,
     private val currencyRepository: CurrencyRepository,
-    private val currencyUnitRepository: CurrencyUnitRepository
+    private val currencyUnitRepository: CurrencyUnitRepository,
+    private val updateCurrencySyncWorkState: UpdateCurrencySyncWorkStateUseCase
 ) {
 
     suspend operator fun invoke(params: Params): Long {
@@ -25,13 +26,15 @@ class CreateCurrencyUseCase @Inject constructor(
             CurrencyCreate(
                 profileId = profileId,
                 code = currencyCode,
-                baseToQuoteRate = baseRate
+                baseToQuoteRate = baseRate,
+                isSubscribedToRateUpdates = params.isSubscribedToRateUpdates
             )
-        )
+        ).also { updateCurrencySyncWorkState() }
     }
 
     data class Params(
         val currencyUnitId: Long,
-        val quoteToBaseRate: BigDecimal
+        val quoteToBaseRate: BigDecimal,
+        val isSubscribedToRateUpdates: Boolean
     )
 }

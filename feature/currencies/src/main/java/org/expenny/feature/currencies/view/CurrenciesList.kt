@@ -18,7 +18,6 @@ import org.expenny.core.ui.foundation.ExpennyCard
 import org.expenny.core.ui.foundation.ExpennyText
 import org.expenny.core.ui.foundation.ExpennyVerticalList
 
-
 @Composable
 internal fun CurrenciesList(
     modifier: Modifier = Modifier,
@@ -89,13 +88,11 @@ private fun CurrencyItem(
                     color = MaterialTheme.colorScheme.onTertiaryContainer
                 )
             } else {
-                currency.rate?.let {
-                    ExpennyText(
-                        text = "~${it.displayValue}",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.primary,
-                    )
-                }
+                ExpennyText(
+                    text = "~${currency.rate.displayValue}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                )
             }
             if (selectionType != null) {
                 ExpennySelectionButton(

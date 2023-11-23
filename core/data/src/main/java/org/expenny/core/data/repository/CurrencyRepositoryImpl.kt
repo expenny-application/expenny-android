@@ -1,8 +1,6 @@
 package org.expenny.core.data.repository
 
-import android.content.Context
 import androidx.room.withTransaction
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.*
 import org.expenny.core.common.extensions.mapFlatten
 import org.expenny.core.data.mapper.DataMapper.toModel
@@ -58,7 +56,6 @@ class CurrencyRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteCurrency(id: Long) {
-        // todo add deletion of all other associated data
         database.withTransaction {
             settlementCurrencyDao.delete(id)
 

@@ -14,9 +14,10 @@ import org.expenny.core.model.currency.Currency
 import org.expenny.core.model.currency.CurrencyRate
 import org.expenny.core.model.currency.CurrencyUpdate
 import org.expenny.core.model.resource.ResourceResult
+import java.time.LocalDate
 
 @HiltWorker
-class CurrencyRateSyncWorker @AssistedInject constructor(
+class CurrencySyncWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParameters: WorkerParameters,
     private val currencyRateRepository: CurrencyRateRepository,
@@ -24,16 +25,16 @@ class CurrencyRateSyncWorker @AssistedInject constructor(
 ) : CoroutineWorker(context, workerParameters) {
 
     override suspend fun doWork(): Result {
-        val quoteCurrencies = currencyRepository.getSubscribedCurrencies()
+        val eligibleCurrencies = currencyRepository.getEligibleCurrencies()
 
-        val latestRates = quoteCurrencies
+        val latestRates = eligibleCurrencies
             .groupBy { it.profile.currencyUnit.code }
             .flatMap { (baseCurrencyCode, quoteCurrencies) ->
                 val quoteCurrencyCodes = quoteCurrencies.map { it.unit.code }
                 getLatestRates(baseCurrencyCode, quoteCurrencyCodes)
             }
 
-        val currenciesToUpdate = quoteCurrencies.mapNotNull { currency ->
+        val currenciesToUpdate = eligibleCurrencies.mapNotNull { currency ->
             latestRates.getByQuoteCurrencyOrNull(currency.unit.code)?.let { currencyRate ->
                 CurrencyUpdate(
                     id = currency.id,
@@ -48,8 +49,10 @@ class CurrencyRateSyncWorker @AssistedInject constructor(
         return Result.success()
     }
 
-    private suspend fun CurrencyRepository.getSubscribedCurrencies(): List<Currency> {
-        return getCurrencies().first().filter { it.isSubscribedToRateUpdates && !it.isMain }
+    private suspend fun CurrencyRepository.getEligibleCurrencies(): List<Currency> {
+        return getCurrencies().first().filter {
+            it.isSubscribedToRateUpdates && !it.isMain && it.updatedAt.toLocalDate() != LocalDate.now()
+        }
     }
 
     private fun List<CurrencyRate>.getByQuoteCurrencyOrNull(quoteCurrencyCode: String): CurrencyRate? {

@@ -83,8 +83,8 @@ class CurrencyDetailsViewModel @Inject constructor(
                             baseCurrency = mainCurrency.value!!.unit.code,
                             quoteCurrency = selectedCurrencyUnit.value!!.code,
                             toolbarTitle = fromRes(R.string.edit_currency_label),
-                            subscribeToRatesUpdate = isSubscribedToRateUpdates,
-                            showSubscribeToRatesUpdateCheckbox = true,
+                            subscribeToRatesUpdates = isSubscribedToRateUpdates,
+                            showSubscribeToRatesUpdatesCheckbox = true,
                             showRatesDisclaimerMessage = false,
                             showRatesInputFields = true,
                             showDeleteButton = true,
@@ -125,7 +125,7 @@ class CurrencyDetailsViewModel @Inject constructor(
 
     private fun handleOnEnableRatesUpdateCheckboxChange(action: Action.OnSubscribeToRatesUpdateCheckboxChange) = blockingIntent {
         reduce {
-            state.copy(subscribeToRatesUpdate = action.value)
+            state.copy(subscribeToRatesUpdates = action.value)
         }
     }
 
@@ -181,8 +181,8 @@ class CurrencyDetailsViewModel @Inject constructor(
                             state.copy(
                                 isLoading = false,
                                 showRatesInputFields = true,
-                                showSubscribeToRatesUpdateCheckbox = false,
-                                subscribeToRatesUpdate = false,
+                                showSubscribeToRatesUpdatesCheckbox = false,
+                                subscribeToRatesUpdates = false,
                             )
                         }
 
@@ -198,7 +198,7 @@ class CurrencyDetailsViewModel @Inject constructor(
                             state.copy(
                                 isLoading = false,
                                 showRatesInputFields = true,
-                                showSubscribeToRatesUpdateCheckbox = true,
+                                showSubscribeToRatesUpdatesCheckbox = true,
                             )
                         }
 
@@ -218,7 +218,8 @@ class CurrencyDetailsViewModel @Inject constructor(
                 createCurrency(
                     CreateCurrencyUseCase.Params(
                         currencyUnitId = selectedCurrencyUnit.value!!.id,
-                        quoteToBaseRate = state.quoteToBaseRateInputField.value
+                        quoteToBaseRate = state.quoteToBaseRateInputField.value,
+                        isSubscribedToRateUpdates = state.subscribeToRatesUpdates
                     )
                 )
             } else {
@@ -226,7 +227,7 @@ class CurrencyDetailsViewModel @Inject constructor(
                     UpdateCurrencyUseCase.Params(
                         id = currentCurrency.value!!.id,
                         quoteToBaseRate = state.quoteToBaseRateInputField.value,
-                        isSubscribedToRateUpdates = state.subscribeToRatesUpdate
+                        isSubscribedToRateUpdates = state.subscribeToRatesUpdates
                     )
                 )
             }

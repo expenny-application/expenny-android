@@ -29,11 +29,13 @@ class SetupProfileUseCase @Inject constructor(
         val isFreshSetup = getProfileSetUp().first().not()
         val profileId = profileRepository.createProfile(ProfileCreate(params.name, currencyCode))
 
+        // Create primary currency
         currencyRepository.createCurrency(
             CurrencyCreate(
                 profileId = profileId,
                 code = currencyCode,
-                baseToQuoteRate = BigDecimal.ONE
+                baseToQuoteRate = BigDecimal.ONE,
+                isSubscribedToRateUpdates = false
             )
         )
 

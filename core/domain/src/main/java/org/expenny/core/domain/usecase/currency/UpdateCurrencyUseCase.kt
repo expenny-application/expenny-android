@@ -8,6 +8,7 @@ import javax.inject.Inject
 
 class UpdateCurrencyUseCase @Inject constructor(
     private val currencyRepository: CurrencyRepository,
+    private val updateCurrencySyncWorkState: UpdateCurrencySyncWorkStateUseCase
 ) {
 
     suspend operator fun invoke(params: Params) {
@@ -20,7 +21,7 @@ class UpdateCurrencyUseCase @Inject constructor(
                 baseToQuoteRate = baseRate,
                 isSubscribedToRateUpdates = params.isSubscribedToRateUpdates,
             )
-        )
+        ).also { updateCurrencySyncWorkState() }
     }
 
     data class Params(

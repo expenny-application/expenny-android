@@ -287,6 +287,7 @@ object DataMapper {
             profileId = profileId,
             code = code,
             baseToQuoteRate = baseToQuoteRate,
+            isSubscribedToRateUpdates = isSubscribedToRateUpdates,
             updatedAt = LocalDateTime.now()
         )
     }
