@@ -121,7 +121,6 @@ fun ExpennySelectInputField(
     )
 }
 
-
 @Composable
 fun ExpennyInputField(
     modifier: Modifier = Modifier,

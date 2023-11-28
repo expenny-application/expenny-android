@@ -32,10 +32,7 @@ class WorkRepositoryImpl @Inject constructor(
             Duration.between(now, zonedStartTime.plusDays(1)).toSeconds()
         }
 
-        val workBuilder = PeriodicWorkRequestBuilder<CurrencySyncWorker>(
-            24, TimeUnit.HOURS,
-            15, TimeUnit.MINUTES
-        )
+        val workBuilder = PeriodicWorkRequestBuilder<CurrencySyncWorker>(24, TimeUnit.HOURS)
 
         if (initialDelaySec > 0) {
             workBuilder.setInitialDelay(initialDelaySec, TimeUnit.SECONDS)
