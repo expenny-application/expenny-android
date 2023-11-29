@@ -8,6 +8,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 import org.expenny.core.common.ExpennySnackbarManager
 import org.expenny.core.ui.data.navargs.LongNavArg
+import org.expenny.core.ui.data.ui.AmountUi
 import org.expenny.core.ui.data.ui.CurrencyUi
 import org.expenny.core.ui.theme.ExpennyTheme
 import org.expenny.feature.currencies.navigation.CurrenciesListNavArgs
@@ -15,6 +16,7 @@ import org.expenny.feature.currencies.navigation.CurrenciesListNavigator
 import org.expenny.feature.currencies.view.CurrenciesListContent
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
+import java.math.BigDecimal
 
 @Destination(navArgsDelegate = CurrenciesListNavArgs::class)
 @Composable
@@ -53,9 +55,12 @@ private fun CurrenciesListScreenPreview() {
                         id = 1,
                         code = "EUR",
                         name = "Euro",
-                        rate = null,
+                        rate = AmountUi(
+                            value = BigDecimal.ONE,
+                            displayValue = "1"
+                        ),
                         preview = "",
-                        isMain = true
+                        isMain = true,
                     )
                 )
             ),

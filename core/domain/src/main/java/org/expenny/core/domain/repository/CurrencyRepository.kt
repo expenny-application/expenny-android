@@ -17,5 +17,7 @@ interface CurrencyRepository {
 
     suspend fun updateCurrency(currency: CurrencyUpdate)
 
+    suspend fun updateCurrencies(currencies: List<CurrencyUpdate>)
+
     suspend fun deleteCurrency(id: Long)
 }

@@ -1,8 +1,6 @@
 package org.expenny.core.data.repository
 
-import android.content.Context
 import androidx.room.withTransaction
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.*
 import org.expenny.core.common.extensions.mapFlatten
 import org.expenny.core.data.mapper.DataMapper.toModel
@@ -16,7 +14,6 @@ import org.expenny.core.model.currency.CurrencyUpdate
 import javax.inject.Inject
 
 class CurrencyRepositoryImpl @Inject constructor(
-    @ApplicationContext private val context: Context,
     private val database: ExpennyDatabase,
     private val localRepository: LocalRepository,
 ) : CurrencyRepository {
@@ -52,8 +49,13 @@ class CurrencyRepositoryImpl @Inject constructor(
         settlementCurrencyDao.update(currency.toEntity())
     }
 
+    override suspend fun updateCurrencies(currencies: List<CurrencyUpdate>) {
+        database.withTransaction {
+            currencies.forEach { settlementCurrencyDao.update(it.toEntity()) }
+        }
+    }
+
     override suspend fun deleteCurrency(id: Long) {
-        // todo add deletion of all other associated data
         database.withTransaction {
             settlementCurrencyDao.delete(id)
 

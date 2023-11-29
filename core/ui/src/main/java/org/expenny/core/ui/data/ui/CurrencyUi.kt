@@ -4,7 +4,7 @@ data class CurrencyUi(
     val id: Long,
     val code: String,
     val name: String,
-    val rate: AmountUi?,
+    val rate: AmountUi,
     val isMain: Boolean,
-    val preview: String
+    val preview: String,
 )

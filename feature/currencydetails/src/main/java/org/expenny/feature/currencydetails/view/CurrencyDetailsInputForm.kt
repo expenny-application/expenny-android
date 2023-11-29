@@ -27,7 +27,7 @@ internal fun AccountDetailsInputForm(
     showRatesDisclaimerMessage: Boolean,
     showRatesInputFields: Boolean,
     showEnableRatesUpdateCheckbox: Boolean,
-    enableRatesUpdate: Boolean,
+    enableRatesUpdates: Boolean,
     currencyUnitInputField: InputField,
     baseToQuoteRateInputField: MonetaryInputField,
     quoteToBaseRateInputField: MonetaryInputField,
@@ -78,7 +78,7 @@ internal fun AccountDetailsInputForm(
         if (showEnableRatesUpdateCheckbox) {
             ExpennyCheckBoxGroup(
                 label = stringResource(R.string.enable_currency_rates_updates_message),
-                isChecked = enableRatesUpdate,
+                isChecked = enableRatesUpdates,
                 onClick = onEnableRatesUpdateCheckboxChange
             )
         }

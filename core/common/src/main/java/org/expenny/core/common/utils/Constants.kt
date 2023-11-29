@@ -15,7 +15,8 @@ object Constants {
     const val DEFAULT_FIELD_MAX_LENGTH = 128
     const val DEFAULT_COMPOSITION_DELAY_MS = 300L
     const val MONETARY_PATTERN = "^(?:0|[1-9]\\d{0,2}(?:,?\\d{3})*)(?:\\.\\d+)?\$"
-    const val REMINDER_NOTIFICATION_ID = 10
+    const val CURRENCY_SYNC_WORK_NAME = "currency_sync_work"
+    const val REMINDER_NOTIFICATION_ID = 10001
     const val REMINDER_NOTIFICATION_CHANNEL_ID = "reminder_channel_id"
     const val DEFAULT_REMINDER_TIME = "20:00"
     const val PRIMARY_COLOR_ARGB = 0xFF0756CE

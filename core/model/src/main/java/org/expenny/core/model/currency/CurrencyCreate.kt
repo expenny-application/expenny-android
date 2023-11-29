@@ -6,5 +6,6 @@ import kotlin.Long
 data class CurrencyCreate(
     val profileId: Long,
     val code: String,
-    val baseToQuoteRate: BigDecimal
+    val baseToQuoteRate: BigDecimal,
+    val isSubscribedToRateUpdates: Boolean
 )
