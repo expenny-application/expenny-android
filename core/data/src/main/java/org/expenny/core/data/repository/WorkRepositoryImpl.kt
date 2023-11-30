@@ -1,6 +1,8 @@
 package org.expenny.core.data.repository
 
+import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
@@ -32,17 +34,23 @@ class WorkRepositoryImpl @Inject constructor(
             Duration.between(now, zonedStartTime.plusDays(1)).toSeconds()
         }
 
-        val workBuilder = PeriodicWorkRequestBuilder<CurrencySyncWorker>(24, TimeUnit.HOURS)
+        PeriodicWorkRequestBuilder<CurrencySyncWorker>(24, TimeUnit.HOURS).apply {
+            val workConstraints = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
 
-        if (initialDelaySec > 0) {
-            workBuilder.setInitialDelay(initialDelaySec, TimeUnit.SECONDS)
+            setConstraints(workConstraints)
+
+            if (initialDelaySec > 0) {
+                setInitialDelay(initialDelaySec, TimeUnit.SECONDS)
+            }
+
+            workManager.enqueueUniquePeriodicWork(
+                Constants.CURRENCY_SYNC_WORK_NAME,
+                ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE,
+                this.build()
+            )
         }
-
-        workManager.enqueueUniquePeriodicWork(
-            Constants.CURRENCY_SYNC_WORK_NAME,
-            ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE,
-            workBuilder.build()
-        )
     }
 
     override fun cancelCurrencySyncWork() {
