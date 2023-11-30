@@ -11,14 +11,14 @@ class UpdateCurrencySyncWorkStateUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke() {
-        val isWorkNotEnqueued = !workRepository.isCurrencySyncWorkEnqueued()
+        val isWorkEnqueued = workRepository.isCurrencySyncWorkEnqueued()
         val hasSubscribedCurrencies = currencyRepository.getCurrencies().first().any {
             it.isSubscribedToRateUpdates
         }
 
-        if (isWorkNotEnqueued && hasSubscribedCurrencies) {
+        if (!isWorkEnqueued && hasSubscribedCurrencies) {
             workRepository.enqueueCurrencySyncWork()
-        } else {
+        } else if (isWorkEnqueued && !hasSubscribedCurrencies) {
             workRepository.cancelCurrencySyncWork()
         }
     }
