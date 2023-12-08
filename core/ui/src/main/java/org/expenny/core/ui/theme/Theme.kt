@@ -1,17 +1,12 @@
 package org.expenny.core.ui.theme
 
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
-
 
 private val LightColors = lightColorScheme(
     primary = light_primary,
@@ -37,12 +32,19 @@ private val LightColors = lightColorScheme(
     surfaceVariant = light_surfaceVariant,
     onSurfaceVariant = light_onSurfaceVariant,
     outline = light_outline,
+    outlineVariant = light_outlineVariant,
     inverseOnSurface = light_inverseOnSurface,
     inverseSurface = light_inverseSurface,
     inversePrimary = light_inversePrimary,
     surfaceTint = light_surfaceTint,
-    outlineVariant = light_outlineVariant,
     scrim = light_scrim,
+    surfaceBright = light_surfaceBright,
+    surfaceContainer = light_surfaceContainer,
+    surfaceContainerHigh = light_surfaceContainerHigh,
+    surfaceContainerHighest = light_surfaceContainerHighest,
+    surfaceContainerLow = light_surfaceContainerLow,
+    surfaceContainerLowest = light_surfaceContainerLowest,
+    surfaceDim = light_surfaceDim,
 )
 
 private val DarkColors = darkColorScheme(
@@ -69,17 +71,24 @@ private val DarkColors = darkColorScheme(
     surfaceVariant = dark_surfaceVariant,
     onSurfaceVariant = dark_onSurfaceVariant,
     outline = dark_outline,
+    outlineVariant = dark_outlineVariant,
     inverseOnSurface = dark_inverseOnSurface,
     inverseSurface = dark_inverseSurface,
     inversePrimary = dark_inversePrimary,
     surfaceTint = dark_surfaceTint,
-    outlineVariant = dark_outlineVariant,
     scrim = dark_scrim,
+    surfaceBright = dark_surfaceBright,
+    surfaceContainer = dark_surfaceContainer,
+    surfaceContainerHigh = dark_surfaceContainerHigh,
+    surfaceContainerHighest = dark_surfaceContainerHighest,
+    surfaceContainerLow = dark_surfaceContainerLow,
+    surfaceContainerLowest = dark_surfaceContainerLowest,
+    surfaceDim = dark_surfaceDim,
 )
 
-val ColorScheme.inputSurface: Color
+val ColorScheme.surfaceInput: Color
     @Composable get() {
-        return MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp)
+        return MaterialTheme.colorScheme.surfaceContainer
     }
 
 @Composable
@@ -93,9 +102,4 @@ fun ExpennyTheme(
         colorScheme = colors,
         content = content
     )
-}
-
-@Composable
-private fun inApplicationInDarkTheme(): Boolean {
-    return AppCompatDelegate.getDefaultNightMode() == MODE_NIGHT_YES
 }

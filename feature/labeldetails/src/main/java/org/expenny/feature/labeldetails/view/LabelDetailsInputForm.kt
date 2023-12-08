@@ -47,14 +47,12 @@ internal fun LabelDetailsInputForm(
             state = state.nameInput,
             onValueChange = onNameChange
         )
-
         Column(
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             val labelColor by remember(state.colorArgb) {
                 mutableStateOf(state.colorArgb.let { Color(it.red, it.green, it.blue) })
             }
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.Top,
@@ -79,7 +77,6 @@ internal fun LabelDetailsInputForm(
                     onGenerateRandomColorClick = onGenerateRandomColorClick,
                 )
             }
-
             RgbPicker(
                 colorArgb = state.colorArgb,
                 onColorArgbChange = {

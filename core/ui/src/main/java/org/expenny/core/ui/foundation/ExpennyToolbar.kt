@@ -72,7 +72,7 @@ fun ExpennyToolbar(
         scrollBehavior = scrollBehavior,
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = backgroundColor,
-            scrolledContainerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp),
+            scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
             navigationIconContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
             titleContentColor = MaterialTheme.colorScheme.onSurface,
             actionIconContentColor = MaterialTheme.colorScheme.onSurfaceVariant

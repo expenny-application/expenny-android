@@ -24,32 +24,18 @@ fun ExpennyButton(
     modifier: Modifier = Modifier,
     size: ExpennyButtonSize = ExpennyButtonSize.Large,
     style: ExpennyButtonStyle = ExpennyButtonStyle.Filled,
-    type: ExpennyButtonType = ExpennyButtonType.Primary,
     label: @Composable () -> Unit,
     leadingIcon:  @Composable (() -> Unit)? = null,
     isEnabled: Boolean = true,
     onClick: () -> Unit,
 ) {
-    val buttonColors = when(type) {
-        ExpennyButtonType.Primary -> {
-            ButtonColors(
-                rippleColor = MaterialTheme.colorScheme.primary,
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
-                disabledContainerColor = MaterialTheme.colorScheme.onSurface.copy(disabledContainerOpacity),
-                disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(disabledContentOpacity),
-            )
-        }
-        ExpennyButtonType.Secondary -> {
-            ButtonColors(
-                rippleColor = MaterialTheme.colorScheme.primary,
-                containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp),
-                contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                disabledContainerColor = MaterialTheme.colorScheme.onSurface.copy(disabledContainerOpacity),
-                disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(disabledContentOpacity),
-            )
-        }
-    }.let {
+    val buttonColors = ButtonColors(
+        rippleColor = MaterialTheme.colorScheme.primary,
+        containerColor = MaterialTheme.colorScheme.primary,
+        contentColor = MaterialTheme.colorScheme.onPrimary,
+        disabledContainerColor = MaterialTheme.colorScheme.onSurface.copy(disabledContainerOpacity),
+        disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(disabledContentOpacity),
+    ).let {
         when (style) {
             ExpennyButtonStyle.Text -> it.copy(
                 containerColor = Color.Transparent,
@@ -136,8 +122,6 @@ private fun ButtonContent(
 enum class ExpennyButtonSize { Small, Medium, Large }
 
 enum class ExpennyButtonStyle { Filled, Text }
-
-enum class ExpennyButtonType { Primary, Secondary }
 
 private data class ButtonColors(
     val rippleColor: Color,

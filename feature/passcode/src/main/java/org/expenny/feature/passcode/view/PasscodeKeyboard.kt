@@ -113,7 +113,7 @@ private fun BackspaceButton(
     onClick: () -> Unit
 ) {
     val iconColor =
-        if (isEnabled) MaterialTheme.colorScheme.onSurface
+        if (isEnabled) MaterialTheme.colorScheme.primary
         else MaterialTheme.colorScheme.surfaceVariant
 
     KeyboardButton(

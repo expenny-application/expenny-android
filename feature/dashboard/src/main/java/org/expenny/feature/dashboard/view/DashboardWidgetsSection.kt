@@ -75,8 +75,8 @@ private fun DashboardWidgetCard(
         ) {
             ExpennyIconBox(
                 icon = widget.icon,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                background = MaterialTheme.colorScheme.primaryContainer
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                background = MaterialTheme.colorScheme.secondaryContainer
             )
             ExpennyText(
                 text = widget.label,

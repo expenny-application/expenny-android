@@ -1,6 +1,5 @@
 package org.expenny.feature.labeldetails.view
 
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import org.expenny.core.resources.R
