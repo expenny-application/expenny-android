@@ -22,25 +22,18 @@ fun ExpennyCard(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     onLongClick: () -> Unit = {},
-    tonalElevation: Dp = 1.dp,
-    color: Color = MaterialTheme.colorScheme.surface,
+    color: Color = MaterialTheme.colorScheme.surfaceContainer,
     shape: Shape = MaterialTheme.shapes.medium,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable ColumnScope.() -> Unit
 ) {
-    CompositionLocalProvider(
-        LocalContentColor provides  contentColorFor(color),
-        LocalAbsoluteTonalElevation provides tonalElevation
-    ) {
+    CompositionLocalProvider(LocalContentColor provides  contentColorFor(color)) {
         Box(
             modifier = modifier
                 .minimumInteractiveComponentSize()
                 .surface(
                     shape = shape,
-                    backgroundColor = surfaceColorAtElevation(
-                        color = color,
-                        elevation = tonalElevation
-                    ),
+                    backgroundColor = color,
                     border = null,
                     shadowElevation = 0.dp
                 )
@@ -61,8 +54,7 @@ fun ExpennyCard(
 @Composable
 fun ExpennyCard(
     modifier: Modifier = Modifier,
-    tonalElevation: Dp = 1.dp,
-    color: Color = MaterialTheme.colorScheme.surface,
+    color: Color = MaterialTheme.colorScheme.surfaceContainer,
     shape: Shape = MaterialTheme.shapes.medium,
     content: @Composable ColumnScope.() -> Unit
 ) {
@@ -70,7 +62,6 @@ fun ExpennyCard(
         modifier = modifier,
         shape = shape,
         color = color,
-        tonalElevation = tonalElevation,
         shadowElevation = 0.dp,
     ) {
         Column(content = content)
@@ -87,12 +78,3 @@ private fun Modifier.surface(
     .then(if (border != null) Modifier.border(border, shape) else Modifier)
     .background(color = backgroundColor, shape = shape)
     .clip(shape)
-
-@Composable
-private fun surfaceColorAtElevation(color: Color, elevation: Dp): Color {
-    return if (color == MaterialTheme.colorScheme.surface) {
-        MaterialTheme.colorScheme.surfaceColorAtElevation(elevation)
-    } else {
-        color
-    }
-}

@@ -25,7 +25,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import org.expenny.core.ui.theme.inputSurface
+import org.expenny.core.ui.theme.surfaceInput
 import org.expenny.feature.passcode.model.PasscodeValidationResult
 import org.expenny.feature.passcode.model.PasscodeType
 
@@ -77,7 +77,7 @@ private fun FieldBox(
             modifier = Modifier
                 .size(height = 56.dp, width = 48.dp)
                 .clip(shape)
-                .background(MaterialTheme.colorScheme.inputSurface)
+                .background(MaterialTheme.colorScheme.surfaceInput)
                 .border(
                     width = 1.dp,
                     color = borderColor,

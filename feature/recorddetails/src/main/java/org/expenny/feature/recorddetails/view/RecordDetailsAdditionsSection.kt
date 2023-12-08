@@ -20,7 +20,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import org.expenny.core.ui.extensions.asRawString
-import org.expenny.core.common.types.RecordType
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennyLabel
 import org.expenny.core.ui.components.ExpennySection
@@ -28,7 +27,7 @@ import org.expenny.core.ui.data.field.InputField
 import org.expenny.core.ui.data.ui.LabelUi
 import org.expenny.core.ui.foundation.ExpennyInputField
 import org.expenny.core.ui.foundation.ExpennyText
-import org.expenny.core.ui.theme.inputSurface
+import org.expenny.core.ui.theme.surfaceInput
 import org.expenny.core.ui.extensions.noRippleClickable
 
 @Composable
@@ -206,7 +205,7 @@ private fun LabelsInputField(
             .fillMaxWidth()
             .height(56.dp)
             .clip(MaterialTheme.shapes.small)
-            .background(MaterialTheme.colorScheme.inputSurface)
+            .background(MaterialTheme.colorScheme.surfaceInput)
             .noRippleClickable { onSelectClick() }
             .padding(
                 start = 16.dp,

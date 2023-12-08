@@ -42,7 +42,6 @@ internal fun RecordDetailsReceipt(
 
     ExpennyCard(
         modifier = modifier.height(150.dp),
-        tonalElevation = 1.dp,
         shape = MaterialTheme.shapes.small,
         onClick = onClick
     ) {

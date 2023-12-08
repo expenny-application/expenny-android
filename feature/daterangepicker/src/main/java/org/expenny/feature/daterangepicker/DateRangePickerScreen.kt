@@ -1,6 +1,8 @@
 package org.expenny.feature.daterangepicker
 
+import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.*
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -12,6 +14,9 @@ import org.expenny.feature.daterangepicker.view.DateRangePickerContent
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 import org.threeten.extra.LocalDateRange
+import java.time.Instant
+import java.time.LocalDate
+import java.time.Year
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Destination(
@@ -27,7 +32,16 @@ fun DateRangePickerScreen(
 
     val pickerState = rememberDateRangePickerState(
         initialSelectedStartDateMillis = state.initialSelectedStartDateEpoch,
-        initialSelectedEndDateMillis = state.initialSelectedEndDateEpoch
+        initialSelectedEndDateMillis = state.initialSelectedEndDateEpoch,
+        selectableDates = object : SelectableDates {
+            override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                return Instant.ofEpochMilli(utcTimeMillis).isBefore(Instant.now())
+            }
+
+            override fun isSelectableYear(year: Int): Boolean {
+                return year >= Year.now().value
+            }
+        }
     )
 
     vm.collectSideEffect {

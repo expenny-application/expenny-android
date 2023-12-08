@@ -21,7 +21,7 @@ import org.expenny.core.ui.data.field.InputField
 import org.expenny.core.ui.data.field.MonetaryInputField
 import org.expenny.core.ui.foundation.ExpennyMonetaryInputField
 import org.expenny.core.ui.foundation.ExpennySelectInputField
-import org.expenny.core.ui.theme.inputSurface
+import org.expenny.core.ui.theme.surfaceInput
 import org.expenny.core.ui.extensions.label
 import org.expenny.feature.recorddetails.State
 import java.math.BigDecimal
@@ -116,7 +116,7 @@ private fun RecordTypeTabRow(
         modifier = modifier.height(48.dp),
         tabs = types.map { it.label },
         textStyle = MaterialTheme.typography.bodyLarge,
-        containerColor = MaterialTheme.colorScheme.inputSurface,
+        containerColor = MaterialTheme.colorScheme.surfaceInput,
         selectedTabIndex = types.indexOf(selectedType),
         onTabSelect = {
             onChange(types[it])

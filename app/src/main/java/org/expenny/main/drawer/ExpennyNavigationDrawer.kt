@@ -53,9 +53,8 @@ internal fun ExpennyNavigationDrawer(
             bottomStart = 0.dp,
             bottomEnd = 16.dp
         ),
-        color = MaterialTheme.colorScheme.surface,
+        color = MaterialTheme.colorScheme.surfaceContainer,
         contentColor = MaterialTheme.colorScheme.onSurface,
-        tonalElevation = 1.dp
     ) {
         Column(
             modifier = Modifier
@@ -69,13 +68,11 @@ internal fun ExpennyNavigationDrawer(
             verticalArrangement = Arrangement.spacedBy(itemsSpacing)
         ) {
             NavigationDrawerHeader()
-
             NavigationDrawerContent(
                 modifier = Modifier.weight(1f),
                 currentOption = currentTab,
                 onOptionSelect = { onTabSelect(it.navGraph) }
             )
-
             NavigationDrawerFooter(
                 onOptionSelect = { onTabSelect(it.navGraph) }
             )

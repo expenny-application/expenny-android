@@ -36,7 +36,6 @@ internal fun BoxScope.DateRangePickerActionButton(
             .fillMaxWidth()
             .align(Alignment.BottomCenter),
         shadowElevation = 2.dp,
-        tonalElevation = 1.dp
     ) {
         Row(
             modifier = Modifier.padding(

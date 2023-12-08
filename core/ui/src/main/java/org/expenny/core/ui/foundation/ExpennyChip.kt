@@ -10,27 +10,23 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import org.expenny.core.ui.theme.ExpennyTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExpennyChip(
     modifier: Modifier = Modifier,
-    tonalElevation: Dp = 1.dp,
     label: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
-    containerColor: Color = MaterialTheme.colorScheme.surface,
+    containerColor: Color = MaterialTheme.colorScheme.surfaceContainer,
     contentColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
     onClick: () -> Unit
 ) {
     CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
         ChipContent(
             modifier = modifier,
-            tonalElevation = tonalElevation,
             label = label,
             leadingIcon = leadingIcon,
             trailingIcon = trailingIcon,
@@ -46,11 +42,10 @@ fun ExpennyChip(
 fun ExpennySelectableChip(
     modifier: Modifier = Modifier,
     isSelected: Boolean,
-    tonalElevation: Dp = 1.dp,
     label: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
-    containerColor: Color = MaterialTheme.colorScheme.surface,
+    containerColor: Color = MaterialTheme.colorScheme.surfaceContainer,
     contentColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
     selectedContainerColor: Color = MaterialTheme.colorScheme.primaryContainer,
     selectedContentColor: Color = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -68,7 +63,6 @@ fun ExpennySelectableChip(
     CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
         ChipContent(
             modifier = modifier,
-            tonalElevation = tonalElevation,
             label = label,
             leadingIcon = leadingIcon,
             trailingIcon = trailingIcon,
@@ -83,20 +77,18 @@ fun ExpennySelectableChip(
 @Composable
 private fun ChipContent(
     modifier: Modifier = Modifier,
-    tonalElevation: Dp = 1.dp,
     label: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
-    containerColor: Color = MaterialTheme.colorScheme.surface,
-    contentColor: Color = MaterialTheme.colorScheme.onSurface,
+    containerColor: Color,
+    contentColor: Color,
     onClick: () -> Unit
 ) {
     CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
         Surface(
             modifier = modifier.height(height),
-            shape = MaterialTheme.shapes.small,
+            shape = RoundedCornerShape(6.0.dp),
             color = containerColor,
-            tonalElevation = tonalElevation,
             onClick = onClick,
         ) {
             Row(
@@ -113,7 +105,7 @@ private fun ChipContent(
             ) {
                 CompositionLocalProvider(
                     LocalContentColor provides contentColor,
-                    LocalTextStyle provides MaterialTheme.typography.labelLarge
+                    LocalTextStyle provides MaterialTheme.typography.bodyMedium
                 ) {
                     if (leadingIcon != null) {
                         Box(modifier = Modifier.size(iconSize)) {
@@ -132,26 +124,6 @@ private fun ChipContent(
             }
         }
     }
-}
-
-private fun paddingValues(
-    hasLabel: Boolean = false,
-    hasLeadingIcon: Boolean = false,
-    hasTrailingIcon: Boolean = false
-): PaddingValues {
-    val (startPadding, endPadding) = if (!hasLabel) {
-        Pair(8.dp, 8.dp)
-    } else {
-        Pair(
-            if (hasLeadingIcon) 12.dp else 16.dp,
-            if (hasTrailingIcon) 12.dp else 16.dp
-        )
-    }
-
-    return PaddingValues(
-        start = startPadding,
-        end = endPadding
-    )
 }
 
 private val height = 32.dp

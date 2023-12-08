@@ -11,7 +11,6 @@ import androidx.compose.ui.unit.dp
 import org.expenny.core.common.types.AccountType
 import org.expenny.core.ui.foundation.ExpennySelectableChip
 import org.expenny.core.ui.foundation.ExpennyText
-import org.expenny.core.ui.theme.inputSurface
 import org.expenny.core.ui.extensions.icon
 import org.expenny.core.ui.extensions.label
 

@@ -54,8 +54,8 @@ fun ExpennyActionsBottomSheet(
         shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
         dragHandle = header,
         onDismissRequest = onDismiss,
-        tonalElevation = 1.dp,
-        windowInsets = WindowInsets(0)
+        windowInsets = WindowInsets(0),
+        containerColor = MaterialTheme.colorScheme.surfaceContainer
     ) {
         Column(
             modifier = Modifier.padding(contentPadding),

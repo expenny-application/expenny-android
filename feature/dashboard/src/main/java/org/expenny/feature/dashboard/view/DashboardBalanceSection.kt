@@ -2,12 +2,14 @@ package org.expenny.feature.dashboard.view
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
@@ -91,7 +93,7 @@ private fun DashboardBalanceLastRecord(
     lastRecord: RecordUi.Item?,
     onShowMoreClick: () -> Unit
 ) {
-    Surface(modifier = modifier) {
+    Box(modifier = modifier) {
         Column(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -132,25 +134,20 @@ private fun LastRecordItem(
         contentAlignment = Alignment.Center
     ) {
         if (lastRecord == null) {
-            val strokeColor = MaterialTheme.colorScheme.outline
-            val strokeCornerRadius = 8.dp
-
-            Canvas(modifier = Modifier.fillMaxSize()) {
-                drawRoundRect(
-                    color = strokeColor,
-                    style = Stroke(
-                        width = 3f,
-                        pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
-                    ),
-                    cornerRadius = CornerRadius(strokeCornerRadius.toPx())
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(MaterialTheme.shapes.small)
+                    .background(MaterialTheme.colorScheme.surface),
+                contentAlignment = Alignment.Center
+            ) {
+                ExpennyText(
+                    align = TextAlign.Center,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.outline,
+                    text = stringResource(R.string.no_records_yet_label)
                 )
             }
-            ExpennyText(
-                align = TextAlign.Center,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                text = stringResource(R.string.no_records_yet_label)
-            )
         } else {
             ExpennyRecord(
                 modifier = Modifier.fillMaxWidth(),

@@ -6,6 +6,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.LocalTonalElevationEnabled
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -132,7 +133,8 @@ class MainActivity : AppCompatActivity() {
             ExpennyTheme(isDarkTheme = isDarkTheme) {
                 CompositionLocalProvider(
                     // default font scale instead of system one
-                    LocalDensity provides Density(LocalDensity.current.density, 1f)
+                    LocalDensity provides Density(LocalDensity.current.density, 1f),
+                    LocalTonalElevationEnabled provides false
                 ) {
                     Surface(modifier = Modifier.fillMaxSize()) {
                         MainScreen(startRoute = startRoute)

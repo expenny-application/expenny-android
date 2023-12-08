@@ -20,14 +20,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.layout.LayoutCoordinates
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.*
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -38,7 +35,7 @@ import org.expenny.core.ui.extensions.asRawString
 import org.expenny.core.ui.foundation.transformations.ExpennyDecimalVisualTransformation
 import org.expenny.core.ui.foundation.transformations.ExpennyDecimalVisualTransformation.Companion.formatToOutput
 import org.expenny.core.ui.foundation.transformations.ExpennyDecimalVisualTransformation.Companion.formatToInput
-import org.expenny.core.ui.theme.inputSurface
+import org.expenny.core.ui.theme.surfaceInput
 import java.math.BigDecimal
 
 @Composable
@@ -220,8 +217,8 @@ fun ExpennyInputField(
                 visualTransformation = visualTransformation,
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.inputSurface,
-                    disabledContainerColor = MaterialTheme.colorScheme.inputSurface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceInput,
+                    disabledContainerColor = MaterialTheme.colorScheme.surfaceInput,
                     errorContainerColor = errorContainerColor,
                     focusedTextColor = MaterialTheme.colorScheme.onSurface,
                     unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
@@ -295,7 +292,7 @@ private fun animateBackgroundAsState(
     val focused by interactionSource.collectIsFocusedAsState()
     val backgroundColor =
         if (focused) MaterialTheme.colorScheme.surface
-        else MaterialTheme.colorScheme.inputSurface
+        else MaterialTheme.colorScheme.surfaceInput
 
     val animatedBackground = animateColorAsState(backgroundColor, tween(durationMillis = 150))
 

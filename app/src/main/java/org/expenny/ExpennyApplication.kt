@@ -19,6 +19,12 @@ class ExpennyApplication : Application(), Configuration.Provider {
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
 
+    // https://developer.android.com/training/dependency-injection/hilt-jetpack#workmanager
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder()
+            .setWorkerFactory(workerFactory)
+            .build()
+
     override fun onCreate() {
         super.onCreate()
 
@@ -36,13 +42,6 @@ class ExpennyApplication : Application(), Configuration.Provider {
         })
 
         registerNotificationChannels()
-    }
-
-    // https://developer.android.com/training/dependency-injection/hilt-jetpack#workmanager
-    override fun getWorkManagerConfiguration(): Configuration {
-        return Configuration.Builder()
-            .setWorkerFactory(workerFactory)
-            .build()
     }
 
     private fun registerNotificationChannels() {

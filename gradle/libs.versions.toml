@@ -8,14 +8,14 @@ androidDesugarJdkLibs = "2.0.3"
 androidGradlePlugin = "8.1.0"
 androidxActivity = "1.8.0-alpha06"
 androidxAppCompat = "1.5.1"
-androidxComposeBom = "2023.06.01"
+androidxComposeBom = "2023.10.01"
 androidxComposeCompiler = "1.5.0"
 androidxComposeRuntimeTracing = "1.0.0-alpha03"
-androidxCore = "1.8.0"
+androidxCore = "1.12.0"
 androidxCoreSplashscreen = "1.0.0"
 androidxDataStore = "1.0.0"
 androidxEspresso = "3.5.0"
-androidxHiltNavigationCompose = "1.1.0-alpha01"
+androidxHiltNavigationCompose = "1.1.0"
 androidxLifecycle = "2.6.1"
 androidxMetrics = "1.0.0-alpha03"
 androidxNavigation = "2.5.3"
@@ -32,8 +32,8 @@ firebaseCrashlyticsPlugin = "2.9.9"
 firebasePerformancePlugin = "1.4.2"
 destinations = "1.9.50"
 gmsPlugin = "4.3.14"
-hilt = "2.47"
-hiltExt = "1.0.0"
+hilt = "2.48"
+hiltExt = "1.1.0"
 junit4 = "4.13.2"
 kotlin = "1.8.0"
 kotlinxCoroutines = "1.6.4"
@@ -59,7 +59,7 @@ org-jetbrains-kotlin-android = "1.8.0"
 junit = "1.1.5"
 material = "1.9.0"
 opencsv = "5.7.1"
-work = "2.8.1"
+work = "2.9.0"
 
 [libraries]
 # Dependencies to be included in root build.gradle
@@ -83,7 +83,7 @@ androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "a
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "androidxComposeBom" }
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
 androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout" }
-androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version = "1.2.0-alpha12" } # Overriding version provided by BOM
 androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
 androidx-compose-ui-test = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }

@@ -1,9 +1,9 @@
 package org.expenny.feature.daterangepicker.view
 
 import androidx.compose.material3.*
+import androidx.compose.material3.DateRangePicker
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import java.time.Instant
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -17,9 +17,6 @@ internal fun DateRangePicker(
         title = null,
         headline = null,
         showModeToggle = false,
-        dateValidator = {
-            Instant.ofEpochMilli(it).isAfter(Instant.now()).not()
-        },
         colors = DatePickerDefaults.colors(
             containerColor = MaterialTheme.colorScheme.surface,
             weekdayContentColor = MaterialTheme.colorScheme.onSurface,
