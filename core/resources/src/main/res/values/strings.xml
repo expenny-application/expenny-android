@@ -68,6 +68,7 @@
     <string name="your_name_label">Your name</string>
     <string name="name_label">Name</string>
     <string name="color_label">Color</string>
+    <string name="icon_label">Icon</string>
     <string name="balance_label">Balance</string>
     <string name="skip_balance_setup_label">Skip balance setup</string>
     <string name="abort_setup_label">Abort setup</string>
@@ -78,6 +79,7 @@
     <string name="delete_record_question_label">Delete this record?</string>
     <string name="delete_selected_record_question_label">Delete selected records?</string>
     <string name="delete_label_question_label">Delete this label?</string>
+    <string name="delete_category_question_label">Delete this category?</string>
     <string name="delete_receipt_question_label">Delete this receipt?</string>
     <string name="delete_currency_question_label">Delete this currency?</string>
     <string name="amount_conversion_label">Amount conversion</string>
@@ -115,10 +117,12 @@
     <string name="currency_rates_label">Currency rates</string>
     <string name="debts_label">Debts</string>
     <string name="banks_connections_label">Banks connections</string>
+    <string name="add_category_label">Add category</string>
     <string name="add_account_label">Add account</string>
     <string name="add_label_label">Add label</string>
     <string name="add_record_label">Add record</string>
     <string name="edit_label_label">Edit label</string>
+    <string name="edit_category_label">Edit category</string>
     <string name="edit_account_label">Edit account</string>
     <string name="edit_record_label">Edit record</string>
     <string name="add_currency_label">Add currency</string>

@@ -55,7 +55,7 @@ fun ExpennySection(
             )
             Icon(
                 modifier = Modifier.rotate(expandIconAngle),
-                painter = painterResource(R.drawable.ic_chevron_down),
+                painter = painterResource(R.drawable.ic_expand),
                 tint = MaterialTheme.colorScheme.primary,
                 contentDescription = null
             )

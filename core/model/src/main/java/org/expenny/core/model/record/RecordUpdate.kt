@@ -37,7 +37,7 @@ sealed interface RecordUpdate {
         override val subject: String,
         override val amount: BigDecimal,
         override val date: LocalDateTime,
-        val categoryId: Long,
+        val categoryId: Long?,
         val type: TransactionType,
     ) : RecordUpdate
 

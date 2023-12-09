@@ -26,8 +26,12 @@ fun LabelDetailsScreen(
 
     vm.collectSideEffect {
         when (it) {
-            is Event.NavigateBack -> navigator.navigateBack()
-            is Event.ShowMessage -> snackbarManager.showMessage(it.message)
+            is Event.NavigateBack -> {
+                navigator.navigateBack()
+            }
+            is Event.ShowMessage -> {
+                snackbarManager.showMessage(it.message)
+            }
         }
     }
 

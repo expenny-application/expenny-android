@@ -34,6 +34,9 @@ fun SettingsScreen(
             is Event.NavigateToLabels -> {
                 navigator.navigateToLabelsListScreen()
             }
+            is Event.NavigateToCategoriesList -> {
+                navigator.navigateToCategoriesListScreen()
+            }
             is Event.NavigateToCurrencies -> {
                 navigator.navigateToCurrenciesListScreen()
             }

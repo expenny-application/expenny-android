@@ -12,9 +12,9 @@ import org.expenny.core.resources.R
 val DashboardWidget.iconResId: Int
     @DrawableRes
     get() = when (this) {
-        DashboardWidget.Records -> R.drawable.ic_records_filled
-        DashboardWidget.Accounts -> R.drawable.ic_accounts
-        DashboardWidget.Budgets -> R.drawable.ic_budgets
+        DashboardWidget.Records -> R.drawable.ic_records
+        DashboardWidget.Accounts -> R.drawable.ic_wallet
+        DashboardWidget.Budgets -> R.drawable.ic_calculator
         DashboardWidget.Analytics -> R.drawable.ic_analytics
         DashboardWidget.Debts -> R.drawable.ic_debts
     }

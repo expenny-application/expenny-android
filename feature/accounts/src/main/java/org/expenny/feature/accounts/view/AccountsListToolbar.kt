@@ -36,7 +36,7 @@ internal fun AccountsListToolbar(
             } else {
                 IconButton(onClick = onBackClick) {
                     Icon(
-                        painter = painterResource(R.drawable.ic_arrow_back),
+                        painter = painterResource(R.drawable.ic_back),
                         contentDescription = null
                     )
                 }

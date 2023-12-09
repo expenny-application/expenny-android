@@ -121,7 +121,7 @@ fun ExpennySearchToolbar(
                     }
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.ic_arrow_back),
+                        painter = painterResource(R.drawable.ic_back),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         contentDescription = null
                     )

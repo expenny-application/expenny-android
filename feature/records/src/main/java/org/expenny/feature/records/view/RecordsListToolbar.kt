@@ -45,7 +45,7 @@ internal fun RecordsListToolbar(
             if (isSelectionMode) {
                 IconButton(onClick = onSelectAllClick) {
                     Icon(
-                        painter = painterResource(R.drawable.ic_select_all),
+                        painter = painterResource(R.drawable.ic_check),
                         contentDescription = null
                     )
                 }
@@ -75,7 +75,7 @@ internal fun RecordsListToolbar(
                     }
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.ic_arrow_back),
+                        painter = painterResource(R.drawable.ic_back),
                         contentDescription = null
                     )
                 }

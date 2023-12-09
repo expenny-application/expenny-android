@@ -10,6 +10,7 @@ import org.expenny.feature.accountoverview.destinations.AccountOverviewScreenDes
 import org.expenny.feature.accounts.destinations.AccountsListScreenDestination
 import org.expenny.feature.analytics.destinations.AnalyticsScreenDestination
 import org.expenny.feature.categories.destinations.CategoriesListScreenDestination
+import org.expenny.feature.categorydetails.destinations.CategoryDetailsScreenDestination
 import org.expenny.feature.currencies.destinations.CurrenciesListScreenDestination
 import org.expenny.feature.currencydetails.destinations.CurrencyDetailsScreenDestination
 import org.expenny.feature.currencyunits.destinations.CurrencyUnitsListScreenDestination
@@ -39,6 +40,7 @@ object ExpennyNavGraphs {
             RecordsListScreenDestination,
             RecordDetailsScreenDestination,
             CategoriesListScreenDestination,
+            CategoryDetailsScreenDestination,
             LabelsListScreenDestination,
             LabelDetailsScreenDestination,
         ).routedIn(this).associateBy { it.route }
@@ -95,6 +97,8 @@ object ExpennyNavGraphs {
 
         override val destinationsByRoute = listOf<DestinationSpec<*>>(
             SettingsScreenDestination,
+            CategoriesListScreenDestination,
+            CategoryDetailsScreenDestination,
             CurrenciesListScreenDestination,
             CurrencyDetailsScreenDestination,
             CurrencyUnitsListScreenDestination,
@@ -118,6 +122,7 @@ object ExpennyNavGraphs {
             CurrencyDetailsScreenDestination,
             CurrenciesListScreenDestination,
             CategoriesListScreenDestination,
+            CategoryDetailsScreenDestination,
             LabelsListScreenDestination,
             LabelDetailsScreenDestination,
         ).routedIn(this).associateBy { it.route }

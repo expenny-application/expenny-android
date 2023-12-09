@@ -64,7 +64,7 @@ internal fun SettingsLanguageDialog(
         confirmButton = {
             ExpennyButton(
                 style = ExpennyButtonStyle.Text,
-                size = ExpennyButtonSize.Medium,
+                size = ExpennyButtonSize.Small,
                 onClick = onDismiss,
                 label = {
                     ExpennyText(text = stringResource(R.string.cancel_button))

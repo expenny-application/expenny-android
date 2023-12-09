@@ -10,12 +10,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableList
 import org.expenny.core.common.types.DashboardWidget
-import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennyIconBox
 import org.expenny.core.ui.foundation.ExpennyCard
 import org.expenny.core.ui.foundation.ExpennyText

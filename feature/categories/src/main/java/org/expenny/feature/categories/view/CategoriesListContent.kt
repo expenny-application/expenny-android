@@ -29,6 +29,7 @@ internal fun CategoriesListContent(
             CategoriesListToolbar(
                 scrollBehavior = scrollBehavior,
                 title = state.toolbarTitle.asRawString(),
+                onAddClick = { onAction(Action.OnAddCategoryClick) },
                 onBackClick = { onAction(Action.OnBackClick) }
             )
         },

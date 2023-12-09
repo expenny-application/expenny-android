@@ -4,5 +4,5 @@ data class CategoryUpdate(
     val id: Long,
     val name: String,
     val iconResName: String,
-    val colorValue: Long
+    val colorArgb: Int
 )

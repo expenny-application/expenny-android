@@ -24,7 +24,7 @@ class UpdateRecordUseCase @Inject constructor(
                             id = id,
                             type = type.transactionType!!,
                             accountId = accountId,
-                            categoryId = categoryId!!,
+                            categoryId = categoryId,
                             labelIds = labelIds,
                             receiptsUris = receiptsUris,
                             description = description,

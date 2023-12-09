@@ -30,6 +30,9 @@ interface RecordDao {
     @Query("DELETE FROM record WHERE record.accountId == :id OR record.transferAccountId == :id")
     suspend fun deleteByAccountId(id: Long)
 
+    @Query("UPDATE record SET categoryId = :newCategoryId WHERE categoryId == :oldCategoryId")
+    suspend fun updateCategoryId(oldCategoryId: Long?, newCategoryId: Long?)
+
     @Transaction
     @Query("SELECT * FROM record WHERE record.profileId == :profileId ORDER BY date DESC")
     fun selectAllDesc(profileId: Long): Flow<List<RecordEmbedded>>

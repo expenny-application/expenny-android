@@ -13,13 +13,22 @@ import org.expenny.core.ui.foundation.ExpennyToolbar
 internal fun CategoriesListToolbar(
     scrollBehavior: TopAppBarScrollBehavior,
     title: String,
+    onAddClick: () -> Unit,
     onBackClick: () -> Unit
 ) {
     ExpennyToolbar(
+        actions = {
+            IconButton(onClick = onAddClick) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_add),
+                    contentDescription = null
+                )
+            }
+        },
         navigationIcon = {
             IconButton(onClick = onBackClick) {
                 Icon(
-                    painter = painterResource(R.drawable.ic_arrow_back),
+                    painter = painterResource(R.drawable.ic_back),
                     tint = MaterialTheme.colorScheme.onSurface,
                     contentDescription = null
                 )

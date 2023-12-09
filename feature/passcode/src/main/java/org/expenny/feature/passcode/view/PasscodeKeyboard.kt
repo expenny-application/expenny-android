@@ -97,7 +97,7 @@ private fun BiometricButton(
         content = {
             Icon(
                 modifier = Modifier.size(32.dp),
-                painter = painterResource(R.drawable.ic_fingerprint),
+                painter = painterResource(R.drawable.ic_biometric),
                 tint = iconColor,
                 contentDescription = null
             )

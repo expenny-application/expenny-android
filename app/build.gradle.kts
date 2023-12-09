@@ -114,6 +114,7 @@ dependencies {
     implementation(project(":feature:records"))
     implementation(project(":feature:recorddetails"))
     implementation(project(":feature:categories"))
+    implementation(project(":feature:categorydetails"))
     implementation(project(":feature:labels"))
     implementation(project(":feature:daterangepicker"))
     implementation(project(":feature:analytics"))

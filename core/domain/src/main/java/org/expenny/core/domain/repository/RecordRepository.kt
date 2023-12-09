@@ -1,6 +1,5 @@
 package org.expenny.core.domain.repository
 
-import androidx.annotation.IntRange
 import kotlinx.coroutines.flow.Flow
 import org.expenny.core.common.types.RecordType
 import org.expenny.core.model.record.Record

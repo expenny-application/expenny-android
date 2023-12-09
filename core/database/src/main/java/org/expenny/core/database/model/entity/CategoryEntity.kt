@@ -16,5 +16,13 @@ data class CategoryEntity(
     val profileId: Long,
     val name: String,
     val iconResName: String,
-    val colorValue: Long,
-)
+    val colorArgb: Int,
+) {
+
+    class Update(
+        val categoryId: Long,
+        val name: String,
+        val iconResName: String,
+        val colorArgb: Int,
+    )
+}

@@ -93,7 +93,7 @@ internal fun SettingsSecuritySection(
             isEnabled = isBiometricEnabled,
             isSelected = isUseBiometricSelected,
             title = stringResource(R.string.use_bioemtric_label),
-            icon = painterResource(R.drawable.ic_fingerprint),
+            icon = painterResource(R.drawable.ic_biometric),
             onClick = onUseBiometricClick
         )
     }
@@ -114,7 +114,7 @@ internal fun SettingsNotificationsSection(
     ) {
         SectionSwitchItem(
             title = stringResource(R.string.reminder_label),
-            icon = painterResource(R.drawable.ic_reminder),
+            icon = painterResource(R.drawable.ic_bell),
             description = stringResource(R.string.reminder_notification_description_label),
             isSelected = isReminderSelected,
             onClick = onReminderClick
@@ -122,7 +122,7 @@ internal fun SettingsNotificationsSection(
         SectionSelectionItem(
             isEnabled = isReminderTimeEnabled,
             title = stringResource(R.string.reminder_time_label),
-            icon = painterResource(R.drawable.ic_timewatch),
+            icon = painterResource(R.drawable.ic_time),
             value = reminderTime,
             onClick = onReminderTimeClick
         )
@@ -181,17 +181,17 @@ internal fun SettingsGeneralSection(
         )
         SectionItem(
             title = stringResource(R.string.categorizations_label),
-            icon = painterResource(R.drawable.ic_rule),
+            icon = painterResource(R.drawable.ic_category),
             onClick = onCategorizationClick
         )
         SectionItem(
             title = stringResource(R.string.currencies_label),
-            icon = painterResource(R.drawable.ic_money),
+            icon = painterResource(R.drawable.ic_currency),
             onClick = onCurrenciesClick
         )
         SectionItem(
             title = stringResource(R.string.labels_label),
-            icon = painterResource(R.drawable.ic_label_outlined),
+            icon = painterResource(R.drawable.ic_labels),
             onClick = onLabelsClick
         )
     }

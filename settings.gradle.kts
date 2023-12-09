@@ -46,5 +46,5 @@ include(":feature:analytics")
 include(":feature:labeldetails")
 include(":feature:settings")
 include(":feature:accountoverview")
-
 include(":feature:passcode")
+include(":feature:categorydetails")

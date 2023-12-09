@@ -83,7 +83,7 @@ private fun DialogContent(
                 ExpennyButton(
                     onClick = onCancelClick,
                     style = ExpennyButtonStyle.Text,
-                    size = ExpennyButtonSize.Medium,
+                    size = ExpennyButtonSize.Small,
                     label = {
                         ExpennyText(text = stringResource(R.string.cancel_button))
                     }
