@@ -19,7 +19,7 @@ internal fun AccountDetailsActionButton(
         onClick = onClick,
         icon = {
             Icon(
-                painter = painterResource(R.drawable.ic_done),
+                painter = painterResource(R.drawable.ic_check),
                 contentDescription = null
             )
         },

@@ -19,7 +19,7 @@ class ExpensesMapper @Inject constructor(
             expensesCount = model.expensesCount,
             value = model.amount.value,
             label = model.category?.name ?: context.getString(R.string.unknown_label),
-            color = model.category?.colorValue?.let { Color(it) }
+            color = model.category?.colorArgb?.let { Color(it) }
         )
     }
 

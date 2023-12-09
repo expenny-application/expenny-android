@@ -44,7 +44,7 @@ fun ExpennyRecord(
         is RecordUi.Item.Transfer -> {
             RecordContent(
                 modifier = modifier,
-                iconResId = R.drawable.ic_swap_horiz,
+                iconResId = R.drawable.ic_swap_horizontal,
                 iconColor = MaterialTheme.colorScheme.primary,
                 category = stringResource(R.string.transfer_label),
                 amount = record.postedAmount.displayValue,

@@ -62,7 +62,7 @@ private fun ExceptionContent(
                 CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurface) {
                     Icon(
                         modifier = Modifier.size(40.dp),
-                        painter = painterResource(R.drawable.ic_crash_two_tone),
+                        painter = painterResource(R.drawable.ic_bug),
                         tint = MaterialTheme.colorScheme.primary,
                         contentDescription = null
                     )

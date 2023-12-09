@@ -46,7 +46,7 @@ class LabelDetailsViewModel @Inject constructor(
         buildSettings = { exceptionHandler = defaultCoroutineExceptionHandler() }
     ) {
         coroutineScope {
-            setNavArgs()
+            setupInitialState()
         }
     }
 
@@ -83,10 +83,11 @@ class LabelDetailsViewModel @Inject constructor(
                 )
             }
             postSideEffect(Event.NavigateBack)
+            postSideEffect(Event.ShowMessage(StringResource.fromRes(R.string.saved_message)))
         }
     }
 
-    private fun setNavArgs() {
+    private fun setupInitialState() {
         savedStateHandle.navArgs<LabelDetailsNavArgs>().also { args ->
             intent {
                 if (args.labelId != null) {

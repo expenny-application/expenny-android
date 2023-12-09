@@ -19,6 +19,8 @@ import org.expenny.feature.accounts.destinations.AccountsListScreenDestination
 import org.expenny.feature.accounts.navigation.AccountsListNavigator
 import org.expenny.feature.categories.destinations.CategoriesListScreenDestination
 import org.expenny.feature.categories.navigation.CategoriesListNavigator
+import org.expenny.feature.categorydetails.destinations.CategoryDetailsScreenDestination
+import org.expenny.feature.categorydetails.navigation.CategoryDetailsNavigator
 import org.expenny.feature.currencies.destinations.CurrenciesListScreenDestination
 import org.expenny.feature.currencies.navigation.CurrenciesListNavigator
 import org.expenny.feature.currencydetails.destinations.CurrencyDetailsScreenDestination
@@ -58,7 +60,8 @@ class ExpennyNavigator(
     LabelDetailsNavigator,
     SettingsNavigator,
     CategoriesListNavigator,
-    PasscodeNavigator {
+    PasscodeNavigator,
+    CategoryDetailsNavigator {
 
     override fun navigateToSetup() {
         navController.navigate(ExpennyNavGraphs.setup) {
@@ -159,6 +162,18 @@ class ExpennyNavigator(
         navigateToHome()
     }
 
+    override fun navigateToEditCategoryScreen(categoryId: Long) {
+        navController.navigate(
+            direction = CategoryDetailsScreenDestination(categoryId = categoryId) within navGraph
+        )
+    }
+
+    override fun navigateToAddCategoryScreen() {
+        navController.navigate(
+            direction = CategoryDetailsScreenDestination() within navGraph
+        )
+    }
+
     override fun navigateBack() {
         if (navController.currentDestination?.route == DrawerTab.Settings.route) {
             navController.navigateFirstTab()
@@ -178,6 +193,12 @@ class ExpennyNavigator(
     override fun navigateToCreatePasscodeScreen() {
         navController.navigate(
             direction = PasscodeScreenDestination(type = PasscodeType.Create) within navGraph
+        )
+    }
+
+    override fun navigateToCategoriesListScreen() {
+        navController.navigate(
+            direction = CategoriesListScreenDestination() within navGraph
         )
     }
 

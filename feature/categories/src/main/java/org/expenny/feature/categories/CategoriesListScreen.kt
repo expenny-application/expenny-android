@@ -24,6 +24,8 @@ fun CategoriesListScreen(
     vm.collectSideEffect {
         when (it) {
             is Event.NavigateBackWithResult -> resultNavigator.navigateBack(it.selection)
+            is Event.NavigateToEditCategory -> navigator.navigateToEditCategoryScreen(it.id)
+            is Event.NavigateToCreateCategory -> navigator.navigateToAddCategoryScreen()
             is Event.NavigateBack -> navigator.navigateBack()
         }
     }

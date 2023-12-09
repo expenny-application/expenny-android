@@ -144,7 +144,7 @@ private fun NavigationDrawerContent(
                     color = MaterialTheme.colorScheme.outlineVariant
                 )
                 NavigationDrawerOption(
-                    icon = painterResource(R.drawable.ic_more_horiz),
+                    icon = painterResource(R.drawable.ic_more_horizontal),
                     label = stringResource(R.string.others_label),
                     onSelect = {
                         isOthersSectionVisible = !isOthersSectionVisible
@@ -152,7 +152,7 @@ private fun NavigationDrawerContent(
                     trailingContent = {
                         Icon(
                             modifier = Modifier.rotate(expandIconAngle),
-                            painter = painterResource(R.drawable.ic_chevron_down),
+                            painter = painterResource(R.drawable.ic_expand),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             contentDescription = null,
                         )
@@ -361,8 +361,8 @@ internal enum class DrawerTab(
 ) {
     Dashboard(ExpennyNavGraphs.dashboard, R.string.dashboard_label, R.drawable.ic_dashboard),
     Analytics(ExpennyNavGraphs.analytics, R.string.analytics_label, R.drawable.ic_analytics),
-    Budgets(ExpennyNavGraphs.budgets, R.string.budgets_label, R.drawable.ic_budgets),
-    Accounts(ExpennyNavGraphs.accounts, R.string.accounts_label, R.drawable.ic_accounts),
+    Budgets(ExpennyNavGraphs.budgets, R.string.budgets_label, R.drawable.ic_calculator),
+    Accounts(ExpennyNavGraphs.accounts, R.string.accounts_label, R.drawable.ic_wallet),
     Records(ExpennyNavGraphs.records, R.string.records_label, R.drawable.ic_records),
     Debts(ExpennyNavGraphs.debts, R.string.debts_label, R.drawable.ic_debts),
     Rates(ExpennyNavGraphs.rates, R.string.currency_rates_label, R.drawable.ic_rates),

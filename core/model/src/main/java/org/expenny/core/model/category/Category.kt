@@ -7,5 +7,5 @@ data class Category(
     val profile: Profile,
     val name: String,
     val iconResName: String,
-    val colorValue: Long,
+    val colorArgb: Int,
 )

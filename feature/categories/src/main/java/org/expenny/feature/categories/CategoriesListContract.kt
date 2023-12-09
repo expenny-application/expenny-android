@@ -14,10 +14,13 @@ data class State(
 
 sealed interface Action {
     class OnCategoryClick(val id: Long) : Action
-    object OnBackClick : Action
+    data object OnAddCategoryClick : Action
+    data object OnBackClick : Action
 }
 
 sealed interface Event {
+    class NavigateToEditCategory(val id: Long) : Event
     class NavigateBackWithResult(val selection: LongNavArg) : Event
-    object NavigateBack : Event
+    data object NavigateToCreateCategory : Event
+    data object NavigateBack : Event
 }

@@ -86,9 +86,10 @@ object ExpennyColor {
     val Pink: Color = Color(0xFFEC407A)
     val Blue: Color = Color(0xFF2962FF)
     val Teal: Color = Color(0xFF00BFA5)
-    val Orange: Color = Color(0xFFFF9100)
+    val Orange: Color = Color(0xFFEF6C00)
     val Lime: Color = Color(0xFFC0CA33)
     val Green: Color = Color(0xFF41C300)
     val Gray: Color = Color(0xFF616161)
+    val Brown: Color = Color(0xFF8D6E63)
     val Black: Color = Color(0xFF212121)
 }

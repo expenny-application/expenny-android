@@ -4,5 +4,5 @@ data class CategoryCreate(
     val profileId: Long,
     val name: String,
     val iconResName: String,
-    val colorValue: Long,
+    val colorArgb: Int,
 )

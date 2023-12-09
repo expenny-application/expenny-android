@@ -99,7 +99,7 @@ private fun SelectionFilter(
         onClick = onClick,
         trailingIcon = {
             Icon(
-                painter = painterResource(R.drawable.ic_chevron_down),
+                painter = painterResource(R.drawable.ic_expand),
                 contentDescription = null
             )
         },

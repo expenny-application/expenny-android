@@ -14,7 +14,7 @@ val AccountType.iconResId: Int
     get() = when (this) {
         AccountType.General -> R.drawable.ic_wallet
         AccountType.Bank -> R.drawable.ic_bank
-        AccountType.Card -> R.drawable.ic_credit_card
+        AccountType.Card -> R.drawable.ic_card
         AccountType.Savings -> R.drawable.ic_safe
         AccountType.Cash -> R.drawable.ic_cash
     }

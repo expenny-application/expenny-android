@@ -18,7 +18,7 @@ internal fun DashboardFloatingActionButton(
         onClick = onClick,
         icon = {
             Icon(
-                painter = painterResource(R.drawable.ic_instant_action),
+                painter = painterResource(R.drawable.ic_bolt),
                 contentDescription = null
             )
         }

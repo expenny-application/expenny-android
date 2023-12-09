@@ -12,6 +12,7 @@ import org.expenny.core.model.account.AccountCreate
 import org.expenny.core.model.account.AccountUpdate
 import org.expenny.core.model.category.Category
 import org.expenny.core.model.category.CategoryCreate
+import org.expenny.core.model.category.CategoryUpdate
 import org.expenny.core.model.currency.*
 import org.expenny.core.model.file.FileCreate
 import org.expenny.core.model.label.Label
@@ -95,7 +96,7 @@ object DataMapper {
             profile = categoryProfile.toModel(),
             name = category.name,
             iconResName = category.iconResName,
-            colorValue = category.colorValue
+            colorArgb = category.colorArgb
         )
     }
 
@@ -182,6 +183,15 @@ object DataMapper {
             description = description,
             startBalance = startBalance,
             totalBalance = totalBalance
+        )
+    }
+
+    internal fun CategoryUpdate.toEntity(): CategoryEntity.Update {
+        return CategoryEntity.Update(
+            categoryId = id,
+            name = name,
+            iconResName = iconResName,
+            colorArgb = colorArgb
         )
     }
 
@@ -297,7 +307,7 @@ object DataMapper {
             profileId = profileId,
             name = name,
             iconResName = iconResName,
-            colorValue = colorValue
+            colorArgb = colorArgb
         )
     }
 

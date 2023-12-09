@@ -4,5 +4,6 @@ interface SettingsNavigator {
     fun navigateToCurrenciesListScreen()
     fun navigateToLabelsListScreen()
     fun navigateToCreatePasscodeScreen()
+    fun navigateToCategoriesListScreen()
     fun navigateBack()
 }

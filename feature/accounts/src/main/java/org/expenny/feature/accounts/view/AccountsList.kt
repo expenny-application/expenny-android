@@ -107,7 +107,7 @@ private fun AccountItem(
                     )
                     Icon(
                         modifier = Modifier.fillMaxHeight(),
-                        painter = painterResource(R.drawable.ic_records),
+                        painter = painterResource(R.drawable.ic_list),
                         tint = MaterialTheme.colorScheme.primary,
                         contentDescription = null
                     )

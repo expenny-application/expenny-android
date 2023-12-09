@@ -39,16 +39,21 @@ class CategoriesListViewModel @Inject constructor(
 
     override fun onAction(action: Action) {
         when (action) {
+            is Action.OnAddCategoryClick -> handleOnAddCategoryClick()
             is Action.OnCategoryClick -> handleOnCategoryClick(action)
             is Action.OnBackClick -> handleOnBackClick()
         }
+    }
+
+    private fun handleOnAddCategoryClick() = intent {
+        postSideEffect(Event.NavigateToCreateCategory)
     }
 
     private fun handleOnCategoryClick(action: Action.OnCategoryClick) = intent {
         if (state.selection != null) {
             postSideEffect(Event.NavigateBackWithResult(LongNavArg(action.id)))
         } else {
-            // todo add category details
+            postSideEffect(Event.NavigateToEditCategory(action.id))
         }
     }
 

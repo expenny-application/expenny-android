@@ -31,7 +31,7 @@ internal fun LabelDetailsToolbar(
         navigationIcon = {
             IconButton(onClick = onBackClick) {
                 Icon(
-                    painter = painterResource(R.drawable.ic_arrow_back),
+                    painter = painterResource(R.drawable.ic_back),
                     tint = MaterialTheme.colorScheme.onSurface,
                     contentDescription = null
                 )

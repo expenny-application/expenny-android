@@ -130,6 +130,9 @@ class SettingsViewModel @Inject constructor(
             SettingsItemType.ReminderTime -> {
                 reduce { state.copy(dialog = State.Dialog.ReminderTimeDialog) }
             }
+            SettingsItemType.Categorization -> {
+                postSideEffect(Event.NavigateToCategoriesList)
+            }
             else -> {}
         }
     }
