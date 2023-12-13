@@ -73,11 +73,11 @@ fun RecordDetailsScreen(
         }
     }
 
-    labelsResult.onNavResult { res ->
-        if (res is NavResult.Value) {
-            vm.onAction(Action.OnLabelsSelect(res.value))
-        }
-    }
+//    labelsResult.onNavResult { res ->
+//        if (res is NavResult.Value) {
+//            vm.onAction(Action.OnLabelsSelect(res.value))
+//        }
+//    }
 
     vm.collectSideEffect {
         when (it) {

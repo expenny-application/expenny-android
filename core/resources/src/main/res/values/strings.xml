@@ -278,6 +278,7 @@
     <string name="invalid_account_name_error">Invalid account name</string>
     <string name="invalid_number_error">Should be a number</string>
     <string name="greater_than_zero_error">Should be greater than 0</string>
+    <string name="alphanumeric_error">Should not contain special characters</string>
     <string name="value_constraints_error">Value doesn\'t meet the constraints</string>
     <string name="max_photos_amount_error">Maximum number of photos is %1$d</string>
     <string name="required_field_error">Field is required</string>

@@ -19,10 +19,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.*
-import org.expenny.core.ui.extensions.asRawString
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennyLabelColorAlpha
 import org.expenny.core.ui.data.field.InputField
+import org.expenny.core.ui.extensions.asRawString
 import org.expenny.core.ui.foundation.ExpennyInputField
 import org.expenny.core.ui.foundation.ExpennyInputFieldHeight
 import org.expenny.core.ui.foundation.ExpennyText

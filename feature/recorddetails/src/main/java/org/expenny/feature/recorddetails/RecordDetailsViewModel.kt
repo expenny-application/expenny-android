@@ -22,6 +22,7 @@ import org.expenny.core.domain.usecase.record.CreateRecordUseCase
 import org.expenny.core.domain.usecase.record.DeleteRecordUseCase
 import org.expenny.core.domain.usecase.record.GetRecordUseCase
 import org.expenny.core.domain.usecase.record.UpdateRecordUseCase
+import org.expenny.core.domain.validators.AlphanumericValidator
 import org.expenny.core.domain.validators.MinimumLengthValidator
 import org.expenny.core.domain.validators.RequiredBigDecimalValidator
 import org.expenny.core.domain.validators.RequiredStringValidator
@@ -30,7 +31,6 @@ import org.expenny.core.model.category.Category
 import org.expenny.core.model.currency.CurrencyAmount
 import org.expenny.core.model.record.Record
 import org.expenny.core.resources.R
-import org.expenny.core.ui.data.navargs.LongArrayNavArg
 import org.expenny.core.ui.data.navargs.LongNavArg
 import org.expenny.core.ui.mapper.AccountNameMapper
 import org.expenny.core.ui.mapper.LabelMapper
@@ -74,6 +74,7 @@ class RecordDetailsViewModel @Inject constructor(
     private val selectedCategory = MutableStateFlow<Category?>(null)
     private val selectedAccount = MutableStateFlow<Account?>(null)
     private val selectedTransferAccount = MutableStateFlow<Account?>(null)
+    private var labelsAcrossAllRecords = emptyList<String>()
 
     override val container = container<State, Event>(
         initialState = State(),
@@ -84,6 +85,7 @@ class RecordDetailsViewModel @Inject constructor(
             launch { subscribeToSelectedCategory() }
             launch { subscribeToSelectedAccount() }
             launch { subscribeToSelectedTransferAccount() }
+            launch { getLabelsAcrossAllRecords() }
         }
     }
 
@@ -98,17 +100,17 @@ class RecordDetailsViewModel @Inject constructor(
             is Action.OnTimeChange -> handleOnTimeChange(action)
             is Action.OnDescriptionChange -> handleOnDescriptionChange(action)
             is Action.OnPayeeOrPayerChange -> handleOnPayeeOrPayerChange(action)
+            is Action.OnLabelChange -> handleOnLabelChange(action)
             is Action.OnAdditionsSectionVisibilityChange -> handleOnAdditionsSectionVisibilityChange(action)
             is Action.OnCategorySelect -> handleOnCategorySelect(action)
             is Action.OnAccountSelect -> handleOnAccountSelect(action)
-            is Action.OnLabelsSelect -> handleOnLabelsSelect(action)
+            is Action.OnLabelAdd -> handleOnLabelAdd(action)
+            is Action.OnLabelRemove -> handleOnLabelRemove(action)
             is Action.OnSelectCategoryClick -> handleOnSelectCategoryClick()
             is Action.OnSelectAccountClick -> handleOnSelectAccountClick()
             is Action.OnSelectTransferAccountClick -> handleOnSelectTransferAccountClick()
             is Action.OnSelectDateClick -> handleOnSelectDateClick()
             is Action.OnSelectTimeClick -> handleOnSelectTimeClick()
-            is Action.OnSelectLabelClick -> handleOnSelectLabelClick()
-            is Action.OnDeleteLabelClick -> handleOnDeleteLabelClick(action)
             is Action.OnAddReceiptClick -> handleOnAddReceiptClick()
             is Action.OnReceiptSelect -> handleOnReceiptSelect(action)
             is Action.OnReceiptCapture -> handleOnReceiptCapture(action)
@@ -148,6 +150,42 @@ class RecordDetailsViewModel @Inject constructor(
         resultCode = accountSelectionResultCode
     )
 
+    private fun handleOnLabelChange(action: Action.OnLabelChange) = blockingIntent {
+        val suggestedLabel = labelsAcrossAllRecords.firstOrNull { it.startsWith(action.label) }
+
+        reduce {
+            state.copy(
+                labelsInput = state.labelsInput.copy(
+                    value = action.label,
+                    suggestion = suggestedLabel,
+                    error = validateAlphanumericInput(action.label).errorRes
+                )
+            )
+        }
+    }
+
+    private fun handleOnLabelAdd(action: Action.OnLabelAdd) = intent {
+        reduce {
+            state.copy(
+                labelsInput = state.labelsInput.copy(
+                    labels = state.labelsInput.labels + action.label
+                )
+            )
+        }
+    }
+
+    private fun handleOnLabelRemove(action: Action.OnLabelRemove) = intent {
+        reduce {
+            state.copy(
+                labelsInput = state.labelsInput.copy(
+                    labels = state.labelsInput.labels.filterIndexed { i, _ ->
+                        action.index != i
+                    }
+                )
+            )
+        }
+    }
+
     private fun handleOnReceiptSourceDialogCameraSelect() = intent {
         reduce { state.copy(showReceiptSourceDialog = false) }
         val uri = filesDirectoryHandler.getPersistentImageUri()
@@ -157,19 +195,6 @@ class RecordDetailsViewModel @Inject constructor(
     private fun handleOnReceiptSourceDialogGallerySelect() = intent {
         reduce { state.copy(showReceiptSourceDialog = false) }
         postSideEffect(Event.OpenImagePicker)
-    }
-
-    private fun handleOnDeleteLabelClick(action: Action.OnDeleteLabelClick) = intent {
-        reduce {
-            state.copy(labels = state.labels.filter { it.id != action.id })
-        }
-    }
-
-    private fun handleOnLabelsSelect(action: Action.OnLabelsSelect) = intent {
-        val labels = getLabels().first().filter { action.selection.values.contains(it.id) }
-        reduce {
-            state.copy(labels = labelMapper(labels))
-        }
     }
 
     private fun handleOnCategorySelect(action: Action.OnCategorySelect) = intent {
@@ -378,7 +403,7 @@ class RecordDetailsViewModel @Inject constructor(
                             accountId = selectedAccount.value!!.id,
                             transferAccountId = selectedTransferAccount.value?.id,
                             categoryId = selectedCategory.value?.id,
-                            labelIds = state.labels.map { it.id },
+                            labelIds = emptyList(),
                             receiptsUris = state.receipts,
                             description = state.descriptionInput.value,
                             subject = state.payeeOrPayerInput.value,
@@ -396,7 +421,7 @@ class RecordDetailsViewModel @Inject constructor(
                             accountId = selectedAccount.value!!.id,
                             transferAccountId = selectedTransferAccount.value?.id,
                             categoryId = selectedCategory.value?.id,
-                            labelIds = state.labels.map { it.id },
+                            labelIds = emptyList(),
                             receiptsUris = state.receipts,
                             description = state.descriptionInput.value,
                             subject = state.payeeOrPayerInput.value,
@@ -411,11 +436,6 @@ class RecordDetailsViewModel @Inject constructor(
                 postSideEffect(Event.NavigateBack)
             }
         }
-    }
-
-    private fun handleOnSelectLabelClick() = intent {
-        val selection = LongArrayNavArg(state.labels.map { it.id }.toLongArray())
-        postSideEffect(Event.NavigateToLabelSelectionList(selection))
     }
 
     private fun handleOnSelectDateClick() = intent {
@@ -481,6 +501,10 @@ class RecordDetailsViewModel @Inject constructor(
         selectedTransferAccount.value = null
     }
 
+    private fun validateAlphanumericInput(value: String) = validateInput(
+        value, listOf(AlphanumericValidator())
+    )
+
     private fun validateRequiredInput(value: BigDecimal) = validateInput(
         value.toPlainString(), listOf(RequiredBigDecimalValidator())
     )
@@ -545,6 +569,10 @@ class RecordDetailsViewModel @Inject constructor(
         }
 
         return fieldsValidationResults.all { it.isValid }
+    }
+
+    private suspend fun getLabelsAcrossAllRecords() {
+        labelsAcrossAllRecords = getLabels().first().map { it.name }
     }
 
     private fun subscribeToSelectedTransferAccount() = intent {
@@ -650,7 +678,7 @@ class RecordDetailsViewModel @Inject constructor(
                 toolbarTitle = toolbarTitle,
                 selectedType = record.recordType,
                 receipts = record.receipts,
-                labels = labelMapper(record.labels),
+                labelsInput = state.labelsInput.copy(labels = labelMapper(record.labels).map { it.name }),
                 amountInput = state.amountInput.copy(value = record.amount.value),
                 dateInput = state.dateInput.copy(value = record.date.toDateString()),
                 timeInput = state.timeInput.copy(value = record.date.toTimeString()),

@@ -11,6 +11,6 @@ class LengthValidator(
 ) : Validator {
 
     override fun isValid(value: String): Boolean {
-        return value.length in min..max
+        return value.trim().length in min..max
     }
 }

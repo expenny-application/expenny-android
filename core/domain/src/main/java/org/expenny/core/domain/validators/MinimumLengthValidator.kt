@@ -10,6 +10,6 @@ class MinimumLengthValidator(
 ) : Validator {
 
     override fun isValid(value: String): Boolean {
-        return value.length >= min
+        return value.trim().length >= min
     }
 }

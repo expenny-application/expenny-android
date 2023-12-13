@@ -12,7 +12,7 @@ import org.expenny.core.ui.data.field.InputField
 import org.expenny.core.ui.data.field.MonetaryInputField
 import org.expenny.core.ui.data.navargs.LongArrayNavArg
 import org.expenny.core.ui.data.navargs.LongNavArg
-import org.expenny.core.ui.data.ui.LabelUi
+import org.expenny.feature.recorddetails.model.LabelsInputField
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalTime
@@ -43,9 +43,9 @@ data class State(
     val transferAccountInput: InputField = InputField(),
     val dateInput: InputField = InputField(value = LocalDate.now().toDateString()),
     val timeInput: InputField = InputField(value = LocalTime.now().toTimeString()),
+    val labelsInput: LabelsInputField = LabelsInputField(),
     val payeeOrPayerInput: InputField = InputField(required = false),
     val descriptionInput: InputField = InputField(required = false),
-    val labels: List<LabelUi> = listOf(),
     val receipts: List<Uri> = listOf(),
 )
 
@@ -67,13 +67,14 @@ sealed interface Action {
     class OnTransferAmountChange(val amount: BigDecimal) : Action
     class OnCategorySelect(val selection: LongNavArg) : Action
     class OnAccountSelect(val selection: LongNavArg) : Action
-    class OnLabelsSelect(val selection: LongArrayNavArg) : Action
+    class OnLabelAdd(val label: String) : Action
+    class OnLabelRemove(val index: Int) : Action
     class OnDateChange(val date: LocalDate) : Action
     class OnTimeChange(val time: LocalTime) : Action
     class OnPayeeOrPayerChange(val payeeOrPayer: String) : Action
     class OnDescriptionChange(val description: String) : Action
+    class OnLabelChange(val label: String) : Action
     class OnAdditionsSectionVisibilityChange(val isVisible: Boolean) : Action
-    class OnDeleteLabelClick(val id: Long) : Action
     class OnReceiptSelect(val uri: Uri?) : Action
     class OnReceiptCapture(val uri: Uri?) : Action
     class OnDeleteReceiptClick(val uri: Uri) : Action
@@ -84,7 +85,6 @@ sealed interface Action {
     data object OnSelectCategoryClick : Action
     data object OnSelectAccountClick : Action
     data object OnSelectTransferAccountClick : Action
-    data object OnSelectLabelClick : Action
     data object OnResetTransferDialogConfirm : Action
     data object OnDeleteRecordDialogConfirm : Action
     data object OnReceiptSourceDialogCameraSelect : Action

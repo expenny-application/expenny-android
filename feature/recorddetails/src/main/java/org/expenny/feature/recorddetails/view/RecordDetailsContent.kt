@@ -26,7 +26,7 @@ import org.expenny.core.ui.extensions.floatingActionButtonPadding
 import org.expenny.feature.recorddetails.Action
 import org.expenny.feature.recorddetails.State
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun RecordDetailsContent(
     state: State,
@@ -139,18 +139,19 @@ internal fun RecordDetailsContent(
                 )
                 RecordDetailsAdditionsSection(
                     modifier = Modifier.fillMaxWidth(),
+                    labelsInputFieldState = state.labelsInput,
                     payeeOrPayerState = state.payeeOrPayerInput,
                     descriptionState = state.descriptionInput,
                     showSection = state.showAdditionsSection,
-                    labels = state.labels,
                     receipts = state.receipts,
-                    onDeleteLabelClick = { onAction(Action.OnDeleteLabelClick(it)) },
-                    onSelectLabelClick = { onAction(Action.OnSelectLabelClick) },
+                    onAddLabel = { onAction(Action.OnLabelAdd(it)) },
+                    onRemoveLabelAtIndex = { onAction(Action.OnLabelRemove(it)) },
                     onAddReceiptClick = { onAction(Action.OnAddReceiptClick) },
                     onViewReceiptClick = { onAction(Action.OnViewReceiptClick(it)) },
                     onDeleteReceiptClick = { onAction(Action.OnDeleteReceiptClick(it)) },
                     onPayeeOrPayerChange = { onAction(Action.OnPayeeOrPayerChange(it)) },
                     onDescriptionChange = { onAction(Action.OnDescriptionChange(it)) },
+                    onLabelChange = { onAction(Action.OnLabelChange(it)) },
                     onVisibilityChange = { onAction(Action.OnAdditionsSectionVisibilityChange(it)) },
                 )
             }
