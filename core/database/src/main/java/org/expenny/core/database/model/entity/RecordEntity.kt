@@ -20,7 +20,7 @@ data class RecordEntity(
     val amount: BigDecimal,
     val date: LocalDateTime,
     val description: String,
-    val subject: String,
+    val labels: List<String>,
     val transferFee: BigDecimal? = null
 ) {
 
@@ -34,7 +34,7 @@ data class RecordEntity(
         val amount: BigDecimal,
         val date: LocalDateTime,
         val description: String,
-        val subject: String,
+        val labels: List<String>,
         val transferFee: BigDecimal? = null
     )
 }

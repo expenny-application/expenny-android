@@ -24,7 +24,7 @@ import org.expenny.core.ui.extensions.noRippleClickable
 fun ExpennyRecord(
     modifier: Modifier = Modifier,
     record: RecordUi.Item,
-    onLabelClick: (Long) -> Unit = {}
+    onLabelClick: (String) -> Unit = {}
 ) {
     when (record) {
         is RecordUi.Item.Transaction -> {
@@ -71,9 +71,9 @@ private fun RecordContent(
     transferAmount: String? = null,
     transferAccount: String? = null,
     description: String,
-    labels: List<LabelUi>,
+    labels: List<String>,
     receiptsCount: Int,
-    onLabelClick: (Long) -> Unit
+    onLabelClick: (String) -> Unit
 ) {
     var showTransferAmount by remember { mutableStateOf(false) }
 
@@ -165,20 +165,14 @@ private fun RecordContent(
 }
 
 private fun LazyListScope.labelsItems(
-    labels: List<LabelUi>,
-    onLabelClick: (Long) -> Unit
+    labels: List<String>,
+    onLabelClick: (String) -> Unit
 ) {
-    items(
-        items = labels,
-        key = { it.id }
-    ) { label ->
+    items(items = labels) {
         ExpennyLabel(
-            contentColor = label.color,
-            onClick = {
-                onLabelClick(label.id)
-            },
+            onClick = { onLabelClick(it) },
             label = {
-                ExpennyText(text = label.name)
+                ExpennyText(text = it)
             }
         )
     }

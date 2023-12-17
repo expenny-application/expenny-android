@@ -1,15 +1,11 @@
 package org.expenny.navigation
 
 import androidx.navigation.NavController
-import org.expenny.feature.splash.navigation.SplashNavigator
-import org.expenny.feature.welcome.navigation.WelcomeNavigator
-import org.expenny.feature.getstarted.destinations.GetStartedScreenDestination
 import com.ramcosta.composedestinations.dynamic.within
 import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.spec.NavGraphSpec
 import org.expenny.core.common.types.RecordType
 import org.expenny.core.common.utils.Constants.NULL_ID
-import org.expenny.core.ui.data.navargs.LongArrayNavArg
 import org.expenny.core.ui.data.navargs.LongNavArg
 import org.expenny.core.ui.data.navargs.RecordsListFilterNavArg
 import org.expenny.feature.accountdetails.destinations.AccountDetailsScreenDestination
@@ -26,13 +22,9 @@ import org.expenny.feature.currencies.navigation.CurrenciesListNavigator
 import org.expenny.feature.currencydetails.destinations.CurrencyDetailsScreenDestination
 import org.expenny.feature.currencydetails.navigation.CurrencyDetailsNavigator
 import org.expenny.feature.currencyunits.destinations.CurrencyUnitsListScreenDestination
-import org.expenny.feature.dashboard.destinations.DashboardScreenDestination
 import org.expenny.feature.dashboard.navigation.DashboardNavigator
+import org.expenny.feature.getstarted.destinations.GetStartedScreenDestination
 import org.expenny.feature.getstarted.navigation.GetStartedNavigator
-import org.expenny.feature.labeldetails.navigation.LabelDetailsNavigator
-import org.expenny.feature.labeldetails.destinations.LabelDetailsScreenDestination
-import org.expenny.feature.labels.destinations.LabelsListScreenDestination
-import org.expenny.feature.labels.navigation.LabelsListNavigator
 import org.expenny.feature.passcode.destinations.PasscodeScreenDestination
 import org.expenny.feature.passcode.model.PasscodeType
 import org.expenny.feature.passcode.navigation.PasscodeNavigator
@@ -41,6 +33,8 @@ import org.expenny.feature.recorddetails.navigation.RecordDetailsNavigator
 import org.expenny.feature.records.destinations.RecordsListScreenDestination
 import org.expenny.feature.records.navigation.RecordsListNavigator
 import org.expenny.feature.settings.navigation.SettingsNavigator
+import org.expenny.feature.splash.navigation.SplashNavigator
+import org.expenny.feature.welcome.navigation.WelcomeNavigator
 import org.expenny.main.drawer.DrawerTab
 
 class ExpennyNavigator(
@@ -56,8 +50,6 @@ class ExpennyNavigator(
     CurrencyDetailsNavigator,
     RecordsListNavigator,
     RecordDetailsNavigator,
-    LabelsListNavigator,
-    LabelDetailsNavigator,
     SettingsNavigator,
     CategoriesListNavigator,
     PasscodeNavigator,
@@ -127,16 +119,6 @@ class ExpennyNavigator(
         navController.navigate(RecordDetailsScreenDestination() within navGraph)
     }
 
-    override fun navigateToCreateLabelScreen() {
-        navController.navigate(LabelDetailsScreenDestination() within navGraph)
-    }
-
-    override fun navigateToEditLabelScreen(labelId: Long) {
-        navController.navigate(
-            direction = LabelDetailsScreenDestination(labelId = labelId) within navGraph
-        )
-    }
-
     override fun navigateToAccountSelectionListScreen(selection: LongNavArg, excludeIds: LongArray?) {
         navController.navigate(
             direction = AccountsListScreenDestination(
@@ -149,12 +131,6 @@ class ExpennyNavigator(
     override fun navigateToCategorySelectionListScreen(selection: LongNavArg) {
         navController.navigate(
             direction = CategoriesListScreenDestination(selection = selection) within navGraph
-        )
-    }
-
-    override fun navigateToLabelSelectionListScreen(selection: LongArrayNavArg) {
-        navController.navigate(
-            direction = LabelsListScreenDestination(selection = selection) within navGraph
         )
     }
 
@@ -184,10 +160,6 @@ class ExpennyNavigator(
 
     override fun navigateToCurrenciesListScreen() {
         navController.navigate(CurrenciesListScreenDestination() within navGraph)
-    }
-
-    override fun navigateToLabelsListScreen() {
-        navController.navigate(LabelsListScreenDestination() within navGraph)
     }
 
     override fun navigateToCreatePasscodeScreen() {

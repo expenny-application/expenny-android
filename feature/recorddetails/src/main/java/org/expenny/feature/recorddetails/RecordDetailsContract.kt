@@ -44,7 +44,6 @@ data class State(
     val dateInput: InputField = InputField(value = LocalDate.now().toDateString()),
     val timeInput: InputField = InputField(value = LocalTime.now().toTimeString()),
     val labelsInput: LabelsInputField = LabelsInputField(),
-    val payeeOrPayerInput: InputField = InputField(required = false),
     val descriptionInput: InputField = InputField(required = false),
     val receipts: List<Uri> = listOf(),
 )
@@ -53,7 +52,6 @@ sealed interface Event {
     class ShowMessage(val message: StringResource) : Event
     class NavigateToAccountSelectionList(val selection: LongNavArg, val excludeIds: LongArray? = null) : Event
     class NavigateToCategorySelectionList(val selection: LongNavArg) : Event
-    class NavigateToLabelSelectionList(val selection: LongArrayNavArg) : Event
     class OpenCamera(val uri: Uri) : Event
     class OpenImageViewer(val uri: Uri) : Event
     data object RequestAmountInputFocus : Event
@@ -71,7 +69,6 @@ sealed interface Action {
     class OnLabelRemove(val index: Int) : Action
     class OnDateChange(val date: LocalDate) : Action
     class OnTimeChange(val time: LocalTime) : Action
-    class OnPayeeOrPayerChange(val payeeOrPayer: String) : Action
     class OnDescriptionChange(val description: String) : Action
     class OnLabelChange(val label: String) : Action
     class OnAdditionsSectionVisibilityChange(val isVisible: Boolean) : Action

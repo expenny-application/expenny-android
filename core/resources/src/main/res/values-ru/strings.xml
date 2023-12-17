@@ -108,7 +108,6 @@
     <string name="title_label">Название</string>
     <string name="type_label">Тип</string>
     <string name="select_type_label">Выбрать тип</string>
-    <string name="select_labels_label">Выбрать ярлыки</string>
     <string name="optional_label">Опционально</string>
     <string name="additions_label">Дополнительно</string>
     <string name="main_label">Главное</string>

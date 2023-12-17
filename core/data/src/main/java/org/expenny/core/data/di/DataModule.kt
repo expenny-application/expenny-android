@@ -18,11 +18,9 @@ import org.expenny.core.data.repository.CurrencyRateRepositoryImpl
 import org.expenny.core.data.repository.CurrencyRepositoryImpl
 import org.expenny.core.data.repository.CurrencyUnitRepositoryImpl
 import org.expenny.core.data.repository.FileRepositoryImpl
-import org.expenny.core.data.repository.LabelRepositoryImpl
 import org.expenny.core.data.repository.LocalRepositoryImpl
 import org.expenny.core.data.repository.ProfileRepositoryImpl
 import org.expenny.core.data.repository.RecordFileRepositoryImpl
-import org.expenny.core.data.repository.RecordLabelRepositoryImpl
 import org.expenny.core.data.repository.RecordRepositoryImpl
 import org.expenny.core.data.repository.AlarmRepositoryImpl
 import org.expenny.core.data.repository.WorkRepositoryImpl
@@ -56,12 +54,6 @@ interface DataModule {
 
     @Binds
     fun bindCurrencyRateRepository(currencyRateRepositoryImpl: CurrencyRateRepositoryImpl): CurrencyRateRepository
-
-    @Binds
-    fun bindLabelRepository(labelRepositoryImpl: LabelRepositoryImpl): LabelRepository
-
-    @Binds
-    fun bindRecordLabelRepository(recordLabelRepositoryImpl: RecordLabelRepositoryImpl): RecordLabelRepository
 
     @Binds
     fun bindRecordFileRepository(recordFileRepositoryImpl: RecordFileRepositoryImpl): RecordFileRepository

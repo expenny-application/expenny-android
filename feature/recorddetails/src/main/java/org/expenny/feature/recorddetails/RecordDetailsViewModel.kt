@@ -17,7 +17,7 @@ import org.expenny.core.domain.usecase.account.GetAccountUseCase
 import org.expenny.core.domain.usecase.account.GetLastUsedAccountUseCase
 import org.expenny.core.domain.usecase.category.GetCategoryUseCase
 import org.expenny.core.domain.usecase.category.GetMostUsedCategoryUseCase
-import org.expenny.core.domain.usecase.label.GetLabelsUseCase
+import org.expenny.core.domain.usecase.record.GetRecordLabelsUseCase
 import org.expenny.core.domain.usecase.record.CreateRecordUseCase
 import org.expenny.core.domain.usecase.record.DeleteRecordUseCase
 import org.expenny.core.domain.usecase.record.GetRecordUseCase
@@ -33,7 +33,6 @@ import org.expenny.core.model.record.Record
 import org.expenny.core.resources.R
 import org.expenny.core.ui.data.navargs.LongNavArg
 import org.expenny.core.ui.mapper.AccountNameMapper
-import org.expenny.core.ui.mapper.LabelMapper
 import org.expenny.feature.recorddetails.navigation.RecordDetailsNavArgs
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.blockingIntent
@@ -54,14 +53,13 @@ class RecordDetailsViewModel @Inject constructor(
     private val createRecord: CreateRecordUseCase,
     private val updateRecord: UpdateRecordUseCase,
     private val deleteRecord: DeleteRecordUseCase,
-    private val getLabels: GetLabelsUseCase,
+    private val getLabels: GetRecordLabelsUseCase,
     private val getRecord: GetRecordUseCase,
     private val getAccount: GetAccountUseCase,
     private val getCategory: GetCategoryUseCase,
     private val getLastCreatedAccount: GetLastUsedAccountUseCase,
     private val getLastUsedCategory: GetMostUsedCategoryUseCase,
     private val accountNameMapper: AccountNameMapper,
-    private val labelMapper: LabelMapper,
     private val filesDirectoryHandler: ExternalFilesDirectoryHandler,
 ) : ExpennyActionViewModel<Action>(), ContainerHost<State, Event> {
 
@@ -99,7 +97,6 @@ class RecordDetailsViewModel @Inject constructor(
             is Action.OnDateChange -> handleOnDateChange(action)
             is Action.OnTimeChange -> handleOnTimeChange(action)
             is Action.OnDescriptionChange -> handleOnDescriptionChange(action)
-            is Action.OnPayeeOrPayerChange -> handleOnPayeeOrPayerChange(action)
             is Action.OnLabelChange -> handleOnLabelChange(action)
             is Action.OnAdditionsSectionVisibilityChange -> handleOnAdditionsSectionVisibilityChange(action)
             is Action.OnCategorySelect -> handleOnCategorySelect(action)
@@ -151,7 +148,9 @@ class RecordDetailsViewModel @Inject constructor(
     )
 
     private fun handleOnLabelChange(action: Action.OnLabelChange) = blockingIntent {
-        val suggestedLabel = labelsAcrossAllRecords.firstOrNull { it.startsWith(action.label) }
+        val suggestedLabel = labelsAcrossAllRecords
+            .sortedBy { it.length }
+            .firstOrNull { it.startsWith(action.label) }
 
         reduce {
             state.copy(
@@ -164,7 +163,7 @@ class RecordDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun handleOnLabelAdd(action: Action.OnLabelAdd) = intent {
+    private fun handleOnLabelAdd(action: Action.OnLabelAdd) = blockingIntent {
         reduce {
             state.copy(
                 labelsInput = state.labelsInput.copy(
@@ -300,12 +299,6 @@ class RecordDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun handleOnPayeeOrPayerChange(action: Action.OnPayeeOrPayerChange) = blockingIntent {
-        reduce {
-            state.copy(payeeOrPayerInput = state.payeeOrPayerInput.copy(value = action.payeeOrPayer))
-        }
-    }
-
     private fun handleOnAdditionsSectionVisibilityChange(action: Action.OnAdditionsSectionVisibilityChange) = intent {
         reduce {
             state.copy(showAdditionsSection = action.isVisible)
@@ -403,10 +396,9 @@ class RecordDetailsViewModel @Inject constructor(
                             accountId = selectedAccount.value!!.id,
                             transferAccountId = selectedTransferAccount.value?.id,
                             categoryId = selectedCategory.value?.id,
-                            labelIds = emptyList(),
                             receiptsUris = state.receipts,
                             description = state.descriptionInput.value,
-                            subject = state.payeeOrPayerInput.value,
+                            labels = state.labelsInput.labels,
                             amount = state.amountInput.value,
                             transferAmount = transferAmount,
                             transferFee = BigDecimal.ZERO,
@@ -421,10 +413,9 @@ class RecordDetailsViewModel @Inject constructor(
                             accountId = selectedAccount.value!!.id,
                             transferAccountId = selectedTransferAccount.value?.id,
                             categoryId = selectedCategory.value?.id,
-                            labelIds = emptyList(),
                             receiptsUris = state.receipts,
                             description = state.descriptionInput.value,
-                            subject = state.payeeOrPayerInput.value,
+                            labels = state.labelsInput.labels,
                             amount = state.amountInput.value,
                             transferAmount = transferAmount,
                             transferFee = BigDecimal.ZERO,
@@ -482,7 +473,7 @@ class RecordDetailsViewModel @Inject constructor(
     }
 
     private fun Record.showAdditionsSection(): Boolean {
-        return receipts.isNotEmpty() || description.isNotEmpty() || subject.isNotEmpty()
+        return receipts.isNotEmpty() || description.isNotEmpty() || labels.isNotEmpty()
     }
 
     private fun Record.Transfer.showTransferAmountInput(): Boolean {
@@ -520,7 +511,6 @@ class RecordDetailsViewModel @Inject constructor(
     private fun validateFields(): Boolean {
         val amountValidationResult = validateRequiredInput(state.amountInput.value)
         val accountValidationResult = validateRequiredInput(state.accountInput.value)
-        val payeeOrPayerValidationResult = validateOptionalInput(state.payeeOrPayerInput.value)
         val descriptionValidationResult = validateOptionalInput(state.descriptionInput.value)
 
         intent {
@@ -528,7 +518,6 @@ class RecordDetailsViewModel @Inject constructor(
                 state.copy(
                     amountInput = state.amountInput.copy(error = amountValidationResult.errorRes),
                     accountInput = state.accountInput.copy(error = accountValidationResult.errorRes),
-                    payeeOrPayerInput = state.payeeOrPayerInput.copy(error = payeeOrPayerValidationResult.errorRes),
                     descriptionInput = state.descriptionInput.copy(error = descriptionValidationResult.errorRes),
                 )
             }
@@ -537,7 +526,6 @@ class RecordDetailsViewModel @Inject constructor(
         val fieldsValidationResults = mutableListOf(
             amountValidationResult,
             accountValidationResult,
-            payeeOrPayerValidationResult,
             descriptionValidationResult
         )
 
@@ -572,7 +560,7 @@ class RecordDetailsViewModel @Inject constructor(
     }
 
     private suspend fun getLabelsAcrossAllRecords() {
-        labelsAcrossAllRecords = getLabels().first().map { it.name }
+        labelsAcrossAllRecords = getLabels().first()
     }
 
     private fun subscribeToSelectedTransferAccount() = intent {
@@ -678,12 +666,11 @@ class RecordDetailsViewModel @Inject constructor(
                 toolbarTitle = toolbarTitle,
                 selectedType = record.recordType,
                 receipts = record.receipts,
-                labelsInput = state.labelsInput.copy(labels = labelMapper(record.labels).map { it.name }),
+                labelsInput = state.labelsInput.copy(labels = record.labels),
                 amountInput = state.amountInput.copy(value = record.amount.value),
                 dateInput = state.dateInput.copy(value = record.date.toDateString()),
                 timeInput = state.timeInput.copy(value = record.date.toTimeString()),
                 descriptionInput = state.descriptionInput.copy(value = record.description),
-                payeeOrPayerInput = state.payeeOrPayerInput.copy(value = record.subject)
             )
         }
     }

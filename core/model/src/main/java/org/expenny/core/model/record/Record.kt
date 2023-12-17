@@ -3,21 +3,19 @@ package org.expenny.core.model.record
 import android.net.Uri
 import org.expenny.core.common.types.RecordType
 import org.expenny.core.common.types.TransactionType
-import org.expenny.core.model.label.Label
-import org.expenny.core.model.currency.CurrencyAmount
-import org.expenny.core.model.profile.Profile
 import org.expenny.core.model.account.Account
 import org.expenny.core.model.category.Category
+import org.expenny.core.model.currency.CurrencyAmount
+import org.expenny.core.model.profile.Profile
 import java.time.LocalDateTime
 
 sealed interface Record {
     val id: Long
     val profile: Profile
     val account: Account
-    val labels: List<Label>
+    val labels: List<String>
     val receipts: List<Uri>
     val description: String
-    val subject: String
     val amount: CurrencyAmount
     val date: LocalDateTime
 
@@ -36,10 +34,9 @@ sealed interface Record {
         override val id: Long,
         override val profile: Profile,
         override val account: Account,
-        override val labels: List<Label>,
+        override val labels: List<String>,
         override val receipts: List<Uri>,
         override val description: String,
-        override val subject: String,
         override val amount: CurrencyAmount,
         override val date: LocalDateTime,
         val transferAccount: Account,
@@ -51,10 +48,9 @@ sealed interface Record {
         override val id: Long,
         override val profile: Profile,
         override val account: Account,
-        override val labels: List<Label>,
+        override val labels: List<String>,
         override val receipts: List<Uri>,
         override val description: String,
-        override val subject: String,
         override val amount: CurrencyAmount,
         override val date: LocalDateTime,
         val type: TransactionType,

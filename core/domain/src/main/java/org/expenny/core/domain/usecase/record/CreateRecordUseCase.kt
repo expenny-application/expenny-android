@@ -8,7 +8,6 @@ import org.expenny.core.domain.usecase.profile.GetCurrentProfileUseCase
 import org.expenny.core.domain.repository.RecordRepository
 import org.expenny.core.model.record.RecordCreate
 import java.math.BigDecimal
-import java.time.Instant
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -30,10 +29,9 @@ class CreateRecordUseCase @Inject constructor(
                             profileId = profileId,
                             accountId = accountId,
                             categoryId = categoryId,
-                            labelIds = labelIds,
                             receiptsUris = receiptsUris,
                             description = description,
-                            subject = subject,
+                            labels = labels,
                             amount = amount,
                             date = date,
                         )
@@ -42,10 +40,9 @@ class CreateRecordUseCase @Inject constructor(
                         RecordCreate.Transfer(
                             profileId = profileId,
                             accountId = accountId,
-                            labelIds = labelIds,
                             receiptsUris = receiptsUris,
                             description = description,
-                            subject = subject,
+                            labels = labels,
                             amount = amount,
                             date = date,
                             transferAmount = transferAmount!!,
@@ -63,10 +60,9 @@ class CreateRecordUseCase @Inject constructor(
         val accountId: Long,
         val transferAccountId: Long?,
         val categoryId: Long?,
-        val labelIds: List<Long>,
         val receiptsUris: List<Uri>,
         val description: String,
-        val subject: String,
+        val labels: List<String>,
         val amount: BigDecimal,
         val transferAmount: BigDecimal?,
         val transferFee: BigDecimal?,

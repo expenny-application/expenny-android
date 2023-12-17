@@ -27,7 +27,6 @@ import org.expenny.feature.recorddetails.model.LabelsInputField
 internal fun RecordDetailsAdditionsSection(
     modifier: Modifier = Modifier,
     labelsInputFieldState: LabelsInputField,
-    payeeOrPayerState: InputField,
     descriptionState: InputField,
     showSection: Boolean,
     receipts: List<Uri>,
@@ -36,7 +35,6 @@ internal fun RecordDetailsAdditionsSection(
     onAddReceiptClick: () -> Unit,
     onViewReceiptClick: (Uri) -> Unit,
     onDeleteReceiptClick: (Uri) -> Unit,
-    onPayeeOrPayerChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
     onLabelChange: (String) -> Unit,
     onVisibilityChange: (Boolean) -> Unit
@@ -52,11 +50,6 @@ internal fun RecordDetailsAdditionsSection(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            PayeeOrPayerInputField(
-                modifier = Modifier.fillMaxWidth(),
-                state = payeeOrPayerState,
-                onValueChange = onPayeeOrPayerChange
-            )
             LabelsInputField(
                 modifier = Modifier.fillMaxWidth(),
                 state = labelsInputFieldState,
@@ -180,66 +173,4 @@ private fun LabelsInputField(
             onLabelAdd = onAddLabel,
         )
     }
-//    Box(
-//        modifier = modifier
-//            .fillMaxWidth()
-//            .height(56.dp)
-//            .clip(MaterialTheme.shapes.small)
-//            .background(MaterialTheme.colorScheme.surfaceInput)
-//            .noRippleClickable { onSelectClick() }
-//            .padding(
-//                start = 16.dp,
-//                end = 12.dp,
-//                top = 12.dp,
-//                bottom = 12.dp
-//            ),
-//        contentAlignment = Alignment.Center
-//    ) {
-//        Row(
-//            modifier = Modifier.fillMaxWidth(),
-//            verticalAlignment = Alignment.CenterVertically,
-//            horizontalArrangement = Arrangement.spacedBy(12.dp)
-//        ) {
-//            if (labels.isEmpty()) {
-//                ExpennyText(
-//                    modifier = Modifier.weight(1f),
-//                    text = stringResource(R.string.select_labels_label),
-//                    style = MaterialTheme.typography.bodyLarge,
-//                    color = MaterialTheme.colorScheme.onSurfaceVariant
-//                )
-//            } else {
-//                LazyRow(
-//                    modifier = Modifier.weight(1f),
-//                    verticalAlignment = Alignment.CenterVertically,
-//                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.Start)
-//                ) {
-//                    items(
-//                        items = labels,
-//                        key = LabelUi::id
-//                    ) { label ->
-//                        ExpennyLabel(
-//                            modifier = Modifier.fillMaxHeight(),
-//                            contentColor = label.color,
-//                            label = {
-//                                ExpennyText(text = label.name)
-//                            },
-//                            trailingIcon = {
-//                                Icon(
-//                                    modifier = Modifier.clickable { onDeleteClick(label.id) },
-//                                    painter = painterResource(R.drawable.ic_close),
-//                                    contentDescription = null
-//                                )
-//                            }
-//                        )
-//                    }
-//                }
-//            }
-//            Icon(
-//                modifier = Modifier.noRippleClickable { onSelectClick() },
-//                painter = painterResource(R.drawable.ic_chevron_right),
-//                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-//                contentDescription = null,
-//            )
-//        }
-//    }
 }

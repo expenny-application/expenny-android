@@ -75,3 +75,16 @@ class UriConverter {
         return input?.toString()
     }
 }
+
+class ListConverter {
+
+    @TypeConverter
+    fun listToString(input: List<String>?): String {
+        return if (input.isNullOrEmpty()) "" else input.joinToString(separator = ";").trim()
+    }
+
+    @TypeConverter
+    fun stringToList(input: String?): List<String> {
+        return if (input.isNullOrBlank()) emptyList() else input.split(";")
+    }
+}

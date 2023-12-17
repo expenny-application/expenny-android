@@ -31,9 +31,6 @@ fun SettingsScreen(
             is Event.NavigateBack -> {
                 navigator.navigateBack()
             }
-            is Event.NavigateToLabels -> {
-                navigator.navigateToLabelsListScreen()
-            }
             is Event.NavigateToCategoriesList -> {
                 navigator.navigateToCategoriesListScreen()
             }

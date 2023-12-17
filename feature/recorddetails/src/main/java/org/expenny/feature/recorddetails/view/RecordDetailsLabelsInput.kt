@@ -13,12 +13,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.AssistChip
-import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement
@@ -45,7 +43,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import org.expenny.core.resources.R
+import org.expenny.core.ui.components.ExpennyLabel
 import org.expenny.core.ui.extensions.noRippleClickable
+import org.expenny.core.ui.foundation.ExpennyText
 import org.expenny.core.ui.foundation.animateInputFieldBorderAsState
 import org.expenny.core.ui.foundation.animateInputFieldContainerAsState
 
@@ -66,7 +66,6 @@ internal fun RecordDetailsLabelsInput(
 ) {
     val isError = error != null
     val isFocused by interactionSource.collectIsFocusedAsState()
-    var requestInputFocus by remember { mutableStateOf(false) }
     var isInputVisible by remember(isFocused, labels, value) {
         mutableStateOf(isFocused || value.isNotBlank() || labels.isEmpty())
     }
@@ -79,13 +78,18 @@ internal fun RecordDetailsLabelsInput(
     )
 
     LaunchedEffect(isInputVisible) {
-        if (requestInputFocus) {
+        if (isInputVisible && labels.isNotEmpty()) {
             focusRequester.requestFocus()
-            requestInputFocus = false
         }
     }
 
-    Column {
+    Column(
+        modifier = Modifier.noRippleClickable {
+            if (!isFocused && !isInputVisible) {
+                isInputVisible = true
+            }
+        }
+    ) {
         FlowRow(
             modifier = modifier
                 .heightIn(min = 56.dp)
@@ -93,12 +97,6 @@ internal fun RecordDetailsLabelsInput(
                 .clip(MaterialTheme.shapes.small)
                 .background(containerColor)
                 .border(borderStroke, MaterialTheme.shapes.small)
-                .noRippleClickable {
-                    if (!isFocused) {
-                        isInputVisible = true
-                        requestInputFocus = true
-                    }
-                }
                 .padding(
                     start = 16.dp,
                     end = 12.dp,
@@ -110,9 +108,10 @@ internal fun RecordDetailsLabelsInput(
         ) {
             repeat(times = labels.size) { index ->
                 CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
-                    AssistChip(
-                        modifier = Modifier.wrapContentWidth(),
-                        onClick = {},
+                    ExpennyLabel(
+                        label = {
+                            ExpennyText(text = labels[index])
+                        },
                         trailingIcon = {
                             Icon(
                                 modifier = Modifier
@@ -122,14 +121,6 @@ internal fun RecordDetailsLabelsInput(
                                 tint = MaterialTheme.colorScheme.onSecondaryContainer,
                                 contentDescription = null,
                             )
-                        },
-                        border = null,
-                        colors = AssistChipDefaults.assistChipColors(
-                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                            labelColor = MaterialTheme.colorScheme.onSecondaryContainer
-                        ),
-                        label = {
-                            Text(text = labels[index])
                         }
                     )
                 }
@@ -137,12 +128,14 @@ internal fun RecordDetailsLabelsInput(
             if (isInputVisible) {
                 Box(
                     modifier = Modifier
-                        .heightIn(min = 32.dp)
+                        .heightIn(min = 28.dp)
+                        .widthIn(min = 4.dp)
                         .weight(1f),
                     contentAlignment = Alignment.CenterStart
                 ) {
                     BasicTextField(
                         modifier = Modifier
+                            .fillMaxWidth()
                             .focusRequester(focusRequester)
                             .onKeyEvent {
                                 if (it.key == Key.Backspace) {
@@ -179,12 +172,13 @@ internal fun RecordDetailsLabelsInput(
                         interactionSource = interactionSource,
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Done
+                            imeAction = ImeAction.Done,
+                            autoCorrect = false
                         ),
                         keyboardActions = KeyboardActions(
                             onDone = {
                                 if (value.isNotBlank() && !isError) {
-                                    onLabelAdd(suggestion ?: value)
+                                    onLabelAdd((suggestion ?: value).trim())
                                     onValueChange("")
                                 }
                             }

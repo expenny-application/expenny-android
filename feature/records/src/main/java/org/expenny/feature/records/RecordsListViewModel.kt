@@ -15,7 +15,7 @@ import org.expenny.core.domain.usecase.GetCurrencyAmountSumUseCase
 import org.expenny.core.domain.usecase.account.GetAccountsUseCase
 import org.expenny.core.domain.usecase.category.GetCategoriesUseCase
 import org.expenny.core.domain.usecase.currency.GetMainCurrencyUseCase
-import org.expenny.core.domain.usecase.label.GetLabelsUseCase
+import org.expenny.core.domain.usecase.record.GetRecordLabelsUseCase
 import org.expenny.core.domain.usecase.record.DeleteRecordUseCase
 import org.expenny.core.domain.usecase.record.GetRecordsUseCase
 import org.expenny.core.model.currency.Currency
@@ -42,7 +42,7 @@ class RecordsListViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val getRecords: GetRecordsUseCase,
     private val getAccounts: GetAccountsUseCase,
-    private val getLabels: GetLabelsUseCase,
+    private val getLabels: GetRecordLabelsUseCase,
     private val getCategories: GetCategoriesUseCase,
     private val deleteRecord: DeleteRecordUseCase,
     private val recordMapper: RecordMapper,
@@ -265,8 +265,7 @@ class RecordsListViewModel @Inject constructor(
                 FilterSelectionsStateReducer.State(
                     recordTypesSelection = filter.types,
                     accountsSelection = filter.accounts,
-                    categoriesSelection = filter.categories,
-                    labelsSelection = filter.labels
+                    categoriesSelection = filter.categories
                 )
             )
         }
@@ -278,9 +277,13 @@ class RecordsListViewModel @Inject constructor(
                 dateRangeReducer.stateFlow,
                 filterSelectionsReducer.stateFlow,
             ) { dateRangeState, filtersState ->
+                val selectedLabels = state.selectionFilterData.labels
+                    .filter { it.first in filtersState.labelsSelection }
+                    .map { it.second }
+
                 GetRecordsUseCase.Params(
                     accounts = filtersState.accountsSelection,
-                    labels = filtersState.labelsSelection,
+                    labels = selectedLabels,
                     categories = filtersState.categoriesSelection,
                     types = filtersState.recordTypesSelection,
                     dateRange = dateRangeState.dateRange,
@@ -317,7 +320,7 @@ class RecordsListViewModel @Inject constructor(
                 SelectionFilterDataUi(
                     accounts = accounts.map { Pair(it.id, it.displayName) },
                     categories = categories.map { Pair(it.id, it.name) },
-                    labels = labels.map { Pair(it.id, it.name) },
+                    labels = labels.mapIndexed { i, s -> Pair(i.toLong(), s) },
                     recordTypes = RecordType.values().toList()
                 )
             }.collect {

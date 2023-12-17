@@ -10,10 +10,9 @@ import java.time.LocalDateTime
 sealed interface RecordUpdate {
     val id: Long
     val accountId: Long
-    val labelIds: List<Long>
     val receiptsUris: List<Uri>
     val description: String
-    val subject: String
+    val labels: List<String>
     val amount: BigDecimal
     val date: LocalDateTime
 
@@ -31,10 +30,9 @@ sealed interface RecordUpdate {
     data class Transaction(
         override val id: Long,
         override val accountId: Long,
-        override val labelIds: List<Long>,
         override val receiptsUris: List<Uri>,
         override val description: String,
-        override val subject: String,
+        override val labels: List<String>,
         override val amount: BigDecimal,
         override val date: LocalDateTime,
         val categoryId: Long?,
@@ -44,10 +42,9 @@ sealed interface RecordUpdate {
     data class Transfer(
         override val id: Long,
         override val accountId: Long,
-        override val labelIds: List<Long>,
         override val receiptsUris: List<Uri>,
         override val description: String,
-        override val subject: String,
+        override val labels: List<String>,
         override val amount: BigDecimal,
         override val date: LocalDateTime,
         val transferAmount: BigDecimal,

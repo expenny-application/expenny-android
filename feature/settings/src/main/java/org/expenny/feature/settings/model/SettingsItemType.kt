@@ -6,7 +6,6 @@ enum class SettingsItemType {
     Theme,
     Categorization,
     Currencies,
-    Labels,
     Backup,
     ImportsExports,
     Reminder,

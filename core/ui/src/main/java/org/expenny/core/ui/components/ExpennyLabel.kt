@@ -31,33 +31,9 @@ fun ExpennyLabel(
     onClick: () -> Unit = {}
 ) {
     CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
-        LabelContent(
-            modifier = modifier,
-            label = label,
-            leadingIcon = leadingIcon,
-            trailingIcon = trailingIcon,
-            containerColor = containerColor,
-            contentColor = contentColor,
-            onClick = onClick
-        )
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun LabelContent(
-    modifier: Modifier = Modifier,
-    label: @Composable () -> Unit,
-    leadingIcon: @Composable (() -> Unit)? = null,
-    trailingIcon: @Composable (() -> Unit)? = null,
-    containerColor: Color,
-    contentColor: Color,
-    onClick: () -> Unit
-) {
-    CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
         Box(
             modifier = modifier
-                .heightIn(min = minHeight)
+                .heightIn(min = 28.dp)
                 .clip(MaterialTheme.shapes.extraSmall)
                 .background(containerColor)
                 .clickable { onClick() },
@@ -69,7 +45,7 @@ private fun LabelContent(
                     .padding(horizontal = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(
-                    space = contentSpacing,
+                    space = 6.dp,
                     alignment = Alignment.CenterHorizontally
                 )
             ) {
@@ -78,13 +54,13 @@ private fun LabelContent(
                     LocalTextStyle provides MaterialTheme.typography.labelMedium
                 ) {
                     if (leadingIcon != null) {
-                        Box(modifier = Modifier.size(iconSize)) {
+                        Box(modifier = Modifier.size(16.dp)) {
                             leadingIcon()
                         }
                     }
                     label()
                     if (trailingIcon != null) {
-                        Box(modifier = Modifier.size(iconSize)) {
+                        Box(modifier = Modifier.size(16.dp)) {
                             trailingIcon()
                         }
                     }
@@ -93,10 +69,3 @@ private fun LabelContent(
         }
     }
 }
-
-private val minHeight = 28.dp
-private val contentSpacing = 6.dp
-private val iconSize = 16.dp
-
-const val ExpennyLabelColorAlpha = 0.2f
-val ExpennyLabelHeight = 24.dp

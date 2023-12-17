@@ -43,7 +43,6 @@ fun RecordDetailsScreen(
     navigator: RecordDetailsNavigator,
     accountResult: OpenResultRecipient<NavArgResult>,
     categoryResult: OpenResultRecipient<LongNavArg>,
-    labelsResult: OpenResultRecipient<LongArrayNavArg>,
 ) {
     val vm: RecordDetailsViewModel = hiltViewModel()
     val state by vm.collectAsState()
@@ -73,12 +72,6 @@ fun RecordDetailsScreen(
         }
     }
 
-//    labelsResult.onNavResult { res ->
-//        if (res is NavResult.Value) {
-//            vm.onAction(Action.OnLabelsSelect(res.value))
-//        }
-//    }
-
     vm.collectSideEffect {
         when (it) {
             is Event.ShowMessage -> {
@@ -99,9 +92,6 @@ fun RecordDetailsScreen(
             }
             is Event.NavigateToCategorySelectionList -> {
                 navigator.navigateToCategorySelectionListScreen(it.selection)
-            }
-            is Event.NavigateToLabelSelectionList -> {
-                navigator.navigateToLabelSelectionListScreen(it.selection)
             }
             is Event.NavigateToAccountSelectionList -> {
                 navigator.navigateToAccountSelectionListScreen(it.selection, it.excludeIds)

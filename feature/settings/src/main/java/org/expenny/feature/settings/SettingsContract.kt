@@ -53,6 +53,5 @@ sealed interface Event {
     object NavigateToSystemSecuritySettings : Event
     object NavigateToSystemAlarmSettings : Event
     object NavigateToCurrencies : Event
-    object NavigateToLabels : Event
     object NavigateBack : Event
 }

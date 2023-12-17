@@ -97,9 +97,6 @@ class SettingsViewModel @Inject constructor(
             SettingsItemType.Currencies -> {
                 postSideEffect(Event.NavigateToCurrencies)
             }
-            SettingsItemType.Labels -> {
-                postSideEffect(Event.NavigateToLabels)
-            }
             SettingsItemType.Passcode -> {
                 if (state.isUsePasscodeSelected) {
                     deletePasscodePreference()

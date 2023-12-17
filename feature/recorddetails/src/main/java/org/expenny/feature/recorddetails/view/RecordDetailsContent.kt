@@ -140,7 +140,6 @@ internal fun RecordDetailsContent(
                 RecordDetailsAdditionsSection(
                     modifier = Modifier.fillMaxWidth(),
                     labelsInputFieldState = state.labelsInput,
-                    payeeOrPayerState = state.payeeOrPayerInput,
                     descriptionState = state.descriptionInput,
                     showSection = state.showAdditionsSection,
                     receipts = state.receipts,
@@ -149,7 +148,6 @@ internal fun RecordDetailsContent(
                     onAddReceiptClick = { onAction(Action.OnAddReceiptClick) },
                     onViewReceiptClick = { onAction(Action.OnViewReceiptClick(it)) },
                     onDeleteReceiptClick = { onAction(Action.OnDeleteReceiptClick(it)) },
-                    onPayeeOrPayerChange = { onAction(Action.OnPayeeOrPayerChange(it)) },
                     onDescriptionChange = { onAction(Action.OnDescriptionChange(it)) },
                     onLabelChange = { onAction(Action.OnLabelChange(it)) },
                     onVisibilityChange = { onAction(Action.OnAdditionsSectionVisibilityChange(it)) },
