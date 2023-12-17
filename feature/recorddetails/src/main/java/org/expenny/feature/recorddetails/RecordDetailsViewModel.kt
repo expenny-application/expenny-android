@@ -504,21 +504,15 @@ class RecordDetailsViewModel @Inject constructor(
         value, listOf(RequiredStringValidator())
     )
 
-    private fun validateOptionalInput(value: String) = validateInput(
-        value, listOf(MinimumLengthValidator(min = 1))
-    )
-
     private fun validateFields(): Boolean {
         val amountValidationResult = validateRequiredInput(state.amountInput.value)
         val accountValidationResult = validateRequiredInput(state.accountInput.value)
-        val descriptionValidationResult = validateOptionalInput(state.descriptionInput.value)
 
         intent {
             reduce {
                 state.copy(
                     amountInput = state.amountInput.copy(error = amountValidationResult.errorRes),
                     accountInput = state.accountInput.copy(error = accountValidationResult.errorRes),
-                    descriptionInput = state.descriptionInput.copy(error = descriptionValidationResult.errorRes),
                 )
             }
         }
@@ -526,7 +520,6 @@ class RecordDetailsViewModel @Inject constructor(
         val fieldsValidationResults = mutableListOf(
             amountValidationResult,
             accountValidationResult,
-            descriptionValidationResult
         )
 
         if (state.selectedType == RecordType.Transfer) {
