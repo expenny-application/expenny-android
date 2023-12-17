@@ -2,49 +2,41 @@ package org.expenny.feature.recorddetails.view
 
 import android.net.Uri
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import org.expenny.core.ui.extensions.asRawString
 import org.expenny.core.resources.R
-import org.expenny.core.ui.components.ExpennyLabel
 import org.expenny.core.ui.components.ExpennySection
 import org.expenny.core.ui.data.field.InputField
-import org.expenny.core.ui.data.ui.LabelUi
+import org.expenny.core.ui.extensions.asRawString
 import org.expenny.core.ui.foundation.ExpennyInputField
-import org.expenny.core.ui.foundation.ExpennyText
-import org.expenny.core.ui.theme.surfaceInput
-import org.expenny.core.ui.extensions.noRippleClickable
+import org.expenny.feature.recorddetails.model.LabelsInputField
 
 @Composable
 internal fun RecordDetailsAdditionsSection(
     modifier: Modifier = Modifier,
-    payeeOrPayerState: InputField,
+    labelsInputFieldState: LabelsInputField,
     descriptionState: InputField,
     showSection: Boolean,
-    labels: List<LabelUi>,
     receipts: List<Uri>,
-    onDeleteLabelClick: (Long) -> Unit,
-    onSelectLabelClick: () -> Unit,
+    onAddLabel: (String) -> Unit,
+    onRemoveLabelAtIndex: (Int) -> Unit,
     onAddReceiptClick: () -> Unit,
     onViewReceiptClick: (Uri) -> Unit,
     onDeleteReceiptClick: (Uri) -> Unit,
-    onPayeeOrPayerChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
+    onLabelChange: (String) -> Unit,
     onVisibilityChange: (Boolean) -> Unit
 ) {
     ExpennySection(
@@ -53,64 +45,31 @@ internal fun RecordDetailsAdditionsSection(
         isExpanded = showSection,
         onClick = { onVisibilityChange(!showSection) },
     ) {
-        RecordDetailsAdditionsInputForm(
-            labels = labels,
-            receipts = receipts,
-            payeeOrPayerState = payeeOrPayerState,
-            descriptionState = descriptionState,
-            onSelectLabelsClick = onSelectLabelClick,
-            onDeleteLabelClick = onDeleteLabelClick,
-            onAddReceiptClick = onAddReceiptClick,
-            onViewReceiptClick = onViewReceiptClick,
-            onDeleteReceiptClick = onDeleteReceiptClick,
-            onPayeeOrPayerChange = onPayeeOrPayerChange,
-            onDescriptionChange = onDescriptionChange,
-        )
-    }
-}
-
-@Composable
-private fun RecordDetailsAdditionsInputForm(
-    modifier: Modifier = Modifier,
-    labels: List<LabelUi>,
-    receipts: List<Uri>,
-    payeeOrPayerState: InputField,
-    descriptionState: InputField,
-    onSelectLabelsClick: () -> Unit,
-    onDeleteLabelClick: (Long) -> Unit,
-    onAddReceiptClick: () -> Unit,
-    onViewReceiptClick: (Uri) -> Unit,
-    onDeleteReceiptClick: (Uri) -> Unit,
-    onPayeeOrPayerChange: (String) -> Unit,
-    onDescriptionChange: (String) -> Unit,
-) {
-    Column(
-        modifier = modifier.animateContentSize(),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        PayeeOrPayerInputField(
-            modifier = Modifier.fillMaxWidth(),
-            state = payeeOrPayerState,
-            onValueChange = onPayeeOrPayerChange
-        )
-        LabelsInputField(
-            labels = labels,
-            onSelectClick = onSelectLabelsClick,
-            onDeleteClick = onDeleteLabelClick
-        )
-        DescriptionInputField(
-            modifier = Modifier.fillMaxWidth(),
-            state = descriptionState,
-            onAddReceiptClick = onAddReceiptClick,
-            onValueChange = onDescriptionChange
-        )
-        ReceiptsList(
-            modifier = Modifier.fillMaxWidth(),
-            receipts = receipts,
-            onViewReceiptClick = onViewReceiptClick,
-            onDeleteReceiptClick = onDeleteReceiptClick
-        )
+        Column(
+            modifier = modifier.animateContentSize(),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            LabelsInputField(
+                modifier = Modifier.fillMaxWidth(),
+                state = labelsInputFieldState,
+                onAddLabel = onAddLabel,
+                onRemoveLabelAtIndex = onRemoveLabelAtIndex,
+                onValueChange = onLabelChange
+            )
+            DescriptionInputField(
+                modifier = Modifier.fillMaxWidth(),
+                state = descriptionState,
+                onAddReceiptClick = onAddReceiptClick,
+                onValueChange = onDescriptionChange
+            )
+            ReceiptsList(
+                modifier = Modifier.fillMaxWidth(),
+                receipts = receipts,
+                onViewReceiptClick = onViewReceiptClick,
+                onDeleteReceiptClick = onDeleteReceiptClick
+            )
+        }
     }
 }
 
@@ -196,70 +155,22 @@ private fun DescriptionInputField(
 @Composable
 private fun LabelsInputField(
     modifier: Modifier = Modifier,
-    labels: List<LabelUi>,
-    onSelectClick: () -> Unit,
-    onDeleteClick: (Long) -> Unit,
+    state: LabelsInputField,
+    onAddLabel: (String) -> Unit,
+    onRemoveLabelAtIndex: (Int) -> Unit,
+    onValueChange: (String) -> Unit
 ) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(56.dp)
-            .clip(MaterialTheme.shapes.small)
-            .background(MaterialTheme.colorScheme.surfaceInput)
-            .noRippleClickable { onSelectClick() }
-            .padding(
-                start = 16.dp,
-                end = 12.dp,
-                top = 12.dp,
-                bottom = 12.dp
-            ),
-        contentAlignment = Alignment.Center
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            if (labels.isEmpty()) {
-                ExpennyText(
-                    modifier = Modifier.weight(1f),
-                    text = stringResource(R.string.select_labels_label),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            } else {
-                LazyRow(
-                    modifier = Modifier.weight(1f),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.Start)
-                ) {
-                    items(
-                        items = labels,
-                        key = LabelUi::id
-                    ) { label ->
-                        ExpennyLabel(
-                            modifier = Modifier.fillMaxHeight(),
-                            contentColor = label.color,
-                            label = {
-                                ExpennyText(text = label.name)
-                            },
-                            trailingIcon = {
-                                Icon(
-                                    modifier = Modifier.clickable { onDeleteClick(label.id) },
-                                    painter = painterResource(R.drawable.ic_close),
-                                    contentDescription = null
-                                )
-                            }
-                        )
-                    }
-                }
-            }
-            Icon(
-                modifier = Modifier.noRippleClickable { onSelectClick() },
-                painter = painterResource(R.drawable.ic_chevron_right),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                contentDescription = null,
-            )
-        }
+    with(state) {
+        RecordDetailsLabelsInput(
+            modifier = modifier,
+            value = value,
+            labels = labels,
+            suggestion = suggestion,
+            error = error?.asRawString(),
+            placeholder = stringResource(R.string.labels_label),
+            onValueChange = onValueChange,
+            onLabelRemoveAtIndex = onRemoveLabelAtIndex,
+            onLabelAdd = onAddLabel,
+        )
     }
 }

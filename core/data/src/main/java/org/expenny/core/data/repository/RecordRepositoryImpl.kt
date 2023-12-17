@@ -1,26 +1,31 @@
 package org.expenny.core.data.repository
 
 import androidx.room.withTransaction
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import org.expenny.core.common.extensions.mapFlatten
-import org.expenny.core.common.types.RecordType
 import org.expenny.core.common.types.TransactionType
 import org.expenny.core.data.mapper.DataMapper.toEntity
 import org.expenny.core.data.mapper.DataMapper.toModel
 import org.expenny.core.database.ExpennyDatabase
-import org.expenny.core.domain.repository.*
+import org.expenny.core.domain.repository.AccountRepository
+import org.expenny.core.domain.repository.FileRepository
+import org.expenny.core.domain.repository.LocalRepository
+import org.expenny.core.domain.repository.RecordFileRepository
+import org.expenny.core.domain.repository.RecordRepository
 import org.expenny.core.model.file.FileCreate
 import org.expenny.core.model.record.Record
 import org.expenny.core.model.record.RecordCreate
 import org.expenny.core.model.record.RecordUpdate
-import org.threeten.extra.LocalDateRange
 import javax.inject.Inject
 
 class RecordRepositoryImpl @Inject constructor(
     private val database: ExpennyDatabase,
     private val accountRepository: AccountRepository,
     private val localRepository: LocalRepository,
-    private val recordLabelRepository: RecordLabelRepository,
     private val recordFileRepository: RecordFileRepository,
     private val fileRepository: FileRepository,
 ) : RecordRepository {
@@ -34,29 +39,6 @@ class RecordRepositoryImpl @Inject constructor(
             }.mapFlatten { toModel() }
     }
 
-    override fun getRecordsDesc(
-        labelIds: List<Long>,
-        accountIds: List<Long>,
-        categoryIds: List<Long>,
-        types: List<RecordType>,
-        dateRange: LocalDateRange?,
-        withoutCategory: Boolean,
-    ): Flow<List<Record>> {
-        return localRepository.getCurrentProfileId()
-            .filterNotNull()
-            .flatMapLatest { profileId ->
-                recordDao.selectAllDesc(
-                    profileId = profileId,
-                    labelIds = labelIds,
-                    accountIds = accountIds,
-                    categoryIds = categoryIds,
-                    types = types,
-                    dateRange = dateRange,
-                    withoutCategory = withoutCategory,
-                )
-            }.mapFlatten { toModel() }
-    }
-
     override fun getRecord(id: Long): Flow<Record?> {
         return recordDao.select(id).map { it?.toModel() }
     }
@@ -64,8 +46,6 @@ class RecordRepositoryImpl @Inject constructor(
     override suspend fun createRecord(data: RecordCreate) {
         return database.withTransaction {
             val recordId = recordDao.insert(data.toEntity())
-
-            recordLabelRepository.createRecordLabels(recordId, data.labelIds)
 
             data.receiptsUris
                 .map { fileRepository.createFile(FileCreate(data.profileId, it)) }
@@ -93,7 +73,6 @@ class RecordRepositoryImpl @Inject constructor(
                 val record = recordDao.select(id).first()!!.toModel()
 
                 recordDao.delete(id)
-                recordLabelRepository.deleteRecordLabels(id)
                 recordFileRepository.deleteRecordFiles(id)
 
                 when (record) {
@@ -123,10 +102,9 @@ class RecordRepositoryImpl @Inject constructor(
                         RecordCreate.Transaction(
                             profileId = oldRecord.profile.profileId,
                             accountId = accountId,
-                            labelIds = labelIds,
                             receiptsUris = receiptsUris,
                             description = description,
-                            subject = subject,
+                            labels = labels,
                             amount = amount,
                             date = date,
                             categoryId = categoryId,
@@ -137,10 +115,9 @@ class RecordRepositoryImpl @Inject constructor(
                         RecordCreate.Transfer(
                             profileId = oldRecord.profile.profileId,
                             accountId = accountId,
-                            labelIds = labelIds,
                             receiptsUris = receiptsUris,
                             description = description,
-                            subject = subject,
+                            labels = labels,
                             amount = amount,
                             date = date,
                             transferAmount = transferAmount,

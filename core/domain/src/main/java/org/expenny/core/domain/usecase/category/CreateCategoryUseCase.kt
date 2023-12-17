@@ -4,7 +4,6 @@ import kotlinx.coroutines.flow.first
 import org.expenny.core.domain.repository.CategoryRepository
 import org.expenny.core.domain.usecase.profile.GetCurrentProfileUseCase
 import org.expenny.core.model.category.CategoryCreate
-import org.expenny.core.model.label.LabelCreate
 import javax.inject.Inject
 
 class CreateCategoryUseCase @Inject constructor(

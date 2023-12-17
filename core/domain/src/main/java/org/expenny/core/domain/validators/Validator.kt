@@ -7,8 +7,8 @@ interface Validator {
 
     fun isValid(value: String): Boolean
 
-    fun validate(value: String?): ValidationResult {
-        return if (isValid(value.orEmpty())) {
+    fun validate(value: String): ValidationResult {
+        return if (isValid(value)) {
             ValidationResult(isValid = true)
         } else {
             ValidationResult(isValid = false, errorRes = errorMessage)

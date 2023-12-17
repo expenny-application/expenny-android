@@ -1,5 +1,6 @@
 package org.expenny.feature.records.view
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.material3.*
@@ -129,6 +130,7 @@ private fun FilterIcon(
             },
         )
         DropdownMenu(
+            modifier = Modifier.background(MaterialTheme.colorScheme.surfaceContainerHigh),
             expanded = showMenu,
             onDismissRequest = { showMenu = false }
         ) {

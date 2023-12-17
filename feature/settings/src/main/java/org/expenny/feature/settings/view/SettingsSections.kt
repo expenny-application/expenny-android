@@ -161,7 +161,6 @@ internal fun SettingsGeneralSection(
     onThemeClick: () -> Unit,
     onCategorizationClick: () -> Unit,
     onCurrenciesClick: () -> Unit,
-    onLabelsClick: () -> Unit
 ) {
     SettingsSection(
         modifier = modifier.fillMaxWidth(),
@@ -188,11 +187,6 @@ internal fun SettingsGeneralSection(
             title = stringResource(R.string.currencies_label),
             icon = painterResource(R.drawable.ic_currency),
             onClick = onCurrenciesClick
-        )
-        SectionItem(
-            title = stringResource(R.string.labels_label),
-            icon = painterResource(R.drawable.ic_labels),
-            onClick = onLabelsClick
         )
     }
 }

@@ -39,14 +39,6 @@ data class RecordEmbedded(
     val category: CategoryEmbedded?,
 
     @Relation(
-        entity = LabelEntity::class,
-        parentColumn = "recordId",
-        entityColumn = "labelId",
-        associateBy = Junction(RecordLabelCrossRef::class)
-    )
-    val labels: List<LabelEmbedded>,
-
-    @Relation(
         entity = FileEntity::class,
         parentColumn = "recordId",
         entityColumn = "fileId",

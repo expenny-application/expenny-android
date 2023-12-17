@@ -15,8 +15,6 @@ import org.expenny.feature.currencies.destinations.CurrenciesListScreenDestinati
 import org.expenny.feature.currencydetails.destinations.CurrencyDetailsScreenDestination
 import org.expenny.feature.currencyunits.destinations.CurrencyUnitsListScreenDestination
 import org.expenny.feature.dashboard.destinations.DashboardScreenDestination
-import org.expenny.feature.labeldetails.destinations.LabelDetailsScreenDestination
-import org.expenny.feature.labels.destinations.LabelsListScreenDestination
 import org.expenny.feature.passcode.destinations.PasscodeScreenDestination
 import org.expenny.feature.recorddetails.destinations.RecordDetailsScreenDestination
 import org.expenny.feature.records.destinations.RecordsListScreenDestination
@@ -41,8 +39,6 @@ object ExpennyNavGraphs {
             RecordDetailsScreenDestination,
             CategoriesListScreenDestination,
             CategoryDetailsScreenDestination,
-            LabelsListScreenDestination,
-            LabelDetailsScreenDestination,
         ).routedIn(this).associateBy { it.route }
     }
 
@@ -102,8 +98,6 @@ object ExpennyNavGraphs {
             CurrenciesListScreenDestination,
             CurrencyDetailsScreenDestination,
             CurrencyUnitsListScreenDestination,
-            LabelsListScreenDestination,
-            LabelDetailsScreenDestination,
             PasscodeScreenDestination,
         ).routedIn(this).associateBy { it.route }
     }
@@ -123,8 +117,6 @@ object ExpennyNavGraphs {
             CurrenciesListScreenDestination,
             CategoriesListScreenDestination,
             CategoryDetailsScreenDestination,
-            LabelsListScreenDestination,
-            LabelDetailsScreenDestination,
         ).routedIn(this).associateBy { it.route }
     }
 

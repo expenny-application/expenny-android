@@ -146,12 +146,12 @@ fun ExpennyInputField(
         if (isEnabled) MaterialTheme.colorScheme.onSurface
         else MaterialTheme.colorScheme.onSurfaceVariant.copy(0.5f)
 
+    val errorContainerColor by animateInputFieldContainerAsState(interactionSource)
     val textSelectionColors = TextSelectionColors(
         handleColor = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
         backgroundColor = (if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary).copy(0.5f)
     )
-    val errorContainerColor by animateBackgroundAsState(interactionSource)
-    val borderStroke by animateBorderAsState(
+    val borderStroke by animateInputFieldBorderAsState(
         isEnabled = isEnabled,
         isError = isError,
         interactionSource = interactionSource
@@ -248,11 +248,9 @@ fun ExpennyInputField(
                     disabledLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     disabledTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     disabledTextColor = disabledContentColor,
-                ),
+                )
             )
-            Box(
-                modifier = Modifier.padding(horizontal = 16.dp)
-            ) {
+            Box(modifier = Modifier.padding(horizontal = 16.dp)) {
                 if (isError) {
                     Text(
                         text = error!!,
@@ -277,7 +275,6 @@ private fun InputFieldLabel(text: String, required: Boolean) {
     } else {
         AnnotatedString(text)
     }
-
     Text(
         text = formattedText,
         overflow = TextOverflow.Ellipsis,
@@ -286,21 +283,25 @@ private fun InputFieldLabel(text: String, required: Boolean) {
 }
 
 @Composable
-private fun animateBackgroundAsState(
+fun animateInputFieldContainerAsState(
     interactionSource: InteractionSource,
 ): State<Color> {
-    val focused by interactionSource.collectIsFocusedAsState()
+    val isFocused by interactionSource.collectIsFocusedAsState()
     val backgroundColor =
-        if (focused) MaterialTheme.colorScheme.surface
+        if (isFocused) MaterialTheme.colorScheme.surface
         else MaterialTheme.colorScheme.surfaceInput
 
-    val animatedBackground = animateColorAsState(backgroundColor, tween(durationMillis = 150))
+    val animatedBackground = animateColorAsState(
+        targetValue = backgroundColor,
+        animationSpec = tween(durationMillis = 150),
+        label = "AnimateBackground"
+    )
 
     return rememberUpdatedState(animatedBackground.value)
 }
 
 @Composable
-private fun animateBorderAsState(
+fun animateInputFieldBorderAsState(
     isEnabled: Boolean,
     isError: Boolean,
     interactionSource: InteractionSource
@@ -308,33 +309,27 @@ private fun animateBorderAsState(
     val focusedBorderThickness = 2.dp
     val unfocusedBorderThickness = if (isError) 1.dp else 0.dp
     val isFocused by interactionSource.collectIsFocusedAsState()
-    val strokeColor = strokeColor(isEnabled, isError, interactionSource)
+    val strokeColor = rememberUpdatedState(
+        when {
+            !isEnabled -> Color.Transparent
+            isError -> MaterialTheme.colorScheme.error
+            isFocused -> MaterialTheme.colorScheme.primary
+            else -> Color.Transparent
+        }
+    )
     val targetThickness = if (isFocused) focusedBorderThickness else unfocusedBorderThickness
     val animatedThickness = if (isEnabled) {
-        animateDpAsState(targetThickness, tween(durationMillis = 150))
+        animateDpAsState(
+            targetValue = targetThickness,
+            animationSpec = tween(durationMillis = 150),
+            label = "AnimateThickness"
+        )
     } else {
         rememberUpdatedState(unfocusedBorderThickness)
     }
     return rememberUpdatedState(
         BorderStroke(animatedThickness.value, SolidColor(strokeColor.value))
     )
-}
-
-@Composable
-private fun strokeColor(
-    enabled: Boolean,
-    error: Boolean,
-    interactionSource: InteractionSource
-): State<Color> {
-    val focused by interactionSource.collectIsFocusedAsState()
-    val targetValue = when {
-        !enabled -> Color.Transparent
-        error -> MaterialTheme.colorScheme.error
-        focused -> MaterialTheme.colorScheme.primary
-        else -> Color.Transparent
-    }
-
-    return rememberUpdatedState(targetValue)
 }
 
 val ExpennyInputFieldHeight = 56.dp

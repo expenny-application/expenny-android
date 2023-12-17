@@ -115,7 +115,6 @@ internal fun SettingsList(
             onThemeClick = { onSettingsItemTypeClick(SettingsItemType.Theme) },
             onCategorizationClick = { onSettingsItemTypeClick(SettingsItemType.Categorization) },
             onCurrenciesClick = { onSettingsItemTypeClick(SettingsItemType.Currencies) },
-            onLabelsClick = { onSettingsItemTypeClick(SettingsItemType.Labels) }
         )
         SettingsDataSection(
             onBackupClick = { onSettingsItemTypeClick(SettingsItemType.Backup) },

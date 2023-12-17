@@ -15,7 +15,7 @@ sealed interface RecordUi {
         val id: Long
         val description: String
         val postedAmount: AmountUi
-        val labels: List<LabelUi>
+        val labels: List<String>
         val receiptsCount: Int
         val account: String
 
@@ -25,7 +25,7 @@ sealed interface RecordUi {
             override val id: Long,
             override val description: String,
             override val postedAmount: AmountUi,
-            override val labels: List<LabelUi>,
+            override val labels: List<String>,
             override val receiptsCount: Int,
             override val account: String,
             val category: CategoryUi?,
@@ -37,7 +37,7 @@ sealed interface RecordUi {
             override val id: Long,
             override val description: String,
             override val postedAmount: AmountUi,
-            override val labels: List<LabelUi>,
+            override val labels: List<String>,
             override val receiptsCount: Int,
             override val account: String,
             val transferAccount: String,

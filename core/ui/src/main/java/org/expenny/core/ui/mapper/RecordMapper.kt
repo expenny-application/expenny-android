@@ -8,7 +8,6 @@ import org.expenny.core.ui.data.ui.*
 import javax.inject.Inject
 
 class RecordMapper @Inject constructor(
-    private val labelMapper: LabelMapper,
     private val amountMapper: AmountMapper,
     private val categoryMapper: CategoryMapper,
 ) {
@@ -33,7 +32,7 @@ class RecordMapper @Inject constructor(
                     postedAmount = amountMapper(amount),
                     clearedAmount = amountMapper(transferAmount),
                     receiptsCount = receipts.size,
-                    labels = labels.map { labelMapper(it) },
+                    labels = labels,
                     isConversionApplied = account.currency != transferAccount.currency,
                     date = date.toDateString(),
                 )
@@ -47,7 +46,7 @@ class RecordMapper @Inject constructor(
                     account = account.name,
                     postedAmount = amountMapper(transactionAmount).prependPlusSign(),
                     receiptsCount = receipts.size,
-                    labels = labels.map { labelMapper(it) },
+                    labels = labels,
                     date = date.toDateString()
                 )
             }
