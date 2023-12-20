@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
@@ -21,10 +22,11 @@ import org.expenny.core.ui.foundation.ExpennyText
 @Composable
 fun ExpennyMessage(
     modifier: Modifier = Modifier,
-    message: String
+    message: String,
 ) {
     Box(
         modifier = modifier
+            .fillMaxWidth()
             .clip(MaterialTheme.shapes.small)
             .background(MaterialTheme.colorScheme.tertiaryContainer)
             .padding(12.dp),

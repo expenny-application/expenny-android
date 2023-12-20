@@ -183,7 +183,6 @@ class AccountDetailsViewModel @Inject constructor(
         savedStateHandle.navArgs<AccountDetailsNavArgs>().also { args ->
             if (args.accountId != null) {
                 val account = getAccount(GetAccountUseCase.Params(args.accountId))!!
-                val showAdditions = account.description.isNotEmpty() || !account.startBalance.value.isZero()
 
                 currentAccount.value = account
                 selectedCurrency.value = account.currency
@@ -191,7 +190,6 @@ class AccountDetailsViewModel @Inject constructor(
                 reduce {
                     state.copy(
                         showDeleteButton = true,
-                        showAdditionsSection = showAdditions,
                         toolbarTitle = fromRes(R.string.edit_account_label),
                         selectedType = account.type,
                         nameInput = state.nameInput.copy(

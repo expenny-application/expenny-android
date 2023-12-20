@@ -472,10 +472,6 @@ class RecordDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun Record.showAdditionsSection(): Boolean {
-        return receipts.isNotEmpty() || description.isNotEmpty() || labels.isNotEmpty()
-    }
-
     private fun Record.Transfer.showTransferAmountInput(): Boolean {
         return account != transferAccount && account.currency.id != transferAccount.currency.id
     }
@@ -642,21 +638,17 @@ class RecordDetailsViewModel @Inject constructor(
     private fun setInitialRecordData(record: Record, isClone: Boolean) = intent {
         selectedAccount.value = record.account
 
-        if (!isClone) currentRecord.value = record
-
-        val showAdditionsSection = record.showAdditionsSection()
-        val showDeleteButton = !isClone
-
-        val toolbarTitle = when {
-            isClone -> fromRes(R.string.add_record_label)
-            else -> fromRes(R.string.edit_record_label)
+        if (!isClone) {
+            currentRecord.value = record
         }
 
         reduce {
             state.copy(
-                showDeleteButton = showDeleteButton,
-                showAdditionsSection = showAdditionsSection,
-                toolbarTitle = toolbarTitle,
+                showDeleteButton = !isClone,
+                toolbarTitle = when {
+                    isClone -> fromRes(R.string.add_record_label)
+                    else -> fromRes(R.string.edit_record_label)
+                },
                 selectedType = record.recordType,
                 receipts = record.receipts,
                 labelsInput = state.labelsInput.copy(labels = record.labels),

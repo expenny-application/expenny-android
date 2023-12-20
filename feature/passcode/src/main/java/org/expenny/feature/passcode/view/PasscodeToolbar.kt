@@ -34,7 +34,7 @@ internal fun PasscodeToolbar(
             IconButton(onClick = onInfoClick) {
                 Icon(
                     painter = painterResource(R.drawable.ic_info),
-                    tint = MaterialTheme.colorScheme.onSurface,
+                    tint = MaterialTheme.colorScheme.primary,
                     contentDescription = null
                 )
             }

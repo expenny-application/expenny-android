@@ -14,12 +14,23 @@ import org.expenny.core.ui.foundation.ExpennyToolbar
 internal fun CurrencyDetailsToolbar(
     scrollBehavior: TopAppBarScrollBehavior,
     title: String,
+    showInfoButton: Boolean,
     showDeleteButton: Boolean,
     onBackClick: () -> Unit,
+    onInfoClick: () -> Unit,
     onDeleteClick: () -> Unit
 ) {
     ExpennyToolbar(
         actions = {
+            if (showInfoButton) {
+                IconButton(onClick = onInfoClick) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_info),
+                        tint = MaterialTheme.colorScheme.primary,
+                        contentDescription = null
+                    )
+                }
+            }
             if (showDeleteButton) {
                 IconButton(onClick = onDeleteClick) {
                     Icon(
