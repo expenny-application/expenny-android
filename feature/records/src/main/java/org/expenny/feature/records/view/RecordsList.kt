@@ -1,7 +1,6 @@
 package org.expenny.feature.records.view
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
@@ -22,7 +21,6 @@ import org.expenny.core.ui.data.selection.SelectionType
 import org.expenny.feature.records.model.*
 import java.util.*
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun RecordsList(
     modifier: Modifier = Modifier,
@@ -61,7 +59,6 @@ internal fun RecordsList(
                 }
                 is RecordUi.Item -> {
                     RecordsListItem(
-                        modifier = Modifier.animateItemPlacement(),
                         isSelectionMode = isSelectionMode,
                         isSelected = selection.contains(record.id),
                         record = record,
