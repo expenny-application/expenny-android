@@ -62,14 +62,14 @@ class CurrencyDetailsViewModel @Inject constructor(
         buildSettings = { exceptionHandler = defaultCoroutineExceptionHandler() }
     ) {
         coroutineScope {
-            setInitialState()
+            setInitialData()
             launch { subscribeOnSelectedCurrencyUnit() }
         }
     }
 
     private val state get() = container.stateFlow.value
 
-    private fun setInitialState() {
+    private fun setInitialData() {
         savedStateHandle.navArgs<CurrencyDetailsNavArgs>().let { navArgs ->
             if (navArgs.currencyId != null) {
                 intent {
