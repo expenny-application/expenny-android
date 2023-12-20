@@ -1,23 +1,18 @@
 package org.expenny.feature.currencyunits.view
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.expenny.core.ui.data.selection.SingleSelection
 import org.expenny.core.ui.foundation.ExpennyGroupedVerticalList
 import org.expenny.core.ui.foundation.*
 import org.expenny.core.ui.data.ui.CurrencyUnitUi
-
 import java.util.*
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun CurrencyUnitsList(
     modifier: Modifier = Modifier,
@@ -41,9 +36,7 @@ internal fun CurrencyUnitsList(
         },
         listItem = { item ->
             CurrencyUnitItem(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .animateItemPlacement(),
+                modifier = Modifier.fillMaxWidth(),
                 selected = selection.contains(item.id),
                 code = item.code,
                 name = item.name,

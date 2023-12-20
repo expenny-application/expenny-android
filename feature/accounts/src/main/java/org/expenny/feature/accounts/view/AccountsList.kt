@@ -1,6 +1,5 @@
 package org.expenny.feature.accounts.view
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.*
@@ -19,7 +18,6 @@ import org.expenny.core.ui.extensions.type
 import org.expenny.core.ui.foundation.*
 import java.util.*
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun AccountsList(
     modifier: Modifier = Modifier,
@@ -35,9 +33,7 @@ internal fun AccountsList(
         listItemKey = AccountUi::id,
         listItem = { item ->
             AccountItem(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .animateItemPlacement(),
+                modifier = Modifier.fillMaxWidth(),
                 selectionType = selection?.type,
                 selected = selection?.contains(item.id) ?: false,
                 title = item.name,

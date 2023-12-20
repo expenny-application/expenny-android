@@ -73,7 +73,7 @@ fun <A, B> ExpennyGroupedVerticalList(
         )
     ) {
         groupedList.forEach { (header, list) ->
-            stickyHeader {
+            stickyHeader(key = header) {
                 listItemHeader(header)
             }
 
