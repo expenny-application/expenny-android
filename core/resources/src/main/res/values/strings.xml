@@ -194,6 +194,7 @@
     <string name="performance_reports_paragraph">Monitor app performance to help providing stable builds</string>
     <string name="amount_conversion_paragraph">The currencies of the selected accounts differ, therefore automatic conversion is applied to the final amount using preset currency rate. You can change it whenever you want</string>
     <string name="passcode_setup_paragraph">Ensure your passcode meets length criteria. Remember, the passcode cannot be reset if forgotten, so it\'s crucial to save or memorize it securely</string>
+    <string name="currency_rates_paragraph">If the selected currency is available in the European Central Bank database, the exchange rates will be automatically set into the fields</string>
 
     <!-- Buttons -->
     <string name="save_button">Save</string>
@@ -264,6 +265,7 @@
     <string name="readonly_main_currency_message">Editing of the main currency is not provided</string>
     <string name="welcome_header_message">Welcome to Expenny! ✌️</string>
     <string name="welcome_paragraph_message">Expenny is a finance companion app for easy personal cash flow management and analysis.</string>
+    <string name="enable_currency_rates_updates_message">Enable automatic updates of currency rates bases on European Central Bank data</string>
 
     <!--Error messages-->
     <string name="remote_rate_error">Remote exchange rate is missing</string>
@@ -290,8 +292,6 @@
     <string name="required_account_error">Having at least one account is required</string>
     <string name="not_found_error">No data found</string>
     <string name="authentication_failed_error">Authentication failed</string>
-    <string name="enable_currency_rates_updates_message">Enable automatic updates of currency rates bases on European Central Bank data</string>
-    <string name="currency_rates_info_message">If the selected currency is available in the European Central Bank database, the exchange rates will be automatically set into the fields</string>
     <string name="transfer_disclaimer_message">Transfers are not taken into account in statistics and are treated as operations with local wallets</string>
 
     <!-- Notification -->

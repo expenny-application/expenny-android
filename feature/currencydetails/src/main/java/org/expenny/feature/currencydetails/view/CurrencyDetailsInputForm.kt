@@ -1,7 +1,11 @@
 package org.expenny.feature.currencydetails.view
 
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -9,12 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import org.expenny.core.ui.extensions.asRawString
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennyExpandableContent
-import org.expenny.core.ui.components.ExpennyMessage
 import org.expenny.core.ui.data.field.InputField
 import org.expenny.core.ui.data.field.MonetaryInputField
+import org.expenny.core.ui.extensions.asRawString
 import org.expenny.core.ui.foundation.ExpennyCheckBoxGroup
 import org.expenny.core.ui.foundation.ExpennyMonetaryInputField
 import org.expenny.core.ui.foundation.ExpennySelectInputField
@@ -24,7 +27,6 @@ import java.math.BigDecimal
 internal fun AccountDetailsInputForm(
     modifier: Modifier = Modifier,
     scrollState: ScrollState,
-    showRatesDisclaimerMessage: Boolean,
     showRatesInputFields: Boolean,
     showEnableRatesUpdateCheckbox: Boolean,
     enableRatesUpdates: Boolean,
@@ -45,9 +47,6 @@ internal fun AccountDetailsInputForm(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        if (showRatesDisclaimerMessage) {
-            ExpennyMessage(message = stringResource(R.string.currency_rates_info_message))
-        }
         SelectCurrencyUnitInputField(
             modifier = Modifier.fillMaxWidth(),
             state = currencyUnitInputField,

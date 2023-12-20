@@ -3,11 +3,15 @@ package org.expenny.feature.currencydetails
 import androidx.lifecycle.SavedStateHandle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.expenny.core.common.extensions.invert
 import org.expenny.core.common.utils.StringResource.Companion.fromRes
-import org.expenny.core.common.viewmodel.*
+import org.expenny.core.common.viewmodel.ExpennyActionViewModel
 import org.expenny.core.domain.usecase.ValidateInputUseCase
 import org.expenny.core.domain.usecase.currency.CreateCurrencyUseCase
 import org.expenny.core.domain.usecase.currency.DeleteCurrencyUseCase
@@ -58,14 +62,14 @@ class CurrencyDetailsViewModel @Inject constructor(
         buildSettings = { exceptionHandler = defaultCoroutineExceptionHandler() }
     ) {
         coroutineScope {
-            setNavArgs()
+            setInitialState()
             launch { subscribeOnSelectedCurrencyUnit() }
         }
     }
 
     private val state get() = container.stateFlow.value
 
-    private fun setNavArgs() {
+    private fun setInitialState() {
         savedStateHandle.navArgs<CurrencyDetailsNavArgs>().let { navArgs ->
             if (navArgs.currencyId != null) {
                 intent {
@@ -85,9 +89,9 @@ class CurrencyDetailsViewModel @Inject constructor(
                             toolbarTitle = fromRes(R.string.edit_currency_label),
                             subscribeToRatesUpdates = isSubscribedToRateUpdates,
                             showSubscribeToRatesUpdatesCheckbox = true,
-                            showRatesDisclaimerMessage = false,
                             showRatesInputFields = true,
                             showDeleteButton = true,
+                            showInfoButton = false,
                         )
                     }
                     reduceBaseToQuoteRateInput(currentCurrency.value!!.baseToQuoteRate)
@@ -98,9 +102,9 @@ class CurrencyDetailsViewModel @Inject constructor(
                     reduce {
                         state.copy(
                             toolbarTitle = fromRes(R.string.add_currency_label),
-                            showRatesDisclaimerMessage = true,
                             showRatesInputFields = false,
                             showDeleteButton = false,
+                            showInfoButton = true,
                         )
                     }
                 }
@@ -114,12 +118,20 @@ class CurrencyDetailsViewModel @Inject constructor(
             is Action.OnSelectCurrencyUnitClick -> handleOnSelectCurrencyUnitClick()
             is Action.OnDeleteClick -> handleOnDeleteClick()
             is Action.OnDeleteCurrencyDialogConfirm -> handleOnDeleteCurrencyDialogConfirm()
-            is Action.OnDeleteCurrencyDialogDismiss -> handleOnDeleteCurrencyDialogDismiss()
+            is Action.OnDialogDismiss -> handleOnDialogDismiss()
             is Action.OnSaveClick -> handleOnSaveClick()
             is Action.OnBaseToQuoteRateChange -> handleOnBaseToQuoteRateChange(action)
             is Action.OnQuoteToBaseRateChange -> handleOnQuoteToBaseRateChange(action)
             is Action.OnSubscribeToRatesUpdateCheckboxChange -> handleOnEnableRatesUpdateCheckboxChange(action)
+            is Action.OnUpdateRateClick -> handleOnUpdateRateClick()
+            is Action.OnInfoClick -> handleOnInfoClick()
             is Action.OnBackClick -> handleOnBackClick()
+        }
+    }
+
+    private fun handleOnUpdateRateClick() = intent {
+        selectedCurrencyUnit.value?.let {
+            handleOnCurrencyUnitSelect(Action.OnCurrencyUnitSelect(it.id))
         }
     }
 
@@ -174,12 +186,12 @@ class CurrencyDetailsViewModel @Inject constructor(
             ).collect { result ->
                 when (result) {
                     is ResourceResult.Loading -> {
-                        reduce { state.copy(isLoading = true) }
+                        reduce { state.copy(dialog = State.Dialog.LoadingDialog) }
                     }
                     is ResourceResult.Error -> {
                         reduce {
                             state.copy(
-                                isLoading = false,
+                                dialog = null,
                                 showRatesInputFields = true,
                                 showSubscribeToRatesUpdatesCheckbox = false,
                                 subscribeToRatesUpdates = false,
@@ -196,7 +208,7 @@ class CurrencyDetailsViewModel @Inject constructor(
                     is ResourceResult.Success -> {
                         reduce {
                             state.copy(
-                                isLoading = false,
+                                dialog = null,
                                 showRatesInputFields = true,
                                 showSubscribeToRatesUpdatesCheckbox = true,
                             )
@@ -238,25 +250,29 @@ class CurrencyDetailsViewModel @Inject constructor(
 
     private fun handleOnDeleteCurrencyDialogConfirm() = intent {
         reduce {
-            state.copy(showDeleteDialog = false)
+            state.copy(dialog = null)
         }
         deleteCurrency(currentCurrency.value!!.id)
         postSideEffect(Event.ShowMessage(fromRes(R.string.deleted_message)))
         postSideEffect(Event.NavigateBack)
     }
 
-    private fun handleOnDeleteCurrencyDialogDismiss() = intent {
-        reduce { state.copy(showDeleteDialog = false) }
+    private fun handleOnDialogDismiss() = intent {
+        reduce { state.copy(dialog = null) }
     }
 
     private fun handleOnDeleteClick() = intent {
-        reduce { state.copy(showDeleteDialog = true) }
+        reduce { state.copy(dialog = State.Dialog.DeleteDialog) }
     }
 
     private fun handleOnSelectCurrencyUnitClick() = intent {
         if (currentCurrency.value == null) {
             postSideEffect(Event.NavigateToCurrencyUnitsSelectionList(selectedCurrencyUnit.value?.id))
         }
+    }
+
+    private fun handleOnInfoClick() = intent {
+        reduce { state.copy(dialog = State.Dialog.InfoDialog) }
     }
 
     private fun handleOnBackClick() = intent {

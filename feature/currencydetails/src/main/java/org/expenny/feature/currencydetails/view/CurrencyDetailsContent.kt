@@ -7,20 +7,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
-import org.expenny.core.ui.extensions.asRawString
 import org.expenny.core.ui.components.ExpennyLoadingDialog
+import org.expenny.core.ui.extensions.asRawString
 import org.expenny.core.ui.extensions.clearFocusOnTapOutside
 import org.expenny.core.ui.extensions.floatingActionButtonPadding
 import org.expenny.feature.currencydetails.Action
 import org.expenny.feature.currencydetails.State
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun CurrencyDetailsContent(
     state: State,
@@ -31,15 +30,22 @@ internal fun CurrencyDetailsContent(
     val focusManager = LocalFocusManager.current
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
-    if (state.showDeleteDialog) {
-        CurrencyDetailsDeleteDialog(
-            onConfirm = { onAction(Action.OnDeleteCurrencyDialogConfirm) },
-            onDismiss = { onAction(Action.OnDeleteCurrencyDialogDismiss) }
-        )
-    }
-
-    if (state.isLoading) {
-        ExpennyLoadingDialog()
+    when(state.dialog) {
+        is State.Dialog.InfoDialog -> {
+            CurrencyDetailsInfoDialog(
+                onDismiss = { onAction(Action.OnDialogDismiss) }
+            )
+        }
+        is State.Dialog.DeleteDialog -> {
+            CurrencyDetailsDeleteDialog(
+                onConfirm = { onAction(Action.OnDeleteCurrencyDialogConfirm) },
+                onDismiss = { onAction(Action.OnDialogDismiss) }
+            )
+        }
+        is State.Dialog.LoadingDialog -> {
+            ExpennyLoadingDialog()
+        }
+        else -> {}
     }
 
     Scaffold(
@@ -52,8 +58,10 @@ internal fun CurrencyDetailsContent(
             CurrencyDetailsToolbar(
                 scrollBehavior = scrollBehavior,
                 title = state.toolbarTitle.asRawString(),
+                showInfoButton = state.showInfoButton,
                 showDeleteButton = state.showDeleteButton,
                 onBackClick = { onAction(Action.OnBackClick) },
+                onInfoClick = { onAction(Action.OnInfoClick) },
                 onDeleteClick = { onAction(Action.OnDeleteClick) }
             )
         },
@@ -77,7 +85,6 @@ internal fun CurrencyDetailsContent(
                 .navigationBarsPadding()
                 .floatingActionButtonPadding(),
             scrollState = scrollState,
-            showRatesDisclaimerMessage = state.showRatesDisclaimerMessage,
             showRatesInputFields = state.showRatesInputFields,
             showEnableRatesUpdateCheckbox = state.showSubscribeToRatesUpdatesCheckbox,
             enableRatesUpdates = state.subscribeToRatesUpdates,
