@@ -64,6 +64,7 @@
     <string name="select_currency_code_label">Select currency code</string>
     <string name="currency_label">Currency</string>
     <string name="currency_code_label">Currency code</string>
+    <string name="last_updated_label">Last updated</string>
     <string name="account_name_label">Account name</string>
     <string name="your_name_label">Your name</string>
     <string name="name_label">Name</string>
@@ -114,7 +115,6 @@
     <string name="budgets_label">Budgets</string>
     <string name="settings_label">Settings</string>
     <string name="discounts_label">Discounts</string>
-    <string name="currency_rates_label">Currency rates</string>
     <string name="debts_label">Debts</string>
     <string name="banks_connections_label">Banks connections</string>
     <string name="add_category_label">Add category</string>
@@ -138,6 +138,7 @@
     <string name="select_type_label">Select type</string>
     <string name="optional_label">Optional</string>
     <string name="additions_label">Additions</string>
+    <string name="currency_rates_label">Currency rates</string>
     <string name="main_label">Main</string>
     <string name="rates_label">Rates</string>
     <string name="amount_label">Amount</string>
@@ -265,13 +266,13 @@
     <string name="readonly_main_currency_message">Editing of the main currency is not provided</string>
     <string name="welcome_header_message">Welcome to Expenny! ✌️</string>
     <string name="welcome_paragraph_message">Expenny is a finance companion app for easy personal cash flow management and analysis.</string>
-    <string name="enable_currency_rates_updates_message">Enable automatic updates of currency rates bases on European Central Bank data</string>
+    <string name="subscribe_to_rates_updates_message">Subscribe to automatic currency rates updates from European Central Bank</string>
 
     <!--Error messages-->
     <string name="remote_rate_error">Remote exchange rate is missing</string>
     <string name="internal_error">Oops! Something went wrong</string>
     <string name="invalid_argument_error">Invalid argument</string>
-    <string name="initialization_error">Initialization error</string>
+    <string name="init_error">Initialization error</string>
     <string name="network_connection_error">Network connection error</string>
     <string name="database_error">Internal database error</string>
     <string name="data_not_exists_error">Data does not exist</string>

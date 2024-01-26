@@ -8,9 +8,10 @@ import androidx.compose.ui.text.style.TextAlign
 import org.expenny.core.resources.R
 import org.expenny.core.ui.foundation.ExpennyAlertDialog
 import org.expenny.core.ui.foundation.ExpennyButton
-import org.expenny.core.ui.foundation.ExpennyButtonSize
-import org.expenny.core.ui.foundation.ExpennyButtonStyle
 import org.expenny.core.ui.foundation.ExpennyText
+import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonAttributes
+import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonSize
+import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonType
 
 @Composable
 internal fun PasscodeInfoDialog(
@@ -36,12 +37,12 @@ internal fun PasscodeInfoDialog(
         },
         confirmButton = {
             ExpennyButton(
-                style = ExpennyButtonStyle.Text,
-                size = ExpennyButtonSize.Small,
                 onClick = onDismiss,
-                label = {
-                    ExpennyText(text = stringResource(R.string.ok_button))
-                }
+                attributes = ExpennyFlatButtonAttributes(
+                    type = ExpennyFlatButtonType.Tertiary,
+                    size = ExpennyFlatButtonSize.Medium,
+                    label = stringResource(R.string.ok_button)
+                )
             )
         }
     )

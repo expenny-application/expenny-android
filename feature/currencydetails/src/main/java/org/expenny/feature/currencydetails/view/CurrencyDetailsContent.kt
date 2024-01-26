@@ -68,7 +68,7 @@ internal fun CurrencyDetailsContent(
         floatingActionButton = {
             CurrencyDetailsActionButton(
                 modifier = Modifier.navigationBarsPadding(),
-                onClick = {
+                onSaveClick = {
                     keyboardController?.hide()
                     focusManager.clearFocus()
                     onAction(Action.OnSaveClick)
@@ -78,25 +78,19 @@ internal fun CurrencyDetailsContent(
         contentWindowInsets = WindowInsets.statusBars,
         containerColor = MaterialTheme.colorScheme.surface,
     ) { paddingValues ->
-        AccountDetailsInputForm(
+        CurrencyDetailsInputForm(
             modifier = Modifier
                 .padding(paddingValues)
                 .padding(16.dp)
                 .navigationBarsPadding()
                 .floatingActionButtonPadding(),
             scrollState = scrollState,
-            showRatesInputFields = state.showRatesInputFields,
-            showEnableRatesUpdateCheckbox = state.showSubscribeToRatesUpdatesCheckbox,
-            enableRatesUpdates = state.subscribeToRatesUpdates,
-            currencyUnitInputField = state.currencyUnitInput,
-            baseToQuoteRateInputField = state.baseToQuoteRateInput,
-            quoteToBaseRateInputField = state.quoteToBaseRateInputField,
-            baseCurrency = state.baseCurrency,
-            quoteCurrency = state.quoteCurrency,
+            state = state,
             onBaseToQuoteRateChange = { onAction(Action.OnBaseToQuoteRateChange(it)) },
             onQuoteToBaseRateChange = { onAction(Action.OnQuoteToBaseRateChange(it)) },
             onSelectCurrencyUnitClick = { onAction(Action.OnSelectCurrencyUnitClick) },
-            onEnableRatesUpdateCheckboxChange = { onAction(Action.OnSubscribeToRatesUpdateCheckboxChange(it)) }
+            onSubscribeToUpdatesCheckboxChange = { onAction(Action.OnSubscribeToUpdatesCheckboxChange(it)) },
+            onUpdateClick = { onAction(Action.OnUpdateClick) }
         )
     }
 }

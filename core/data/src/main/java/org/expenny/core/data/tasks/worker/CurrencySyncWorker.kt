@@ -13,7 +13,7 @@ import org.expenny.core.domain.repository.CurrencyRepository
 import org.expenny.core.model.currency.Currency
 import org.expenny.core.model.currency.CurrencyRate
 import org.expenny.core.model.currency.CurrencyUpdate
-import org.expenny.core.model.resource.ResourceResult
+import org.expenny.core.model.resource.RemoteResult
 import java.time.LocalDate
 
 @HiltWorker
@@ -39,7 +39,7 @@ class CurrencySyncWorker @AssistedInject constructor(
                 CurrencyUpdate(
                     id = currency.id,
                     baseToQuoteRate = currencyRate.rate,
-                    isSubscribedToRateUpdates = currency.isSubscribedToRateUpdates
+                    isSubscribedToRateUpdates = currency.isSubscribedToUpdates
                 )
             }
         }
@@ -51,7 +51,7 @@ class CurrencySyncWorker @AssistedInject constructor(
 
     private suspend fun CurrencyRepository.getEligibleCurrencies(): List<Currency> {
         return getCurrencies().first().filter {
-            it.isSubscribedToRateUpdates && !it.isMain && it.updatedAt.toLocalDate() != LocalDate.now()
+            it.isSubscribedToUpdates && !it.isMain && it.updatedAt.toLocalDate() != LocalDate.now()
         }
     }
 
@@ -61,7 +61,7 @@ class CurrencySyncWorker @AssistedInject constructor(
 
     private suspend fun getLatestRates(base: String, quotes: List<String>): List<CurrencyRate> {
         return currencyRateRepository.getLatestRatesFlow(base, quotes)
-            .filterIsInstance<ResourceResult.Success<List<CurrencyRate>>>()
+            .filterIsInstance<RemoteResult.Success<List<CurrencyRate>>>()
             .first()
             .data
             .orEmpty()

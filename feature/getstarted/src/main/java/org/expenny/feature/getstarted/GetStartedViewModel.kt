@@ -232,7 +232,7 @@ internal class GetStartedViewModel @Inject constructor(
                     .distinctUntilChanged()
                     .onEach { isFormValid ->
                         reduce {
-                            state.copy(enableCta = isFormValid)
+                            state.copy(isCtaEnabled = isFormValid)
                         }
                     }.launchIn(viewModelScope)
             }

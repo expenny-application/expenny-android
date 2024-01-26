@@ -55,8 +55,8 @@ fun ExpennyMonetaryInputField(
         label = label,
         value = formatToInput(state.value),
         error = state.error?.asRawString(),
-        isRequired = state.required,
-        isEnabled = state.enabled,
+        isRequired = state.isRequired,
+        isEnabled = state.isEnabled,
         onValueChange = {
             onValueChange(formatToOutput(it, state.value.scale()))
         },
@@ -74,6 +74,34 @@ fun ExpennyMonetaryInputField(
                 text = currency
             )
         }
+    )
+}
+
+@Composable
+fun ExpennyReadonlyInputField(
+    modifier: Modifier = Modifier,
+    label: String,
+    value: String,
+    error: String? = null,
+    placeholder: String? = null,
+    isRequired: Boolean = false,
+    isEnabled: Boolean = true,
+    trailingContent: @Composable (() -> Unit)? = null,
+) {
+    ExpennyInputField(
+        modifier = modifier,
+        label = label,
+        placeholder = placeholder,
+        value = value,
+        error = error,
+        isReadonly = true,
+        isEnabled = isEnabled,
+        isRequired = isRequired,
+        onValueChange = {},
+        trailingContent = trailingContent,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Text
+        )
     )
 }
 
@@ -103,7 +131,7 @@ fun ExpennySelectInputField(
         onValueChange = onValueChange,
         trailingContent = {
             IconButton(
-                onClick = { if (isEnabled) onClick() },
+                onClick = onClick,
                 enabled = isEnabled
             ) {
                 Icon(

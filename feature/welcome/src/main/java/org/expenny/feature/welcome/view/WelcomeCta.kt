@@ -5,8 +5,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import org.expenny.core.resources.R
 import org.expenny.core.ui.foundation.ExpennyButton
-import org.expenny.core.ui.foundation.ExpennyText
-
+import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonAttributes
+import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonSize
+import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonType
 
 @Composable
 internal fun WelcomeCta(
@@ -15,9 +16,11 @@ internal fun WelcomeCta(
 ) {
     ExpennyButton(
         modifier = modifier,
-        label = {
-            ExpennyText(text = stringResource(R.string.get_started_button))
-        },
-        onClick = onClick
+        onClick = onClick,
+        attributes = ExpennyFlatButtonAttributes(
+            type = ExpennyFlatButtonType.Primary,
+            size = ExpennyFlatButtonSize.Large,
+            label = stringResource(R.string.get_started_button)
+        )
     )
 }

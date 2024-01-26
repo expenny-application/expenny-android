@@ -110,7 +110,7 @@ private fun PayeeOrPayerInputField(
     with(state) {
         ExpennyInputField(
             modifier = modifier,
-            isRequired = required,
+            isRequired = isRequired,
             value = value,
             error = error?.asRawString(),
             label = stringResource(R.string.payee_payer_label),
@@ -132,7 +132,7 @@ private fun DescriptionInputField(
     with(state) {
         ExpennyInputField(
             modifier = modifier,
-            isRequired = required,
+            isRequired = isRequired,
             value = value,
             error = error?.asRawString(),
             label = stringResource(R.string.description_label),

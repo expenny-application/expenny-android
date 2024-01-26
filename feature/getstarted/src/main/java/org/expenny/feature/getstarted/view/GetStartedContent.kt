@@ -82,7 +82,7 @@ internal fun GetStartedContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 24.dp),
-                enabled = state.enableCta,
+                isEnabled = state.isCtaEnabled,
                 onClick = {
                     keyboardController?.hide()
                     focusManager.clearFocus()

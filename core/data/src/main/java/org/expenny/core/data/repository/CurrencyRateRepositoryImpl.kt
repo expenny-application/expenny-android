@@ -1,10 +1,12 @@
 package org.expenny.core.data.repository
 
 import android.icu.util.Currency
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import org.expenny.core.common.utils.Constants.CURRENCY_RATE_SCALE
 import org.expenny.core.data.mapper.DataMapper.toModel
-import org.expenny.core.data.utils.suspendCatching
+import org.expenny.core.data.utils.remoteResultMediator
 import org.expenny.core.domain.repository.CurrencyRateRepository
 import org.expenny.core.model.currency.CurrencyRate
 import org.expenny.core.network.EcbService
@@ -14,10 +16,6 @@ import java.math.BigDecimal
 import java.math.RoundingMode.HALF_UP
 import java.time.LocalDate
 import javax.inject.Inject
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.withContext
-import java.util.concurrent.atomic.AtomicInteger
 
 class CurrencyRateRepositoryImpl @Inject constructor(
     private val ecbService: EcbService,
@@ -26,7 +24,7 @@ class CurrencyRateRepositoryImpl @Inject constructor(
     override fun getLatestRateFlow(
         base: String,
         quote: String
-    ) = suspendCatching {
+    ) = remoteResultMediator {
         ecbService
             .getLatestEurBasedData(base, quote)
             .mapToCurrencyRates()
@@ -38,7 +36,7 @@ class CurrencyRateRepositoryImpl @Inject constructor(
     override fun getLatestRatesFlow(
         base: String,
         quotes: List<String>
-    ) = suspendCatching {
+    ) = remoteResultMediator {
         ecbService
             .getLatestEurBasedData(base, *quotes.toTypedArray())
             .mapToCurrencyRates()
@@ -50,80 +48,63 @@ class CurrencyRateRepositoryImpl @Inject constructor(
     override fun getRatesFlow(
         fromDate: LocalDate,
         quotes: List<String>
-    ) = suspendCatching {
+    ) = remoteResultMediator {
         ecbService
             .getEurBaseData(fromDate, *quotes.toTypedArray())
             .mapToCurrencyRates()
     }
 
-    private suspend fun List<EcbRateReferenceDto>.mapToCurrencyRates(): List<CurrencyRate> {
-        val numOfParallelTasks = 10
-        val currentIndex = AtomicInteger(0)
-        val result = mutableSetOf<CurrencyRate>()
+    private suspend fun List<EcbRateReferenceDto>.mapToCurrencyRates(): List<CurrencyRate> = coroutineScope {
+        val initialReferences = this@mapToCurrencyRates
 
-        val deferredResult = withContext(Dispatchers.Default) {
-            List(numOfParallelTasks) { taskIndex ->
-                async {
-                    val startIndex = currentIndex.getAndAdd(size / numOfParallelTasks)
-                    val endIndex = if (taskIndex == numOfParallelTasks - 1) size else startIndex + (size / numOfParallelTasks)
+        val referencesMap = async { initialReferences.getDateToRatesMap() }.await()
+        val distinctCurrencies = initialReferences.getDistinctCurrenciesList()
+        val distinctDates = referencesMap.keys.toList()
+        val combinations = mutableListOf<CurrencyRate>()
 
-                    val sublist = when {
-                        startIndex == 0 && endIndex == 0 -> this@mapToCurrencyRates
-                        else -> this@mapToCurrencyRates.subList(startIndex, endIndex)
-                    }
-
-                    val processedSublist = sublist
-                        .groupBy { it.date }
-                        .map { (date, refs) ->
-                            val currencies = refs.asSequence()
-                                .flatMap { listOf(it.baseCurrency, it.quoteCurrency) }
-                                .distinct()
-                                .toList()
-
-                            val currencyPairs = buildList {
-                                for (i in currencies.indices) {
-                                    for (j in currencies.indices) {
-                                        if (i != j) {
-                                            add(currencies[i] to currencies[j])
-                                        }
-                                    }
-                                }
+        // Generate combinations in parallel for each date
+        distinctDates.map { date ->
+            async {
+                for (base in distinctCurrencies) {
+                    for (quote in distinctCurrencies) {
+                        if (base != quote) {
+                            val rate = if (base == ECB_BASE_UNIT) {
+                                referencesMap[date]?.get(base to quote) ?: BigDecimal.ONE
+                            } else {
+                                val baseRate = referencesMap[date]?.get(ECB_BASE_UNIT to base) ?: BigDecimal.ONE
+                                val quoteRate = referencesMap[date]?.get(ECB_BASE_UNIT to quote) ?: BigDecimal.ONE
+                                quoteRate.divideByRate(baseRate)
                             }
 
-                            currencyPairs.map { (base, quote) ->
-                                val eurToBaseRate = getRateByCurrencyCode(base)
-                                val eurToQuoteRate = getRateByCurrencyCode(quote)
-                                val baseToQuoteRate = eurToQuoteRate.divideByRate(eurToBaseRate)
-
+                            combinations.add(
                                 CurrencyRate(
                                     baseCurrencyUnit = Currency.getInstance(base).toModel(),
                                     quoteCurrencyUnit = Currency.getInstance(quote).toModel(),
-                                    rate = baseToQuoteRate,
+                                    rate = rate,
                                     date = date
                                 )
-                            }
-                        }.flatten()
-
-                    synchronized(result) {
-                        result.addAll(processedSublist)
+                            )
+                        }
                     }
                 }
             }
-        }
+        }.awaitAll()
 
-        deferredResult.awaitAll()
-
-        return result.sortedBy { it.date }
+        return@coroutineScope combinations
     }
+
+    private fun List<EcbRateReferenceDto>.getDistinctCurrenciesList() =
+        flatMap { listOf(it.baseCurrency, it.quoteCurrency) }.distinct()
+
+    private fun List<EcbRateReferenceDto>.getDateToRatesMap() =
+        groupBy { it.date }
+            .mapValues { (_, references) ->
+                references
+                    .associateBy { it.baseCurrency to it.quoteCurrency }
+                    .mapValues { (_, reference) -> reference.value }
+            }
 
     private fun BigDecimal.divideByRate(rate: BigDecimal): BigDecimal {
         return divide(rate, CURRENCY_RATE_SCALE, HALF_UP)
-    }
-
-    private fun List<EcbRateReferenceDto>.getRateByCurrencyCode(code: String): BigDecimal {
-        return when (code) {
-            ECB_BASE_UNIT -> BigDecimal.ONE
-            else -> first { it.quoteCurrency == code }.value
-        }
     }
 }

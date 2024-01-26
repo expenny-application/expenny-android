@@ -1,14 +1,14 @@
 package org.expenny.feature.getstarted.view
 
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import org.expenny.core.resources.R
 import org.expenny.core.ui.foundation.ExpennyAlertDialog
 import org.expenny.core.ui.foundation.ExpennyButton
-import org.expenny.core.ui.foundation.ExpennyButtonStyle
 import org.expenny.core.ui.foundation.ExpennyText
-
+import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonAttributes
+import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonSize
+import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonType
 
 @Composable
 internal fun GetStartedAbortDialog(
@@ -28,20 +28,22 @@ internal fun GetStartedAbortDialog(
         },
         confirmButton = {
             ExpennyButton(
-                style = ExpennyButtonStyle.Text,
                 onClick = onConfirm,
-                label = {
-                    ExpennyText(text = stringResource(R.string.abort_button))
-                }
+                attributes = ExpennyFlatButtonAttributes(
+                    type = ExpennyFlatButtonType.Tertiary,
+                    size = ExpennyFlatButtonSize.Medium,
+                    label = stringResource(R.string.abort_button)
+                )
             )
         },
         dismissButton = {
             ExpennyButton(
-                style = ExpennyButtonStyle.Text,
                 onClick = onDismiss,
-                label = {
-                    ExpennyText(text = stringResource(R.string.continue_button))
-                }
+                attributes = ExpennyFlatButtonAttributes(
+                    type = ExpennyFlatButtonType.Tertiary,
+                    size = ExpennyFlatButtonSize.Medium,
+                    label = stringResource(R.string.continue_button)
+                )
             )
         }
     )

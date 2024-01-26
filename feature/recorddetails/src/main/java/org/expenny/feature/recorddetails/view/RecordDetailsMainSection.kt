@@ -167,9 +167,9 @@ private fun SelectCategoryInputField(
     with(state) {
         ExpennySelectInputField(
             modifier = modifier,
-            isRequired = required,
+            isRequired = isRequired,
             value = value,
-            isEnabled = enabled,
+            isEnabled = isEnabled,
             error = error?.asRawString(),
             label = stringResource(R.string.category_label),
             placeholder = stringResource(R.string.select_category_label),
@@ -187,9 +187,9 @@ private fun SelectAccountInputField(
     with(state) {
         ExpennySelectInputField(
             modifier = modifier,
-            isRequired = required,
+            isRequired = isRequired,
             value = value,
-            isEnabled = enabled,
+            isEnabled = isEnabled,
             error = error?.asRawString(),
             label = stringResource(R.string.account_label),
             placeholder = stringResource(R.string.select_account_label),
@@ -207,9 +207,9 @@ private fun SelectTransferAccountInputField(
     with(state) {
         ExpennySelectInputField(
             modifier = modifier,
-            isRequired = required,
+            isRequired = isRequired,
             value = value,
-            isEnabled = enabled,
+            isEnabled = isEnabled,
             error = error?.asRawString(),
             label = stringResource(R.string.transfer_account_label),
             placeholder = stringResource(R.string.select_transfer_account_label),
@@ -227,9 +227,9 @@ private fun SelectDateInputField(
     with(state) {
         ExpennySelectInputField(
             modifier = modifier,
-            isRequired = required,
+            isRequired = isRequired,
             value = value,
-            isEnabled = enabled,
+            isEnabled = isEnabled,
             error = error?.asRawString(),
             label = stringResource(R.string.date_label),
             placeholder = stringResource(R.string.select_date_label),
@@ -247,9 +247,9 @@ private fun SelectTimeInputField(
     with(state) {
         ExpennySelectInputField(
             modifier = modifier,
-            isRequired = required,
+            isRequired = isRequired,
             value = value,
-            isEnabled = enabled,
+            isEnabled = isEnabled,
             error = error?.asRawString(),
             label = stringResource(R.string.time_label),
             placeholder = stringResource(R.string.select_time_label),

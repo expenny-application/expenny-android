@@ -22,6 +22,9 @@ import androidx.core.view.WindowCompat
 import org.expenny.core.resources.R
 import org.expenny.core.ui.foundation.ExpennyButton
 import org.expenny.core.ui.foundation.ExpennyText
+import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonAttributes
+import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonSize
+import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonType
 import org.expenny.core.ui.theme.ExpennyTheme
 import org.expenny.main.MainActivity
 
@@ -78,13 +81,12 @@ private fun ExceptionContent(
                     )
                     ExpennyButton(
                         modifier = Modifier.width(200.dp),
-                        onClick = { /*TODO*/ },
-                        label = {
-                            ExpennyText(
-                                text = "Report",
-                                style = MaterialTheme.typography.titleMedium,
-                            )
-                        }
+                        onClick = {},
+                        attributes = ExpennyFlatButtonAttributes(
+                            type = ExpennyFlatButtonType.Primary,
+                            size = ExpennyFlatButtonSize.Large,
+                            label = "Report"
+                        )
                     )
                     ExpennyText(
                         modifier = Modifier.clickable {

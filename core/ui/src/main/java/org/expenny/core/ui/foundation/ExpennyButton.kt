@@ -1,155 +1,238 @@
 package org.expenny.core.ui.foundation
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.CubicBezierEasing
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.ripple.LocalRippleTheme
-import androidx.compose.material.ripple.RippleAlpha
 import androidx.compose.material.ripple.RippleTheme
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import org.expenny.core.ui.foundation.model.button.ExpennyButtonAttributes
+import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonAttributes
+import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonSize
+import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonType
+import org.expenny.core.ui.foundation.model.button.ExpennyFloatingButtonAttributes
+import org.expenny.core.ui.foundation.model.button.ExpennyFloatingButtonSize
+import org.expenny.core.ui.foundation.model.button.ExpennyFloatingButtonType
 
 @Composable
 fun ExpennyButton(
     modifier: Modifier = Modifier,
-    size: ExpennyButtonSize = ExpennyButtonSize.Large,
-    style: ExpennyButtonStyle = ExpennyButtonStyle.Filled,
-    label: @Composable () -> Unit,
-    leadingIcon:  @Composable (() -> Unit)? = null,
-    isEnabled: Boolean = true,
-    onClick: () -> Unit,
+    attributes: ExpennyButtonAttributes,
+    onClick: () -> Unit
 ) {
-    val buttonColors = ButtonColors(
-        rippleColor = MaterialTheme.colorScheme.primary,
-        containerColor = MaterialTheme.colorScheme.primary,
-        contentColor = MaterialTheme.colorScheme.onPrimary,
-        disabledContainerColor = MaterialTheme.colorScheme.onSurface.copy(disabledContainerOpacity),
-        disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(disabledContentOpacity),
-    ).let {
-        when (style) {
-            ExpennyButtonStyle.Text -> it.copy(
-                containerColor = Color.Transparent,
-                contentColor = MaterialTheme.colorScheme.primary
-            )
-            else -> it
+    with(attributes) {
+        CompositionLocalProvider(
+            LocalRippleTheme provides ButtonRippleTheme(type.rippleColor)
+        ) {
+            when (this) {
+                is ExpennyFlatButtonAttributes -> {
+                    FlatButton(
+                        modifier = modifier,
+                        isEnabled = isEnabled,
+                        type = type,
+                        size = size,
+                        icon = icon,
+                        label = label,
+                        onClick = onClick
+                    )
+                }
+                is ExpennyFloatingButtonAttributes -> {
+                    FloatingButton(
+                        modifier = modifier,
+                        isEnabled = isEnabled,
+                        isExpanded = isExpanded,
+                        type = type,
+                        size = size,
+                        icon = icon,
+                        label = label,
+                        onClick = onClick
+                    )
+                }
+            }
         }
     }
+}
 
-    ButtonContent(
-        modifier = modifier,
-        size = size,
-        label = label,
-        leadingIcon = leadingIcon,
-        isEnabled = isEnabled,
-        rippleColor = buttonColors.rippleColor,
-        containerColor = buttonColors.containerColor,
-        contentColor = buttonColors.contentColor,
-        disabledContainerColor = buttonColors.disabledContainerColor,
-        disabledContentColor = buttonColors.disabledContentColor,
-        onClick = onClick
+@Composable
+private fun FlatButton(
+    modifier: Modifier = Modifier,
+    isEnabled: Boolean,
+    type: ExpennyFlatButtonType,
+    size: ExpennyFlatButtonSize,
+    icon: Painter? = null,
+    label: String? = null,
+    onClick: () -> Unit
+) {
+    Button(
+        modifier = modifier.sizeIn(
+            minHeight = size.height,
+            minWidth = size.width
+        ),
+        elevation = null,
+        border = null,
+        onClick = onClick,
+        enabled = isEnabled,
+        shape = size.shape,
+        contentPadding = size.padding,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = type.containerColor,
+            contentColor = type.contentColor,
+            disabledContainerColor = type.disabledContainerColor,
+            disabledContentColor = type.disabledContentColor
+        ),
+        content = {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(size.spacing),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                icon?.let {
+                    Icon(
+                        modifier = Modifier.size(size.iconSize),
+                        painter = icon,
+                        contentDescription = label.orEmpty()
+                    )
+                }
+                label?.let {
+                    Text(
+                        text = label,
+                        style = size.textStyle,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1
+                    )
+                }
+            }
+        }
     )
 }
 
 @Composable
-private fun ButtonContent(
+private fun FloatingButton(
     modifier: Modifier = Modifier,
-    size: ExpennyButtonSize,
-    label: @Composable () -> Unit,
-    leadingIcon:  @Composable (() -> Unit)? = null,
-    isEnabled: Boolean = true,
-    rippleColor: Color,
-    containerColor: Color,
-    contentColor: Color,
-    disabledContainerColor: Color = containerColor,
-    disabledContentColor: Color = contentColor,
+    isEnabled: Boolean,
+    isExpanded: Boolean,
+    type: ExpennyFloatingButtonType,
+    size: ExpennyFloatingButtonSize,
+    icon: Painter? = null,
+    label: String? = null,
     onClick: () -> Unit
 ) {
-    val (height, iconSize, textStyle) = when(size) {
-        ExpennyButtonSize.Small -> Triple(32.dp, 18.dp, MaterialTheme.typography.titleSmall)
-        ExpennyButtonSize.Medium -> Triple(44.dp, 24.dp, MaterialTheme.typography.titleMedium)
-        ExpennyButtonSize.Large -> Triple(56.dp, 24.dp, MaterialTheme.typography.titleMedium)
-    }
+    val minWidth by animateDpAsState(
+        targetValue = if (isExpanded) size.width.times(size.expandSizeModifier) else size.width,
+        label = "MinWidthAnimation"
+    )
+    val minHeight by animateDpAsState(
+        targetValue = if (isExpanded) size.height.times(size.expandSizeModifier) else size.height,
+        label = "MinHeightAnimation"
+    )
+    val iconSize by animateDpAsState(
+        targetValue = if (isExpanded) size.iconSize.times(size.expandSizeModifier) else size.iconSize,
+        label = "IconSizeAnimation"
+    )
 
-    CompositionLocalProvider(
-        LocalRippleTheme provides ExpennyButtonRippleTheme(rippleColor = rippleColor)
+    val expandAnimation = fadeIn(
+        tween(100, 0, easingLinearCubicBezier)
+    ) + expandHorizontally(
+        tween(200, 0, easingEmphasizedCubicBezier),
+        Alignment.Start
+    )
+
+    val collapseAnimation = fadeOut(
+        tween(100, 0, easingLinearCubicBezier)
+    ) + shrinkHorizontally(
+        tween(200, 0, easingEmphasizedCubicBezier),
+        Alignment.Start
+    )
+
+    Surface(
+        modifier = modifier.semantics { role = Role.Button },
+        enabled = isEnabled,
+        shape = size.shape,
+        color = type.containerColor,
+        contentColor = type.contentColor,
+        shadowElevation = 3.dp,
+        onClick = onClick,
     ) {
-        Button(
-            modifier = modifier.height(height),
-            elevation = null,
-            border = null,
-            onClick = onClick,
-            enabled = isEnabled,
-            shape = defaultShape,
-            contentPadding = PaddingValues(
-                horizontal = horizontalContentPadding,
-                vertical = verticalContentPadding
-            ),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = containerColor,
-                contentColor = contentColor,
-                disabledContainerColor = disabledContainerColor,
-                disabledContentColor = disabledContentColor
-            ),
-            content = {
-                ProvideTextStyle(value = textStyle) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        if (leadingIcon != null) {
-                            Box(modifier = Modifier.size(iconSize)) {
-                                leadingIcon()
-                            }
-                        }
-                        label()
+        Row(
+            modifier = Modifier
+                .sizeIn(
+                    minWidth = minWidth,
+                    minHeight = minHeight
+                )
+                .padding(size.padding),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = if (isExpanded) Arrangement.Start else Arrangement.Center
+        ) {
+            icon?.let {
+                Icon(
+                    modifier = Modifier.size(iconSize),
+                    painter = icon,
+                    contentDescription = label.orEmpty()
+                )
+            }
+            label?.let {
+                AnimatedVisibility(
+                    visible = isExpanded,
+                    enter = expandAnimation,
+                    exit = collapseAnimation,
+                ) {
+                    Row {
+                        Spacer(Modifier.width(size.spacing))
+                        Text(
+                            text = label,
+                            style = size.textStyle,
+                            overflow = TextOverflow.Clip,
+                            maxLines = 1
+                        )
                     }
                 }
             }
-        )
+        }
     }
 }
 
-enum class ExpennyButtonSize { Small, Medium, Large }
+private val easingLinearCubicBezier = CubicBezierEasing(0.0f, 0.0f, 1.0f, 1.0f)
+private val easingEmphasizedCubicBezier = CubicBezierEasing(0.2f, 0.0f, 0.0f, 1.0f)
 
-enum class ExpennyButtonStyle { Filled, Text }
-
-private data class ButtonColors(
-    val rippleColor: Color,
-    val containerColor: Color,
-    val contentColor: Color,
-    val disabledContainerColor: Color,
-    val disabledContentColor: Color,
-)
-
-private val defaultShape = RoundedCornerShape(8.dp)
-private val horizontalContentPadding = 8.dp
-private val verticalContentPadding = 6.dp
-private val disabledContainerOpacity = 0.12f
-private val disabledContentOpacity = 0.38f
-
-class ExpennyButtonRippleTheme(private val rippleColor: Color) : RippleTheme {
+private class ButtonRippleTheme(private val rippleColor: Color) : RippleTheme {
 
     @Composable
-    override fun defaultColor(): Color =
-        RippleTheme.defaultRippleColor(
-            contentColor = rippleColor,
-            lightTheme = isSystemInDarkTheme().not()
-        )
+    override fun defaultColor() = RippleTheme.defaultRippleColor(
+        contentColor = rippleColor,
+        lightTheme = isSystemInDarkTheme().not()
+    )
 
     @Composable
-    override fun rippleAlpha(): RippleAlpha =
-        RippleTheme.defaultRippleAlpha(
-            contentColor = rippleColor.copy(alpha = 0.75f),
-            lightTheme = isSystemInDarkTheme().not()
-        )
+    override fun rippleAlpha() = RippleTheme.defaultRippleAlpha(
+        contentColor = rippleColor.copy(alpha = 0.75f),
+        lightTheme = isSystemInDarkTheme().not()
+    )
 }

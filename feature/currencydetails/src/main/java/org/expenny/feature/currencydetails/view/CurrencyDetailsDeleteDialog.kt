@@ -1,15 +1,14 @@
 package org.expenny.feature.currencydetails.view
 
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import org.expenny.core.resources.R
 import org.expenny.core.ui.foundation.ExpennyAlertDialog
 import org.expenny.core.ui.foundation.ExpennyButton
-import org.expenny.core.ui.foundation.ExpennyButtonSize
-import org.expenny.core.ui.foundation.ExpennyButtonStyle
 import org.expenny.core.ui.foundation.ExpennyText
-
+import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonAttributes
+import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonSize
+import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonType
 
 @Composable
 internal fun CurrencyDetailsDeleteDialog(
@@ -29,22 +28,22 @@ internal fun CurrencyDetailsDeleteDialog(
         },
         confirmButton = {
             ExpennyButton(
-                style = ExpennyButtonStyle.Text,
-                size = ExpennyButtonSize.Small,
                 onClick = onConfirm,
-                label = {
-                    ExpennyText(text = stringResource(R.string.delete_button))
-                }
+                attributes = ExpennyFlatButtonAttributes(
+                    type = ExpennyFlatButtonType.Tertiary,
+                    size = ExpennyFlatButtonSize.Medium,
+                    label = stringResource(R.string.delete_button)
+                )
             )
         },
         dismissButton = {
             ExpennyButton(
-                style = ExpennyButtonStyle.Text,
-                size = ExpennyButtonSize.Small,
                 onClick = onDismiss,
-                label = {
-                    ExpennyText(text = stringResource(R.string.cancel_button))
-                }
+                attributes = ExpennyFlatButtonAttributes(
+                    type = ExpennyFlatButtonType.Tertiary,
+                    size = ExpennyFlatButtonSize.Medium,
+                    label = stringResource(R.string.cancel_button)
+                )
             )
         }
     )

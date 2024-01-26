@@ -31,14 +31,14 @@ object NetworkModule {
             )
         }
 
-        install(Logging) {
-            level = LogLevel.ALL
-            logger = object : Logger {
-                override fun log(message: String) {
-                    Timber.i(message)
-                }
-            }
-        }
+//        install(Logging) {
+//            level = LogLevel.ALL
+//            logger = object : Logger {
+//                override fun log(message: String) {
+//                    Timber.i(message)
+//                }
+//            }
+//        }
 
         engine {
             config {

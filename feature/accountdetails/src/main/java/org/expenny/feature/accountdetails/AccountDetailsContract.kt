@@ -17,8 +17,8 @@ data class State(
     val selectedCurrency: String = "",
     val currencyInput: InputField = InputField(),
     val nameInput: InputField = InputField(),
-    val descriptionInput: InputField = InputField(required = false),
-    val startBalanceInput: MonetaryInputField = MonetaryInputField(required = false),
+    val descriptionInput: InputField = InputField(isRequired = false),
+    val startBalanceInput: MonetaryInputField = MonetaryInputField(isRequired = false),
 )
 
 sealed interface Action {

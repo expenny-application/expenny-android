@@ -31,7 +31,6 @@ import org.expenny.core.model.profile.Profile
 import org.expenny.core.model.profile.ProfileCreate
 import org.expenny.core.model.record.Record
 import org.expenny.core.model.record.RecordCreate
-import org.expenny.core.model.record.RecordUpdate
 import java.time.LocalDateTime
 
 object DataMapper {
@@ -76,7 +75,7 @@ object DataMapper {
             baseToQuoteRate = baseToQuoteRate,
             quoteToBaseRate = quoteToBaseRate,
             isMain = currencyProfile.currencyCode == currency.code,
-            isSubscribedToRateUpdates = currency.isSubscribedToRateUpdates,
+            isSubscribedToUpdates = currency.isSubscribedToRateUpdates,
             updatedAt = currency.updatedAt
         )
     }

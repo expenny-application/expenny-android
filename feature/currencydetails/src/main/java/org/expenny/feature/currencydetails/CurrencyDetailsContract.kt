@@ -8,17 +8,19 @@ import java.math.BigDecimal
 
 data class State(
     val toolbarTitle: StringResource = StringResource.fromRes(R.string.add_currency_label),
-    val showRatesInputFields: Boolean = false,
-    val showSubscribeToRatesUpdatesCheckbox: Boolean = false,
-    val subscribeToRatesUpdates: Boolean = false,
+    val showCurrencyRatesSection: Boolean = false,
+    val isUpdatable: Boolean = false,
+    val isSubscribableToUpdates: Boolean = false,
+    val isSubscribedToUpdates: Boolean = false,
     val showInfoButton: Boolean = false,
     val showDeleteButton: Boolean = false,
     val dialog: Dialog? = null,
-    val currencyUnitInput: InputField = InputField(required = true),
     val baseCurrency: String = "",
     val quoteCurrency: String = "",
-    val baseToQuoteRateInput: MonetaryInputField = MonetaryInputField(required = true),
-    val quoteToBaseRateInputField: MonetaryInputField = MonetaryInputField(required = true),
+    val lastUpdateInput: InputField = InputField(),
+    val currencyUnitInput: InputField = InputField(isRequired = true),
+    val baseToQuoteRateInput: MonetaryInputField = MonetaryInputField(isRequired = true),
+    val quoteToBaseRateInput: MonetaryInputField = MonetaryInputField(isRequired = true),
 ) {
     sealed interface Dialog {
         data object InfoDialog : Dialog
@@ -37,8 +39,8 @@ sealed interface Action {
     class OnBaseToQuoteRateChange(val rate: BigDecimal) : Action
     class OnQuoteToBaseRateChange(val rate: BigDecimal) : Action
     class OnCurrencyUnitSelect(val id: Long) : Action
-    class OnSubscribeToRatesUpdateCheckboxChange(val value: Boolean) : Action
-    data object OnUpdateRateClick : Action
+    class OnSubscribeToUpdatesCheckboxChange(val value: Boolean) : Action
+    data object OnUpdateClick : Action
     data object OnSelectCurrencyUnitClick : Action
     data object OnDeleteCurrencyDialogConfirm : Action
     data object OnDialogDismiss : Action

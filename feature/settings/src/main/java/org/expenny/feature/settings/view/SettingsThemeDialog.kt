@@ -21,10 +21,11 @@ import org.expenny.core.ui.extensions.drawVerticalScrollbar
 import org.expenny.core.ui.extensions.label
 import org.expenny.core.ui.foundation.ExpennyAlertDialog
 import org.expenny.core.ui.foundation.ExpennyButton
-import org.expenny.core.ui.foundation.ExpennyButtonSize
-import org.expenny.core.ui.foundation.ExpennyButtonStyle
 import org.expenny.core.ui.foundation.ExpennyRadioButton
 import org.expenny.core.ui.foundation.ExpennyText
+import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonAttributes
+import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonSize
+import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonType
 
 @Composable
 internal fun SettingsThemeDialog(
@@ -63,12 +64,12 @@ internal fun SettingsThemeDialog(
         },
         confirmButton = {
             ExpennyButton(
-                style = ExpennyButtonStyle.Text,
-                size = ExpennyButtonSize.Small,
                 onClick = onDismiss,
-                label = {
-                    ExpennyText(text = stringResource(R.string.cancel_button))
-                }
+                attributes = ExpennyFlatButtonAttributes(
+                    type = ExpennyFlatButtonType.Tertiary,
+                    size = ExpennyFlatButtonSize.Medium,
+                    label = stringResource(R.string.cancel_button)
+                )
             )
         }
     )

@@ -12,6 +12,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import org.expenny.core.resources.R
+import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonAttributes
+import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonSize
+import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonType
 
 
 @OptIn(
@@ -36,7 +39,9 @@ fun ExpennyAlertDialog(
     ) {
         AlertDialogContent(
             buttons = {
-                FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
                     dismissButton?.invoke()
                     confirmButton()
                 }
@@ -57,12 +62,12 @@ fun ExpennyAlertDialogButton(
 ) {
     ExpennyButton(
         modifier = modifier,
-        style = ExpennyButtonStyle.Text,
-        size = ExpennyButtonSize.Small,
         onClick = onClick,
-        label = {
-            ExpennyText(text = label)
-        }
+        attributes = ExpennyFlatButtonAttributes(
+            type = ExpennyFlatButtonType.Tertiary,
+            size = ExpennyFlatButtonSize.Medium,
+            label = label
+        )
     )
 }
 
