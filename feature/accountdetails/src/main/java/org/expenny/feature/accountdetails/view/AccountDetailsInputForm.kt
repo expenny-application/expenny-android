@@ -109,8 +109,8 @@ private fun SelectCurrencyInputField(
     with(state) {
         ExpennySelectInputField(
             modifier = modifier.fillMaxWidth(),
-            isRequired = required,
-            isEnabled = enabled,
+            isRequired = isRequired,
+            isEnabled = isEnabled,
             value = value,
             error = error?.asRawString(),
             label = stringResource(R.string.currency_label),
@@ -129,7 +129,7 @@ private fun DescriptionInputField(
     with(state) {
         ExpennyInputField(
             modifier = modifier.fillMaxWidth(),
-            isRequired = required,
+            isRequired = isRequired,
             value = value,
             error = error?.asRawString(),
             label = stringResource(R.string.description_label),
@@ -150,7 +150,7 @@ private fun NameInputField(
     with(state) {
         ExpennyInputField(
             modifier = modifier.fillMaxWidth(),
-            isRequired = required,
+            isRequired = isRequired,
             value = value,
             error = error?.asRawString(),
             label = stringResource(R.string.title_label),

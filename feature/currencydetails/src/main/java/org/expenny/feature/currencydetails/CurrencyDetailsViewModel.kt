@@ -2,14 +2,12 @@ package org.expenny.feature.currencydetails
 
 import androidx.lifecycle.SavedStateHandle
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import org.expenny.core.common.extensions.invert
+import org.expenny.core.common.extensions.toDateString
+import org.expenny.core.common.utils.Constants.CURRENCY_RATE_SCALE
 import org.expenny.core.common.utils.StringResource.Companion.fromRes
 import org.expenny.core.common.viewmodel.ExpennyActionViewModel
 import org.expenny.core.domain.usecase.ValidateInputUseCase
@@ -23,8 +21,9 @@ import org.expenny.core.domain.usecase.rate.GetLatestCurrencyRateUseCase
 import org.expenny.core.domain.validators.RequiredBigDecimalValidator
 import org.expenny.core.domain.validators.RequiredStringValidator
 import org.expenny.core.model.currency.Currency
+import org.expenny.core.model.currency.CurrencyRate
 import org.expenny.core.model.currency.CurrencyUnit
-import org.expenny.core.model.resource.ResourceResult
+import org.expenny.core.model.resource.RemoteResult
 import org.expenny.core.resources.R
 import org.expenny.core.ui.mapper.CurrencyUnitMapper
 import org.expenny.feature.currencydetails.navigation.CurrencyDetailsNavArgs
@@ -34,9 +33,10 @@ import org.orbitmvi.orbit.syntax.simple.blockingIntent
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
-import org.orbitmvi.orbit.syntax.simple.repeatOnSubscription
 import org.orbitmvi.orbit.viewmodel.container
 import java.math.BigDecimal
+import java.math.BigDecimal.ONE
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -53,60 +53,49 @@ class CurrencyDetailsViewModel @Inject constructor(
     private val getLatestCurrencyRate: GetLatestCurrencyRateUseCase,
 ) : ExpennyActionViewModel<Action>(), ContainerHost<State, Event> {
 
-    private val currentCurrency =  MutableStateFlow<Currency?>(null)
-    private val mainCurrency = MutableStateFlow<Currency?>(null)
-    private val selectedCurrencyUnit = MutableStateFlow<CurrencyUnit?>(null)
+    private val currencyId: Long? = savedStateHandle.navArgs<CurrencyDetailsNavArgs>().currencyId
+    private var currencyUnit: CurrencyUnit? = null
+    private lateinit var mainCurrency: Currency
 
     override val container = container<State, Event>(
         initialState = State(),
         buildSettings = { exceptionHandler = defaultCoroutineExceptionHandler() }
     ) {
         coroutineScope {
-            setInitialData()
-            launch { subscribeOnSelectedCurrencyUnit() }
+            initState()
         }
     }
 
-    private val state get() = container.stateFlow.value
+    private val stateValue
+        get() = container.stateFlow.value
 
-    private fun setInitialData() {
-        savedStateHandle.navArgs<CurrencyDetailsNavArgs>().let { navArgs ->
-            if (navArgs.currencyId != null) {
-                intent {
-                    currentCurrency.value = getCurrency(GetCurrencyUseCase.Params(navArgs.currencyId)).first()!!
-                    mainCurrency.value = getMainCurrency().first()!!
-                    selectedCurrencyUnit.value = currentCurrency.value!!.unit
-                    val isSubscribedToRateUpdates = currentCurrency.value!!.isSubscribedToRateUpdates
-
-                    reduce {
-                        state.copy(
-                            currencyUnitInput = state.currencyUnitInput.copy(
-                                value = currencyUnitMapper(selectedCurrencyUnit.value!!).preview,
-                                enabled = false
-                            ),
-                            baseCurrency = mainCurrency.value!!.unit.code,
-                            quoteCurrency = selectedCurrencyUnit.value!!.code,
-                            toolbarTitle = fromRes(R.string.edit_currency_label),
-                            subscribeToRatesUpdates = isSubscribedToRateUpdates,
-                            showSubscribeToRatesUpdatesCheckbox = true,
-                            showRatesInputFields = true,
-                            showDeleteButton = true,
-                            showInfoButton = false,
-                        )
-                    }
-                    reduceBaseToQuoteRateInput(currentCurrency.value!!.baseToQuoteRate)
-                    reduceQuoteToBaseRateInput(currentCurrency.value!!.quoteToBaseRate)
+    private fun initState() {
+        intent {
+            runCatching {
+                getMainCurrency().first()!!.also {
+                    mainCurrency = it
+                    setBaseCurrency(it.unit.code)
                 }
-            } else {
-                intent {
-                    reduce {
-                        state.copy(
-                            toolbarTitle = fromRes(R.string.add_currency_label),
-                            showRatesInputFields = false,
-                            showDeleteButton = false,
-                            showInfoButton = true,
-                        )
+
+                val currency = currencyId?.let { id ->
+                    getCurrency(GetCurrencyUseCase.Params(id)).first()!!.also {
+                        currencyUnit = it.unit
                     }
+                }
+
+                if (currency != null) {
+                    setEditCurrency()
+                    setCurrencyData(currency)
+                    setBaseToQuoteRate(currency.baseToQuoteRate)
+                    setQuoteToBaseRate(currency.quoteToBaseRate)
+                    setIsSubscribableToUpdates(mainCurrency.unit, currency.unit)
+                } else {
+                    setAddCurrency()
+                }
+            }.onFailure {
+                if (it !is CancellationException) {
+                    postSideEffect(Event.ShowMessage(fromRes(R.string.internal_error)))
+                    postSideEffect(Event.NavigateBack)
                 }
             }
         }
@@ -122,124 +111,111 @@ class CurrencyDetailsViewModel @Inject constructor(
             is Action.OnSaveClick -> handleOnSaveClick()
             is Action.OnBaseToQuoteRateChange -> handleOnBaseToQuoteRateChange(action)
             is Action.OnQuoteToBaseRateChange -> handleOnQuoteToBaseRateChange(action)
-            is Action.OnSubscribeToRatesUpdateCheckboxChange -> handleOnEnableRatesUpdateCheckboxChange(action)
-            is Action.OnUpdateRateClick -> handleOnUpdateRateClick()
+            is Action.OnSubscribeToUpdatesCheckboxChange -> handleOnSubscribeToUpdatesCheckboxChange(action)
+            is Action.OnUpdateClick -> handleOnUpdateClick()
             is Action.OnInfoClick -> handleOnInfoClick()
             is Action.OnBackClick -> handleOnBackClick()
         }
     }
 
-    private fun handleOnUpdateRateClick() = intent {
-        selectedCurrencyUnit.value?.let {
+    private fun handleOnUpdateClick() = intent {
+        currencyUnit?.let {
             handleOnCurrencyUnitSelect(Action.OnCurrencyUnitSelect(it.id))
         }
     }
 
-    private fun handleOnEnableRatesUpdateCheckboxChange(action: Action.OnSubscribeToRatesUpdateCheckboxChange) = blockingIntent {
-        reduce {
-            state.copy(subscribeToRatesUpdates = action.value)
+    private fun handleOnSubscribeToUpdatesCheckboxChange(action: Action.OnSubscribeToUpdatesCheckboxChange) {
+        blockingIntent {
+            reduce {
+                state.copy(isSubscribedToUpdates = action.value)
+            }
         }
     }
 
-    private fun handleOnBaseToQuoteRateChange(action: Action.OnBaseToQuoteRateChange) = blockingIntent {
-        reduce {
-            state.copy(
-                baseToQuoteRateInput = state.baseToQuoteRateInput.copy(
-                    value = action.rate,
-                    error = validateRate(action.rate).errorRes
-                )
-            )
+    private fun handleOnBaseToQuoteRateChange(action: Action.OnBaseToQuoteRateChange) {
+        blockingIntent {
+            setBaseToQuoteRate(action.rate)
+            setQuoteToBaseRate(state.baseToQuoteRateInput.value.invert())
         }
-        reduceQuoteToBaseRateInput(state.baseToQuoteRateInput.value.invert())
     }
 
-    private fun handleOnQuoteToBaseRateChange(action: Action.OnQuoteToBaseRateChange) = blockingIntent {
-        reduce {
-            state.copy(
-                quoteToBaseRateInputField = state.quoteToBaseRateInputField.copy(
-                    value = action.rate,
-                    error = validateRate(action.rate).errorRes
-                )
-            )
+    private fun handleOnQuoteToBaseRateChange(action: Action.OnQuoteToBaseRateChange) {
+        blockingIntent {
+            setQuoteToBaseRate(action.rate)
+            setBaseToQuoteRate(state.quoteToBaseRateInput.value.invert())
         }
-        reduceBaseToQuoteRateInput(state.quoteToBaseRateInputField.value.invert())
     }
 
     private fun handleOnCurrencyUnitSelect(action: Action.OnCurrencyUnitSelect) {
+        getCurrencyUnit(GetCurrencyUnitUseCase.Params(action.id))!!.also {
+            handleOnCurrencyUnitSelect(it)
+        }
+    }
+
+    private fun handleOnCurrencyUnitSelect(newCurrencyUnit: CurrencyUnit) {
         intent {
-            selectedCurrencyUnit.value = getCurrencyUnit(GetCurrencyUnitUseCase.Params(action.id))!!
-
-            if (mainCurrency.value == null) {
-                mainCurrency.value = getMainCurrency().first()!!
-            }
-
             reduce {
                 state.copy(
-                    baseCurrency = mainCurrency.value!!.unit.code,
-                    quoteCurrency = selectedCurrencyUnit.value!!.code
+                    baseCurrency = mainCurrency.unit.code,
+                    quoteCurrency = newCurrencyUnit.code,
+                    currencyUnitInput = state.currencyUnitInput.copy(
+                        value = currencyUnitMapper(newCurrencyUnit).preview
+                    )
                 )
             }
 
-            getLatestCurrencyRate(
-                base = mainCurrency.value!!.unit.code,
-                quote = selectedCurrencyUnit.value!!.code
-            ).collect { result ->
-                when (result) {
-                    is ResourceResult.Loading -> {
-                        reduce { state.copy(dialog = State.Dialog.LoadingDialog) }
+            fetchLatestCurrencyRate(
+                base = mainCurrency.unit,
+                quote = newCurrencyUnit,
+                onComplete = {
+                    currencyUnit = newCurrencyUnit
+                },
+                onSuccess = {
+                    reduce {
+                        state.copy(
+                            showCurrencyRatesSection = true,
+                            isSubscribableToUpdates = true,
+                            isUpdatable = false,
+                            lastUpdateInput = state.lastUpdateInput.copy(
+                                value = LocalDateTime.now().toDateString()
+                            )
+                        )
                     }
-                    is ResourceResult.Error -> {
+                    setBaseToQuoteRate(it.rate)
+                    setQuoteToBaseRate(it.rate.invert())
+                },
+                onError = {
+                    if (newCurrencyUnit != currencyUnit) {
                         reduce {
                             state.copy(
-                                dialog = null,
-                                showRatesInputFields = true,
-                                showSubscribeToRatesUpdatesCheckbox = false,
-                                subscribeToRatesUpdates = false,
+                                showCurrencyRatesSection = true,
+                                isSubscribableToUpdates = false,
                             )
                         }
-
-                        // Setting main currency base/quote rate which is 1
-                        val defaultRate = mainCurrency.value!!.baseToQuoteRate
-                        reduceBaseToQuoteRateInput(defaultRate)
-                        reduceQuoteToBaseRateInput(defaultRate)
-
-                        postSideEffect(Event.ShowMessage(fromRes(R.string.remote_rate_error)))
-                    }
-                    is ResourceResult.Success -> {
-                        reduce {
-                            state.copy(
-                                dialog = null,
-                                showRatesInputFields = true,
-                                showSubscribeToRatesUpdatesCheckbox = true,
-                            )
-                        }
-
-                        val baseToQuoteRate = result.data!!.rate
-                        val quoteToBaseRate = baseToQuoteRate.invert()
-                        reduceBaseToQuoteRateInput(baseToQuoteRate)
-                        reduceQuoteToBaseRateInput(quoteToBaseRate)
+                        setBaseToQuoteRate(ONE.setScale(CURRENCY_RATE_SCALE))
+                        setQuoteToBaseRate(ONE.setScale(CURRENCY_RATE_SCALE))
                     }
                 }
-            }
+            )
         }
     }
 
     private fun handleOnSaveClick() = intent {
         if (validateFields()) {
-            if (currentCurrency.value == null) {
+            if (currencyId == null) {
                 createCurrency(
                     CreateCurrencyUseCase.Params(
-                        currencyUnitId = selectedCurrencyUnit.value!!.id,
-                        quoteToBaseRate = state.quoteToBaseRateInputField.value,
-                        isSubscribedToRateUpdates = state.subscribeToRatesUpdates
+                        currencyUnitId = currencyUnit!!.id,
+                        quoteToBaseRate = state.quoteToBaseRateInput.value,
+                        isSubscribedToRateUpdates = state.isSubscribedToUpdates
                     )
                 )
             } else {
                 updateCurrency(
                     UpdateCurrencyUseCase.Params(
-                        id = currentCurrency.value!!.id,
-                        quoteToBaseRate = state.quoteToBaseRateInputField.value,
-                        isSubscribedToRateUpdates = state.subscribeToRatesUpdates
+                        id = currencyId,
+                        quoteToBaseRate = state.quoteToBaseRateInput.value,
+                        isSubscribedToRateUpdates = state.isSubscribedToUpdates
                     )
                 )
             }
@@ -252,7 +228,7 @@ class CurrencyDetailsViewModel @Inject constructor(
         reduce {
             state.copy(dialog = null)
         }
-        deleteCurrency(currentCurrency.value!!.id)
+        deleteCurrency(currencyId!!)
         postSideEffect(Event.ShowMessage(fromRes(R.string.deleted_message)))
         postSideEffect(Event.NavigateBack)
     }
@@ -266,8 +242,8 @@ class CurrencyDetailsViewModel @Inject constructor(
     }
 
     private fun handleOnSelectCurrencyUnitClick() = intent {
-        if (currentCurrency.value == null) {
-            postSideEffect(Event.NavigateToCurrencyUnitsSelectionList(selectedCurrencyUnit.value?.id))
+        if (currencyId == null) {
+            postSideEffect(Event.NavigateToCurrencyUnitsSelectionList(currencyUnit?.id))
         }
     }
 
@@ -279,7 +255,7 @@ class CurrencyDetailsViewModel @Inject constructor(
         postSideEffect(Event.NavigateBack)
     }
 
-    private suspend fun SimpleSyntax<State, Event>.reduceBaseToQuoteRateInput(rate: BigDecimal) {
+    private suspend fun SimpleSyntax<State, *>.setBaseToQuoteRate(rate: BigDecimal) {
         reduce {
             state.copy(
                 baseToQuoteRateInput = state.baseToQuoteRateInput.copy(
@@ -290,10 +266,10 @@ class CurrencyDetailsViewModel @Inject constructor(
         }
     }
 
-    private suspend fun SimpleSyntax<State, Event>.reduceQuoteToBaseRateInput(rate: BigDecimal) {
+    private suspend fun SimpleSyntax<State, *>.setQuoteToBaseRate(rate: BigDecimal) {
         reduce {
             state.copy(
-                quoteToBaseRateInputField = state.quoteToBaseRateInputField.copy(
+                quoteToBaseRateInput = state.quoteToBaseRateInput.copy(
                     value = rate,
                     error = validateRate(rate).errorRes
                 )
@@ -301,36 +277,74 @@ class CurrencyDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun subscribeOnSelectedCurrencyUnit() = intent {
-        repeatOnSubscription {
-            selectedCurrencyUnit
-                .filterNotNull()
-                .onEach {
-                    reduce {
-                        val value = currencyUnitMapper(it).preview
-                        state.copy(
-                            currencyUnitInput = state.currencyUnitInput.copy(
-                                value = value,
-                                error = validateCurrencyUnit(value).errorRes
-                            )
-                        )
-                    }
+    private suspend fun SimpleSyntax<State, *>.setIsSubscribableToUpdates(base: CurrencyUnit, quote: CurrencyUnit) {
+        fetchLatestCurrencyRate(
+            base = base,
+            quote = quote,
+            onComplete = {
+                reduce {
+                    state.copy(isSubscribableToUpdates = it != null)
                 }
-                .collect()
+            }
+        )
+    }
+
+    private suspend fun SimpleSyntax<State, *>.setCurrencyData(currency: Currency) {
+        reduce {
+            val currencyUnitInput = state.currencyUnitInput.copy(
+                value = currencyUnitMapper(currency.unit).preview,
+                isEnabled = false
+            )
+            val lastUpdateInput = state.lastUpdateInput.copy(
+                value = currency.updatedAt.toDateString()
+            )
+            state.copy(
+                isSubscribedToUpdates = currency.isSubscribedToUpdates,
+                isUpdatable = currency.isStale,
+                quoteCurrency = currency.unit.code,
+                currencyUnitInput = currencyUnitInput,
+                lastUpdateInput = lastUpdateInput
+            )
         }
     }
 
+    private suspend fun SimpleSyntax<State, *>.setAddCurrency() {
+        reduce {
+            state.copy(
+                toolbarTitle = fromRes(R.string.add_currency_label),
+                showInfoButton = true,
+            )
+        }
+    }
+
+    private suspend fun SimpleSyntax<State, *>.setEditCurrency() {
+        reduce {
+            state.copy(
+                toolbarTitle = fromRes(R.string.edit_currency_label),
+                showCurrencyRatesSection = true,
+                showDeleteButton = true
+            )
+        }
+    }
+
+    private suspend fun SimpleSyntax<State, *>.setBaseCurrency(currencyCode: String) {
+        reduce {
+            state.copy(baseCurrency = currencyCode)
+        }
+    }
+
+
     private fun validateFields(): Boolean {
-        val currencyUnitValidationResult = validateCurrencyUnit(state.currencyUnitInput.value)
-        val baseToQuoteValidationResult = validateRate(state.baseToQuoteRateInput.value)
-        val quoteToBaseValidationResult = validateRate(state.quoteToBaseRateInputField.value)
+        val currencyUnitValidationResult = validateCurrencyUnit(stateValue.currencyUnitInput.value)
+        val baseToQuoteValidationResult = validateRate(stateValue.baseToQuoteRateInput.value)
+        val quoteToBaseValidationResult = validateRate(stateValue.quoteToBaseRateInput.value)
 
         intent {
             reduce {
                 state.copy(
                     currencyUnitInput = state.currencyUnitInput.copy(error = currencyUnitValidationResult.errorRes),
                     baseToQuoteRateInput = state.baseToQuoteRateInput.copy(error = baseToQuoteValidationResult.errorRes),
-                    quoteToBaseRateInputField = state.quoteToBaseRateInputField.copy(error = quoteToBaseValidationResult.errorRes),
+                    quoteToBaseRateInput = state.quoteToBaseRateInput.copy(error = quoteToBaseValidationResult.errorRes),
                 )
             }
         }
@@ -348,4 +362,39 @@ class CurrencyDetailsViewModel @Inject constructor(
     private fun validateRate(value: BigDecimal) = validateInput(
         value.toPlainString(), listOf(RequiredBigDecimalValidator())
     )
+
+    private suspend fun fetchLatestCurrencyRate(
+        base: CurrencyUnit,
+        quote: CurrencyUnit,
+        onSuccess: suspend (CurrencyRate) -> Unit = {},
+        onError: suspend () -> Unit = {},
+        onLoading: suspend () -> Unit = {},
+        onComplete: suspend (CurrencyRate?) -> Unit = {},
+    ) {
+        intent {
+            getLatestCurrencyRate(
+                base = base.code,
+                quote = quote.code
+            ).collect { result ->
+                when (result) {
+                    is RemoteResult.Loading -> {
+                        reduce { state.copy(dialog = State.Dialog.LoadingDialog) }
+                        onLoading()
+                    }
+                    is RemoteResult.Error -> {
+                        reduce { state.copy(dialog = null) }
+                        onError()
+                        onComplete(null)
+                    }
+                    is RemoteResult.Success -> {
+                        reduce { state.copy(dialog = null) }
+                        result.data!!.also {
+                            onSuccess(it)
+                            onComplete(it)
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

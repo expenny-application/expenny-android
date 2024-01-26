@@ -1,30 +1,29 @@
 package org.expenny.feature.currencydetails.view
 
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import org.expenny.core.resources.R
-import org.expenny.core.ui.foundation.ExpennyFloatingActionButton
-import org.expenny.core.ui.foundation.ExpennyText
+import org.expenny.core.ui.foundation.ExpennyButton
+import org.expenny.core.ui.foundation.model.button.ExpennyFloatingButtonAttributes
+import org.expenny.core.ui.foundation.model.button.ExpennyFloatingButtonSize
+import org.expenny.core.ui.foundation.model.button.ExpennyFloatingButtonType
 
 @Composable
 internal fun CurrencyDetailsActionButton(
     modifier: Modifier = Modifier,
-    onClick: () -> Unit,
+    onSaveClick: () -> Unit,
 ) {
-    ExpennyFloatingActionButton(
+    ExpennyButton(
         modifier = modifier,
-        onClick = onClick,
-        icon = {
-            Icon(
-                painter = painterResource(R.drawable.ic_check),
-                contentDescription = null
-            )
-        },
-        text = {
-            ExpennyText(text = stringResource(R.string.save_button))
-        }
+        onClick = onSaveClick,
+        attributes = ExpennyFloatingButtonAttributes(
+            isExpanded = true,
+            label = stringResource(R.string.save_button),
+            type = ExpennyFloatingButtonType.Primary,
+            size = ExpennyFloatingButtonSize.Large,
+            icon = painterResource(R.drawable.ic_check)
+        )
     )
 }

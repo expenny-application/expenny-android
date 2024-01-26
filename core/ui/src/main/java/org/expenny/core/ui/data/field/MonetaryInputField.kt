@@ -6,6 +6,6 @@ import java.math.BigDecimal
 data class MonetaryInputField(
     val value: BigDecimal = BigDecimal.ZERO.setScale(0),
     val error: StringResource? = null,
-    val enabled: Boolean = true,
-    val required: Boolean = true,
+    val isEnabled: Boolean = true,
+    val isRequired: Boolean = false,
 )

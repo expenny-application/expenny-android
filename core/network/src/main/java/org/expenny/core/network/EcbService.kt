@@ -38,6 +38,16 @@ class EcbService @Inject constructor(
         ).parseCsvOrEmpty()
     }
 
+    suspend fun getEurBaseData(vararg quoteUnits: String): List<EcbRateReferenceDto> {
+        return request(
+            units = quoteUnits.toList(),
+            builder = {
+                parameter("format", ECB_RESPONSE_DATA_FORMAT)
+            },
+            onResponse = { it.asString() }
+        ).parseCsvOrEmpty()
+    }
+
     private suspend inline fun <T> request(
         units: List<String>,
         builder: HttpRequestBuilder.() -> Unit,

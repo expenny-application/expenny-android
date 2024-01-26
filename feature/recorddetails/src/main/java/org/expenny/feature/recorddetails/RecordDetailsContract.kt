@@ -10,7 +10,6 @@ import org.expenny.core.common.types.RecordType
 import org.expenny.core.resources.R
 import org.expenny.core.ui.data.field.InputField
 import org.expenny.core.ui.data.field.MonetaryInputField
-import org.expenny.core.ui.data.navargs.LongArrayNavArg
 import org.expenny.core.ui.data.navargs.LongNavArg
 import org.expenny.feature.recorddetails.model.LabelsInputField
 import java.math.BigDecimal
@@ -44,7 +43,7 @@ data class State(
     val dateInput: InputField = InputField(value = LocalDate.now().toDateString()),
     val timeInput: InputField = InputField(value = LocalTime.now().toTimeString()),
     val labelsInput: LabelsInputField = LabelsInputField(),
-    val descriptionInput: InputField = InputField(required = false),
+    val descriptionInput: InputField = InputField(isRequired = false),
     val receipts: List<Uri> = listOf(),
 )
 

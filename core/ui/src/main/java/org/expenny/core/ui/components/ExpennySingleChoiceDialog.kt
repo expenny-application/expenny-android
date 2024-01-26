@@ -10,15 +10,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import org.expenny.core.resources.R
 import org.expenny.core.ui.extensions.drawVerticalScrollbar
 import org.expenny.core.ui.foundation.ExpennyButton
-import org.expenny.core.ui.foundation.ExpennyButtonSize
-import org.expenny.core.ui.foundation.ExpennyButtonStyle
 import org.expenny.core.ui.foundation.ExpennyRadioButton
 import org.expenny.core.ui.foundation.ExpennyText
+import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonAttributes
+import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonSize
+import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonType
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -64,8 +64,9 @@ private fun DialogContent(
             modifier = Modifier.padding(PaddingValues(all = 24.dp)),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            DialogHeader(title = title)
-
+            DialogHeader(
+                title = title
+            )
             DialogList(
                 modifier = Modifier.wrapContentHeight(),
                 selectedIndex = selectedIndex,
@@ -74,7 +75,6 @@ private fun DialogContent(
                     onItemSelect(it)
                 }
             )
-
             Row(
                 modifier = Modifier
                     .padding(8.dp)
@@ -82,11 +82,11 @@ private fun DialogContent(
             ) {
                 ExpennyButton(
                     onClick = onCancelClick,
-                    style = ExpennyButtonStyle.Text,
-                    size = ExpennyButtonSize.Small,
-                    label = {
-                        ExpennyText(text = stringResource(R.string.cancel_button))
-                    }
+                    attributes = ExpennyFlatButtonAttributes(
+                        type = ExpennyFlatButtonType.Tertiary,
+                        size = ExpennyFlatButtonSize.Medium,
+                        label = stringResource(R.string.cancel_button)
+                    )
                 )
             }
         }

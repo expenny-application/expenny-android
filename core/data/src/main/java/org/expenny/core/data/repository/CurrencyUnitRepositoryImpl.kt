@@ -4,11 +4,17 @@ import android.icu.util.Currency
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import org.expenny.core.data.mapper.DataMapper.toModel
+import org.expenny.core.data.utils.remoteResultMediator
 import org.expenny.core.domain.repository.CurrencyUnitRepository
 import org.expenny.core.model.currency.CurrencyUnit
+import org.expenny.core.model.resource.RemoteResult
+import org.expenny.core.network.EcbService
+import org.expenny.core.network.EcbService.Companion.ECB_BASE_UNIT
 import javax.inject.Inject
 
-class CurrencyUnitRepositoryImpl @Inject constructor() : CurrencyUnitRepository {
+class CurrencyUnitRepositoryImpl @Inject constructor(
+    private val ecbService: EcbService,
+) : CurrencyUnitRepository {
 
     private val currencyUnits
         get() = listOf<Currency>(
@@ -48,5 +54,18 @@ class CurrencyUnitRepositoryImpl @Inject constructor() : CurrencyUnitRepository 
 
     override fun getCurrencyUnit(id: Long): CurrencyUnit? {
         return currencyUnits.map { it.toModel() }.firstOrNull { it.id == id }
+    }
+
+    override fun getSubscribableCurrencyUnits(): Flow<RemoteResult<List<CurrencyUnit>>> {
+        return remoteResultMediator {
+            val ecbCodes = ecbService
+                .getEurBaseData()
+                .distinctBy { it.quoteCurrency }
+                .map { it.quoteCurrency }
+
+            currencyUnits
+                .filter { ecbCodes.contains(it.currencyCode) || ECB_BASE_UNIT == it.currencyCode }
+                .map { it.toModel() }
+        }
     }
 }

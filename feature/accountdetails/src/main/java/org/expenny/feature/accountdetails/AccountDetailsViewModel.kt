@@ -7,7 +7,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import org.expenny.core.common.extensions.isZero
 import org.expenny.core.common.extensions.setScaleNoRounding
 import org.expenny.core.common.utils.ErrorMessage
 import org.expenny.core.common.utils.StringResource.Companion.fromRes
@@ -197,7 +196,7 @@ class AccountDetailsViewModel @Inject constructor(
                         ),
                         currencyInput = state.currencyInput.copy(
                             value = currencyMapper(account.currency).preview,
-                            enabled = false
+                            isEnabled = false
                         ),
                         descriptionInput = state.descriptionInput.copy(
                             value = account.description

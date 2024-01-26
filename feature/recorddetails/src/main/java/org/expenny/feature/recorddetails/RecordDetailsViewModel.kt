@@ -23,7 +23,6 @@ import org.expenny.core.domain.usecase.record.DeleteRecordUseCase
 import org.expenny.core.domain.usecase.record.GetRecordUseCase
 import org.expenny.core.domain.usecase.record.UpdateRecordUseCase
 import org.expenny.core.domain.validators.AlphanumericValidator
-import org.expenny.core.domain.validators.MinimumLengthValidator
 import org.expenny.core.domain.validators.RequiredBigDecimalValidator
 import org.expenny.core.domain.validators.RequiredStringValidator
 import org.expenny.core.model.account.Account
@@ -590,7 +589,7 @@ class RecordDetailsViewModel @Inject constructor(
                         ),
                         amountInput = state.amountInput.copy(
                             value = state.amountInput.value.setScaleNoRounding(it.currency.unit.scale),
-                            enabled = true,
+                            isEnabled = true,
                         )
                     )
                 }

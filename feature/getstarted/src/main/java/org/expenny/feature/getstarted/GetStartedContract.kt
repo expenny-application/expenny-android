@@ -7,7 +7,7 @@ import org.expenny.core.ui.data.field.MonetaryInputField
 import java.math.BigDecimal
 
 internal data class State(
-    val enableCta: Boolean = false,
+    val isCtaEnabled: Boolean = false,
     val showAbortDialog: Boolean = false,
     val showConfirmationDialog: Boolean = false,
     val showSetupCashBalanceInputFields: Boolean = false,
