@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.BiometricPromptState
 import org.expenny.core.ui.components.ExpennyBiometricPrompt
-import org.expenny.core.ui.foundation.ExpennyText
 import org.expenny.core.ui.components.ExpennyLogo
 import org.expenny.feature.passcode.view.PasscodeFieldsRow
 import org.expenny.feature.passcode.view.PasscodeInfoDialog
@@ -82,12 +82,11 @@ internal fun PasscodeContent(
                         passcodeMaxLength = state.passcodeMaxLength,
                         passcodeLength = state.passcode.length
                     )
-                    ExpennyText(
+                    Text(
                         text = stringResource(state.passcodeParagraphResId),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        align = TextAlign.Center,
-                        maxLines = Int.MAX_VALUE
+                        textAlign = TextAlign.Center
                     )
                 }
             }

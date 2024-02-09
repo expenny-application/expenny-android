@@ -9,8 +9,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import org.expenny.core.resources.R
-import org.expenny.core.ui.foundation.ExpennyText
-import org.expenny.core.ui.foundation.ExpennyToolbar
 import org.expenny.core.ui.utils.ExpennyDrawerState
 
 
@@ -22,10 +20,10 @@ internal fun DashboardToolbar(
     displayCurrency: String? = null,
     onDisplayCurrencyClick: () -> Unit
 ) {
-    ExpennyToolbar(
+    TopAppBar(
         scrollBehavior = scrollBehavior,
         title = {
-            ExpennyText(text = stringResource(R.string.dashboard_label))
+            Text(text = stringResource(R.string.dashboard_label))
         },
         navigationIcon = {
             drawerState.NavigationDrawerIcon()

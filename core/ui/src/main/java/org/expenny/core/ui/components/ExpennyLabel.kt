@@ -16,7 +16,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -26,8 +25,6 @@ fun ExpennyLabel(
     label: @Composable () -> Unit,
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
-    containerColor: Color = MaterialTheme.colorScheme.secondaryContainer,
-    contentColor: Color = MaterialTheme.colorScheme.onSecondaryContainer,
     onClick: () -> Unit = {}
 ) {
     CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
@@ -35,7 +32,7 @@ fun ExpennyLabel(
             modifier = modifier
                 .heightIn(min = 28.dp)
                 .clip(MaterialTheme.shapes.extraSmall)
-                .background(containerColor)
+                .background(MaterialTheme.colorScheme.secondaryContainer)
                 .clickable { onClick() },
             contentAlignment = Alignment.Center
         ) {
@@ -50,7 +47,7 @@ fun ExpennyLabel(
                 )
             ) {
                 CompositionLocalProvider(
-                    LocalContentColor provides contentColor,
+                    LocalContentColor provides MaterialTheme.colorScheme.onSecondaryContainer,
                     LocalTextStyle provides MaterialTheme.typography.labelMedium
                 ) {
                     if (leadingIcon != null) {

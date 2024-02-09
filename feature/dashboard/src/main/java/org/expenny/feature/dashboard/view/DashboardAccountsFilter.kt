@@ -2,13 +2,12 @@ package org.expenny.feature.dashboard.view
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.runtime.*
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -18,7 +17,6 @@ import org.expenny.core.resources.R
 import org.expenny.core.ui.data.ui.AccountNameUi
 import org.expenny.core.ui.foundation.ExpennyChip
 import org.expenny.core.ui.foundation.ExpennySelectableChip
-import org.expenny.core.ui.foundation.ExpennyText
 
 @Composable
 internal fun DashboardAccountsFilter(
@@ -46,7 +44,7 @@ internal fun DashboardAccountsFilter(
                     isSelected = selectAll,
                     onClick = onSelectAll,
                     label = {
-                        ExpennyText(text = stringResource(R.string.all_accounts_label))
+                        Text(text = stringResource(R.string.all_accounts_label))
                     }
                 )
             }
@@ -60,7 +58,7 @@ internal fun DashboardAccountsFilter(
                         onSelect(account)
                     },
                     label = {
-                        ExpennyText(text = account.displayName)
+                        Text(text = account.displayName)
                     }
                 )
             }

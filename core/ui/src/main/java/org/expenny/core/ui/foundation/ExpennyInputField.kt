@@ -8,33 +8,53 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.InteractionSource
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.*
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import org.expenny.core.ui.extensions.noRippleClickable
 import org.expenny.core.resources.R
 import org.expenny.core.ui.data.field.MonetaryInputField
 import org.expenny.core.ui.extensions.asRawString
+import org.expenny.core.ui.extensions.noRippleClickable
 import org.expenny.core.ui.foundation.transformations.ExpennyDecimalVisualTransformation
-import org.expenny.core.ui.foundation.transformations.ExpennyDecimalVisualTransformation.Companion.formatToOutput
 import org.expenny.core.ui.foundation.transformations.ExpennyDecimalVisualTransformation.Companion.formatToInput
+import org.expenny.core.ui.foundation.transformations.ExpennyDecimalVisualTransformation.Companion.formatToOutput
 import org.expenny.core.ui.theme.surfaceInput
 import java.math.BigDecimal
 
@@ -68,10 +88,11 @@ fun ExpennyMonetaryInputField(
         ),
         visualTransformation = ExpennyDecimalVisualTransformation(state.value.scale()),
         trailingContent = {
-            ExpennyText(
+            Text(
                 modifier = Modifier.noRippleClickable { onCurrencyClick() },
-                style = MaterialTheme.typography.bodyMedium,
-                text = currency
+                text = currency,
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     )

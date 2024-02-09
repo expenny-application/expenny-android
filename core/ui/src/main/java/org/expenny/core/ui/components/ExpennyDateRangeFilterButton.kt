@@ -15,13 +15,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import org.expenny.core.resources.R
-import org.expenny.core.ui.foundation.ExpennyText
 
 @Composable
 fun ExpennyDateRangeFilterButton(
@@ -58,9 +58,9 @@ fun ExpennyDateRangeFilterButton(
                             contentDescription = null
                         )
                     }
-                    ExpennyText(
+                    Text(
                         text = currentDateRange,
-                        style = MaterialTheme.typography.labelLarge
+                        style = MaterialTheme.typography.titleSmall
                     )
                     IconButton(onClick = onNextDateRangeClick) {
                         Icon(

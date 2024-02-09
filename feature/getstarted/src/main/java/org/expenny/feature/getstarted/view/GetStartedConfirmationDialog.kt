@@ -1,54 +1,44 @@
 package org.expenny.feature.getstarted.view
 
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.DialogProperties
 import org.expenny.core.resources.R
-import org.expenny.core.ui.foundation.ExpennyAlertDialog
-import org.expenny.core.ui.foundation.ExpennyButton
-import org.expenny.core.ui.foundation.ExpennyText
-import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonAttributes
-import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonSize
-import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonType
+import org.expenny.core.ui.foundation.ExpennyDialog
+import org.expenny.core.ui.foundation.ExpennyTextButton
 
 @Composable
 internal fun GetStartedConfirmationDialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
 ) {
-    ExpennyAlertDialog(
+    ExpennyDialog(
         dialogProperties = DialogProperties(
             dismissOnClickOutside = false,
             dismissOnBackPress = false
         ),
         onDismissRequest = onDismiss,
         title = {
-            ExpennyText(text = stringResource(R.string.skip_balance_setup_label))
+            Text(text = stringResource(R.string.skip_balance_setup_label))
         },
         content = {
-            ExpennyText(
-                text = stringResource(R.string.get_started_confirmation_paragraph),
-                maxLines = Int.MAX_VALUE
-            )
+            Text(text = stringResource(R.string.get_started_confirmation_paragraph))
         },
         confirmButton = {
-            ExpennyButton(
+            ExpennyTextButton(
                 onClick = onConfirm,
-                attributes = ExpennyFlatButtonAttributes(
-                    type = ExpennyFlatButtonType.Tertiary,
-                    size = ExpennyFlatButtonSize.Medium,
-                    label = stringResource(R.string.continue_button)
-                )
+                content = {
+                    Text(text = stringResource(R.string.continue_button))
+                }
             )
         },
         dismissButton = {
-            ExpennyButton(
+            ExpennyTextButton(
                 onClick = onDismiss,
-                attributes = ExpennyFlatButtonAttributes(
-                    type = ExpennyFlatButtonType.Tertiary,
-                    size = ExpennyFlatButtonSize.Medium,
-                    label = stringResource(R.string.set_balance_button)
-                )
+                content = {
+                    Text(text = stringResource(R.string.set_balance_button))
+                }
             )
         }
     )

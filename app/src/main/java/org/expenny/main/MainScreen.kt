@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material3.*
 import androidx.compose.material3.DrawerState
@@ -14,13 +13,8 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import androidx.navigation.*
 import androidx.navigation.compose.rememberNavController
-import com.google.accompanist.navigation.material.BottomSheetNavigator
-import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
-import com.google.accompanist.navigation.material.ModalBottomSheetLayout
-import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import org.expenny.core.common.ExpennySnackbarManager
 import org.expenny.core.ui.foundation.ExpennySnackbar
 import com.ramcosta.composedestinations.spec.NavGraphSpec
@@ -30,7 +24,7 @@ import kotlinx.coroutines.delay
 import org.expenny.navigation.*
 import org.expenny.navigation.ExpennyNavigation
 import org.expenny.core.ui.utils.ExpennyDrawerState
-import org.expenny.main.drawer.ExpennyNavigationDrawer
+import org.expenny.main.drawer.MainNavigationDrawer
 import org.expenny.main.drawer.DrawerTab
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -63,7 +57,7 @@ internal fun MainScreen(startRoute: Route) {
             if (state.drawerState.isDrawerTabAsState) {
                 val currentSelectedTab by navController.currentTabAsState()
 
-                ExpennyNavigationDrawer(
+                MainNavigationDrawer(
                     currentTab = currentSelectedTab,
                     onTabSelect = {
                         state.drawerState.animateTo(DrawerValue.Closed) {

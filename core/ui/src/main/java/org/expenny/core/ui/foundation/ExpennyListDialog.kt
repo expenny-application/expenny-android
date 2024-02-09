@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,7 +37,7 @@ fun ExpennyListDialog(
     val maxDialogHeightPx = LocalDensity.current.run { (configuration.screenHeightDp.dp.toPx() * 0.5).toInt() }
     val maxDialogHeightDp = LocalDensity.current.run { maxDialogHeightPx.toDp() }
 
-    ExpennyAlertDialog(
+    ExpennyDialog(
         modifier = modifier,
         title = title,
         icon = null,
@@ -78,7 +79,7 @@ fun ExpennyListDialogItem(
             isSelected = isSelected,
             onClick = { onClick() }
         )
-        ExpennyText(
+        Text(
             text = label,
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface

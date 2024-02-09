@@ -14,10 +14,9 @@ import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableList
 import org.expenny.core.common.types.DashboardWidget
 import org.expenny.core.ui.components.ExpennyIconBox
-import org.expenny.core.ui.foundation.ExpennyCard
-import org.expenny.core.ui.foundation.ExpennyText
 import org.expenny.core.ui.extensions.icon
 import org.expenny.core.ui.extensions.label
+import org.expenny.core.ui.foundation.ExpennyCard
 
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -75,7 +74,7 @@ private fun DashboardWidgetCard(
                 color = MaterialTheme.colorScheme.onSecondaryContainer,
                 background = MaterialTheme.colorScheme.secondaryContainer
             )
-            ExpennyText(
+            Text(
                 text = widget.label,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant

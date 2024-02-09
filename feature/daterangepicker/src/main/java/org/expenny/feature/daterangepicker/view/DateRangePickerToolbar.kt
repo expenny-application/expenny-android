@@ -6,12 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import org.expenny.core.resources.R
-import org.expenny.core.ui.foundation.ExpennyButton
-import org.expenny.core.ui.foundation.ExpennyText
-import org.expenny.core.ui.foundation.ExpennyToolbar
-import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonAttributes
-import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonSize
-import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonType
+import org.expenny.core.ui.foundation.ExpennyTextButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -20,16 +15,14 @@ internal fun DateRangePickerToolbar(
     onClearClick: () -> Unit,
     onCloseClick: () -> Unit
 ) {
-    ExpennyToolbar(
+    TopAppBar(
         actions = {
             if (showClearButton) {
-                ExpennyButton(
+                ExpennyTextButton(
                     onClick = onClearClick,
-                    attributes = ExpennyFlatButtonAttributes(
-                        type = ExpennyFlatButtonType.Tertiary,
-                        size = ExpennyFlatButtonSize.Small,
-                        label = stringResource(R.string.clear_button)
-                    )
+                    content = {
+                        Text(text = stringResource(R.string.clear_button))
+                    }
                 )
             }
         },
@@ -43,7 +36,7 @@ internal fun DateRangePickerToolbar(
             }
         },
         title = {
-            ExpennyText(
+            Text(
                 text = stringResource(R.string.select_range_label),
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onSurface

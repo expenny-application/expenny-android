@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.documentfile.provider.DocumentFile
 import coil.compose.AsyncImage
 import org.expenny.core.resources.R
-import org.expenny.core.ui.foundation.ExpennyText
 import org.expenny.core.ui.foundation.ExpennyCard
 
 @Composable
@@ -39,10 +39,8 @@ internal fun RecordDetailsReceipt(
     val imageName by rememberSaveable(uri) {
         mutableStateOf(DocumentFile.fromSingleUri(context, uri)?.name ?: "")
     }
-
     ExpennyCard(
         modifier = modifier.height(150.dp),
-        shape = MaterialTheme.shapes.small,
         onClick = onClick
     ) {
         Box(
@@ -73,7 +71,7 @@ private fun ReceiptImageCaption(
             .padding(12.dp),
         contentAlignment = Alignment.BottomStart
     ) {
-        ExpennyText(
+        Text(
             modifier = Modifier.basicMarquee(),
             text = imageName,
             style = MaterialTheme.typography.bodyMedium,

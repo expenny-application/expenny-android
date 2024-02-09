@@ -1,21 +1,25 @@
 package org.expenny.feature.currencies.view
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import org.expenny.core.resources.R
-import org.expenny.core.ui.components.*
+import org.expenny.core.ui.components.ExpennySelectionButton
 import org.expenny.core.ui.data.selection.SelectionType
 import org.expenny.core.ui.data.selection.SingleSelection
 import org.expenny.core.ui.data.ui.CurrencyUi
 import org.expenny.core.ui.extensions.type
 import org.expenny.core.ui.foundation.ExpennyCard
-import org.expenny.core.ui.foundation.ExpennyText
 import org.expenny.core.ui.foundation.ExpennyVerticalList
 
 @Composable
@@ -61,19 +65,19 @@ private fun CurrencyItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.weight(1f)) {
-                ExpennyText(
+                Text(
                     text = currency.code,
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
-                ExpennyText(
+                Text(
                     text = currency.name,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
             if (currency.isMain) {
-                ExpennyText(
+                Text(
                     modifier = Modifier
                         .background(
                             color = MaterialTheme.colorScheme.tertiaryContainer,
@@ -88,7 +92,7 @@ private fun CurrencyItem(
                     color = MaterialTheme.colorScheme.onTertiaryContainer
                 )
             } else {
-                ExpennyText(
+                Text(
                     text = "~${currency.rate.displayValue}",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary,

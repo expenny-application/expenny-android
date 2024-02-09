@@ -3,12 +3,12 @@ package org.expenny.feature.categorydetails.view
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import org.expenny.core.resources.R
-import org.expenny.core.ui.foundation.ExpennyText
-import org.expenny.core.ui.foundation.ExpennyToolbar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -19,7 +19,7 @@ internal fun CategoryDetailsToolbar(
     onBackClick: () -> Unit,
     onDeleteClick: () -> Unit
 ) {
-    ExpennyToolbar(
+    TopAppBar(
         scrollBehavior = scrollBehavior,
         actions = {
             if (showDeleteButton) {
@@ -40,7 +40,7 @@ internal fun CategoryDetailsToolbar(
             }
         },
         title = {
-            ExpennyText(text = title)
+            Text(text = title)
         }
     )
 }

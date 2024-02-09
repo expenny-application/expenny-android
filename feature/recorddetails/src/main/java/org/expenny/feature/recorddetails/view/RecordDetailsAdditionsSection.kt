@@ -102,27 +102,6 @@ private fun ReceiptsList(
 }
 
 @Composable
-private fun PayeeOrPayerInputField(
-    modifier: Modifier = Modifier,
-    state: InputField,
-    onValueChange: (String) -> Unit
-) {
-    with(state) {
-        ExpennyInputField(
-            modifier = modifier,
-            isRequired = isRequired,
-            value = value,
-            error = error?.asRawString(),
-            label = stringResource(R.string.payee_payer_label),
-            onValueChange = onValueChange,
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Text
-            )
-        )
-    }
-}
-
-@Composable
 private fun DescriptionInputField(
     modifier: Modifier = Modifier,
     state: InputField,

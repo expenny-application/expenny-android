@@ -1,17 +1,26 @@
 package org.expenny.feature.currencyunits.view
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.expenny.core.ui.data.selection.SingleSelection
-import org.expenny.core.ui.foundation.ExpennyGroupedVerticalList
-import org.expenny.core.ui.foundation.*
 import org.expenny.core.ui.data.ui.CurrencyUnitUi
-import java.util.*
+import org.expenny.core.ui.foundation.ExpennyCard
+import org.expenny.core.ui.foundation.ExpennyGroupedVerticalList
+import java.util.SortedMap
 
 @Composable
 internal fun CurrencyUnitsList(
@@ -25,7 +34,7 @@ internal fun CurrencyUnitsList(
         groupedList = currencyUnits,
         listItemKey = CurrencyUnitUi::code,
         listItemHeader = { header ->
-            ExpennyText(
+            Text(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.surface),
@@ -37,7 +46,7 @@ internal fun CurrencyUnitsList(
         listItem = { item ->
             CurrencyUnitItem(
                 modifier = Modifier.fillMaxWidth(),
-                selected = selection.contains(item.id),
+                isSelected = selection.contains(item.id),
                 code = item.code,
                 name = item.name,
                 onClick = {
@@ -48,10 +57,11 @@ internal fun CurrencyUnitsList(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CurrencyUnitItem(
     modifier: Modifier = Modifier,
-    selected: Boolean,
+    isSelected: Boolean,
     code: String,
     name: String,
     onClick: () -> Unit
@@ -66,21 +76,23 @@ private fun CurrencyUnitItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.weight(1f)) {
-                ExpennyText(
+                Text(
                     text = code,
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface
                 )
-                ExpennyText(
+                Text(
                     text = name,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            ExpennyRadioButton(
-                isSelected = selected,
-                onClick = onClick
-            )
+            CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
+                RadioButton(
+                    selected = isSelected,
+                    onClick = onClick
+                )
+            }
         }
     }
 }

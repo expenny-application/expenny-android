@@ -1,19 +1,20 @@
 package org.expenny.feature.daterangepicker.view
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import org.expenny.core.resources.R
-import org.expenny.core.ui.foundation.ExpennyButton
-import org.expenny.core.ui.foundation.ExpennyText
-import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonAttributes
-import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonSize
-import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonType
+import org.expenny.core.ui.foundation.ExpennyTextButton
 
 @Composable
 internal fun BoxScope.DateRangePickerActionButton(
@@ -48,19 +49,16 @@ internal fun BoxScope.DateRangePickerActionButton(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            ExpennyText(
+            Text(
                 text = selectedDateRangeCaption,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            ExpennyButton(
+            ExpennyTextButton(
                 onClick = onClick,
-                attributes = ExpennyFlatButtonAttributes(
-                    isEnabled = enableApplyButton,
-                    type = ExpennyFlatButtonType.Primary,
-                    size = ExpennyFlatButtonSize.Large,
-                    label = stringResource(R.string.apply_button)
-                )
+                content = {
+                    Text(text = stringResource(R.string.apply_button))
+                }
             )
         }
     }

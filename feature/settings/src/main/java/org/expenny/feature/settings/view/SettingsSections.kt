@@ -14,6 +14,7 @@ import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
@@ -30,7 +31,6 @@ import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennySection
 import org.expenny.core.ui.extensions.label
 import org.expenny.core.ui.foundation.ExpennyCard
-import org.expenny.core.ui.foundation.ExpennyText
 
 @Composable
 internal fun SettingsSensitiveSection(
@@ -208,7 +208,7 @@ internal fun SettingsProfileSection(
             modifier = modifier,
             onClick = onProfileClick,
             leadingContent = {
-                ExpennyText(
+                Text(
                     modifier = Modifier
                         .padding(horizontal = 12.dp)
                         .drawBehind {
@@ -223,14 +223,14 @@ internal fun SettingsProfileSection(
                 )
             },
             title = {
-                ExpennyText(text = profileName)
+                Text(text = profileName)
             },
             trailingContent = {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    ExpennyText(text = profileCurrency)
+                    Text(text = profileCurrency)
                     Icon(
                         painter = painterResource(R.drawable.ic_chevron_right),
                         contentDescription = null,
@@ -268,7 +268,7 @@ private fun SectionActionItem(
             )
         },
         title = {
-            ExpennyText(
+            Text(
                 text = title,
                 color = labelColor,
             )
@@ -296,14 +296,14 @@ private fun SectionSelectionItem(
             )
         },
         title = {
-            ExpennyText(text = title)
+            Text(text = title)
         },
         trailingContent = {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                ExpennyText(text = value)
+                Text(text = value)
                 Icon(
                     painter = painterResource(R.drawable.ic_chevron_right),
                     contentDescription = null,
@@ -335,11 +335,11 @@ private fun SectionSwitchItem(
             )
         },
         title = {
-            ExpennyText(text = title)
+            Text(text = title)
         },
         description = {
             description?.let {
-                ExpennyText(text = description, maxLines = 3)
+                Text(text = description, maxLines = 3)
             }
         },
         trailingContent = {
@@ -371,7 +371,7 @@ private fun SectionItem(
             )
         },
         title = {
-            ExpennyText(text = title)
+            Text(text = title)
         }
     )
 }

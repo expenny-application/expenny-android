@@ -1,15 +1,22 @@
 package org.expenny.custom
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
@@ -20,11 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import org.expenny.core.resources.R
-import org.expenny.core.ui.foundation.ExpennyButton
-import org.expenny.core.ui.foundation.ExpennyText
-import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonAttributes
-import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonSize
-import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonType
+import org.expenny.core.ui.foundation.ExpennyFlatButton
 import org.expenny.core.ui.theme.ExpennyTheme
 import org.expenny.main.MainActivity
 
@@ -69,34 +72,26 @@ private fun ExceptionContent(
                         tint = MaterialTheme.colorScheme.primary,
                         contentDescription = null
                     )
-                    ExpennyText(
+                    Text(
                         text = "Unexpected Error Occurred",
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.onSurface
+                        style = MaterialTheme.typography.titleLarge
                     )
-                    ExpennyText(
+                    Text(
                         text = "Sorry for inconvenience. Please report this error to us.",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurface
+                        style = MaterialTheme.typography.bodyMedium
                     )
-                    ExpennyButton(
+                    ExpennyFlatButton(
                         modifier = Modifier.width(200.dp),
                         onClick = {},
-                        attributes = ExpennyFlatButtonAttributes(
-                            type = ExpennyFlatButtonType.Primary,
-                            size = ExpennyFlatButtonSize.Large,
-                            label = "Report"
-                        )
+                        label = {
+                            Text(text = "Report")
+                        }
                     )
-                    ExpennyText(
-                        modifier = Modifier.clickable {
-                            onRestartClick()
-                        },
-                        text = "Restart app",
-                        color = MaterialTheme.colorScheme.onSurface,
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            textDecoration = TextDecoration.Underline
-                        ),
+                    Text(
+                        modifier = Modifier.clickable { onRestartClick() },
+                        text = "Sorry for inconvenience. Please report this error to us.",
+                        style = MaterialTheme.typography.labelLarge,
+                        textDecoration = TextDecoration.Underline
                     )
                 }
             }

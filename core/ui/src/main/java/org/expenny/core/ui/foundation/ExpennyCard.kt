@@ -22,18 +22,18 @@ fun ExpennyCard(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     onLongClick: () -> Unit = {},
-    color: Color = MaterialTheme.colorScheme.surfaceContainer,
-    shape: Shape = MaterialTheme.shapes.medium,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable ColumnScope.() -> Unit
 ) {
-    CompositionLocalProvider(LocalContentColor provides  contentColorFor(color)) {
+    CompositionLocalProvider(
+        LocalContentColor provides contentColorFor(MaterialTheme.colorScheme.surfaceContainer)
+    ) {
         Box(
             modifier = modifier
                 .minimumInteractiveComponentSize()
                 .surface(
-                    shape = shape,
-                    backgroundColor = color,
+                    shape = MaterialTheme.shapes.medium,
+                    backgroundColor = MaterialTheme.colorScheme.surfaceContainer,
                     border = null,
                     shadowElevation = 0.dp
                 )
@@ -54,14 +54,12 @@ fun ExpennyCard(
 @Composable
 fun ExpennyCard(
     modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colorScheme.surfaceContainer,
-    shape: Shape = MaterialTheme.shapes.medium,
     content: @Composable ColumnScope.() -> Unit
 ) {
     Surface(
         modifier = modifier,
-        shape = shape,
-        color = color,
+        shape = MaterialTheme.shapes.medium,
+        color = MaterialTheme.colorScheme.surfaceContainer,
         shadowElevation = 0.dp,
     ) {
         Column(content = content)
