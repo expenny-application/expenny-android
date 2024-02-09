@@ -5,9 +5,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import org.expenny.core.resources.R
-import org.expenny.core.ui.foundation.ExpennyText
-import org.expenny.core.ui.foundation.ExpennyToolbar
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -17,7 +14,7 @@ internal fun CurrenciesListToolbar(
     onAddClick: () -> Unit,
     onBackClick: () -> Unit
 ) {
-    ExpennyToolbar(
+    TopAppBar(
         scrollBehavior = scrollBehavior,
         actions = {
             IconButton(onClick = onAddClick) {
@@ -36,7 +33,7 @@ internal fun CurrenciesListToolbar(
             }
         },
         title = {
-            ExpennyText(text = title)
+            Text(text = title)
         }
     )
 }

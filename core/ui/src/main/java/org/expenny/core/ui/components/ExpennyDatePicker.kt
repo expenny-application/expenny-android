@@ -1,7 +1,8 @@
 package org.expenny.core.ui.components
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -13,9 +14,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.commandiron.wheel_picker_compose.WheelDatePicker
 import com.commandiron.wheel_picker_compose.core.WheelPickerDefaults
 import org.expenny.core.resources.R
-import org.expenny.core.ui.foundation.ExpennyAlertDialog
-import org.expenny.core.ui.foundation.ExpennyAlertDialogButton
-import org.expenny.core.ui.foundation.ExpennyText
+import org.expenny.core.ui.foundation.ExpennyDialog
+import org.expenny.core.ui.foundation.ExpennyTextButton
 import org.expenny.core.ui.theme.ExpennyTheme
 import java.time.LocalDate
 
@@ -33,11 +33,11 @@ fun ExpennyDatePicker(
 ) {
     var date by rememberSaveable { mutableStateOf(currentDate ?: LocalDate.now()) }
 
-    ExpennyAlertDialog(
+    ExpennyDialog(
         modifier = modifier.wrapContentWidth(),
         onDismissRequest = onDismiss,
         title = {
-            ExpennyText(
+            Text(
                 text = title,
                 style = MaterialTheme.typography.titleLarge
             )
@@ -61,19 +61,19 @@ fun ExpennyDatePicker(
             )
         },
         confirmButton = {
-            ExpennyAlertDialogButton(
-                label = stringResource(R.string.select_button),
+            ExpennyTextButton(
                 onClick = {
                     onSelect(date)
                     onDismiss()
                 }
-            )
+            ) {
+                Text(text = stringResource(R.string.select_button))
+            }
         },
         dismissButton = {
-            ExpennyAlertDialogButton(
-                label = stringResource(R.string.cancel_button),
-                onClick = onDismiss,
-            )
+            ExpennyTextButton(onClick = onDismiss) {
+                Text(text = stringResource(R.string.cancel_button))
+            }
         }
     )
 }

@@ -1,14 +1,11 @@
 package org.expenny.feature.recorddetails.view
 
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import org.expenny.core.resources.R
-import org.expenny.core.ui.foundation.ExpennyAlertDialog
-import org.expenny.core.ui.foundation.ExpennyButton
-import org.expenny.core.ui.foundation.ExpennyText
-import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonAttributes
-import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonSize
-import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonType
+import org.expenny.core.ui.foundation.ExpennyTextButton
 
 @Composable
 internal fun RecordDetailsReceiptSourceDialog(
@@ -16,36 +13,23 @@ internal fun RecordDetailsReceiptSourceDialog(
     onCameraClick: () -> Unit,
     onDismiss: () -> Unit
 ) {
-    ExpennyAlertDialog(
+    AlertDialog(
         onDismissRequest = onDismiss,
         title = {
-            ExpennyText(text = stringResource(R.string.add_receipt_label))
+            Text(text = stringResource(R.string.add_receipt_label))
         },
-        content = {
-            ExpennyText(
-                text = stringResource(R.string.image_source_paragraph),
-                maxLines = Int.MAX_VALUE
-            )
+        text = {
+            Text(text = stringResource(R.string.image_source_paragraph))
         },
         confirmButton = {
-            ExpennyButton(
-                onClick = onGalleryClick,
-                attributes = ExpennyFlatButtonAttributes(
-                    type = ExpennyFlatButtonType.Tertiary,
-                    size = ExpennyFlatButtonSize.Medium,
-                    label = stringResource(R.string.gallery_button)
-                )
-            )
+            ExpennyTextButton(onClick = onGalleryClick) {
+                Text(text = stringResource(R.string.gallery_button))
+            }
         },
         dismissButton = {
-            ExpennyButton(
-                onClick = onCameraClick,
-                attributes = ExpennyFlatButtonAttributes(
-                    type = ExpennyFlatButtonType.Tertiary,
-                    size = ExpennyFlatButtonSize.Medium,
-                    label = stringResource(R.string.camera_button)
-                )
-            )
+            ExpennyTextButton(onClick = onGalleryClick) {
+                Text(text = stringResource(R.string.camera_button))
+            }
         }
     )
 }

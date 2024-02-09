@@ -1,11 +1,7 @@
-package org.expenny.core.ui.foundation
+package org.expenny.core.ui.components
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.*
-import androidx.compose.animation.core.FastOutLinearInEasing
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -15,15 +11,12 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -31,61 +24,13 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import org.expenny.core.resources.R
+import org.expenny.core.ui.extensions.noRippleClickable
 import org.expenny.core.ui.foundation.*
 import org.expenny.core.ui.theme.*
-import org.expenny.core.ui.extensions.noRippleClickable
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExpennyToolbar(
-    modifier: Modifier = Modifier,
-    scrollBehavior: TopAppBarScrollBehavior? = null,
-    windowInsets: WindowInsets = TopAppBarDefaults.windowInsets,
-    backgroundColor: Color = MaterialTheme.colorScheme.surface,
-    title: @Composable () -> Unit,
-    actions: @Composable RowScope.() -> Unit = {},
-    navigationIcon: @Composable () -> Unit = {},
-) {
-    TopAppBar(
-        modifier = modifier,
-        actions = {
-            CompositionLocalProvider(
-                LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant
-            ) {
-                actions()
-            }
-        },
-        navigationIcon = {
-            CompositionLocalProvider(
-                LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant
-            ) {
-                navigationIcon()
-            }
-        },
-        title = {
-            ProvideTextStyle(value = MaterialTheme.typography.titleLarge) {
-                title()
-            }
-        },
-        windowInsets = windowInsets,
-        scrollBehavior = scrollBehavior,
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = backgroundColor,
-            scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-            navigationIconContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-            titleContentColor = MaterialTheme.colorScheme.onSurface,
-            actionIconContentColor = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    )
-}
-
-@OptIn(
-    ExperimentalComposeUiApi::class,
-    ExperimentalMaterial3Api::class
-)
-@Composable
-fun ExpennySearchToolbar(
+fun ExpennySearchAppBar(
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior? = null,
     searchQuery: String,
@@ -110,7 +55,7 @@ fun ExpennySearchToolbar(
             onQueryChange("")
         }
 
-        ExpennyToolbar(
+        TopAppBar(
             modifier = modifier,
             scrollBehavior = scrollBehavior,
             navigationIcon = {
@@ -122,13 +67,12 @@ fun ExpennySearchToolbar(
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.ic_back),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         contentDescription = null
                     )
                 }
             },
             title = {
-                SearchToolbarField(
+                SearchAppBarField(
                     query = searchQuery,
                     focusRequester = searchFocusRequester,
                     onQueryChange = onQueryChange,
@@ -139,7 +83,7 @@ fun ExpennySearchToolbar(
             }
         )
     } else {
-        ExpennyToolbar(
+        TopAppBar(
             modifier = modifier,
             scrollBehavior = scrollBehavior,
             navigationIcon = navigationIcon,
@@ -151,11 +95,9 @@ fun ExpennySearchToolbar(
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.ic_search),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         contentDescription = null
                     )
                 }
-
                 actions()
             },
             title = title
@@ -165,14 +107,15 @@ fun ExpennySearchToolbar(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun SearchToolbarField(
+private fun SearchAppBarField(
+    modifier: Modifier = Modifier,
     query: String,
     focusRequester: FocusRequester,
     onQueryChange: (String) -> Unit,
     onFocused: () -> Unit,
 ) {
     BasicTextField(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(
                 color = Color.Transparent,

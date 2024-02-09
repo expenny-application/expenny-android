@@ -7,13 +7,36 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,14 +50,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.spec.NavGraphSpec
 import org.expenny.core.resources.R
-import org.expenny.core.ui.foundation.ExpennyText
-import org.expenny.navigation.ExpennyNavGraphs
 import org.expenny.main.drawer.DrawerSection.Main
 import org.expenny.main.drawer.DrawerSection.Others
+import org.expenny.navigation.ExpennyNavGraphs
 
 
 @Composable
-internal fun ExpennyNavigationDrawer(
+internal fun MainNavigationDrawer(
     currentTab: NavGraphSpec,
     onTabSelect: (NavGraphSpec) -> Unit
 ) {
@@ -90,12 +112,10 @@ private fun NavigationDrawerHeader(
             .padding(horizontal = optionHorizontalPadding),
         contentAlignment = Alignment.Center,
     ) {
-        ExpennyText(
+        Text(
             text = stringResource(R.string.menu_label),
-            style = MaterialTheme.typography.titleLarge.copy(
-                textAlign = TextAlign.Center
-            ),
-            color = MaterialTheme.colorScheme.onSurface
+            style = MaterialTheme.typography.titleLarge,
+            textAlign = TextAlign.Center
         )
     }
 }
@@ -259,15 +279,13 @@ private fun NavigationDrawerOption(
                 tint = iconColor,
                 contentDescription = null
             )
-
             Box(modifier = Modifier.weight(1f)) {
-                ExpennyText(
+                Text(
                     text = label,
                     color = labelColor,
                     style = labelStyle
                 )
             }
-
             trailingContent()
         }
     }

@@ -91,6 +91,16 @@ val ColorScheme.surfaceInput: Color
         return MaterialTheme.colorScheme.surfaceContainer
     }
 
+val ColorScheme.positive: Color
+    @Composable get() {
+        return if (isSystemInDarkTheme()) Color(0xFF81C784) else Color(0xFF00C853)
+    }
+
+val ColorScheme.negative: Color
+    @Composable get() {
+        return MaterialTheme.colorScheme.error
+    }
+
 @Composable
 fun ExpennyTheme(
     isDarkTheme: Boolean = isSystemInDarkTheme(),

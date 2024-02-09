@@ -1,6 +1,7 @@
 package org.expenny.core.ui.foundation
 
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,19 +28,21 @@ fun <T> ExpennyMultiSelectionDialog(
         modifier = modifier,
         onDismissRequest = onDismiss,
         title = {
-            ExpennyText(text = label)
+            Text(text = label)
         },
         dismissButton = {
-            ExpennyAlertDialogButton(
-                label = stringResource(R.string.cancel_button),
-                onClick = onDismiss
+            ExpennyTextButton(
+                onClick = onDismiss,
+                content = {
+                    Text(text = stringResource(R.string.cancel_button))
+                }
             )
         },
         confirmButton = {
-            ExpennyAlertDialogButton(
-                label = stringResource(R.string.apply_button),
-                onClick = {
-                    onSelect(currentSelection)
+            ExpennyTextButton(
+                onClick = { onSelect(currentSelection) },
+                content = {
+                    Text(text = stringResource(R.string.apply_button))
                 }
             )
         },
@@ -81,12 +84,14 @@ fun <T> ExpennySingleSelectionDialog(
         modifier = modifier,
         onDismissRequest = onDismiss,
         title = {
-            ExpennyText(text = label)
+            Text(text = label)
         },
         confirmButton = {
-            ExpennyAlertDialogButton(
-                label = stringResource(R.string.cancel_button),
+            ExpennyTextButton(
                 onClick = onDismiss,
+                content = {
+                    Text(text = stringResource(R.string.cancel_button))
+                }
             )
         },
         listContent = {
@@ -119,19 +124,21 @@ fun <T> ExpennyOptionalSingleSelectionDialog(
         modifier = modifier,
         onDismissRequest = onDismiss,
         title = {
-            ExpennyText(text = label)
+            Text(text = label)
         },
         dismissButton = {
-            ExpennyAlertDialogButton(
-                label = stringResource(R.string.cancel_button),
-                onClick = onDismiss
+            ExpennyTextButton(
+                onClick = onDismiss,
+                content = {
+                    Text(text = stringResource(R.string.cancel_button))
+                }
             )
         },
         confirmButton = {
-            ExpennyAlertDialogButton(
-                label = stringResource(R.string.apply_button),
-                onClick = {
-                    onSelect(currentSelection)
+            ExpennyTextButton(
+                onClick = { onSelect(currentSelection) },
+                content = {
+                    Text(text = stringResource(R.string.apply_button))
                 }
             )
         },

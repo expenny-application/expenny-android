@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,7 +18,6 @@ import org.expenny.core.ui.data.selection.SingleSelection
 import org.expenny.core.ui.data.ui.CategoryUi
 import org.expenny.core.ui.extensions.type
 import org.expenny.core.ui.foundation.ExpennyCard
-import org.expenny.core.ui.foundation.ExpennyText
 import org.expenny.core.ui.foundation.ExpennyVerticalList
 
 
@@ -68,11 +68,10 @@ private fun CategoryItem(
                 color = category.icon.color,
                 background = MaterialTheme.colorScheme.surface
             )
-            ExpennyText(
+            Text(
                 modifier = Modifier.weight(1f),
                 text = category.name,
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface
+                style = MaterialTheme.typography.titleMedium
             )
             if (selectionType != null) {
                 ExpennySelectionButton(

@@ -1,49 +1,39 @@
 package org.expenny.feature.recorddetails.view
 
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import org.expenny.core.resources.R
-import org.expenny.core.ui.foundation.ExpennyAlertDialog
-import org.expenny.core.ui.foundation.ExpennyButton
-import org.expenny.core.ui.foundation.ExpennyText
-import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonAttributes
-import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonSize
-import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonType
+import org.expenny.core.ui.foundation.ExpennyDialog
+import org.expenny.core.ui.foundation.ExpennyTextButton
 
 @Composable
 internal fun RecordDetailsDeleteDialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
 ) {
-    ExpennyAlertDialog(
+    ExpennyDialog(
         onDismissRequest = onDismiss,
         title = {
-            ExpennyText(text = stringResource(R.string.delete_record_question_label))
+            Text(text = stringResource(R.string.delete_record_question_label))
         },
         content = {
-            ExpennyText(
-                text = stringResource(R.string.delete_record_paragraph),
-                maxLines = Int.MAX_VALUE
-            )
+            Text(text = stringResource(R.string.delete_record_paragraph))
         },
         confirmButton = {
-            ExpennyButton(
+            ExpennyTextButton(
                 onClick = onConfirm,
-                attributes = ExpennyFlatButtonAttributes(
-                    type = ExpennyFlatButtonType.Tertiary,
-                    size = ExpennyFlatButtonSize.Medium,
-                    label = stringResource(R.string.delete_button)
-                )
+                content = {
+                    Text(text = stringResource(R.string.delete_button))
+                }
             )
         },
         dismissButton = {
-            ExpennyButton(
+            ExpennyTextButton(
                 onClick = onDismiss,
-                attributes = ExpennyFlatButtonAttributes(
-                    type = ExpennyFlatButtonType.Tertiary,
-                    size = ExpennyFlatButtonSize.Medium,
-                    label = stringResource(R.string.cancel_button)
-                )
+                content = {
+                    Text(text = stringResource(R.string.cancel_button))
+                }
             )
         }
     )

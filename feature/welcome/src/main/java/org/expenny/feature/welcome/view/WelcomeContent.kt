@@ -1,9 +1,17 @@
 package org.expenny.feature.welcome.view
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -12,9 +20,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import org.expenny.feature.welcome.Action
 import org.expenny.core.resources.R
-import org.expenny.core.ui.foundation.ExpennyText
+import org.expenny.feature.welcome.Action
 
 @Composable
 internal fun WelcomeContent(
@@ -51,14 +58,13 @@ internal fun WelcomeContent(
                     contentDescription = null
                 )
             }
-            ExpennyText(
+            Text(
                 text = stringResource(R.string.welcome_header_message),
                 style = MaterialTheme.typography.titleLarge
             )
-            ExpennyText(
+            Text(
                 text = stringResource(R.string.welcome_paragraph_message),
-                style = MaterialTheme.typography.bodyLarge,
-                maxLines = Int.MAX_VALUE
+                style = MaterialTheme.typography.bodyLarge
             )
         }
         WelcomeCta(

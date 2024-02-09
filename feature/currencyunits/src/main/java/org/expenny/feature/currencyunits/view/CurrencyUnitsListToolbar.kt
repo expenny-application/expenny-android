@@ -5,8 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import org.expenny.core.resources.R
-import org.expenny.core.ui.foundation.ExpennySearchToolbar
-import org.expenny.core.ui.foundation.ExpennyText
+import org.expenny.core.ui.components.ExpennySearchAppBar
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -17,14 +16,10 @@ internal fun CurrencyUnitsListToolbar(
     onSearchQueryChange: (String) -> Unit,
     onCloseClick: () -> Unit
 ) {
-    ExpennySearchToolbar(
+    ExpennySearchAppBar(
         scrollBehavior = scrollBehavior,
         title = {
-            ExpennyText(
-                text = stringResource(R.string.select_currency_code_label),
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onSurface
-            )
+            Text(text = stringResource(R.string.select_currency_code_label))
         },
         searchQuery = searchQuery,
         onQueryChange = onSearchQueryChange,

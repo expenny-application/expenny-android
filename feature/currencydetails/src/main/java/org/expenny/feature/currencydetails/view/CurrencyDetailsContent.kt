@@ -68,7 +68,7 @@ internal fun CurrencyDetailsContent(
         floatingActionButton = {
             CurrencyDetailsActionButton(
                 modifier = Modifier.navigationBarsPadding(),
-                onSaveClick = {
+                onClick = {
                     keyboardController?.hide()
                     focusManager.clearFocus()
                     onAction(Action.OnSaveClick)

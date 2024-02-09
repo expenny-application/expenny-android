@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -41,7 +42,6 @@ import org.expenny.core.ui.data.ui.AmountUi
 import org.expenny.core.ui.data.ui.ExpensesUi
 import org.expenny.core.ui.extensions.label
 import org.expenny.core.ui.foundation.ExpennyCard
-import org.expenny.core.ui.foundation.ExpennyText
 import org.expenny.feature.dashboard.model.DashboardExpensesUi
 
 
@@ -128,12 +128,12 @@ private fun DashboardExpensesHeading(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                ExpennyText(
+                Text(
                     text = it,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                ExpennyText(
+                Text(
                     text = stringResource(R.string.more_label),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary
@@ -145,7 +145,7 @@ private fun DashboardExpensesHeading(
             transitionSpec = { fadeIn() togetherWith fadeOut() },
             label = "ExpensesTitle"
         ) {
-            ExpennyText(
+            Text(
                 text = it,
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.titleLarge
@@ -229,12 +229,12 @@ private fun DashboardExpensesChartSummary(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        ExpennyText(
+        Text(
             text = expensesCount.toString(),
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onSurface
         )
-        ExpennyText(
+        Text(
             text = stringResource(R.string.records_label),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -271,7 +271,7 @@ private fun DashboardExpensesChartLegendItem(entry: ExpensesUi?) {
                 .clip(CircleShape)
                 .background(entry?.color ?: MaterialTheme.colorScheme.outlineVariant)
         )
-        ExpennyText(
+        Text(
             text = entry?.label ?: stringResource(R.string.na_label),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant

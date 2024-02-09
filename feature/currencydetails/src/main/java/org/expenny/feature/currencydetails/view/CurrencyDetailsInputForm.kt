@@ -21,7 +21,7 @@ import org.expenny.core.ui.components.ExpennySection
 import org.expenny.core.ui.data.field.InputField
 import org.expenny.core.ui.data.field.MonetaryInputField
 import org.expenny.core.ui.extensions.asRawString
-import org.expenny.core.ui.foundation.ExpennyCheckBoxGroup
+import org.expenny.core.ui.components.ExpennyCheckBoxGroup
 import org.expenny.core.ui.foundation.ExpennyMonetaryInputField
 import org.expenny.core.ui.foundation.ExpennyReadonlyInputField
 import org.expenny.core.ui.foundation.ExpennySelectInputField

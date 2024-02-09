@@ -7,10 +7,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -19,13 +23,8 @@ import org.expenny.core.common.types.ApplicationTheme
 import org.expenny.core.resources.R
 import org.expenny.core.ui.extensions.drawVerticalScrollbar
 import org.expenny.core.ui.extensions.label
-import org.expenny.core.ui.foundation.ExpennyAlertDialog
-import org.expenny.core.ui.foundation.ExpennyButton
-import org.expenny.core.ui.foundation.ExpennyRadioButton
-import org.expenny.core.ui.foundation.ExpennyText
-import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonAttributes
-import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonSize
-import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonType
+import org.expenny.core.ui.foundation.ExpennyDialog
+import org.expenny.core.ui.foundation.ExpennyTextButton
 
 @Composable
 internal fun SettingsThemeDialog(
@@ -36,11 +35,11 @@ internal fun SettingsThemeDialog(
 ) {
     val lazyListState = rememberLazyListState()
 
-    ExpennyAlertDialog(
+    ExpennyDialog(
         modifier = modifier,
         onDismissRequest = onDismiss,
         title = {
-            ExpennyText(text = stringResource(R.string.select_theme_label))
+            Text(text = stringResource(R.string.select_theme_label))
         },
         content = {
             LazyColumn(
@@ -63,20 +62,19 @@ internal fun SettingsThemeDialog(
             }
         },
         confirmButton = {
-            ExpennyButton(
+            ExpennyTextButton(
                 onClick = onDismiss,
-                attributes = ExpennyFlatButtonAttributes(
-                    type = ExpennyFlatButtonType.Tertiary,
-                    size = ExpennyFlatButtonSize.Medium,
-                    label = stringResource(R.string.cancel_button)
-                )
+                content = {
+                    Text(text = stringResource(R.string.cancel_button))
+                }
             )
         }
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun LazyItemScope.DialogListItem(
+private fun DialogListItem(
     modifier: Modifier = Modifier,
     label: String,
     isSelected: Boolean,
@@ -90,11 +88,13 @@ private fun LazyItemScope.DialogListItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        ExpennyRadioButton(
-            isSelected = isSelected,
-            onClick = onClick
-        )
-        ExpennyText(
+        CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
+            RadioButton(
+                selected = isSelected,
+                onClick = onClick
+            )
+        }
+        Text(
             text = label,
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface

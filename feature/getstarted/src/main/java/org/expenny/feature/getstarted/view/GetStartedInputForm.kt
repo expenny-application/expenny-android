@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 import org.expenny.core.ui.extensions.asRawString
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennyExpandableContent
-import org.expenny.core.ui.foundation.ExpennyCheckBoxGroup
+import org.expenny.core.ui.components.ExpennyCheckBoxGroup
 import org.expenny.core.ui.foundation.ExpennyInputField
 import org.expenny.core.ui.foundation.ExpennyMonetaryInputField
 import org.expenny.core.ui.foundation.ExpennySelectInputField

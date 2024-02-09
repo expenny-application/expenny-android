@@ -1,7 +1,6 @@
 package org.expenny.feature.dashboard.view
 
 import androidx.compose.animation.*
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -10,31 +9,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Outline
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennyRecord
 import org.expenny.core.ui.data.ui.AmountUi
 import org.expenny.core.ui.data.ui.RecordUi
 import org.expenny.core.ui.foundation.ExpennyCard
-import org.expenny.core.ui.foundation.ExpennyDivider
-import org.expenny.core.ui.foundation.ExpennyText
 import org.expenny.feature.dashboard.model.DashboardBalanceUi
-import kotlin.math.roundToInt
 
 @Composable
 internal fun DashboardBalanceSection(
@@ -68,7 +51,7 @@ private fun DashboardBalanceHeading(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        ExpennyText(
+        Text(
             text = stringResource(R.string.total_balance_label),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -78,7 +61,7 @@ private fun DashboardBalanceHeading(
             transitionSpec = { fadeIn() with fadeOut() },
             label = "DashboardBalanceHeading"
         ) {
-            ExpennyText(
+            Text(
                 text = it,
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onSurface
@@ -102,12 +85,12 @@ private fun DashboardBalanceLastRecord(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                ExpennyText(
+                Text(
                     text = stringResource(R.string.last_record_label),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                ExpennyText(
+                Text(
                     modifier = Modifier.clickable(onClick = onShowMoreClick),
                     text = stringResource(R.string.more_label),
                     style = MaterialTheme.typography.bodyMedium,
@@ -141,10 +124,10 @@ private fun LastRecordItem(
                     .background(MaterialTheme.colorScheme.surface),
                 contentAlignment = Alignment.Center
             ) {
-                ExpennyText(
-                    align = TextAlign.Center,
+                Text(
+                    textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.outline,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     text = stringResource(R.string.no_records_yet_label)
                 )
             }

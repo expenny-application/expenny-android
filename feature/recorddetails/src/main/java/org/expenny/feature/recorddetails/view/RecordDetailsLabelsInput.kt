@@ -45,7 +45,6 @@ import androidx.compose.ui.unit.dp
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennyLabel
 import org.expenny.core.ui.extensions.noRippleClickable
-import org.expenny.core.ui.foundation.ExpennyText
 import org.expenny.core.ui.foundation.animateInputFieldBorderAsState
 import org.expenny.core.ui.foundation.animateInputFieldContainerAsState
 
@@ -110,7 +109,7 @@ internal fun RecordDetailsLabelsInput(
                 CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
                     ExpennyLabel(
                         label = {
-                            ExpennyText(text = labels[index])
+                            Text(text = labels[index])
                         },
                         trailingIcon = {
                             Icon(

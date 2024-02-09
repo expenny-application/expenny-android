@@ -10,7 +10,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -20,8 +19,6 @@ fun ExpennyChip(
     label: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
-    containerColor: Color = MaterialTheme.colorScheme.surfaceContainer,
-    contentColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
     onClick: () -> Unit
 ) {
     CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
@@ -30,8 +27,8 @@ fun ExpennyChip(
             label = label,
             leadingIcon = leadingIcon,
             trailingIcon = trailingIcon,
-            containerColor = containerColor,
-            contentColor = contentColor,
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
             onClick = onClick
         )
     }
@@ -45,12 +42,13 @@ fun ExpennySelectableChip(
     label: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
-    containerColor: Color = MaterialTheme.colorScheme.surfaceContainer,
-    contentColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
-    selectedContainerColor: Color = MaterialTheme.colorScheme.primaryContainer,
-    selectedContentColor: Color = MaterialTheme.colorScheme.onPrimaryContainer,
     onClick: () -> Unit
 ) {
+    val containerColor = MaterialTheme.colorScheme.surfaceContainer
+    val contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+    val selectedContainerColor = MaterialTheme.colorScheme.primaryContainer
+    val selectedContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+
     val chipContainerColor by animateColorAsState(
         targetValue = if (isSelected) selectedContainerColor else containerColor,
         label = "ContainerColor"

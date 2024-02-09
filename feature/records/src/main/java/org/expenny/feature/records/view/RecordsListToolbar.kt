@@ -8,8 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import org.expenny.core.resources.R
-import org.expenny.core.ui.foundation.ExpennyText
-import org.expenny.core.ui.foundation.ExpennyToolbar
 import org.expenny.core.ui.utils.ExpennyDrawerState
 
 
@@ -30,10 +28,10 @@ internal fun RecordsListToolbar(
         onCloseSelectionMode()
     }
 
-    ExpennyToolbar(
+    TopAppBar(
         scrollBehavior = scrollBehavior,
         title = {
-            ExpennyText(
+            Text(
                 text = if (isSelectionMode) {
                     stringResource(R.string.selected_label, selectionCount)
                 } else {

@@ -2,6 +2,7 @@ package org.expenny.feature.records.view
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
@@ -14,11 +15,10 @@ import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennyActionsBottomSheet
 import org.expenny.core.ui.components.ExpennyActionsBottomSheetItem
 import org.expenny.core.ui.extensions.label
-import org.expenny.core.ui.foundation.ExpennyAlertDialog
-import org.expenny.core.ui.foundation.ExpennyAlertDialogButton
+import org.expenny.core.ui.foundation.ExpennyDialog
 import org.expenny.core.ui.foundation.ExpennyMultiSelectionDialog
 import org.expenny.core.ui.foundation.ExpennySingleSelectionDialog
-import org.expenny.core.ui.foundation.ExpennyText
+import org.expenny.core.ui.foundation.ExpennyTextButton
 import org.expenny.feature.records.Action
 import org.expenny.feature.records.State
 import org.expenny.feature.records.model.RecordActionType
@@ -106,31 +106,32 @@ internal fun DeleteRecordDialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
 ) {
-    ExpennyAlertDialog(
+    ExpennyDialog(
         modifier = modifier,
         onDismissRequest = onDismiss,
         title = {
-            ExpennyText(text = stringResource(R.string.delete_selected_record_question_label))
+            Text(text = stringResource(R.string.delete_selected_record_question_label))
         },
         content = {
-            ExpennyText(
-                text = stringResource(R.string.delete_record_paragraph),
-                maxLines = Int.MAX_VALUE
-            )
+            Text(text = stringResource(R.string.delete_record_paragraph))
         },
         confirmButton = {
-            ExpennyAlertDialogButton(
-                label = stringResource(R.string.delete_button),
+            ExpennyTextButton(
                 onClick = {
                     onConfirm()
                     onDismiss()
+                },
+                content = {
+                    Text(text = stringResource(R.string.delete_button))
                 }
             )
         },
         dismissButton = {
-            ExpennyAlertDialogButton(
-                label = stringResource(R.string.cancel_button),
-                onClick = onDismiss
+            ExpennyTextButton(
+                onClick = onDismiss,
+                content = {
+                    Text(text = stringResource(R.string.cancel_button))
+                }
             )
         }
     )

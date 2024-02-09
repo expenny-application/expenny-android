@@ -4,9 +4,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import org.expenny.core.resources.R
-import org.expenny.core.ui.foundation.ExpennyText
-import org.expenny.core.ui.foundation.ExpennyToolbar
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -16,7 +13,7 @@ internal fun CategoriesListToolbar(
     onAddClick: () -> Unit,
     onBackClick: () -> Unit
 ) {
-    ExpennyToolbar(
+    TopAppBar(
         actions = {
             IconButton(onClick = onAddClick) {
                 Icon(
@@ -36,11 +33,7 @@ internal fun CategoriesListToolbar(
         },
         scrollBehavior = scrollBehavior,
         title = {
-            ExpennyText(
-                text = title,
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onSurface
-            )
+            Text(text = title)
         }
     )
 }

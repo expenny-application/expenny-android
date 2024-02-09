@@ -7,18 +7,14 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import org.expenny.core.resources.R
 import org.expenny.core.ui.extensions.drawVerticalScrollbar
-import org.expenny.core.ui.foundation.ExpennyButton
-import org.expenny.core.ui.foundation.ExpennyRadioButton
-import org.expenny.core.ui.foundation.ExpennyText
-import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonAttributes
-import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonSize
-import org.expenny.core.ui.foundation.model.button.ExpennyFlatButtonType
+import org.expenny.core.ui.foundation.ExpennyTextButton
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -32,7 +28,7 @@ fun ExpennySingleChoiceDialog(
     onCancelClick: () -> Unit,
     onDismissRequest: () -> Unit,
 ) {
-    AlertDialog(
+    BasicAlertDialog(
         modifier = modifier,
         onDismissRequest = onDismissRequest
     ) {
@@ -80,13 +76,11 @@ private fun DialogContent(
                     .padding(8.dp)
                     .align(Alignment.End)
             ) {
-                ExpennyButton(
+                ExpennyTextButton(
                     onClick = onCancelClick,
-                    attributes = ExpennyFlatButtonAttributes(
-                        type = ExpennyFlatButtonType.Tertiary,
-                        size = ExpennyFlatButtonSize.Medium,
-                        label = stringResource(R.string.cancel_button)
-                    )
+                    content = {
+                        Text(text = stringResource(R.string.cancel_button))
+                    }
                 )
             }
         }
@@ -102,14 +96,14 @@ private fun DialogHeader(
         modifier = modifier.height(64.dp),
         contentAlignment = Alignment.CenterStart
     ) {
-        ExpennyText(
+        Text(
             text = title,
-            color = MaterialTheme.colorScheme.onSurface,
             style = MaterialTheme.typography.titleLarge
         )
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DialogList(
     modifier: Modifier = Modifier,
@@ -132,14 +126,15 @@ private fun DialogList(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                ExpennyRadioButton(
-                    isSelected = index == selectedIndex,
-                    onClick = { onClick(index) }
-                )
-                ExpennyText(
+                CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
+                    RadioButton(
+                        selected = index == selectedIndex,
+                        onClick = { onClick(index) }
+                    )
+                }
+                Text(
                     text = item,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface
+                    style = MaterialTheme.typography.bodyMedium
                 )
             }
         }

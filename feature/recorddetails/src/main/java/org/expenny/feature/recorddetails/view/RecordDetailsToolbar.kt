@@ -4,10 +4,7 @@ import androidx.compose.animation.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import org.expenny.core.resources.R
-import org.expenny.core.ui.foundation.ExpennyText
-import org.expenny.core.ui.foundation.ExpennyToolbar
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -19,8 +16,7 @@ internal fun RecordDetailsToolbar(
     onBackClick: () -> Unit,
     onDeleteClick: () -> Unit
 ) {
-    ExpennyToolbar(
-        backgroundColor = MaterialTheme.colorScheme.surface,
+    TopAppBar(
         actions = {
             if (showDeleteButton) {
                 IconButton(onClick = onDeleteClick) {
@@ -43,11 +39,7 @@ internal fun RecordDetailsToolbar(
         },
         scrollBehavior = scrollBehavior,
         title = {
-            ExpennyText(
-                text = title,
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onSurface
-            )
+            Text(text = title)
         }
     )
 }
