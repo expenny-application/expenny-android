@@ -4,4 +4,5 @@ import org.expenny.core.ui.data.navargs.LongNavArg
 
 data class CurrencyUnitsListNavArgs(
     val selection: LongNavArg,
+    val includeOnlyAvailable: Boolean = false
 )

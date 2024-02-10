@@ -2,16 +2,17 @@ package org.expenny.feature.settings
 
 import org.expenny.core.common.types.ApplicationLanguage
 import org.expenny.core.common.types.ApplicationTheme
-import org.expenny.core.common.utils.Constants
 import org.expenny.core.common.utils.Constants.DEFAULT_REMINDER_TIME_FORMAT
 import org.expenny.core.common.utils.StringResource
 import org.expenny.core.ui.data.ui.ProfileUi
+import org.expenny.feature.settings.model.ProfileActionType
 import org.expenny.feature.settings.model.SettingsItemType
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 data class State(
     val currentProfile: ProfileUi? = null,
+    val profiles: List<ProfileUi> = emptyList(),
     val languages: List<ApplicationLanguage> = ApplicationLanguage.values().toList(),
     val selectedLanguage: ApplicationLanguage = ApplicationLanguage.SystemDefault,
     val themes: List<ApplicationTheme> = ApplicationTheme.values().toList(),
@@ -31,27 +32,42 @@ data class State(
         get() = isUsePasscodeSelected && isBiometricAvailable
 
     sealed interface Dialog {
-        object ReminderTimeDialog : Dialog
-        object ThemeDialog : Dialog
-        object LanguageDialog : Dialog
+        data object DeleteApplicationDataDialog : Dialog
+        data object DeleteProfileDataDialog : Dialog
+        data object DeleteProfileDialog : Dialog
+        data object ProfileDialog : Dialog
+        data object ProfileActionsDialog : Dialog
+        data object ReminderTimeDialog : Dialog
+        data object ThemeDialog : Dialog
+        data object LanguageDialog : Dialog
     }
 }
 
 sealed interface Action {
-    class OnThemeSelect(val theme: ApplicationTheme) : Action
-    class OnLanguageSelect(val language: ApplicationLanguage) : Action
+    sealed interface Dialog : Action {
+        class OnProfileActionTypeSelect(val type: ProfileActionType) : Dialog
+        class OnSelectProfileClick(val profileId: Long) : Dialog
+        class OnThemeSelect(val theme: ApplicationTheme) : Dialog
+        class OnLanguageSelect(val language: ApplicationLanguage) : Dialog
+        class OnReminderTimeChange(val time: LocalTime) : Dialog
+        data object OnCreateProfileClick : Dialog
+        data object OnDeleteApplicationDataDialogConfirm : Dialog
+        data object OnDeleteProfileDataDialogConfirm : Dialog
+        data object OnDeleteProfileDialogConfirm : Dialog
+        data object OnDialogDismiss : Dialog
+    }
     class OnSettingsItemTypeClick(val type: SettingsItemType) : Action
-    class OnReminderTimeChange(val time: LocalTime) : Action
-    object OnDialogDismiss : Action
-    object OnBackClick : Action
+    data object OnBackClick : Action
 }
 
 sealed interface Event {
     class ShowMessage(val message: StringResource) : Event
-    object NavigateToCategoriesList : Event
-    object NavigateToCreatePasscode : Event
-    object NavigateToSystemSecuritySettings : Event
-    object NavigateToSystemAlarmSettings : Event
-    object NavigateToCurrencies : Event
-    object NavigateBack : Event
+    class RestartApplication(val isDataCleanupRequested: Boolean = false) : Event
+    data object NavigateToCreateProfile : Event
+    data object NavigateToCategoriesList : Event
+    data object NavigateToCreatePasscode : Event
+    data object NavigateToSystemSecuritySettings : Event
+    data object NavigateToSystemAlarmSettings : Event
+    data object NavigateToCurrencies : Event
+    data object NavigateBack : Event
 }

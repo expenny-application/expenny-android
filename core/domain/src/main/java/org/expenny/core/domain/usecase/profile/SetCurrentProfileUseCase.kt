@@ -3,7 +3,7 @@ package org.expenny.core.domain.usecase.profile
 import org.expenny.core.domain.repository.LocalRepository
 import javax.inject.Inject
 
-class SwitchProfileUseCase @Inject constructor(
+class SetCurrentProfileUseCase @Inject constructor(
     private val localRepository: LocalRepository,
 ) {
 

@@ -1,7 +1,11 @@
 package org.expenny.feature.recorddetails.view
 
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -12,17 +16,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableList
-import org.expenny.core.ui.extensions.asRawString
 import org.expenny.core.common.types.RecordType
 import org.expenny.core.resources.R
-import org.expenny.core.ui.components.ExpennyMessage
 import org.expenny.core.ui.components.ExpennySegmentedTabRow
 import org.expenny.core.ui.data.field.InputField
 import org.expenny.core.ui.data.field.MonetaryInputField
+import org.expenny.core.ui.extensions.asRawString
+import org.expenny.core.ui.extensions.label
 import org.expenny.core.ui.foundation.ExpennyMonetaryInputField
 import org.expenny.core.ui.foundation.ExpennySelectInputField
 import org.expenny.core.ui.theme.surfaceInput
-import org.expenny.core.ui.extensions.label
 import org.expenny.feature.recorddetails.State
 import java.math.BigDecimal
 
@@ -51,9 +54,6 @@ internal fun RecordDetailsMainSection(
             selectedType = state.selectedType,
             onChange = onTypeChange
         )
-        if (state.showTransferDisclaimer) {
-            ExpennyMessage(message = stringResource(R.string.transfer_disclaimer_message))
-        }
         AmountInputField(
             modifier = Modifier
                 .fillMaxWidth()

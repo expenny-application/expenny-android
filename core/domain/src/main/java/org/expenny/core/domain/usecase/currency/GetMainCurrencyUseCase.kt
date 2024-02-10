@@ -10,7 +10,7 @@ class GetMainCurrencyUseCase @Inject constructor(
 ) {
 
     operator fun invoke(): Flow<Currency?> {
-        // null shouldn't happened if setup process has been passed
+        // null shouldn't happened if profile setup process has been passed
         return currencyRepository.getMainCurrency()
     }
 }

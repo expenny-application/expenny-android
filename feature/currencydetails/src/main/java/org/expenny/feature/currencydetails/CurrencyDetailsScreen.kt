@@ -34,9 +34,15 @@ fun CurrencyDetailsScreen(
 
     vm.collectSideEffect {
         when (it) {
-            is Event.NavigateToCurrencyUnitsSelectionList -> navigator.navigateToCurrencyUnitSelectionListScreen(it.selectedId)
-            is Event.ShowMessage -> snackbarManager.showMessage(it.message)
-            is Event.NavigateBack -> navigator.navigateBack()
+            is Event.NavigateToCurrencyUnitsSelectionList -> {
+                navigator.navigateToAvailableCurrencyUnitSelectionListScreen(it.selectedId)
+            }
+            is Event.ShowMessage -> {
+                snackbarManager.showMessage(it.message)
+            }
+            is Event.NavigateBack -> {
+                navigator.navigateBack()
+            }
         }
     }
 

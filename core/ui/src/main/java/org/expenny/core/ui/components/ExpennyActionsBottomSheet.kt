@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,6 +17,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -55,9 +57,8 @@ fun ExpennyActionsBottomSheet(
 @Composable
 fun ExpennyActionsBottomSheetItem(
     modifier: Modifier = Modifier,
-    label: String,
-    icon: Painter? = null,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    content: @Composable RowScope.() -> Unit,
 ) {
     Row(
         modifier = modifier
@@ -65,17 +66,10 @@ fun ExpennyActionsBottomSheetItem(
             .clickable { onClick() }
             .padding(horizontal = 24.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(24.dp)
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        if (icon != null) {
-            Icon(
-                painter = icon,
-                contentDescription = null
-            )
+        ProvideTextStyle(value = MaterialTheme.typography.bodyLarge) {
+            content()
         }
-        Text(
-            text = label,
-            style = MaterialTheme.typography.bodyLarge
-        )
     }
 }

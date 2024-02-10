@@ -112,6 +112,7 @@ class RecordDetailsViewModel @Inject constructor(
             is Action.OnReceiptCapture -> handleOnReceiptCapture(action)
             is Action.OnDeleteReceiptClick -> handleOnDeleteReceiptClick(action)
             is Action.OnViewReceiptClick -> handleOnViewReceiptClick(action)
+            is Action.OnTransferDisclaimerClick -> handleOnTransferDisclaimerClick()
             is Action.OnBackClick -> handleOnBackClick()
             is Action.OnSaveClick -> handleOnSaveClick()
             is Action.OnDeleteClick -> handleOnDeleteClick()
@@ -337,6 +338,10 @@ class RecordDetailsViewModel @Inject constructor(
         }
     }
 
+    private fun handleOnTransferDisclaimerClick() = intent {
+        reduce { state.copy(showTransferDisclaimerDialog = true) }
+    }
+
     private fun handleOnViewReceiptClick(action: Action.OnViewReceiptClick) = intent {
         postSideEffect(Event.OpenImageViewer(action.uri))
     }
@@ -354,7 +359,7 @@ class RecordDetailsViewModel @Inject constructor(
                     state.copy(
                         selectedType = action.type,
                         showTransferAmountInput = false,
-                        showTransferDisclaimer = isNewTypeTransfer,
+                        showTransferDisclaimerButton = isNewTypeTransfer,
                         showTransferAccountInput = isNewTypeTransfer,
                         showCategoryInput = !isNewTypeTransfer,
                     )
@@ -466,7 +471,8 @@ class RecordDetailsViewModel @Inject constructor(
                 showReceiptSourceDialog = false,
                 showDeleteDialog = false,
                 showTimePicker = false,
-                showDatePicker = false
+                showDatePicker = false,
+                showTransferDisclaimerDialog = false
             )
         }
     }
@@ -673,7 +679,7 @@ class RecordDetailsViewModel @Inject constructor(
         val showTransferAmountInput = record.showTransferAmountInput()
 
         reduce {
-            state.copy(showTransferDisclaimer = true)
+            state.copy(showTransferDisclaimerButton = true)
         }
 
         if (showTransferAmountInput) {

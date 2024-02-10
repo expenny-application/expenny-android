@@ -9,6 +9,6 @@ class GetReminderPreferenceUseCase @Inject constructor(
 ) {
 
     operator fun invoke(): Flow<Boolean> {
-        return localRepository.getReminderEnabled()
+        return localRepository.isReminderEnabled()
     }
 }

@@ -7,7 +7,7 @@ import org.expenny.core.model.category.CategoryUpdate
 
 interface CategoryRepository {
 
-    fun getCategoriesFlow(): Flow<List<Category>>
+    fun getCategories(): Flow<List<Category>>
 
     suspend fun getCategory(id: Long): Category?
 

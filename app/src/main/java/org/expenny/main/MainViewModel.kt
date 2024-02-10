@@ -3,15 +3,15 @@ package org.expenny.main
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.expenny.core.common.types.ApplicationTheme
-import org.expenny.core.domain.repository.LocalRepository
+import org.expenny.core.domain.usecase.preferences.DeleteApplicationDataUseCase
 import org.expenny.core.domain.usecase.preferences.GetBiometricInvalidatedUseCase
 import org.expenny.core.domain.usecase.preferences.GetCanSendAlarmsUseCase
 import org.expenny.core.domain.usecase.preferences.GetPasscodePreferenceUseCase
@@ -32,7 +32,8 @@ class MainViewModel @Inject constructor(
     private val setBiometricEnrolled: SetBiometricPreferenceUseCase,
     private val getCanSendAlarms: GetCanSendAlarmsUseCase,
     private val getReminderPreference: GetReminderPreferenceUseCase,
-    private val setReminderPreference: SetReminderPreferenceUseCase
+    private val setReminderPreference: SetReminderPreferenceUseCase,
+    private val deleteApplicationData: DeleteApplicationDataUseCase,
 ) : ViewModel() {
 
     val isProfileSetUp: StateFlow<Boolean?> = getProfileSetUp()
@@ -56,6 +57,10 @@ class MainViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(),
             initialValue = ApplicationTheme.SystemDefault
         )
+
+    suspend fun onDataCleanupRequest() {
+        viewModelScope.async { deleteApplicationData() }.await()
+    }
 
     fun verifyBiometricInvalidationStatus() {
         if (getBiometricInvalidated()) {

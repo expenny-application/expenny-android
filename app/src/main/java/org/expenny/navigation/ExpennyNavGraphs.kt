@@ -99,6 +99,7 @@ object ExpennyNavGraphs {
             CurrencyDetailsScreenDestination,
             CurrencyUnitsListScreenDestination,
             PasscodeScreenDestination,
+            GetStartedScreenDestination
         ).routedIn(this).associateBy { it.route }
     }
 

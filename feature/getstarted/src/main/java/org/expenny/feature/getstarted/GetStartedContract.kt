@@ -26,18 +26,18 @@ internal sealed interface Action {
     class OnAccountNameChange(val accountName: String) : Action
     class OnAccountBalanceChange(val accountBalance: BigDecimal) : Action
     class OnSetupCashBalanceCheckBoxChange(val isChecked: Boolean) : Action
-    object OnSelectCurrencyUnitClick : Action
-    object OnConfirmationDialogConfirm : Action
-    object OnAbortDialogConfirm : Action
-    object OnConfirmationDialogDismiss : Action
-    object OnAbortDialogDismiss : Action
-    object OnCtaClick : Action
-    object OnBackClick : Action
+    data object OnSelectCurrencyUnitClick : Action
+    data object OnConfirmationDialogConfirm : Action
+    data object OnAbortDialogConfirm : Action
+    data object OnConfirmationDialogDismiss : Action
+    data object OnAbortDialogDismiss : Action
+    data object OnCtaClick : Action
+    data object OnBackClick : Action
 }
 
 internal sealed interface Event {
     class ShowMessage(val message: StringResource) : Event
     class NavigateToCurrencyUnitsSelectionList(val selectedId: Long?) : Event
-    object NavigateToApp : Event
-    object NavigateBack : Event
+    data object NavigateToHome : Event
+    data object NavigateBack : Event
 }

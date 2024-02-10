@@ -10,6 +10,6 @@ import org.expenny.core.common.utils.StringResource
 fun StringResource.asRawString() : String = when (this) {
     is StringResource.SimpleStringResource -> this.str
     is StringResource.IdStringResource -> stringResource(this.id, *this.args)
-    is StringResource.IdArrayResource -> stringArrayResource(this.id)[this.index]
-    is StringResource.PluralStringResource -> pluralStringResource(this.pluralId, this.quantity)
+    is StringResource.IdArrayStringResource -> stringArrayResource(this.id)[this.index]
+    is StringResource.IdQuantityStringResource -> pluralStringResource(this.pluralId, this.quantity)
 }

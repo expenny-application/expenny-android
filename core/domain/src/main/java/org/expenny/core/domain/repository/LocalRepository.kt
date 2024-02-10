@@ -35,7 +35,9 @@ interface LocalRepository {
 
     fun isBiometricEnrolled(): Flow<Boolean>
 
-    fun getReminderEnabled(): Flow<Boolean>
+    fun isReminderEnabled(): Flow<Boolean>
 
     fun getReminderTime(): Flow<LocalTime>
+
+    suspend fun clear()
 }

@@ -16,7 +16,7 @@
     <string name="use_bioemtric_label">Использовать отпечаток</string>
     <string name="about_label">О приложении</string>
     <string name="rate_application_label">Оценить приложение</string>
-    <string name="delete_all_data_label">Удалить все данные</string>
+    <string name="delete_application_data_label">Удалить все данные</string>
     <string name="unknown_label">Неизвестно</string>
     <string name="no_records_yet_label">Пока нет записей</string>
     <string name="all_accounts_label">Все счета</string>

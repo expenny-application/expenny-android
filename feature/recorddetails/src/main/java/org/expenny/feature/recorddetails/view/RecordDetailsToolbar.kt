@@ -13,16 +13,25 @@ internal fun RecordDetailsToolbar(
     title: String,
     scrollBehavior: TopAppBarScrollBehavior,
     showDeleteButton: Boolean,
+    showInfoButton: Boolean,
     onBackClick: () -> Unit,
-    onDeleteClick: () -> Unit
+    onDeleteClick: () -> Unit,
+    onInfoClick: () -> Unit
 ) {
     TopAppBar(
         actions = {
+            if (showInfoButton) {
+                IconButton(onClick = onInfoClick) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_info),
+                        contentDescription = null
+                    )
+                }
+            }
             if (showDeleteButton) {
                 IconButton(onClick = onDeleteClick) {
                     Icon(
                         painter = painterResource(R.drawable.ic_delete),
-                        tint = MaterialTheme.colorScheme.primary,
                         contentDescription = null
                     )
                 }
@@ -32,7 +41,6 @@ internal fun RecordDetailsToolbar(
             IconButton(onClick = onBackClick) {
                 Icon(
                     painter = painterResource(R.drawable.ic_back),
-                    tint = MaterialTheme.colorScheme.onSurface,
                     contentDescription = null
                 )
             }

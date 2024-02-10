@@ -18,7 +18,7 @@ class GetMostUsedCategoryUseCase @Inject constructor(
         return if (transactions.isNotEmpty()) {
             transactions.filter { it.category != null }.groupBy { it.category }.maxBy { it.value.size }.key
         } else {
-            categoryRepository.getCategoriesFlow().first().takeIf { it.isNotEmpty() }?.get(0)
+            categoryRepository.getCategories().first().takeIf { it.isNotEmpty() }?.get(0)
         }
     }
 }

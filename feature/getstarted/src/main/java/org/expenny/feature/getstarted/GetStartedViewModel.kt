@@ -5,10 +5,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import org.expenny.core.common.utils.ErrorMessage
 import org.expenny.core.common.utils.StringResource.Companion.fromRes
 import org.expenny.core.common.utils.StringResourceProvider
 import org.expenny.core.common.viewmodel.*
-import org.expenny.core.domain.usecase.profile.SetupProfileUseCase
+import org.expenny.core.domain.usecase.profile.CreateProfileUseCase
 import org.expenny.core.domain.usecase.ValidateInputUseCase
 import org.expenny.core.domain.usecase.account.CreateDefaultAccountUseCase
 import org.expenny.core.domain.usecase.currencyunit.GetCurrencyUnitUseCase
@@ -30,7 +31,7 @@ import javax.inject.Inject
 internal class GetStartedViewModel @Inject constructor(
     private val provideString: StringResourceProvider,
     private val validateInput: ValidateInputUseCase,
-    private val setupProfile: SetupProfileUseCase,
+    private val createProfile: CreateProfileUseCase,
     private val createDefaultAccount: CreateDefaultAccountUseCase,
     private val getCurrencyUnit: GetCurrencyUnitUseCase,
     private val currencyUnitMapper: CurrencyUnitMapper,
@@ -68,14 +69,19 @@ internal class GetStartedViewModel @Inject constructor(
         }
     }
 
+    override fun onCoroutineException(message: ErrorMessage) {
+        intent {
+            postSideEffect(Event.ShowMessage(message.text))
+        }
+    }
+
     private suspend fun setup() {
-        setupProfile(
-            SetupProfileUseCase.Params(
+        createProfile(
+            CreateProfileUseCase.Params(
                 name = state.nameInput.value,
                 currencyUnitId = selectedCurrencyUnit.value!!.id
             )
         )
-
         if (state.setupCashBalanceCheckBox.value) {
             createDefaultAccount(
                 CreateDefaultAccountUseCase.Params(
@@ -97,13 +103,12 @@ internal class GetStartedViewModel @Inject constructor(
 
     private fun handleOnConfirmationDialogConfirm() = intent {
         reduce { state.copy(showConfirmationDialog = false) }
-
         setup()
-        postSideEffect(Event.NavigateToApp)
+        postSideEffect(Event.NavigateToHome)
     }
 
     private fun handleOnAbortDialogConfirm() = intent {
-        handleOnAbortDialogDismiss()
+        reduce { state.copy(showAbortDialog = false) }
         postSideEffect(Event.NavigateBack)
     }
 
@@ -160,7 +165,7 @@ internal class GetStartedViewModel @Inject constructor(
     private fun handleOnCtaClick() = intent {
         if (state.setupCashBalanceCheckBox.value) {
             setup()
-            postSideEffect(Event.NavigateToApp)
+            postSideEffect(Event.NavigateToHome)
         } else {
             reduce {
                 state.copy(showConfirmationDialog = true)
@@ -189,9 +194,7 @@ internal class GetStartedViewModel @Inject constructor(
     }
 
     private fun handleOnAbortDialogDismiss() = intent {
-        reduce {
-            state.copy(showAbortDialog = false)
-        }
+        reduce { state.copy(showAbortDialog = false) }
     }
 
     private fun subscribeToSelectedCurrencyUnit() = intent {

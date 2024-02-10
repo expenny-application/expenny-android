@@ -22,7 +22,7 @@ class CategoryRepositoryImpl @Inject constructor(
     private val categoryDao = database.categoryDao()
     private val recordDao = database.recordDao()
 
-    override fun getCategoriesFlow(): Flow<List<Category>> {
+    override fun getCategories(): Flow<List<Category>> {
         return combine(
             localRepository.getCurrentProfileId().filterNotNull(),
             categoryDao.selectAll()

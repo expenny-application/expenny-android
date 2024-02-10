@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import org.expenny.core.common.viewmodel.*
 import org.expenny.core.domain.usecase.currencyunit.GetAvailableCurrencyUnitsUseCase
+import org.expenny.core.domain.usecase.currencyunit.GetCurrencyUnitsUseCase
 import org.expenny.core.ui.data.navargs.LongNavArg
 import org.expenny.core.ui.data.selection.SingleSelection
 import org.expenny.core.ui.data.ui.CurrencyUnitUi
@@ -25,11 +26,13 @@ import javax.inject.Inject
 @HiltViewModel
 class CurrencyUnitsListViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
-    private val getCurrencyUnits: GetAvailableCurrencyUnitsUseCase,
+    private val getAvailableCurrencyUnits: GetAvailableCurrencyUnitsUseCase,
+    private val getCurrencyUnits: GetCurrencyUnitsUseCase,
     private val currencyUnitMapper: CurrencyUnitMapper
 ) : ExpennyActionViewModel<Action>(), ContainerHost<State, Event> {
 
     private val searchQuery = MutableStateFlow("")
+    private val includeOnlyAvailable = savedStateHandle.navArgs<CurrencyUnitsListNavArgs>().includeOnlyAvailable
 
     override val container = container<State, Event>(
         initialState = State(),
@@ -69,7 +72,9 @@ class CurrencyUnitsListViewModel @Inject constructor(
     private fun subscribeToCurrencyUnits() = intent {
         repeatOnSubscription {
             searchQuery
-                .flatMapLatest { getCurrencyUnits(it) }
+                .flatMapLatest {
+                    if (includeOnlyAvailable) getAvailableCurrencyUnits(it) else getCurrencyUnits(it)
+                }
                 .distinctUntilChanged()
                 .collect {
                     reduce {
