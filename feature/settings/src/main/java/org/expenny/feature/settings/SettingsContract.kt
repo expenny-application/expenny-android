@@ -13,6 +13,7 @@ import java.time.format.DateTimeFormatter
 data class State(
     val currentProfile: ProfileUi? = null,
     val profiles: List<ProfileUi> = emptyList(),
+    val profileActions: List<ProfileActionType> = ProfileActionType.values().toList(),
     val languages: List<ApplicationLanguage> = ApplicationLanguage.values().toList(),
     val selectedLanguage: ApplicationLanguage = ApplicationLanguage.SystemDefault,
     val themes: List<ApplicationTheme> = ApplicationTheme.values().toList(),
@@ -35,7 +36,7 @@ data class State(
         data object DeleteApplicationDataDialog : Dialog
         data object DeleteProfileDataDialog : Dialog
         data object DeleteProfileDialog : Dialog
-        data object ProfileDialog : Dialog
+        data object ProfileSelectionDialog : Dialog
         data object ProfileActionsDialog : Dialog
         data object ReminderTimeDialog : Dialog
         data object ThemeDialog : Dialog
@@ -46,7 +47,7 @@ data class State(
 sealed interface Action {
     sealed interface Dialog : Action {
         class OnProfileActionTypeSelect(val type: ProfileActionType) : Dialog
-        class OnSelectProfileClick(val profileId: Long) : Dialog
+        class OnSwitchProfileClick(val profileId: Long) : Dialog
         class OnThemeSelect(val theme: ApplicationTheme) : Dialog
         class OnLanguageSelect(val language: ApplicationLanguage) : Dialog
         class OnReminderTimeChange(val time: LocalTime) : Dialog

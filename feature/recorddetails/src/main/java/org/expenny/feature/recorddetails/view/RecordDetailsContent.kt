@@ -18,8 +18,6 @@ import androidx.compose.ui.unit.dp
 import org.expenny.core.common.extensions.toLocalDate
 import org.expenny.core.common.extensions.toLocalTime
 import org.expenny.core.ui.extensions.asRawString
-import org.expenny.core.ui.components.ExpennyDatePicker
-import org.expenny.core.ui.components.ExpennyTimePicker
 import org.expenny.core.ui.extensions.clearFocusOnTapOutside
 import org.expenny.core.ui.extensions.floatingActionButtonPadding
 import org.expenny.feature.recorddetails.Action
@@ -37,55 +35,12 @@ internal fun RecordDetailsContent(
     val focusManager = LocalFocusManager.current
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
-    if (state.showDatePicker) {
-        ExpennyDatePicker(
-            currentDate = state.dateInput.value.toLocalDate(),
-            onSelect = { onAction(Action.OnDateChange(it)) },
-            onDismiss = { onAction(Action.OnDialogDismiss) }
-        )
-    }
-
-    if (state.showTimePicker) {
-        ExpennyTimePicker(
-            currentTime = state.timeInput.value.toLocalTime(),
-            onSelect = { onAction(Action.OnTimeChange(it)) },
-            onDismiss = { onAction(Action.OnDialogDismiss) }
-        )
-    }
-
-    if (state.showDeleteDialog) {
-        RecordDetailsDeleteDialog(
-            onConfirm = { onAction(Action.OnDeleteRecordDialogConfirm) },
-            onDismiss = { onAction(Action.OnDialogDismiss) }
-        )
-    }
-
-    if (state.showAmountConversionDialog) {
-        RecordDetailsAmountConversionDialog(
-            onDismiss = { onAction(Action.OnDialogDismiss) }
-        )
-    }
-
-    if (state.showTransferDisclaimerDialog) {
-        RecordDetailTransferDisclaimerDialog(
-            onDismiss = { onAction(Action.OnDialogDismiss) }
-        )
-    }
-
-    if (state.showResetTransferDialog) {
-        RecordDetailsChangeTypeDialog(
-            onConfirm = { onAction(Action.OnResetTransferDialogConfirm) },
-            onDismiss = { onAction(Action.OnDialogDismiss) }
-        )
-    }
-
-    if (state.showReceiptSourceDialog) {
-        RecordDetailsReceiptSourceDialog(
-            onGalleryClick = { onAction(Action.OnReceiptSourceDialogGallerySelect) },
-            onCameraClick = { onAction(Action.OnReceiptSourceDialogCameraSelect) },
-            onDismiss = { onAction(Action.OnDialogDismiss) }
-        )
-    }
+    RecordDetailsDialog(
+        dialog = state.dialog,
+        datePickerDate = state.dateInput.value.toLocalDate(),
+        timePickerDate = state.timeInput.value.toLocalTime(),
+        onAction = onAction
+    )
 
     Scaffold(
         modifier = Modifier

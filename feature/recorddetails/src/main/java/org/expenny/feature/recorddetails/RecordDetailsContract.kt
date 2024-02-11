@@ -22,14 +22,6 @@ data class State(
     val selectedType: RecordType = RecordType.Expense,
     val showDeleteButton: Boolean = false,
     val showAdditionsSection: Boolean = false,
-    val showDatePicker: Boolean = false,
-    val showTimePicker: Boolean = false,
-    val showDeleteDialog: Boolean = false,
-    val showAmountConversionDialog: Boolean = false,
-    val showDeleteReceiptDialog: Boolean = false,
-    val showReceiptSourceDialog: Boolean = false,
-    val showResetTransferDialog: Boolean = false,
-    val showTransferDisclaimerDialog: Boolean = false,
     val showTransferDisclaimerButton: Boolean = false,
     val showTransferAmountInput: Boolean = false,
     val showCategoryInput: Boolean = false,
@@ -46,7 +38,18 @@ data class State(
     val labelsInput: LabelsInputField = LabelsInputField(),
     val descriptionInput: InputField = InputField(isRequired = false),
     val receipts: List<Uri> = listOf(),
-)
+    val dialog: Dialog? = null
+) {
+    sealed interface Dialog {
+        data object DatePickerDialog : Dialog
+        data object TimePickerDialog : Dialog
+        data object DeleteRecordDialog : Dialog
+        data object ConversionDialog : Dialog
+        data object ReceiptSourceDialog : Dialog
+        data object ResetTransferDialog : Dialog
+        data object TransferDisclaimerDialog : Dialog
+    }
+}
 
 sealed interface Event {
     class ShowMessage(val message: StringResource) : Event
@@ -60,6 +63,15 @@ sealed interface Event {
 }
 
 sealed interface Action {
+    sealed interface Dialog : Action {
+        class OnDateChange(val date: LocalDate) : Dialog
+        class OnTimeChange(val time: LocalTime) : Dialog
+        data object OnResetTransferDialogConfirm : Dialog
+        data object OnDeleteRecordDialogConfirm : Dialog
+        data object OnReceiptSourceDialogCameraSelect : Dialog
+        data object OnReceiptSourceDialogGallerySelect : Dialog
+        data object OnDialogDismiss : Dialog
+    }
     class OnTypeChange(val type: RecordType) : Action
     class OnAmountChange(val amount: BigDecimal) : Action
     class OnTransferAmountChange(val amount: BigDecimal) : Action
@@ -67,8 +79,6 @@ sealed interface Action {
     class OnAccountSelect(val selection: LongNavArg) : Action
     class OnLabelAdd(val label: String) : Action
     class OnLabelRemove(val index: Int) : Action
-    class OnDateChange(val date: LocalDate) : Action
-    class OnTimeChange(val time: LocalTime) : Action
     class OnDescriptionChange(val description: String) : Action
     class OnLabelChange(val label: String) : Action
     class OnAdditionsSectionVisibilityChange(val isVisible: Boolean) : Action
@@ -83,11 +93,6 @@ sealed interface Action {
     data object OnSelectCategoryClick : Action
     data object OnSelectAccountClick : Action
     data object OnSelectTransferAccountClick : Action
-    data object OnResetTransferDialogConfirm : Action
-    data object OnDeleteRecordDialogConfirm : Action
-    data object OnReceiptSourceDialogCameraSelect : Action
-    data object OnReceiptSourceDialogGallerySelect : Action
-    data object OnDialogDismiss : Action
     data object OnSaveClick : Action
     data object OnDeleteClick : Action
     data object OnBackClick : Action

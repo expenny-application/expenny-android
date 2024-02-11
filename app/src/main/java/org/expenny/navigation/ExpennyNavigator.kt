@@ -1,13 +1,10 @@
 package org.expenny.navigation
 
-import android.content.Context
 import android.content.Intent
-import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import com.ramcosta.composedestinations.dynamic.within
 import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.spec.NavGraphSpec
-import dagger.hilt.android.qualifiers.ApplicationContext
 import org.expenny.core.common.types.RecordType
 import org.expenny.core.common.utils.Constants.NULL_ID
 import org.expenny.core.ui.data.navargs.LongNavArg
@@ -27,11 +24,11 @@ import org.expenny.feature.currencydetails.destinations.CurrencyDetailsScreenDes
 import org.expenny.feature.currencydetails.navigation.CurrencyDetailsNavigator
 import org.expenny.feature.currencyunits.destinations.CurrencyUnitsListScreenDestination
 import org.expenny.feature.dashboard.navigation.DashboardNavigator
-import org.expenny.feature.getstarted.destinations.GetStartedScreenDestination
-import org.expenny.feature.getstarted.navigation.GetStartedNavigator
 import org.expenny.feature.passcode.destinations.PasscodeScreenDestination
 import org.expenny.feature.passcode.model.PasscodeType
 import org.expenny.feature.passcode.navigation.PasscodeNavigator
+import org.expenny.feature.profilesetup.destinations.ProfileSetupScreenDestination
+import org.expenny.feature.profilesetup.navigation.ProfileSetupNavigator
 import org.expenny.feature.recorddetails.destinations.RecordDetailsScreenDestination
 import org.expenny.feature.recorddetails.navigation.RecordDetailsNavigator
 import org.expenny.feature.records.destinations.RecordsListScreenDestination
@@ -47,7 +44,7 @@ class ExpennyNavigator(
     private val navController: NavController,
 ) : SplashNavigator,
     WelcomeNavigator,
-    GetStartedNavigator,
+    ProfileSetupNavigator,
     AccountsListNavigator,
     DashboardNavigator,
     AccountDetailsNavigator,
@@ -77,11 +74,11 @@ class ExpennyNavigator(
     }
 
     override fun navigateToCreateProfileScreen() {
-        navController.navigate(GetStartedScreenDestination within navGraph)
+        navController.navigate(ProfileSetupScreenDestination within navGraph)
     }
 
-    override fun navigateToGetStartedScreen() {
-        navController.navigate(GetStartedScreenDestination within navGraph)
+    override fun navigateToProfileSetupScreen() {
+        navController.navigate(ProfileSetupScreenDestination within navGraph)
     }
 
     override fun navigateToCurrencyUnitSelectionListScreen(selectedId: Long?) {

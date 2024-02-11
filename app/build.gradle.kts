@@ -104,7 +104,7 @@ dependencies {
 
     implementation(project(":feature:splash"))
     implementation(project(":feature:welcome"))
-    implementation(project(":feature:getstarted"))
+    implementation(project(":feature:profilesetup"))
     implementation(project(":feature:currencyunits"))
     implementation(project(":feature:dashboard"))
     implementation(project(":feature:accounts"))

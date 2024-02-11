@@ -23,7 +23,7 @@ internal class WelcomeViewModel @Inject constructor() : ExpennyViewModel() {
 
     private fun handleOnCtaClick() {
         viewModelScope.launch {
-            _event.emit(Event.NavigateToGetStarted)
+            _event.emit(Event.NavigateToProfileSetup)
         }
     }
 }

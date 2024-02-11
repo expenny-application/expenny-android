@@ -24,8 +24,8 @@ import org.expenny.feature.currencydetails.destinations.CurrencyDetailsScreenDes
 import org.expenny.feature.currencyunits.destinations.CurrencyUnitsListScreenDestination
 import org.expenny.feature.dashboard.DashboardScreen
 import org.expenny.feature.dashboard.destinations.DashboardScreenDestination
-import org.expenny.feature.getstarted.GetStartedScreen
-import org.expenny.feature.getstarted.destinations.GetStartedScreenDestination
+import org.expenny.feature.profilesetup.ProfileSetupScreen
+import org.expenny.feature.profilesetup.destinations.ProfileSetupScreenDestination
 import org.expenny.feature.recorddetails.RecordDetailsScreen
 import org.expenny.feature.recorddetails.destinations.RecordDetailsScreenDestination
 import org.expenny.main.ExpennyState
@@ -62,8 +62,8 @@ internal fun ExpennyNavigation(
         }
     ) {
         // Explicit screen destinations to resolve resultRecipient
-        composable(GetStartedScreenDestination) {
-            GetStartedScreen(
+        composable(ProfileSetupScreenDestination) {
+            ProfileSetupScreen(
                 snackbarManager = expennyState.snackbarManager,
                 navigator = currentNavigator(),
                 currencyUnitResult = resultRecipient<CurrencyUnitsListScreenDestination, LongNavArg>(),
