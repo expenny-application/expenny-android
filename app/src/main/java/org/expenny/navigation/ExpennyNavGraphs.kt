@@ -1,7 +1,5 @@
 package org.expenny.navigation
 
-import org.expenny.feature.welcome.destinations.WelcomeScreenDestination
-import org.expenny.feature.getstarted.destinations.GetStartedScreenDestination
 import com.ramcosta.composedestinations.dynamic.routedIn
 import com.ramcosta.composedestinations.spec.DestinationSpec
 import com.ramcosta.composedestinations.spec.NavGraphSpec
@@ -16,9 +14,11 @@ import org.expenny.feature.currencydetails.destinations.CurrencyDetailsScreenDes
 import org.expenny.feature.currencyunits.destinations.CurrencyUnitsListScreenDestination
 import org.expenny.feature.dashboard.destinations.DashboardScreenDestination
 import org.expenny.feature.passcode.destinations.PasscodeScreenDestination
+import org.expenny.feature.profilesetup.destinations.ProfileSetupScreenDestination
 import org.expenny.feature.recorddetails.destinations.RecordDetailsScreenDestination
 import org.expenny.feature.records.destinations.RecordsListScreenDestination
 import org.expenny.feature.settings.destinations.SettingsScreenDestination
+import org.expenny.feature.welcome.destinations.WelcomeScreenDestination
 
 object ExpennyNavGraphs {
 
@@ -99,7 +99,7 @@ object ExpennyNavGraphs {
             CurrencyDetailsScreenDestination,
             CurrencyUnitsListScreenDestination,
             PasscodeScreenDestination,
-            GetStartedScreenDestination
+            ProfileSetupScreenDestination
         ).routedIn(this).associateBy { it.route }
     }
 
@@ -163,7 +163,7 @@ object ExpennyNavGraphs {
 
         override val destinationsByRoute = listOf<DestinationSpec<*>>(
             WelcomeScreenDestination,
-            GetStartedScreenDestination,
+            ProfileSetupScreenDestination,
             CurrencyUnitsListScreenDestination,
         ).routedIn(this).associateBy { it.route }
     }

@@ -43,7 +43,7 @@ internal fun SettingsContent(
         state = state,
         scope = scope,
         profileActionsSheetState = profileActionsSheetState,
-        onDialogAction = { onAction(it) }
+        onDialogAction = onAction
     )
 
     Scaffold(

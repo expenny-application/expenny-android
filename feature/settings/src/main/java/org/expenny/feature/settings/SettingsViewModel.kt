@@ -87,7 +87,7 @@ class SettingsViewModel @Inject constructor(
             is Action.Dialog.OnReminderTimeChange -> handleOnReminderTimeChange(action)
             is Action.Dialog.OnProfileActionTypeSelect -> handleOnProfileActionTypeSelect(action)
             is Action.Dialog.OnCreateProfileClick -> handleOnCreateProfileClick()
-            is Action.Dialog.OnSelectProfileClick -> handleOnSelectProfileClick(action)
+            is Action.Dialog.OnSwitchProfileClick -> handleOnSwitchProfileClick(action)
             is Action.Dialog.OnDeleteApplicationDataDialogConfirm -> handleOnDeleteApplicationDataDialogConfirm()
             is Action.Dialog.OnDeleteProfileDataDialogConfirm -> handleOnDeleteProfileDataDialogConfirm()
             is Action.Dialog.OnDeleteProfileDialogConfirm -> handleOnDeleteProfileDialogConfirm()
@@ -96,8 +96,11 @@ class SettingsViewModel @Inject constructor(
 
     private fun handleOnProfileActionTypeSelect(action: Action.Dialog.OnProfileActionTypeSelect) = intent {
         when (action.type) {
-            ProfileActionType.ChangeProfile -> {
-                reduce { state.copy(dialog = State.Dialog.ProfileDialog) }
+            ProfileActionType.CreateProfile -> {
+                handleOnCreateProfileClick()
+            }
+            ProfileActionType.SwitchProfile -> {
+                reduce { state.copy(dialog = State.Dialog.ProfileSelectionDialog) }
             }
             ProfileActionType.DeleteProfile -> {
                 reduce { state.copy(dialog = State.Dialog.DeleteProfileDialog) }
@@ -136,7 +139,7 @@ class SettingsViewModel @Inject constructor(
         postSideEffect(Event.NavigateToCreateProfile)
     }
 
-    private fun handleOnSelectProfileClick(action: Action.Dialog.OnSelectProfileClick) = intent {
+    private fun handleOnSwitchProfileClick(action: Action.Dialog.OnSwitchProfileClick) = intent {
         dismissDialog()
         setCurrentProfile(SetCurrentProfileUseCase.Params(action.profileId))
         postSideEffect(Event.RestartApplication())
@@ -240,8 +243,17 @@ class SettingsViewModel @Inject constructor(
 
     private fun subscribeToProfiles() = intent {
         getProfiles().collect {
+            val profileActions = buildList {
+                if (it.size > 1) add(ProfileActionType.SwitchProfile)
+                add(ProfileActionType.CreateProfile)
+                add(ProfileActionType.DeleteProfileData)
+                add(ProfileActionType.DeleteProfile)
+            }
             reduce {
-                state.copy(profiles = profileMapper(it))
+                state.copy(
+                    profiles = profileMapper(it),
+                    profileActions = profileActions
+                )
             }
         }
     }

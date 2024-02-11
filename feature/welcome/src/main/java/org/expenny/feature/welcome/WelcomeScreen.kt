@@ -17,8 +17,8 @@ fun WelcomeScreen(
 
     vm.event.observeWithLifecycle {
         when(it) {
-            is Event.NavigateToGetStarted -> {
-                navigator.navigateToGetStartedScreen()
+            is Event.NavigateToProfileSetup -> {
+                navigator.navigateToProfileSetupScreen()
             }
         }
     }

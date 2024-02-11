@@ -1,7 +1,7 @@
 package org.expenny.feature.welcome
 
 sealed interface Event {
-    data object NavigateToGetStarted : Event
+    data object NavigateToProfileSetup : Event
 }
 
 sealed interface Action {

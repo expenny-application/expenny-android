@@ -34,6 +34,7 @@ import org.expenny.core.ui.data.navargs.LongNavArg
 import org.expenny.core.ui.mapper.AccountNameMapper
 import org.expenny.feature.recorddetails.navigation.RecordDetailsNavArgs
 import org.orbitmvi.orbit.ContainerHost
+import org.orbitmvi.orbit.syntax.simple.SimpleSyntax
 import org.orbitmvi.orbit.syntax.simple.blockingIntent
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
@@ -93,8 +94,6 @@ class RecordDetailsViewModel @Inject constructor(
             is Action.OnTypeChange -> handleOnTypeChange(action)
             is Action.OnAmountChange -> handleOnAmountChange(action)
             is Action.OnTransferAmountChange -> handleOnTransferAmountChange(action)
-            is Action.OnDateChange -> handleOnDateChange(action)
-            is Action.OnTimeChange -> handleOnTimeChange(action)
             is Action.OnDescriptionChange -> handleOnDescriptionChange(action)
             is Action.OnLabelChange -> handleOnLabelChange(action)
             is Action.OnAdditionsSectionVisibilityChange -> handleOnAdditionsSectionVisibilityChange(action)
@@ -116,11 +115,13 @@ class RecordDetailsViewModel @Inject constructor(
             is Action.OnBackClick -> handleOnBackClick()
             is Action.OnSaveClick -> handleOnSaveClick()
             is Action.OnDeleteClick -> handleOnDeleteClick()
-            is Action.OnReceiptSourceDialogCameraSelect -> handleOnReceiptSourceDialogCameraSelect()
-            is Action.OnReceiptSourceDialogGallerySelect -> handleOnReceiptSourceDialogGallerySelect()
-            is Action.OnDeleteRecordDialogConfirm -> handleOnDeleteRecordDialogConfirm()
-            is Action.OnResetTransferDialogConfirm -> handleOnResetTransferDialogConfirm()
-            is Action.OnDialogDismiss -> handleOnDialogDismiss()
+            is Action.Dialog.OnDateChange -> handleOnDateChange(action)
+            is Action.Dialog.OnTimeChange -> handleOnTimeChange(action)
+            is Action.Dialog.OnReceiptSourceDialogCameraSelect -> handleOnReceiptSourceDialogCameraSelect()
+            is Action.Dialog.OnReceiptSourceDialogGallerySelect -> handleOnReceiptSourceDialogGallerySelect()
+            is Action.Dialog.OnDeleteRecordDialogConfirm -> handleOnDeleteRecordDialogConfirm()
+            is Action.Dialog.OnResetTransferDialogConfirm -> handleOnResetTransferDialogConfirm()
+            is Action.Dialog.OnDialogDismiss -> handleOnDialogDismiss()
         }
     }
 
@@ -186,13 +187,13 @@ class RecordDetailsViewModel @Inject constructor(
     }
 
     private fun handleOnReceiptSourceDialogCameraSelect() = intent {
-        reduce { state.copy(showReceiptSourceDialog = false) }
+        dismissDialog()
         val uri = filesDirectoryHandler.getPersistentImageUri()
         postSideEffect(Event.OpenCamera(uri))
     }
 
     private fun handleOnReceiptSourceDialogGallerySelect() = intent {
-        reduce { state.copy(showReceiptSourceDialog = false) }
+        dismissDialog()
         postSideEffect(Event.OpenImagePicker)
     }
 
@@ -219,7 +220,7 @@ class RecordDetailsViewModel @Inject constructor(
             if (currency?.id != null && transferCurrency?.id != null && currency.id != transferCurrency.id) {
                 reduce {
                     state.copy(
-                        showAmountConversionDialog = true,
+                        dialog = State.Dialog.ConversionDialog,
                         showTransferAmountInput = true,
                         transferAmountCurrency = transferCurrency.unit.code,
                         transferAmountInput = state.transferAmountInput.copy(
@@ -281,13 +282,13 @@ class RecordDetailsViewModel @Inject constructor(
         postSideEffect(Event.NavigateToAccountSelectionList(selection, excludeIds))
     }
 
-    private fun handleOnDateChange(action: Action.OnDateChange) = intent {
+    private fun handleOnDateChange(action: Action.Dialog.OnDateChange) = intent {
         reduce {
             state.copy(dateInput = state.dateInput.copy(value = action.date.toDateString()))
         }
     }
 
-    private fun handleOnTimeChange(action: Action.OnTimeChange) = intent {
+    private fun handleOnTimeChange(action: Action.Dialog.OnTimeChange) = intent {
         reduce {
             state.copy(timeInput = state.timeInput.copy(value = action.time.toTimeString()))
         }
@@ -308,7 +309,7 @@ class RecordDetailsViewModel @Inject constructor(
     private fun handleOnAddReceiptClick() = intent {
         if (state.receipts.size < maxReceipts) {
             reduce {
-                state.copy(showReceiptSourceDialog = true)
+                state.copy(dialog = State.Dialog.ReceiptSourceDialog)
             }
         } else {
             postSideEffect(Event.ShowMessage(fromRes(R.string.max_photos_amount_error, maxReceipts)))
@@ -339,7 +340,7 @@ class RecordDetailsViewModel @Inject constructor(
     }
 
     private fun handleOnTransferDisclaimerClick() = intent {
-        reduce { state.copy(showTransferDisclaimerDialog = true) }
+        reduce { state.copy(dialog = State.Dialog.TransferDisclaimerDialog) }
     }
 
     private fun handleOnViewReceiptClick(action: Action.OnViewReceiptClick) = intent {
@@ -351,7 +352,7 @@ class RecordDetailsViewModel @Inject constructor(
             if (state.selectedType == RecordType.Transfer && !isTransferResetConfirmed && selectedTransferAccount.value != null) {
                 transferResetTargetType = action.type
                 reduce {
-                    state.copy(showResetTransferDialog = true)
+                    state.copy(dialog = State.Dialog.ResetTransferDialog)
                 }
             } else {
                 val isNewTypeTransfer = action.type == RecordType.Transfer
@@ -434,47 +435,32 @@ class RecordDetailsViewModel @Inject constructor(
     }
 
     private fun handleOnSelectDateClick() = intent {
-        reduce { state.copy(showDatePicker = true) }
+        reduce { state.copy(dialog = State.Dialog.DatePickerDialog) }
     }
 
     private fun handleOnSelectTimeClick() = intent {
-        reduce { state.copy(showTimePicker = true) }
+        reduce { state.copy(dialog = State.Dialog.TimePickerDialog) }
     }
 
     private fun handleOnDeleteClick() = intent {
-        reduce { state.copy(showDeleteDialog = true) }
+        reduce { state.copy(dialog = State.Dialog.DeleteRecordDialog) }
     }
 
     private fun handleOnDeleteRecordDialogConfirm() = intent {
-        reduce { state.copy(showDeleteDialog = false) }
-
+        dismissDialog()
         deleteRecord(currentRecord.value!!.id)
-
         postSideEffect(Event.ShowMessage(fromRes(R.string.deleted_message)))
         postSideEffect(Event.NavigateBack)
     }
 
     private fun handleOnResetTransferDialogConfirm() = intent {
-        reduce {
-            state.copy(showResetTransferDialog = false)
-        }
+        dismissDialog()
         isTransferResetConfirmed = true
         handleOnTypeChange(Action.OnTypeChange(transferResetTargetType!!))
     }
 
     private fun handleOnDialogDismiss() = intent {
-        reduce {
-            state.copy(
-                showAmountConversionDialog = false,
-                showResetTransferDialog = false,
-                showDeleteReceiptDialog = false,
-                showReceiptSourceDialog = false,
-                showDeleteDialog = false,
-                showTimePicker = false,
-                showDatePicker = false,
-                showTransferDisclaimerDialog = false
-            )
-        }
+        dismissDialog()
     }
 
     private fun Record.Transfer.showTransferAmountInput(): Boolean {
@@ -694,5 +680,9 @@ class RecordDetailsViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    private suspend fun SimpleSyntax<State, Event>.dismissDialog() {
+        reduce { state.copy(dialog = null) }
     }
 }

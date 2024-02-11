@@ -22,7 +22,8 @@
     <string name="use_bioemtric_label">Use biometric</string>
     <string name="about_label">About app</string>
     <string name="rate_application_label">Rate application</string>
-    <string name="change_profile_label">Change profile</string>
+    <string name="create_new_profile_label">Create new profile</string>
+    <string name="switch_profile_label">Switch profile</string>
     <string name="delete_profile_label">Delete profile</string>
     <string name="clear_profile_data_label">Clear profile data</string>
     <string name="delete_application_data_label">Delete application data</string>
@@ -62,7 +63,7 @@
     <string name="sort_by_highest_amount_label">Highest amount</string>
     <string name="sort_by_lowest_amount_label">Lowest amount</string>
     <string name="new_record_label">New record</string>
-    <string name="getting_started_label">Getting started</string>
+    <string name="setup_profile_label">Setup profile</string>
     <string name="select_currency_label">Select currency</string>
     <string name="select_currency_code_label">Select currency code</string>
     <string name="currency_label">Currency</string>
@@ -161,7 +162,6 @@
     <string name="select_time_label">Select time</string>
     <string name="select_category_label">Select category</string>
     <string name="select_account_label">Select account</string>
-    <string name="select_profile_label">Select profile</string>
     <string name="select_transfer_account_label">Select transfer account</string>
     <string name="show_cleared_label">Show cleared</string>
     <string name="show_posted_label">Show posted</string>
@@ -208,7 +208,6 @@
     <string name="reset_all_button">Reset all</string>
     <string name="back_button">Back</string>
     <string name="create_button">Create</string>
-    <string name="create_profile_button">Create profile</string>
     <string name="confirm_button">Confirm</string>
     <string name="select_button">Select</string>
     <string name="get_started_button">Get started</string>
