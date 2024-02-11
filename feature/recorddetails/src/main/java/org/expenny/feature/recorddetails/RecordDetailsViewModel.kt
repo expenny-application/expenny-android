@@ -3,23 +3,29 @@ package org.expenny.feature.recorddetails
 import androidx.lifecycle.SavedStateHandle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import org.expenny.core.common.extensions.*
-import org.expenny.core.common.utils.ExternalFilesDirectoryHandler
-import org.expenny.core.common.utils.StringResource.Companion.fromRes
+import org.expenny.core.common.extensions.setScaleNoRounding
+import org.expenny.core.common.extensions.toDateString
+import org.expenny.core.common.extensions.toLocalDate
+import org.expenny.core.common.extensions.toLocalTime
+import org.expenny.core.common.extensions.toTimeString
 import org.expenny.core.common.types.RecordType
 import org.expenny.core.common.utils.Constants.NULL_ID
 import org.expenny.core.common.utils.ErrorMessage
-import org.expenny.core.common.viewmodel.*
+import org.expenny.core.common.utils.ExternalFilesDirectoryHandler
+import org.expenny.core.common.utils.StringResource.Companion.fromRes
+import org.expenny.core.common.viewmodel.ExpennyActionViewModel
 import org.expenny.core.domain.usecase.ValidateInputUseCase
 import org.expenny.core.domain.usecase.account.GetAccountUseCase
 import org.expenny.core.domain.usecase.account.GetLastUsedAccountUseCase
 import org.expenny.core.domain.usecase.category.GetCategoryUseCase
 import org.expenny.core.domain.usecase.category.GetMostUsedCategoryUseCase
-import org.expenny.core.domain.usecase.record.GetRecordLabelsUseCase
 import org.expenny.core.domain.usecase.record.CreateRecordUseCase
 import org.expenny.core.domain.usecase.record.DeleteRecordUseCase
+import org.expenny.core.domain.usecase.record.GetRecordLabelsUseCase
 import org.expenny.core.domain.usecase.record.GetRecordUseCase
 import org.expenny.core.domain.usecase.record.UpdateRecordUseCase
 import org.expenny.core.domain.validators.AlphanumericValidator
@@ -504,23 +510,28 @@ class RecordDetailsViewModel @Inject constructor(
             }
         }
 
-        val fieldsValidationResults = mutableListOf(
-            amountValidationResult,
-            accountValidationResult,
-        )
+        val fieldsValidationResults = mutableListOf(amountValidationResult, accountValidationResult)
 
         if (state.selectedType == RecordType.Transfer) {
-            val transferAccountValidationResult = validateRequiredInput(state.transferAccountInput.value)
-            val transferAmountValidationResult = validateRequiredInput(state.transferAmountInput.value)
-            fieldsValidationResults.add(transferAccountValidationResult)
-            fieldsValidationResults.add(transferAmountValidationResult)
-
             intent {
+                val transferAccountValidationResult = validateRequiredInput(state.transferAccountInput.value)
+                fieldsValidationResults.add(transferAccountValidationResult)
+
                 reduce {
                     state.copy(
-                        transferAccountInput = state.transferAccountInput.copy(error = transferAccountValidationResult.errorRes),
-                        transferAmountInput = state.transferAmountInput.copy(error = transferAmountValidationResult.errorRes),
+                        transferAccountInput = state.transferAccountInput.copy(error = transferAccountValidationResult.errorRes)
                     )
+                }
+
+                if (state.showTransferAmountInput) {
+                    val transferAmountValidationResult = validateRequiredInput(state.transferAmountInput.value)
+                    fieldsValidationResults.add(transferAmountValidationResult)
+
+                    reduce {
+                        state.copy(
+                            transferAmountInput = state.transferAmountInput.copy(error = transferAmountValidationResult.errorRes)
+                        )
+                    }
                 }
             }
         } else {
@@ -665,14 +676,16 @@ class RecordDetailsViewModel @Inject constructor(
         val showTransferAmountInput = record.showTransferAmountInput()
 
         reduce {
-            state.copy(showTransferDisclaimerButton = true)
+            state.copy(
+                showTransferDisclaimerButton = true,
+                showTransferAccountInput = true
+            )
         }
 
         if (showTransferAmountInput) {
             reduce {
                 state.copy(
                     showTransferAmountInput = true,
-                    showTransferAccountInput = true,
                     transferAmountCurrency = record.transferAccount.currency.unit.code,
                     transferAmountInput = state.transferAmountInput.copy(
                         value = record.transferAmount.value
