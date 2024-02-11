@@ -98,9 +98,7 @@ private fun DashboardBalanceLastRecord(
                 )
             }
             LastRecordItem(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
+                modifier = Modifier.fillMaxWidth(),
                 lastRecord = lastRecord
             )
         }
@@ -119,7 +117,8 @@ private fun LastRecordItem(
         if (lastRecord == null) {
             Box(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .height(56.dp)
+                    .fillMaxWidth()
                     .clip(MaterialTheme.shapes.small)
                     .background(MaterialTheme.colorScheme.surface),
                 contentAlignment = Alignment.Center
@@ -133,7 +132,9 @@ private fun LastRecordItem(
             }
         } else {
             ExpennyRecord(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .heightIn(min = 56.dp)
+                    .fillMaxWidth(),
                 record = lastRecord,
             )
         }
