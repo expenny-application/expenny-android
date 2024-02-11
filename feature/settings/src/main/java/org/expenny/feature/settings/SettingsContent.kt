@@ -10,62 +10,41 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
-import org.expenny.core.common.extensions.toLocalTime
-import org.expenny.core.common.extensions.toTimeString
-import org.expenny.core.ui.components.ExpennyTimePicker
+import kotlinx.coroutines.CoroutineScope
 import org.expenny.feature.settings.model.SettingsItemType
 import org.expenny.feature.settings.view.SettingsDataSection
+import org.expenny.feature.settings.view.SettingsDialog
 import org.expenny.feature.settings.view.SettingsGeneralSection
-import org.expenny.feature.settings.view.SettingsLanguageDialog
 import org.expenny.feature.settings.view.SettingsMoreSection
 import org.expenny.feature.settings.view.SettingsNotificationsSection
 import org.expenny.feature.settings.view.SettingsProfileSection
 import org.expenny.feature.settings.view.SettingsSecuritySection
 import org.expenny.feature.settings.view.SettingsSensitiveSection
-import org.expenny.feature.settings.view.SettingsThemeDialog
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun SettingsContent(
     state: State,
+    scope: CoroutineScope,
+    profileActionsSheetState: SheetState,
     onAction: (Action) -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val scrollState = rememberScrollState()
 
-    when (state.dialog) {
-        is State.Dialog.ThemeDialog -> {
-            if (state.selectedTheme != null) {
-                SettingsThemeDialog(
-                    selectedTheme = state.selectedTheme,
-                    onThemeSelect = { onAction(Action.OnThemeSelect(it)) },
-                    onDismiss = { onAction(Action.OnDialogDismiss) }
-                )
-            }
-        }
-        is State.Dialog.LanguageDialog -> {
-            SettingsLanguageDialog(
-                locales = state.languages,
-                selectedLanguage = state.selectedLanguage,
-                onLanguageSelect = { onAction(Action.OnLanguageSelect(it)) },
-                onDismiss = { onAction(Action.OnDialogDismiss) }
-            )
-        }
-        is State.Dialog.ReminderTimeDialog -> {
-            ExpennyTimePicker(
-                currentTime = state.reminderTime,
-                onSelect = { onAction(Action.OnReminderTimeChange(it)) },
-                onDismiss = { onAction(Action.OnDialogDismiss) }
-            )
-        }
-        else -> {}
-    }
+    SettingsDialog(
+        state = state,
+        scope = scope,
+        profileActionsSheetState = profileActionsSheetState,
+        onDialogAction = { onAction(it) }
+    )
 
     Scaffold(
         modifier = Modifier
@@ -103,8 +82,7 @@ internal fun SettingsList(
     ) {
         state.currentProfile?.let {
             SettingsProfileSection(
-                profileName = it.name,
-                profileCurrency = it.currency,
+                profileName = it.displayName,
                 onProfileClick = { onSettingsItemTypeClick(SettingsItemType.Profile) }
             )
         }
@@ -139,7 +117,7 @@ internal fun SettingsList(
             onRateApplicationClick = { onSettingsItemTypeClick(SettingsItemType.RateApplication) }
         )
         SettingsSensitiveSection(
-            onDeleteAllDataClick = { onSettingsItemTypeClick(SettingsItemType.DeleteAllData) }
+            onClearAllDataClick = { onSettingsItemTypeClick(SettingsItemType.DeleteApplicationData) },
         )
     }
 }

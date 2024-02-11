@@ -26,6 +26,12 @@ interface RecordDao {
     @Query("DELETE FROM record WHERE record.accountId == :id OR record.transferAccountId == :id")
     suspend fun deleteByAccountId(id: Long)
 
+    @Query("DELETE FROM record WHERE record.profileId == :id")
+    suspend fun deleteByProfileId(id: Long)
+
+    @Query("DELETE FROM record")
+    suspend fun deleteAll()
+
     @Query("UPDATE record SET categoryId = :newCategoryId WHERE categoryId == :oldCategoryId")
     suspend fun updateCategoryId(oldCategoryId: Long?, newCategoryId: Long?)
 

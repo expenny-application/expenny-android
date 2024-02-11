@@ -34,6 +34,7 @@ import org.expenny.core.common.types.ApplicationTheme
 import org.expenny.core.common.utils.Constants
 import org.expenny.core.ui.theme.ExpennyTheme
 import org.expenny.navigation.ExpennyNavGraphs
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -43,7 +44,11 @@ class MainActivity : AppCompatActivity() {
     private var isContentReadyToBeDrawn: Boolean = false
     private var startRoute: Route = ExpennyNavGraphs.setup
     private val isConfigurationChangedKey = "isConfigurationChangedKey"
-    private val isPassedInitKey = "isPassedInitKey"
+    private val isInitPassedKey = "isInitPassedKey"
+
+    companion object {
+        const val isDataCleanupRequestedKey = "isDataCleanupRequestedKey"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -52,24 +57,32 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_root)
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
+        val isDataCleanupRequested = intent.extras?.getBoolean(isDataCleanupRequestedKey) ?: false
         val isConfigurationChanged = savedInstanceState?.getBoolean(isConfigurationChangedKey, false) ?: false
-        val isPassedInit = savedInstanceState?.getBoolean(isPassedInitKey, false) ?: false
-        val shouldSkipInit = isConfigurationChanged && isPassedInit
+        val isInitPassed = savedInstanceState?.getBoolean(isInitPassedKey, false) ?: false
+        val shouldSkipInit = isConfigurationChanged && isInitPassed
 
         if (shouldSkipInit) {
             isContentReadyToBeDrawn = true
         } else {
-            init { isContentReadyToBeDrawn = true }
+            init(
+                isDataCleanupRequested = isDataCleanupRequested,
+                onComplete = { isContentReadyToBeDrawn = true }
+            )
         }
-
         addOnPreDrawListener()
         setRootContent()
     }
 
-    private fun init(onComplete: () -> Unit) {
+    private fun init(isDataCleanupRequested: Boolean, onComplete: () -> Unit) {
         lifecycleScope.launch(Dispatchers.Main) {
-            delay(200) // delay splash screen appearance
+            if (isDataCleanupRequested) {
+                Timber.i("MainActivity data cleanup requested")
+                viewModel.onDataCleanupRequest()
+            }
             viewModel.isProfileSetUp.filterNotNull().first().also { isProfileSetUp ->
+                Timber.i("MainActivity data init")
+
                 val isPasscodeSetUp = viewModel.isPasscodeSetUp.filterNotNull().first()
                 // This is needed for redirecting user either to dashboard, passcode or welcome screen
                 startRoute = when {
@@ -96,7 +109,7 @@ class MainActivity : AppCompatActivity() {
         outState.putBoolean(isConfigurationChangedKey, isChangingConfigurations)
         // required for edge case when configuration change is happening
         // while isContentReadyToBeDrawn is still false
-        outState.putBoolean(isPassedInitKey, isContentReadyToBeDrawn)
+        outState.putBoolean(isInitPassedKey, isContentReadyToBeDrawn)
 
         super.onSaveInstanceState(outState)
     }

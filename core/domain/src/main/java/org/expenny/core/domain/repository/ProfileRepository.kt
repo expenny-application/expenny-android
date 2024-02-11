@@ -13,7 +13,9 @@ interface ProfileRepository {
 
     suspend fun createProfile(profile: ProfileCreate): Long
 
-    suspend fun updateProfile(profile: ProfileUpdate)
-
     suspend fun deleteProfile(id: Long)
+
+    suspend fun deleteProfileData(id: Long)
+
+    suspend fun deleteAllProfiles()
 }

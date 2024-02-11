@@ -11,7 +11,8 @@ class ProfileMapper @Inject constructor() {
             ProfileUi(
                 id = id,
                 name = name,
-                currency = currencyUnit.code
+                currency = currencyUnit.code,
+                displayName = "${model.name} • ${currencyUnit.code}"
             )
         }
     }

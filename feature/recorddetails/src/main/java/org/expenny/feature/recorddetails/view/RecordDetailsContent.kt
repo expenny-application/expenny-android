@@ -9,7 +9,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -67,6 +66,12 @@ internal fun RecordDetailsContent(
         )
     }
 
+    if (state.showTransferDisclaimerDialog) {
+        RecordDetailTransferDisclaimerDialog(
+            onDismiss = { onAction(Action.OnDialogDismiss) }
+        )
+    }
+
     if (state.showResetTransferDialog) {
         RecordDetailsChangeTypeDialog(
             onConfirm = { onAction(Action.OnResetTransferDialogConfirm) },
@@ -93,8 +98,10 @@ internal fun RecordDetailsContent(
                 title = state.toolbarTitle.asRawString(),
                 scrollBehavior = scrollBehavior,
                 showDeleteButton = state.showDeleteButton,
+                showInfoButton = state.showTransferDisclaimerButton,
                 onBackClick = { onAction(Action.OnBackClick) },
-                onDeleteClick = { onAction(Action.OnDeleteClick) }
+                onDeleteClick = { onAction(Action.OnDeleteClick) },
+                onInfoClick = { onAction(Action.OnTransferDisclaimerClick) }
             )
         },
         floatingActionButton = {

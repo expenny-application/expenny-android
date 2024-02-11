@@ -1,6 +1,7 @@
 package org.expenny.feature.records.view
 
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -117,10 +118,7 @@ internal fun DeleteRecordDialog(
         },
         confirmButton = {
             ExpennyTextButton(
-                onClick = {
-                    onConfirm()
-                    onDismiss()
-                },
+                onClick = onConfirm,
                 content = {
                     Text(text = stringResource(R.string.delete_button))
                 }
@@ -153,14 +151,15 @@ private fun RecordActionsSheet(
     ) {
         RecordActionType.values().forEach { action ->
             ExpennyActionsBottomSheetItem(
-                label = action.label,
-                icon = action.icon,
                 onClick = {
                     scope.launch { actionsSheetState.hide() }.invokeOnCompletion {
                         if (!actionsSheetState.isVisible) onActionSelect(action)
                     }
                 }
-            )
+            ) {
+                Icon(painter = action.icon, contentDescription = null)
+                Text(text = action.label)
+            }
         }
     }
 }

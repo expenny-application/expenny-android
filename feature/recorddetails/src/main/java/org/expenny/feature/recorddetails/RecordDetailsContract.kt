@@ -29,7 +29,8 @@ data class State(
     val showDeleteReceiptDialog: Boolean = false,
     val showReceiptSourceDialog: Boolean = false,
     val showResetTransferDialog: Boolean = false,
-    val showTransferDisclaimer: Boolean = false,
+    val showTransferDisclaimerDialog: Boolean = false,
+    val showTransferDisclaimerButton: Boolean = false,
     val showTransferAmountInput: Boolean = false,
     val showCategoryInput: Boolean = false,
     val showTransferAccountInput: Boolean = false,
@@ -75,6 +76,7 @@ sealed interface Action {
     class OnReceiptCapture(val uri: Uri?) : Action
     class OnDeleteReceiptClick(val uri: Uri) : Action
     class OnViewReceiptClick(val uri: Uri) : Action
+    data object OnTransferDisclaimerClick : Action
     data object OnAddReceiptClick : Action
     data object OnSelectDateClick : Action
     data object OnSelectTimeClick : Action

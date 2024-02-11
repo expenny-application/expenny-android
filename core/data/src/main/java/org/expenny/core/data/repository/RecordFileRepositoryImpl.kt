@@ -9,8 +9,8 @@ import javax.inject.Inject
 class RecordFileRepositoryImpl @Inject constructor(
     private val database: ExpennyDatabase,
 ) : RecordFileRepository {
-    val recordFileDao = database.recordFileDao()
-    val fileDao = database.fileDao()
+    private val recordFileDao = database.recordFileDao()
+    private val fileDao = database.fileDao()
 
     override suspend fun createRecordFiles(recordId: Long, ids: List<Long>) {
         ids.forEach { fileId ->
@@ -27,7 +27,7 @@ class RecordFileRepositoryImpl @Inject constructor(
         database.withTransaction {
             val filesIds = recordFileDao.selectAllByRecordId(recordId).map { it.fileId }
 
-            recordFileDao.deleteAllByRecordId(recordId)
+            recordFileDao.deleteByRecordId(recordId)
             fileDao.deleteAll(filesIds)
         }
     }

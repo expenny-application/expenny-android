@@ -19,12 +19,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import org.expenny.core.common.extensions.capitalCase
 import org.expenny.core.common.types.ApplicationLanguage
 import org.expenny.core.common.types.ApplicationTheme
 import org.expenny.core.resources.R
@@ -35,14 +34,14 @@ import org.expenny.core.ui.foundation.ExpennyCard
 @Composable
 internal fun SettingsSensitiveSection(
     modifier: Modifier = Modifier,
-    onDeleteAllDataClick: () -> Unit
+    onClearAllDataClick: () -> Unit,
 ) {
-    Box(modifier = modifier) {
+    Box(modifier = modifier.fillMaxWidth()) {
         SectionActionItem(
-            title = stringResource(R.string.delete_all_data_label),
+            title = stringResource(R.string.delete_application_data_label),
             icon = painterResource(R.drawable.ic_delete),
             isSensitive = true,
-            onClick = onDeleteAllDataClick
+            onClick = onClearAllDataClick
         )
     }
 }
@@ -195,48 +194,16 @@ internal fun SettingsGeneralSection(
 internal fun SettingsProfileSection(
     modifier: Modifier = Modifier,
     profileName: String,
-    profileCurrency: String,
     onProfileClick: () -> Unit,
 ) {
-    val circleColor = MaterialTheme.colorScheme.primaryContainer
-
     SettingsSection(
         modifier = modifier.fillMaxWidth(),
         title = stringResource(R.string.profile_label)
     ) {
-        SectionItem(
-            modifier = modifier,
-            onClick = onProfileClick,
-            leadingContent = {
-                Text(
-                    modifier = Modifier
-                        .padding(horizontal = 12.dp)
-                        .drawBehind {
-                            drawCircle(
-                                color = circleColor,
-                                radius = size.maxDimension
-                            )
-                        },
-                    text = profileName.first().toString().capitalCase(),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            },
-            title = {
-                Text(text = profileName)
-            },
-            trailingContent = {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Text(text = profileCurrency)
-                    Icon(
-                        painter = painterResource(R.drawable.ic_chevron_right),
-                        contentDescription = null,
-                    )
-                }
-            }
+        SectionSelectionItem(
+            title = profileName,
+            icon = painterResource(R.drawable.ic_profile),
+            onClick = onProfileClick
         )
     }
 }
@@ -246,6 +213,7 @@ private fun SectionActionItem(
     modifier: Modifier = Modifier,
     title: String,
     icon: Painter,
+    isEnabled: Boolean = true,
     isSensitive: Boolean = false,
     onClick: () -> Unit
 ) {
@@ -259,6 +227,7 @@ private fun SectionActionItem(
 
     SectionItem(
         modifier = modifier,
+        isEnabled = isEnabled,
         onClick = onClick,
         leadingContent = {
             Icon(
@@ -371,7 +340,11 @@ private fun SectionItem(
             )
         },
         title = {
-            Text(text = title)
+            Text(
+                text = title,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1
+            )
         }
     )
 }
@@ -413,14 +386,14 @@ private fun SectionItem(
             ) {
                 CompositionLocalProvider(
                     LocalContentColor provides primaryContentColor,
-                    LocalTextStyle provides MaterialTheme.typography.titleMedium
+                    LocalTextStyle provides MaterialTheme.typography.bodyLarge
                 ) {
                     title()
                 }
                 description?.let {
                     CompositionLocalProvider(
                         LocalContentColor provides secondaryContentColor,
-                        LocalTextStyle provides MaterialTheme.typography.bodyMedium
+                        LocalTextStyle provides MaterialTheme.typography.bodySmall
                     ) {
                         description()
                     }

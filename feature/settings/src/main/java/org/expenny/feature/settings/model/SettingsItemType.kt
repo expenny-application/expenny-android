@@ -14,5 +14,5 @@ enum class SettingsItemType {
     Biometric,
     About,
     RateApplication,
-    DeleteAllData
+    DeleteApplicationData
 }

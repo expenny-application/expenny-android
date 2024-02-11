@@ -50,22 +50,24 @@ fun <T> ExpennyMultiSelectionDialog(
             item {
                 ExpennyListDialogItem(
                     selectionType = SelectionType.Multi,
-                    label = "None",
                     isSelected = currentSelection.isEmpty(),
                     onClick = {
                         currentSelection = emptyList()
                     }
-                )
+                ) {
+                    Text(text = stringResource(R.string.none_button))
+                }
             }
             items(data) { item ->
                 ExpennyListDialogItem(
                     selectionType = SelectionType.Multi,
-                    label = item.second,
                     isSelected = currentSelection.contains(item.first),
                     onClick = {
                         currentSelection = currentSelection.toggleItem(item.first)
                     }
-                )
+                ) {
+                    Text(text = item.second)
+                }
             }
         }
     )
@@ -98,12 +100,13 @@ fun <T> ExpennySingleSelectionDialog(
             items(data) { item ->
                 ExpennyListDialogItem(
                     selectionType = SelectionType.Single,
-                    label = item.second,
                     isSelected = selection == item.first,
                     onClick = {
                         onSelect(item.first)
                     }
-                )
+                ) {
+                    Text(text = item.second)
+                }
             }
         }
     )
@@ -146,22 +149,24 @@ fun <T> ExpennyOptionalSingleSelectionDialog(
             item {
                 ExpennyListDialogItem(
                     selectionType = SelectionType.Single,
-                    label = stringResource(R.string.none_button),
                     isSelected = currentSelection == null,
                     onClick = {
                         currentSelection = null
                     }
-                )
+                ) {
+                    Text(text = stringResource(R.string.none_button))
+                }
             }
             items(data) { item ->
                 ExpennyListDialogItem(
                     selectionType = SelectionType.Single,
-                    label = item.second,
                     isSelected = currentSelection == item.first,
                     onClick = {
                         currentSelection = item.first
                     }
-                )
+                ) {
+                    Text(text = item.second)
+                }
             }
         }
     )

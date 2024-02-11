@@ -22,7 +22,10 @@
     <string name="use_bioemtric_label">Use biometric</string>
     <string name="about_label">About app</string>
     <string name="rate_application_label">Rate application</string>
-    <string name="delete_all_data_label">Delete all data</string>
+    <string name="change_profile_label">Change profile</string>
+    <string name="delete_profile_label">Delete profile</string>
+    <string name="clear_profile_data_label">Clear profile data</string>
+    <string name="delete_application_data_label">Delete application data</string>
     <string name="unknown_label">Unknown</string>
     <string name="no_records_yet_label">No records yet</string>
     <string name="all_accounts_label">All accounts</string>
@@ -76,14 +79,18 @@
     <string name="account_missing_label">Account missing</string>
     <string name="reset_selection_question_label">Reset selection?</string>
     <string name="change_record_type_question_label">Change type?</string>
-    <string name="delete_account_question_label">Delete this account?</string>
-    <string name="delete_record_question_label">Delete this record?</string>
+    <string name="delete_profile_question_label">Delete profile?</string>
+    <string name="delete_profile_data_question_label">Delete profile data?</string>
+    <string name="delete_application_data_question_label">Delete application data?</string>
+    <string name="delete_account_question_label">Delete account?</string>
+    <string name="delete_record_question_label">Delete record?</string>
     <string name="delete_selected_record_question_label">Delete selected records?</string>
-    <string name="delete_label_question_label">Delete this label?</string>
-    <string name="delete_category_question_label">Delete this category?</string>
-    <string name="delete_receipt_question_label">Delete this receipt?</string>
-    <string name="delete_currency_question_label">Delete this currency?</string>
+    <string name="delete_label_question_label">Delete label?</string>
+    <string name="delete_category_question_label">Delete category?</string>
+    <string name="delete_receipt_question_label">Delete receipt?</string>
+    <string name="delete_currency_question_label">Delete currency?</string>
     <string name="amount_conversion_label">Amount conversion</string>
+    <string name="transfers_label">Transfers</string>
     <string name="passcode_setup_label">Passcode setup</string>
     <string name="discard_changes_label">Discard changes</string>
     <string name="add_receipt_label">Add receipt</string>
@@ -154,6 +161,7 @@
     <string name="select_time_label">Select time</string>
     <string name="select_category_label">Select category</string>
     <string name="select_account_label">Select account</string>
+    <string name="select_profile_label">Select profile</string>
     <string name="select_transfer_account_label">Select transfer account</string>
     <string name="show_cleared_label">Show cleared</string>
     <string name="show_posted_label">Show posted</string>
@@ -178,24 +186,21 @@
     <string name="reminder_notification_description_label">Ensures you stay reminded about recording your cash flow</string>
 
     <!-- Dialog paragraphs -->
-    <string name="get_started_paragraph">Complete the steps bellow in order to finish initial setup</string>
+    <string name="get_started_paragraph">Complete the steps bellow to finish profile setup</string>
     <string name="get_started_abort_paragraph">Are you sure you want to abort setup process?</string>
     <string name="get_started_confirmation_paragraph">Are you sure you want to continue without setting up initial cash balance?</string>
     <string name="account_missing_paragraph">To continue, you must have at least one account created</string>
     <string name="delete_associated_data_paragraph">Confirming will result in the deletion of all associated data with it</string>
+    <string name="delete_application_data_paragraph">Confirming will result in the deletion of all local application data</string>
     <string name="change_record_type_paragraph">Changing the type will reset the previously selected transfer account</string>
-    <string name="delete_record_paragraph">Confirming will affect the change in the account balance</string>
-    <string name="delete_receipt_paragraph">Are you sure you want to delete receipt?</string>
-    <string name="delete_paragraph">It will be gone forever</string>
-    <string name="discard_changes_paragraph">Are you sure you want to discard the changes?</string>
+    <string name="delete_record_paragraph">Confirmation will affect the account balance change</string>
+    <string name="delete_paragraph">Confirmation will result in permanent deletion of the data</string>
     <string name="set_cash_balance_paragraph">I want to setup my current cash balance</string>
     <string name="image_source_paragraph">Please choose a way to add an image</string>
-    <string name="crash_reports_paragraph">Collect and send error logs to improve application</string>
-    <string name="analytics_reports_paragraph">Track app usage to improve user experience</string>
-    <string name="performance_reports_paragraph">Monitor app performance to help providing stable builds</string>
     <string name="amount_conversion_paragraph">The currencies of the selected accounts differ, therefore automatic conversion is applied to the final amount using preset currency rate. You can change it whenever you want</string>
     <string name="passcode_setup_paragraph">Ensure your passcode meets length criteria. Remember, the passcode cannot be reset if forgotten, so it\'s crucial to save or memorize it securely</string>
     <string name="currency_rates_paragraph">If the selected currency is available in the European Central Bank database, the exchange rates will be automatically set into the fields</string>
+    <string name="transfer_disclaimer_paragraph">Transfers are not taken into account in statistics and are treated as operations with local wallets</string>
 
     <!-- Buttons -->
     <string name="save_button">Save</string>
@@ -203,6 +208,7 @@
     <string name="reset_all_button">Reset all</string>
     <string name="back_button">Back</string>
     <string name="create_button">Create</string>
+    <string name="create_profile_button">Create profile</string>
     <string name="confirm_button">Confirm</string>
     <string name="select_button">Select</string>
     <string name="get_started_button">Get started</string>
@@ -274,6 +280,7 @@
     <string name="invalid_argument_error">Invalid argument</string>
     <string name="init_error">Initialization error</string>
     <string name="network_connection_error">Network connection error</string>
+    <string name="duplicate_data_error">Duplicate data error</string>
     <string name="database_error">Internal database error</string>
     <string name="data_not_exists_error">Data does not exist</string>
     <string name="invalid_input_data_error">Invalid input data</string>
@@ -293,7 +300,6 @@
     <string name="required_account_error">Having at least one account is required</string>
     <string name="not_found_error">No data found</string>
     <string name="authentication_failed_error">Authentication failed</string>
-    <string name="transfer_disclaimer_message">Transfers are not taken into account in statistics and are treated as operations with local wallets</string>
 
     <!-- Notification -->
     <string name="reminder_channel_description">The channel aims to empower users to stay in control of their finances by prompting them to record and categorize their expenses regularly</string>

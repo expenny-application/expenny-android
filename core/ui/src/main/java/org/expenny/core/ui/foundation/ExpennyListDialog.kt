@@ -3,6 +3,7 @@ package org.expenny.core.ui.foundation
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -10,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -61,10 +63,10 @@ fun ExpennyListDialog(
 @Composable
 fun ExpennyListDialogItem(
     modifier: Modifier = Modifier,
-    label: String,
     selectionType: SelectionType,
     isSelected: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    content: @Composable RowScope.() -> Unit,
 ) {
     Row(
         modifier = modifier
@@ -72,17 +74,15 @@ fun ExpennyListDialogItem(
             .clickable { onClick() }
             .padding(vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(32.dp)
+        horizontalArrangement = Arrangement.spacedBy(24.dp)
     ) {
         ExpennySelectionButton(
             type = selectionType,
             isSelected = isSelected,
             onClick = { onClick() }
         )
-        Text(
-            text = label,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface
-        )
+        ProvideTextStyle(MaterialTheme.typography.bodyMedium) {
+            content()
+        }
     }
 }

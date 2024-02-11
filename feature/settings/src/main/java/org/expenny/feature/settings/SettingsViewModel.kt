@@ -5,6 +5,7 @@ import androidx.core.os.LocaleListCompat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
@@ -14,7 +15,6 @@ import org.expenny.core.common.types.ApplicationTheme
 import org.expenny.core.common.viewmodel.ExpennyActionViewModel
 import org.expenny.core.domain.repository.LocalRepository
 import org.expenny.core.domain.usecase.preferences.GetBiometricStatusUseCase
-import org.expenny.core.domain.usecase.currency.GetMainCurrencyUseCase
 import org.expenny.core.domain.usecase.preferences.DeletePasscodePreferenceUseCase
 import org.expenny.core.domain.usecase.preferences.GetBiometricPreferenceUseCase
 import org.expenny.core.domain.usecase.preferences.GetCanSendAlarmsUseCase
@@ -23,12 +23,18 @@ import org.expenny.core.domain.usecase.preferences.GetReminderTimePreferenceUseC
 import org.expenny.core.domain.usecase.preferences.SetBiometricPreferenceUseCase
 import org.expenny.core.domain.usecase.preferences.SetReminderPreferenceUseCase
 import org.expenny.core.domain.usecase.preferences.SetReminderTimePreferenceUseCase
+import org.expenny.core.domain.usecase.profile.DeleteCurrentProfileDataUseCase
+import org.expenny.core.domain.usecase.profile.DeleteCurrentProfileUseCase
 import org.expenny.core.domain.usecase.profile.GetCurrentProfileUseCase
+import org.expenny.core.domain.usecase.profile.GetProfilesUseCase
+import org.expenny.core.domain.usecase.profile.SetCurrentProfileUseCase
 import org.expenny.core.model.biometric.BiometricStatus.AvailableButNotEnrolled
 import org.expenny.core.model.biometric.BiometricStatus.Ready
 import org.expenny.core.ui.mapper.ProfileMapper
+import org.expenny.feature.settings.model.ProfileActionType
 import org.expenny.feature.settings.model.SettingsItemType
 import org.orbitmvi.orbit.ContainerHost
+import org.orbitmvi.orbit.syntax.simple.SimpleSyntax
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
@@ -38,8 +44,11 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val localRepository: LocalRepository,
-    private val getMainCurrency: GetMainCurrencyUseCase,
+    private val setCurrentProfile: SetCurrentProfileUseCase,
     private val getCurrentProfile: GetCurrentProfileUseCase,
+    private val deleteCurrentProfile: DeleteCurrentProfileUseCase,
+    private val deleteCurrentProfileData: DeleteCurrentProfileDataUseCase,
+    private val getProfiles: GetProfilesUseCase,
     private val getBiometricStatus: GetBiometricStatusUseCase,
     private val setBiometricPreference: SetBiometricPreferenceUseCase,
     private val getBiometricPreference: GetBiometricPreferenceUseCase,
@@ -59,6 +68,7 @@ class SettingsViewModel @Inject constructor(
         coroutineScope {
             setSelectedLanguage()
             launch { subscribeToCurrentProfile() }
+            launch { subscribeToProfiles() }
             launch { subscribeToThemePreference() }
             launch { subscribeToPasscodePreference() }
             launch { subscribeToBiometricPreference() }
@@ -70,15 +80,69 @@ class SettingsViewModel @Inject constructor(
     override fun onAction(action: Action) {
         when (action) {
             is Action.OnSettingsItemTypeClick -> handleOnSettingsItemTypeClick(action)
-            is Action.OnDialogDismiss -> handleOnDialogDismiss()
-            is Action.OnLanguageSelect -> handleOnLanguageSelect(action)
-            is Action.OnThemeSelect -> handleOnThemeSelect(action)
-            is Action.OnReminderTimeChange -> handleOnReminderTimeChange(action)
             is Action.OnBackClick -> handleOnBackClick()
+            is Action.Dialog.OnDialogDismiss -> handleOnDialogDismiss()
+            is Action.Dialog.OnLanguageSelect -> handleOnLanguageSelect(action)
+            is Action.Dialog.OnThemeSelect -> handleOnThemeSelect(action)
+            is Action.Dialog.OnReminderTimeChange -> handleOnReminderTimeChange(action)
+            is Action.Dialog.OnProfileActionTypeSelect -> handleOnProfileActionTypeSelect(action)
+            is Action.Dialog.OnCreateProfileClick -> handleOnCreateProfileClick()
+            is Action.Dialog.OnSelectProfileClick -> handleOnSelectProfileClick(action)
+            is Action.Dialog.OnDeleteApplicationDataDialogConfirm -> handleOnDeleteApplicationDataDialogConfirm()
+            is Action.Dialog.OnDeleteProfileDataDialogConfirm -> handleOnDeleteProfileDataDialogConfirm()
+            is Action.Dialog.OnDeleteProfileDialogConfirm -> handleOnDeleteProfileDialogConfirm()
         }
     }
 
-    private fun handleOnReminderTimeChange(action: Action.OnReminderTimeChange) = intent {
+    private fun handleOnProfileActionTypeSelect(action: Action.Dialog.OnProfileActionTypeSelect) = intent {
+        when (action.type) {
+            ProfileActionType.ChangeProfile -> {
+                reduce { state.copy(dialog = State.Dialog.ProfileDialog) }
+            }
+            ProfileActionType.DeleteProfile -> {
+                reduce { state.copy(dialog = State.Dialog.DeleteProfileDialog) }
+            }
+            ProfileActionType.DeleteProfileData -> {
+                reduce { state.copy(dialog = State.Dialog.DeleteProfileDataDialog) }
+            }
+        }
+    }
+
+    private fun handleOnDeleteProfileDialogConfirm() = intent {
+        val nextProfile = getCurrentProfile().first()!!.let { currentProfile ->
+            getProfiles().first().firstOrNull { it.id != currentProfile.id }
+        }
+
+        if (nextProfile != null) {
+            deleteCurrentProfile()
+            setCurrentProfile(SetCurrentProfileUseCase.Params(nextProfile.id))
+            postSideEffect(Event.RestartApplication())
+        } else {
+            postSideEffect(Event.RestartApplication(isDataCleanupRequested = true))
+        }
+    }
+
+    private fun handleOnDeleteProfileDataDialogConfirm() = intent {
+        deleteCurrentProfileData()
+        postSideEffect(Event.RestartApplication())
+    }
+
+    private fun handleOnDeleteApplicationDataDialogConfirm() = intent {
+        postSideEffect(Event.RestartApplication(isDataCleanupRequested = true))
+    }
+
+    private fun handleOnCreateProfileClick() = intent {
+        dismissDialog()
+        postSideEffect(Event.NavigateToCreateProfile)
+    }
+
+    private fun handleOnSelectProfileClick(action: Action.Dialog.OnSelectProfileClick) = intent {
+        dismissDialog()
+        setCurrentProfile(SetCurrentProfileUseCase.Params(action.profileId))
+        postSideEffect(Event.RestartApplication())
+    }
+
+    private fun handleOnReminderTimeChange(action: Action.Dialog.OnReminderTimeChange) = intent {
         setReminderTimePreference(action.time)
     }
 
@@ -88,6 +152,9 @@ class SettingsViewModel @Inject constructor(
 
     private fun handleOnSettingsItemTypeClick(action: Action.OnSettingsItemTypeClick) = intent {
         when (action.type) {
+            SettingsItemType.Profile -> {
+                reduce { state.copy(dialog = State.Dialog.ProfileActionsDialog) }
+            }
             SettingsItemType.Theme -> {
                 reduce { state.copy(dialog = State.Dialog.ThemeDialog) }
             }
@@ -130,11 +197,14 @@ class SettingsViewModel @Inject constructor(
             SettingsItemType.Categorization -> {
                 postSideEffect(Event.NavigateToCategoriesList)
             }
+            SettingsItemType.DeleteApplicationData -> {
+                reduce { state.copy(dialog = State.Dialog.DeleteApplicationDataDialog) }
+            }
             else -> {}
         }
     }
 
-    private fun handleOnLanguageSelect(action: Action.OnLanguageSelect): Job {
+    private fun handleOnLanguageSelect(action: Action.Dialog.OnLanguageSelect): Job {
         AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(action.language.tag))
         return intent {
             reduce {
@@ -147,23 +217,31 @@ class SettingsViewModel @Inject constructor(
     }
 
     private fun handleOnDialogDismiss() = intent {
-        reduce { state.copy(dialog = null) }
+        dismissDialog()
     }
 
-    private fun handleOnThemeSelect(action: Action.OnThemeSelect) = intent {
+    private fun handleOnThemeSelect(action: Action.Dialog.OnThemeSelect) = intent {
         when (action.theme) {
             ApplicationTheme.Dark -> localRepository.setThemeDarkMode(true)
             ApplicationTheme.Light -> localRepository.setThemeDarkMode(false)
             ApplicationTheme.SystemDefault -> localRepository.setThemeSystemDefault()
         }
         reduce { state.copy(selectedTheme = action.theme) }
-        handleOnDialogDismiss()
+        dismissDialog()
     }
 
     private fun subscribeToCurrentProfile() = intent {
-        getCurrentProfile().first()!!.also {
+        getCurrentProfile().filterNotNull().collect {
             reduce {
                 state.copy(currentProfile = profileMapper(it))
+            }
+        }
+    }
+
+    private fun subscribeToProfiles() = intent {
+        getProfiles().collect {
+            reduce {
+                state.copy(profiles = profileMapper(it))
             }
         }
     }
@@ -240,5 +318,9 @@ class SettingsViewModel @Inject constructor(
                     state.copy(selectedTheme = it)
                 }
             }
+    }
+
+    private suspend fun SimpleSyntax<State, Event>.dismissDialog() {
+        reduce { state.copy(dialog = null) }
     }
 }

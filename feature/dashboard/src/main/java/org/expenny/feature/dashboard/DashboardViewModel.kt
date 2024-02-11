@@ -46,7 +46,7 @@ class DashboardViewModel @Inject constructor(
         buildSettings = { exceptionHandler = defaultCoroutineExceptionHandler() }
     ) {
         coroutineScope {
-            launch { setDefaultDisplayCurrency() }
+            launch { subscribeToDefaultDisplayCurrency() }
             launch { subscribeToAccounts() }
             launch { subscribeToBalanceAndExpenses() }
         }
@@ -76,7 +76,6 @@ class DashboardViewModel @Inject constructor(
     }
 
     private fun handleOnAddRecord(action: Action.OnAddRecord) = intent {
-        reduce { state.copy(showAddRecordDialog = false) }
         postSideEffect(Event.NavigateToCreateRecord(action.recordType))
     }
 
@@ -180,8 +179,10 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
-    private fun setDefaultDisplayCurrency() = intent {
-        handleOnDisplayCurrencySelect(getMainCurrency().first()!!)
+    private fun subscribeToDefaultDisplayCurrency() = intent {
+        getMainCurrency().filterNotNull().collect {
+            handleOnDisplayCurrencySelect(it)
+        }
     }
 
     private fun subscribeToAccounts() = intent {

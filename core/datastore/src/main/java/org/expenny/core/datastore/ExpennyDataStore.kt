@@ -20,8 +20,8 @@ class ExpennyDataStore @Inject constructor(
         val IS_REMINDER_ENABLED_KEY = booleanPreferencesKey(name = "is_reminder_enabled")
         val IS_BIOMETRIC_ENROLLED_KEY = booleanPreferencesKey(name = "is_biometric_enrolled")
         val IS_DARK_MODE_KEY = booleanPreferencesKey(name = "is_dark_mode")
-        val IS_ONBOARDING_PASSED_KEY = booleanPreferencesKey(name = "onboarding_passed")
-        val IS_SETUP_PASSED_KEY = booleanPreferencesKey(name = "setup_passed")
+        val IS_ONBOARDING_PASSED_KEY = booleanPreferencesKey(name = "is_onboarding_passed")
+        val IS_SETUP_PASSED_KEY = booleanPreferencesKey(name = "is_setup_passed")
     }
 
     suspend fun <T> put(key: Preferences.Key<T>, value: T) {
@@ -33,6 +33,12 @@ class ExpennyDataStore @Inject constructor(
     suspend fun <T> remove(key: Preferences.Key<T>) {
         dataStore.edit {
             it.remove(key = key)
+        }
+    }
+
+    suspend fun clear() {
+        dataStore.edit {
+            it.clear()
         }
     }
 

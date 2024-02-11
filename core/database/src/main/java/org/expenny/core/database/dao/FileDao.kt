@@ -18,6 +18,12 @@ interface FileDao {
     @Query("DELETE FROM file WHERE file.fileId == :id")
     suspend fun delete(id: Long)
 
+    @Query("DELETE FROM file WHERE file.profileId == :profileId")
+    suspend fun deleteByProfileId(profileId: Long)
+
     @Query("DELETE FROM file WHERE file.fileId in (:ids)")
     suspend fun deleteAll(ids: List<Long>)
+
+    @Query("DELETE FROM file")
+    suspend fun deleteAll()
 }

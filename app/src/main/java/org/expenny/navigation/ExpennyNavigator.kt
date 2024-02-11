@@ -1,9 +1,13 @@
 package org.expenny.navigation
 
+import android.content.Context
+import android.content.Intent
+import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import com.ramcosta.composedestinations.dynamic.within
 import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.spec.NavGraphSpec
+import dagger.hilt.android.qualifiers.ApplicationContext
 import org.expenny.core.common.types.RecordType
 import org.expenny.core.common.utils.Constants.NULL_ID
 import org.expenny.core.ui.data.navargs.LongNavArg
@@ -35,6 +39,7 @@ import org.expenny.feature.records.navigation.RecordsListNavigator
 import org.expenny.feature.settings.navigation.SettingsNavigator
 import org.expenny.feature.splash.navigation.SplashNavigator
 import org.expenny.feature.welcome.navigation.WelcomeNavigator
+import org.expenny.main.MainActivity
 import org.expenny.main.drawer.DrawerTab
 
 class ExpennyNavigator(
@@ -71,6 +76,10 @@ class ExpennyNavigator(
         }
     }
 
+    override fun navigateToCreateProfileScreen() {
+        navController.navigate(GetStartedScreenDestination within navGraph)
+    }
+
     override fun navigateToGetStartedScreen() {
         navController.navigate(GetStartedScreenDestination within navGraph)
     }
@@ -78,7 +87,17 @@ class ExpennyNavigator(
     override fun navigateToCurrencyUnitSelectionListScreen(selectedId: Long?) {
         navController.navigate(
             direction = CurrencyUnitsListScreenDestination(
-                selection = LongNavArg(selectedId ?: NULL_ID)
+                selection = LongNavArg(selectedId ?: NULL_ID),
+                includeOnlyAvailable = false,
+            ) within navGraph
+        )
+    }
+
+    override fun navigateToAvailableCurrencyUnitSelectionListScreen(selectedId: Long?) {
+        navController.navigate(
+            direction = CurrencyUnitsListScreenDestination(
+                selection = LongNavArg(selectedId ?: NULL_ID),
+                includeOnlyAvailable = true,
             ) within navGraph
         )
     }
@@ -207,5 +226,16 @@ class ExpennyNavigator(
         navController.navigate(
             direction = AccountDetailsScreenDestination(accountId = accountId) within navGraph
         )
+    }
+
+    override fun restartApplication(isDataCleanupRequested: Boolean) {
+        val context = navController.context
+
+        (context as MainActivity).finish()
+
+        val intent = Intent(context, MainActivity::class.java).apply {
+            putExtra(MainActivity.isDataCleanupRequestedKey, isDataCleanupRequested)
+        }
+        context.startActivity(intent)
     }
 }

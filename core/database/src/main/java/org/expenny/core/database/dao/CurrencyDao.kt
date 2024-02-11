@@ -26,6 +26,15 @@ interface CurrencyDao {
     @Update(entity = SettlementCurrencyEntity::class)
     suspend fun update(currency: SettlementCurrencyEntity.Update)
 
+    @Query("DELETE FROM settlement_currency WHERE settlement_currency.profileId == :id")
+    suspend fun deleteByProfileId(id: Long)
+
     @Query("DELETE FROM settlement_currency WHERE settlement_currency.currencyId == :id")
     suspend fun delete(id: Long)
+
+    @Query("DELETE FROM settlement_currency WHERE settlement_currency.currencyId != :id")
+    suspend fun deleteAllExcept(id: Long)
+
+    @Query("DELETE FROM settlement_currency")
+    suspend fun deleteAll()
 }

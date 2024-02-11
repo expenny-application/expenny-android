@@ -157,12 +157,6 @@ private fun NavigationDrawerContent(
     ) {
         sections.forEach { (section, options) ->
             if (section == Others) {
-                Divider(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = itemsSpacing),
-                    color = MaterialTheme.colorScheme.outlineVariant
-                )
                 NavigationDrawerOption(
                     icon = painterResource(R.drawable.ic_more_horizontal),
                     label = stringResource(R.string.others_label),

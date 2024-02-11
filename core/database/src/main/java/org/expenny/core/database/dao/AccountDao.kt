@@ -35,8 +35,14 @@ interface AccountDao {
     @Query("UPDATE account SET totalBalance = :totalBalance WHERE accountId = :id")
     suspend fun updateTotalBalance(id: Long, totalBalance: BigDecimal)
 
+    @Query("DELETE FROM account WHERE account.profileId == :id")
+    suspend fun deleteByProfileId(id: Long)
+
     @Query("DELETE FROM account WHERE account.accountId == :id")
     suspend fun delete(id: Long)
+
+    @Query("DELETE FROM account")
+    suspend fun deleteAll()
 
     fun selectById(vararg accountIds: Long): Flow<List<AccountEmbedded>> {
         val queryString = buildString {

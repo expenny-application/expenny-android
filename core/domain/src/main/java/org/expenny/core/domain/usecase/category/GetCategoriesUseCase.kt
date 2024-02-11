@@ -10,6 +10,6 @@ class GetCategoriesUseCase @Inject constructor(
 ) {
 
     operator fun invoke() : Flow<List<Category>> {
-        return categoryRepository.getCategoriesFlow()
+        return categoryRepository.getCategories()
     }
 }
