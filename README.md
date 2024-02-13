@@ -15,8 +15,8 @@ Android app for tracking and analysing cash-flow<br/>
 
 ## Preview (pre-release)
 <p style="margin : 0" align="center">
-  <img src="./docs/frame_1.svg" height="480">
-  <img src="./docs/frame_2.svg" height="480">
-  <img src="./docs/frame_3.svg" height="480">
-  <img src="./docs/frame_4.svg" height="480">
+  <img src="./docs/frame_1.png" height="480">
+  <img src="./docs/frame_2.png" height="480">
+  <img src="./docs/frame_3.png" height="480">
+  <img src="./docs/frame_4.png" height="480">
 </p>
