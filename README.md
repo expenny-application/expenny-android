@@ -14,14 +14,9 @@ Android app for tracking and analysing cash-flow<br/>
 - MVI
 
 ## Preview (pre-release)
-<p align="left">
-  <img src="./docs/preview-dashboard-screen.png" height="480">
-  <img src="./docs/preview-drawer-menu.png" height="480">
-  <img src="./docs/preview-records-screen.png" height="480">
-</p>
-
-<p align="left">
-  <img src="./docs/preview-account-details-screen.png" height="480">
-  <img src="./docs/preview-currency-details-screen.png" height="480">
-  <img src="./docs/preview-passcode-screen.png" height="480">
+<p style="margin : 0" align="center">
+  <img src="./docs/frame_1.png" height="480">
+  <img src="./docs/frame_2.png" height="480">
+  <img src="./docs/frame_3.png" height="480">
+  <img src="./docs/frame_4.png" height="480">
 </p>
