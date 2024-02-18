@@ -5,7 +5,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.result.ResultBackNavigator
-import org.expenny.core.common.ExpennySnackbarManager
+import org.expenny.core.ui.utils.ExpennySnackbarManager
 import org.expenny.core.ui.foundation.transitions.VerticalSlideTransitionStyle
 import org.expenny.core.ui.data.navargs.LongNavArg
 import org.expenny.core.ui.theme.ExpennyTheme

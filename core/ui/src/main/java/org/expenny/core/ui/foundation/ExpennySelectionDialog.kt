@@ -9,6 +9,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import org.expenny.core.common.extensions.toggleItem
 import org.expenny.core.resources.R
 import org.expenny.core.ui.data.selection.SelectionType
@@ -55,7 +56,11 @@ fun <T> ExpennyMultiSelectionDialog(
                         currentSelection = emptyList()
                     }
                 ) {
-                    Text(text = stringResource(R.string.none_button))
+                    Text(
+                        text = stringResource(R.string.none_button),
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 2
+                    )
                 }
             }
             items(data) { item ->

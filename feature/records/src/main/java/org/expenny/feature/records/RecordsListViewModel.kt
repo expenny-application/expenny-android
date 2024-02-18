@@ -359,7 +359,7 @@ class RecordsListViewModel @Inject constructor(
         return buildList {
             grouped.forEach { (date, records) ->
                 val dateAmount = records.filterIsInstance<Record.Transaction>()
-                    .map { it.transactionAmount }
+                    .map { it.typedAmount }
                     .let { getCurrencyAmountSum(it, mainCurrency) }
 
                 add(RecordUi.Header(date.toDateString(), amountMapper(dateAmount)))

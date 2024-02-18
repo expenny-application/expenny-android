@@ -108,7 +108,7 @@ object DataMapper {
                     category = category?.toModel(),
                     account = account.toModel(),
                     labels = record.labels,
-                    receipts = receipts.map { it.file.uri },
+                    attachments = attachments.map { it.file.uri },
                     description = record.description,
                     date = record.date,
                     type = TransactionType.Outgoing,
@@ -125,7 +125,7 @@ object DataMapper {
                     category = category?.toModel(),
                     account = account.toModel(),
                     labels = record.labels,
-                    receipts = receipts.map { it.file.uri },
+                    attachments = attachments.map { it.file.uri },
                     description = record.description,
                     date = record.date,
                     type = TransactionType.Incoming,
@@ -142,7 +142,7 @@ object DataMapper {
                     transferAccount = transferAccount!!.toModel(),
                     account = account.toModel(),
                     labels = record.labels,
-                    receipts = receipts.map { it.file.uri },
+                    attachments = attachments.map { it.file.uri },
                     description = record.description,
                     date = record.date,
                     amount = CurrencyAmount(
@@ -152,10 +152,6 @@ object DataMapper {
                     transferAmount = CurrencyAmount(
                         currency = transferAccount!!.accountCurrency.toModel(),
                         amountValue = record.transferAmount!!,
-                    ),
-                    fee = CurrencyAmount(
-                        currency = account.accountCurrency.toModel(),
-                        amountValue = record.transferFee!!
                     )
                 )
             }
@@ -235,7 +231,6 @@ object DataMapper {
                     date = date,
                     transferAccountId = transferAccountId,
                     transferAmount = transferAmount,
-                    transferFee = transferFee,
                 )
             }
         }

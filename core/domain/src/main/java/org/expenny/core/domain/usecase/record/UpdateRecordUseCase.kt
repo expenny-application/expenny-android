@@ -6,7 +6,6 @@ import org.expenny.core.common.types.RecordType.Companion.transactionType
 import org.expenny.core.domain.repository.RecordRepository
 import org.expenny.core.model.record.RecordUpdate
 import java.math.BigDecimal
-import java.time.Instant
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -25,7 +24,7 @@ class UpdateRecordUseCase @Inject constructor(
                             type = type.transactionType!!,
                             accountId = accountId,
                             categoryId = categoryId,
-                            receiptsUris = receiptsUris,
+                            attachments = receiptsUris,
                             description = description,
                             labels = labels,
                             amount = amount,
@@ -36,14 +35,13 @@ class UpdateRecordUseCase @Inject constructor(
                         RecordUpdate.Transfer(
                             id = id,
                             accountId = accountId,
-                            receiptsUris = receiptsUris,
+                            attachments = receiptsUris,
                             description = description,
                             labels = labels,
                             amount = amount,
                             date = date,
                             transferAmount = transferAmount!!,
                             transferAccountId = transferAccountId!!,
-                            transferFee = transferFee!!
                         )
                     }
                 }
@@ -62,7 +60,6 @@ class UpdateRecordUseCase @Inject constructor(
         val labels: List<String>,
         val amount: BigDecimal,
         val transferAmount: BigDecimal?,
-        val transferFee: BigDecimal?,
         val date: LocalDateTime,
     )
 }

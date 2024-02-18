@@ -8,9 +8,9 @@ import java.math.BigDecimal
 
 interface AccountRepository {
 
-    fun getAccountsFlow(): Flow<List<Account>>
+    fun getAccounts(): Flow<List<Account>>
 
-    suspend fun getAccount(id: Long): Account?
+    fun getAccount(id: Long): Flow<Account?>
 
     suspend fun createAccount(account: AccountCreate): Long
 

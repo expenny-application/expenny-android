@@ -9,7 +9,7 @@ import java.time.LocalDateTime
 sealed interface RecordCreate {
     val profileId: Long
     val accountId: Long
-    val receiptsUris: List<Uri>
+    val attachments: List<Uri>
     val description: String
     val labels: List<String>
     val amount: BigDecimal
@@ -29,7 +29,7 @@ sealed interface RecordCreate {
     data class Transaction(
         override val profileId: Long,
         override val accountId: Long,
-        override val receiptsUris: List<Uri>,
+        override val attachments: List<Uri>,
         override val description: String,
         override val labels: List<String>,
         override val amount: BigDecimal,
@@ -41,13 +41,12 @@ sealed interface RecordCreate {
     data class Transfer(
         override val profileId: Long,
         override val accountId: Long,
-        override val receiptsUris: List<Uri>,
+        override val attachments: List<Uri>,
         override val description: String,
         override val labels: List<String>,
         override val amount: BigDecimal,
         override val date: LocalDateTime,
         val transferAmount: BigDecimal,
         val transferAccountId: Long,
-        val transferFee: BigDecimal,
     ) : RecordCreate
 }

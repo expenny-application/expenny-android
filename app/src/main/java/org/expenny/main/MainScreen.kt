@@ -15,7 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.*
 import androidx.navigation.compose.rememberNavController
-import org.expenny.core.common.ExpennySnackbarManager
+import org.expenny.core.ui.utils.ExpennySnackbarManager
 import org.expenny.core.ui.foundation.ExpennySnackbar
 import com.ramcosta.composedestinations.spec.NavGraphSpec
 import com.ramcosta.composedestinations.spec.Route
@@ -71,12 +71,7 @@ internal fun MainScreen(startRoute: Route) {
         Scaffold(
             containerColor = Color.Transparent,
             snackbarHost = {
-                ExpennySnackbar(
-                    snackbarHostState = state.snackbarHostState,
-                    onAction = {
-                        state.snackbarHostState.currentSnackbarData?.performAction()
-                    }
-                )
+                ExpennySnackbar(hostState = state.snackbarHostState)
             },
         ) { _ ->
             ExpennyNavigation(

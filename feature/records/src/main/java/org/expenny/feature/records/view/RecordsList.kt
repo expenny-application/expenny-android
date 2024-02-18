@@ -99,7 +99,7 @@ private fun RecordsListHeader(
             style = MaterialTheme.typography.labelLarge,
         )
         Text(
-            text = header.dateAmount.displayValue,
+            text = header.amountSum.displayValue,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = MaterialTheme.typography.labelLarge,
         )

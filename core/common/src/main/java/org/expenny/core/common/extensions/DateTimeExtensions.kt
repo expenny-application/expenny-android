@@ -16,8 +16,6 @@ fun LocalDateTime.toDateString(): String = format(DateTimeFormatter.ofPattern(Co
 
 fun LocalDateTime.toTimeString(): String = format(DateTimeFormatter.ofPattern(Constants.DEFAULT_TIME_FORMAT))
 
-fun LocalDateTime.toEpochSecondUtc(): Long = toEpochSecond(ZoneOffset.UTC)
-
 fun LocalDate.toQuarterRange(): LocalDateRange {
     return LocalDateRange.ofClosed(
         YearQuarter.of(year, get(IsoFields.QUARTER_OF_YEAR)).atDay(1),

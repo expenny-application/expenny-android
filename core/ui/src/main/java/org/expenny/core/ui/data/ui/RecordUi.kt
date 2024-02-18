@@ -6,43 +6,23 @@ sealed interface RecordUi {
 
     class Header(
         override val date: String,
-        val dateAmount: AmountUi,
+        val amountSum: AmountUi,
     ) : RecordUi {
         override val key: Any = date
     }
 
-    sealed interface Item : RecordUi {
-        val id: Long
-        val description: String
-        val postedAmount: AmountUi
-        val labels: List<String>
-        val receiptsCount: Int
-        val account: String
-
-        data class Transaction(
-            override val key: Any,
-            override val date: String,
-            override val id: Long,
-            override val description: String,
-            override val postedAmount: AmountUi,
-            override val labels: List<String>,
-            override val receiptsCount: Int,
-            override val account: String,
-            val category: CategoryUi?,
-        ) : Item
-
-        data class Transfer(
-            override val key: Any,
-            override val date: String,
-            override val id: Long,
-            override val description: String,
-            override val postedAmount: AmountUi,
-            override val labels: List<String>,
-            override val receiptsCount: Int,
-            override val account: String,
-            val transferAccount: String,
-            val clearedAmount: AmountUi,
-            val isConversionApplied: Boolean,
-        ) : Item
+    data class Item(
+        val id: Long,
+        val title: String?,
+        val subtitle: String,
+        val description: String,
+        val labels: List<String>,
+        val attachmentsCount: Int,
+        val amount: AmountUi,
+        val transferAmount: AmountUi? = null,
+        val category: CategoryUi? = null,
+        override val date: String
+    ) : RecordUi {
+        override val key: Any = id
     }
 }

@@ -23,7 +23,7 @@ class AccountRepositoryImpl @Inject constructor(
     private val accountDao = database.accountDao()
     private val recordDao = database.recordDao()
 
-    override fun getAccountsFlow(): Flow<List<Account>> {
+    override fun getAccounts(): Flow<List<Account>> {
         return combine(
             localRepository.getCurrentProfileId().filterNotNull(),
             accountDao.selectAll()
@@ -32,8 +32,8 @@ class AccountRepositoryImpl @Inject constructor(
         }.mapFlatten { toModel() }
     }
 
-    override suspend fun getAccount(id: Long): Account? {
-        return accountDao.selectById(id)?.toModel()
+    override fun getAccount(id: Long): Flow<Account?> {
+        return accountDao.selectById(id).map { it?.toModel() }
     }
 
     override suspend fun createAccount(account: AccountCreate): Long {
@@ -49,7 +49,7 @@ class AccountRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateAccountBalance(id: Long, amendment: BigDecimal) {
-        val currentBalance = accountDao.selectById(id)!!.account.totalBalance
+        val currentBalance = accountDao.selectById(id).first()!!.account.totalBalance
         val newBalance = currentBalance + amendment
 
         accountDao.updateTotalBalance(id, newBalance)
@@ -58,7 +58,7 @@ class AccountRepositoryImpl @Inject constructor(
     override suspend fun deleteAccount(id: Long) {
         database.withTransaction {
             // todo add deletion of all other associated data
-            accountDao.delete(id)
+            accountDao.deleteById(id)
             recordDao.deleteByAccountId(id)
         }
     }

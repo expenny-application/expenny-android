@@ -4,7 +4,8 @@ import org.expenny.core.common.extensions.isNegative
 import org.expenny.core.common.extensions.isZero
 import org.expenny.core.common.extensions.toDateString
 import org.expenny.core.model.record.Record
-import org.expenny.core.ui.data.ui.*
+import org.expenny.core.ui.data.ui.AmountUi
+import org.expenny.core.ui.data.ui.RecordUi
 import javax.inject.Inject
 
 class RecordMapper @Inject constructor(
@@ -21,41 +22,28 @@ class RecordMapper @Inject constructor(
     }
 
     private fun Record.toItem(): RecordUi.Item {
-        return when (this) {
-            is Record.Transfer -> {
-                RecordUi.Item.Transfer(
-                    id = id,
-                    key = id,
-                    description = description,
-                    account = account.name,
-                    transferAccount = transferAccount.name,
-                    postedAmount = amountMapper(amount),
-                    clearedAmount = amountMapper(transferAmount),
-                    receiptsCount = receipts.size,
-                    labels = labels,
-                    isConversionApplied = account.currency != transferAccount.currency,
-                    date = date.toDateString(),
-                )
-            }
-            is Record.Transaction -> {
-                RecordUi.Item.Transaction(
-                    id = id,
-                    key = id,
-                    category = category?.let { categoryMapper(it) },
-                    description = description,
-                    account = account.name,
-                    postedAmount = amountMapper(transactionAmount).prependPlusSign(),
-                    receiptsCount = receipts.size,
-                    labels = labels,
-                    date = date.toDateString()
-                )
-            }
-        }
+        val amount = amountMapper(typedAmount).prependAmountSign()
+        val transferAmount = (this as? Record.Transfer)?.typedTransferAmount?.let { amountMapper(it) }?.prependAmountSign()
+        val category = (this as? Record.Transaction)?.category?.let { categoryMapper(it) }
+        val title = (this as? Record.Transfer)?.account?.name ?: category?.name
+        val subtitle = (this as? Record.Transfer)?.transferAccount?.name ?: account.name
+
+        return RecordUi.Item(
+            id = id,
+            title = title,
+            subtitle = subtitle,
+            description = description,
+            labels = labels,
+            attachmentsCount = attachments.size,
+            amount = amount,
+            transferAmount = transferAmount,
+            category = category,
+            date = date.toDateString()
+        )
     }
 
-    private fun AmountUi.prependPlusSign(): AmountUi {
-        return if (!displayValue.startsWith("+") && !value.isZero() && !value.isNegative()) {
-            copy(displayValue = "+$displayValue")
-        } else this
+    private fun AmountUi.prependAmountSign() : AmountUi {
+        if (value.isZero() || value.isNegative()) return this
+        return copy(displayValue = "+$displayValue")
     }
 }
