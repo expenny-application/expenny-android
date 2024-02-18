@@ -15,10 +15,10 @@ data class State(
 sealed interface Action {
     class OnCurrencyUnitSelect(val id: Long) : Action
     class OnSearchQueryChange(val query: String) : Action
-    object OnCloseClick : Action
+    data object OnCloseClick : Action
 }
 
 sealed interface Event {
     class NavigateBackWithResult(val result: LongNavArg) : Event
-    object NavigateBack : Event
+    data object NavigateBack : Event
 }
