@@ -18,10 +18,10 @@ interface RecordDao {
 
     @Transaction
     @Query("SELECT * FROM record WHERE record.recordId = :id")
-    fun select(id: Long): Flow<RecordEmbedded?>
+    fun selectById(id: Long): Flow<RecordEmbedded?>
 
     @Query("DELETE FROM record WHERE record.recordId == :id")
-    suspend fun delete(id: Long)
+    suspend fun deleteById(id: Long)
 
     @Query("DELETE FROM record WHERE record.accountId == :id OR record.transferAccountId == :id")
     suspend fun deleteByAccountId(id: Long)
@@ -38,6 +38,10 @@ interface RecordDao {
     @Transaction
     @Query("SELECT * FROM record WHERE record.profileId == :profileId ORDER BY date DESC")
     fun selectAllDesc(profileId: Long): Flow<List<RecordEmbedded>>
+
+    @Transaction
+    @Query("SELECT * FROM record WHERE record.profileId == :profileId ORDER BY date ASC")
+    fun selectAllAsc(profileId: Long): Flow<List<RecordEmbedded>>
 
     @RawQuery(observedEntities = [RecordEntity::class])
     fun selectAllDesc(query: SupportSQLiteQuery): Flow<List<RecordEmbedded>>

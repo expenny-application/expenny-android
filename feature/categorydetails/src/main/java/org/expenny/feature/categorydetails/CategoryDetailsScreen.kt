@@ -7,7 +7,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.focus.FocusRequester
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
-import org.expenny.core.common.ExpennySnackbarManager
+import org.expenny.core.ui.utils.ExpennySnackbarManager
 import org.expenny.feature.categorydetails.navigation.CategoryDetailsNavArgs
 import org.expenny.feature.categorydetails.navigation.CategoryDetailsNavigator
 import org.expenny.feature.categorydetails.view.CategoryDetailsContent

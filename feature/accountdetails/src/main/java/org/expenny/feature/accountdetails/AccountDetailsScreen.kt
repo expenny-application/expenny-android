@@ -9,7 +9,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.OpenResultRecipient
-import org.expenny.core.common.ExpennySnackbarManager
+import org.expenny.core.ui.utils.ExpennySnackbarManager
 import org.expenny.core.ui.data.navargs.LongNavArg
 import org.expenny.feature.accountdetails.navigation.AccountDetailsNavArgs
 import org.expenny.feature.accountdetails.navigation.AccountDetailsNavigator

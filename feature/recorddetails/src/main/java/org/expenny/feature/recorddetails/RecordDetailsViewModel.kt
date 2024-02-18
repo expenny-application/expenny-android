@@ -412,7 +412,6 @@ class RecordDetailsViewModel @Inject constructor(
                             labels = state.labelsInput.labels,
                             amount = state.amountInput.value,
                             transferAmount = transferAmount,
-                            transferFee = BigDecimal.ZERO,
                             date = getSelectedDate() ?: LocalDateTime.now()
                         )
                     )
@@ -429,7 +428,6 @@ class RecordDetailsViewModel @Inject constructor(
                             labels = state.labelsInput.labels,
                             amount = state.amountInput.value,
                             transferAmount = transferAmount,
-                            transferFee = BigDecimal.ZERO,
                             date = getSelectedDate() ?: LocalDateTime.now()
                         )
                     )
@@ -652,7 +650,7 @@ class RecordDetailsViewModel @Inject constructor(
                     else -> fromRes(R.string.edit_record_label)
                 },
                 selectedType = record.recordType,
-                receipts = record.receipts,
+                receipts = record.attachments,
                 labelsInput = state.labelsInput.copy(labels = record.labels),
                 amountInput = state.amountInput.copy(value = record.amount.value),
                 dateInput = state.dateInput.copy(value = record.date.toDateString()),

@@ -6,7 +6,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.*
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
-import org.expenny.core.common.ExpennySnackbarManager
+import org.expenny.core.ui.utils.ExpennySnackbarManager
 import org.expenny.core.ui.utils.ExpennyDrawerState
 import org.expenny.feature.records.model.*
 import org.expenny.feature.records.navigation.RecordsListNavArgs

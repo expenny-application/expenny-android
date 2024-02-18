@@ -10,6 +10,6 @@ class GetAccountsUseCase @Inject constructor(
 ) {
 
     operator fun invoke(): Flow<List<Account>> {
-        return accountRepository.getAccountsFlow()
+        return accountRepository.getAccounts()
     }
 }

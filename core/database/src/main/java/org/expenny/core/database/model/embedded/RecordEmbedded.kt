@@ -4,7 +4,6 @@ import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
 import org.expenny.core.database.model.crossref.RecordFileCrossRef
-import org.expenny.core.database.model.crossref.RecordLabelCrossRef
 import org.expenny.core.database.model.entity.*
 
 data class RecordEmbedded(
@@ -44,5 +43,5 @@ data class RecordEmbedded(
         entityColumn = "fileId",
         associateBy = Junction(RecordFileCrossRef::class)
     )
-    val receipts: List<FileEmbedded>
+    val attachments: List<FileEmbedded>
 )

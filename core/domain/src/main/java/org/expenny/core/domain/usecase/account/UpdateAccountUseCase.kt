@@ -1,5 +1,6 @@
 package org.expenny.core.domain.usecase.account
 
+import kotlinx.coroutines.flow.first
 import org.expenny.core.common.types.AccountType
 import org.expenny.core.domain.repository.AccountRepository
 import org.expenny.core.model.account.AccountUpdate
@@ -11,7 +12,7 @@ class UpdateAccountUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke(params: Params) {
-        val account = accountRepository.getAccount(params.id)!!
+        val account = accountRepository.getAccount(params.id).first()!!
         val totalBalance = account.totalBalance.value - (account.startBalance.value - params.startBalance)
 
         accountRepository.updateAccount(

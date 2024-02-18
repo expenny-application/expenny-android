@@ -1,6 +1,5 @@
 package org.expenny.feature.dashboard.model
 
-import androidx.compose.runtime.Stable
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import org.expenny.core.common.extensions.isWhole

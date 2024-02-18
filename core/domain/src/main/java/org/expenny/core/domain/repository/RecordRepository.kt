@@ -9,6 +9,8 @@ interface RecordRepository {
 
     fun getRecordsDesc(): Flow<List<Record>>
 
+    fun getRecordsAsc(): Flow<List<Record>>
+
     fun getRecord(id: Long): Flow<Record?>
 
     suspend fun createRecord(data: RecordCreate)

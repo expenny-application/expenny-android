@@ -13,7 +13,7 @@ class GetLastUsedAccountUseCase @Inject constructor(
     
     suspend operator fun invoke(): Account? {
         val lastUsedAccount = recordRepository.getRecordsDesc().first().maxByOrNull { it.id }?.account
-        val lastCreatedAccount = accountRepository.getAccountsFlow().first().maxByOrNull { it.id }
+        val lastCreatedAccount = accountRepository.getAccounts().first().maxByOrNull { it.id }
         return lastUsedAccount ?: lastCreatedAccount
     }
 }

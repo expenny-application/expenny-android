@@ -15,7 +15,7 @@ class GetAccountsWithRecordsUseCase @Inject constructor(
 
     operator fun invoke(params: Params): Flow<List<AccountWithRecords>> {
         return combine(
-            accountRepository.getAccountsFlow(),
+            accountRepository.getAccounts(),
             recordRepository.getRecordsDesc()
         ) { accounts, records ->
             accounts.asSequence()

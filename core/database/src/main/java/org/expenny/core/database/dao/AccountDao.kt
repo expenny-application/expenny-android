@@ -18,9 +18,8 @@ interface AccountDao {
     @Query("SELECT * FROM account")
     fun selectAll(): Flow<List<AccountEmbedded>>
 
-    @Transaction
     @Query("SELECT * FROM account WHERE account.accountId = :id")
-    suspend fun selectById(id: Long): AccountEmbedded?
+    fun selectById(id: Long): Flow<AccountEmbedded?>
 
     @Transaction
     @Query("SELECT * FROM account WHERE account.currencyId = :id")
@@ -39,7 +38,7 @@ interface AccountDao {
     suspend fun deleteByProfileId(id: Long)
 
     @Query("DELETE FROM account WHERE account.accountId == :id")
-    suspend fun delete(id: Long)
+    suspend fun deleteById(id: Long)
 
     @Query("DELETE FROM account")
     suspend fun deleteAll()

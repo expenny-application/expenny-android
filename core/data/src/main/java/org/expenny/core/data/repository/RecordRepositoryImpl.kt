@@ -39,15 +39,23 @@ class RecordRepositoryImpl @Inject constructor(
             }.mapFlatten { toModel() }
     }
 
+    override fun getRecordsAsc(): Flow<List<Record>> {
+        return localRepository.getCurrentProfileId()
+            .filterNotNull()
+            .flatMapLatest { profileId ->
+                recordDao.selectAllAsc(profileId)
+            }.mapFlatten { toModel() }
+    }
+
     override fun getRecord(id: Long): Flow<Record?> {
-        return recordDao.select(id).map { it?.toModel() }
+        return recordDao.selectById(id).map { it?.toModel() }
     }
 
     override suspend fun createRecord(data: RecordCreate) {
         return database.withTransaction {
             val recordId = recordDao.insert(data.toEntity())
 
-            data.receiptsUris
+            data.attachments
                 .map { fileRepository.createFile(FileCreate(data.profileId, it)) }
                 .also { recordFileRepository.createRecordFiles(recordId, it) }
 
@@ -70,9 +78,9 @@ class RecordRepositoryImpl @Inject constructor(
     override suspend fun deleteRecords(vararg ids: Long) {
         database.withTransaction {
             ids.forEach { id ->
-                val record = recordDao.select(id).first()!!.toModel()
+                val record = recordDao.selectById(id).first()!!.toModel()
 
-                recordDao.delete(id)
+                recordDao.deleteById(id)
                 recordFileRepository.deleteRecordFiles(id)
 
                 when (record) {
@@ -94,7 +102,7 @@ class RecordRepositoryImpl @Inject constructor(
 
     override suspend fun updateRecord(data: RecordUpdate) {
         database.withTransaction {
-            val oldRecord = recordDao.select(data.id).first()!!
+            val oldRecord = recordDao.selectById(data.id).first()!!
 
             val newRecord = with(data) {
                 when (this) {
@@ -102,7 +110,7 @@ class RecordRepositoryImpl @Inject constructor(
                         RecordCreate.Transaction(
                             profileId = oldRecord.profile.profileId,
                             accountId = accountId,
-                            receiptsUris = receiptsUris,
+                            attachments = attachments,
                             description = description,
                             labels = labels,
                             amount = amount,
@@ -115,14 +123,13 @@ class RecordRepositoryImpl @Inject constructor(
                         RecordCreate.Transfer(
                             profileId = oldRecord.profile.profileId,
                             accountId = accountId,
-                            receiptsUris = receiptsUris,
+                            attachments = attachments,
                             description = description,
                             labels = labels,
                             amount = amount,
                             date = date,
                             transferAmount = transferAmount,
                             transferAccountId = transferAccountId,
-                            transferFee = transferFee
                         )
                     }
                 }

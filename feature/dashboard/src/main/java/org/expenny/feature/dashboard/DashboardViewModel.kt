@@ -233,8 +233,8 @@ class DashboardViewModel @Inject constructor(
 
     private fun Record.copyWithoutDetails(): Record {
         return when (this) {
-            is Record.Transfer -> copy(labels = emptyList(), description = "", receipts = emptyList())
-            is Record.Transaction -> copy(labels = emptyList(), description = "", receipts = emptyList())
+            is Record.Transfer -> copy(labels = emptyList(), description = "", attachments = emptyList())
+            is Record.Transaction -> copy(labels = emptyList(), description = "", attachments = emptyList())
         }
     }
 }

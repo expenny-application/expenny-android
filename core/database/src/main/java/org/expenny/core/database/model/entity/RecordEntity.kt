@@ -21,7 +21,6 @@ data class RecordEntity(
     val date: LocalDateTime,
     val description: String,
     val labels: List<String>,
-    val transferFee: BigDecimal? = null
 ) {
 
     class Update(
@@ -35,6 +34,5 @@ data class RecordEntity(
         val date: LocalDateTime,
         val description: String,
         val labels: List<String>,
-        val transferFee: BigDecimal? = null
     )
 }

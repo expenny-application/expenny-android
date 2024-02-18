@@ -29,7 +29,7 @@ class CreateRecordUseCase @Inject constructor(
                             profileId = profileId,
                             accountId = accountId,
                             categoryId = categoryId,
-                            receiptsUris = receiptsUris,
+                            attachments = receiptsUris,
                             description = description,
                             labels = labels,
                             amount = amount,
@@ -40,14 +40,13 @@ class CreateRecordUseCase @Inject constructor(
                         RecordCreate.Transfer(
                             profileId = profileId,
                             accountId = accountId,
-                            receiptsUris = receiptsUris,
+                            attachments = receiptsUris,
                             description = description,
                             labels = labels,
                             amount = amount,
                             date = date,
                             transferAmount = transferAmount!!,
                             transferAccountId = transferAccountId!!,
-                            transferFee = transferFee!!
                         )
                     }
                 }
@@ -65,7 +64,6 @@ class CreateRecordUseCase @Inject constructor(
         val labels: List<String>,
         val amount: BigDecimal,
         val transferAmount: BigDecimal?,
-        val transferFee: BigDecimal?,
         val date: LocalDateTime,
     )
 }

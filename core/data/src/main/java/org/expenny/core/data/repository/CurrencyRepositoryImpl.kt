@@ -60,7 +60,7 @@ class CurrencyRepositoryImpl @Inject constructor(
             settlementCurrencyDao.delete(id)
 
             accountDao.selectByCurrencyId(id).first().map { it.account.accountId }.forEach { accountId ->
-                accountDao.delete(accountId)
+                accountDao.deleteById(accountId)
                 recordDao.deleteByAccountId(accountId)
             }
         }

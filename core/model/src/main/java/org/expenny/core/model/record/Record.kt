@@ -14,9 +14,10 @@ sealed interface Record {
     val profile: Profile
     val account: Account
     val labels: List<String>
-    val receipts: List<Uri>
+    val attachments: List<Uri>
     val description: String
     val amount: CurrencyAmount
+    val typedAmount: CurrencyAmount
     val date: LocalDateTime
 
     val recordType: RecordType
@@ -35,29 +36,33 @@ sealed interface Record {
         override val profile: Profile,
         override val account: Account,
         override val labels: List<String>,
-        override val receipts: List<Uri>,
+        override val attachments: List<Uri>,
         override val description: String,
         override val amount: CurrencyAmount,
         override val date: LocalDateTime,
         val transferAccount: Account,
         val transferAmount: CurrencyAmount,
-        val fee: CurrencyAmount,
-    ) : Record
+    ) : Record {
+
+        override val typedAmount: CurrencyAmount = amount.negated()
+        val typedTransferAmount: CurrencyAmount = transferAmount
+    }
 
     data class Transaction(
         override val id: Long,
         override val profile: Profile,
         override val account: Account,
         override val labels: List<String>,
-        override val receipts: List<Uri>,
+        override val attachments: List<Uri>,
         override val description: String,
         override val amount: CurrencyAmount,
         override val date: LocalDateTime,
         val type: TransactionType,
         val category: Category?
     ) : Record {
-        val transactionAmount: CurrencyAmount = when(type) {
-            TransactionType.Outgoing -> amount.copy(amountValue = amount.value.negate())
+
+        override val typedAmount: CurrencyAmount = when (type) {
+            TransactionType.Outgoing -> amount.negated()
             TransactionType.Incoming -> amount
         }
     }

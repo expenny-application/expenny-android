@@ -11,7 +11,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.delay
-import org.expenny.core.common.ExpennySnackbarManager
+import org.expenny.core.ui.utils.ExpennySnackbarManager
 import org.expenny.core.ui.components.rememberBiometricPromptState
 import org.expenny.core.ui.utils.OnLifecycleEvent
 import org.expenny.feature.passcode.navigation.PasscodeNavArgs
