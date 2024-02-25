@@ -215,7 +215,7 @@ class ExpennyNavigator(
 
     override fun navigateToOverviewAccountScreen(accountId: Long) {
         navController.navigate(
-            direction = AccountOverviewScreenDestination() within navGraph
+            direction = AccountOverviewScreenDestination(accountId = accountId) within navGraph
         )
     }
 

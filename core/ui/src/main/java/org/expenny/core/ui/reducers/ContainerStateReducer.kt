@@ -1,4 +1,4 @@
-package org.expenny.feature.records.reducer
+package org.expenny.core.ui.reducers
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow

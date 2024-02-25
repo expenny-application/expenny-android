@@ -51,6 +51,7 @@ object DataMapper {
                 currency = accountCurrency.toModel(),
                 amountValue = account.totalBalance
             ),
+            createdAt = account.createdAt
         )
     }
 
@@ -174,7 +175,7 @@ object DataMapper {
             type = type.name,
             description = description,
             startBalance = startBalance,
-            totalBalance = totalBalance
+            totalBalance = totalBalance,
         )
     }
 
@@ -195,7 +196,8 @@ object DataMapper {
             type = type.name,
             description = description,
             startBalance = startBalance,
-            totalBalance = totalBalance
+            totalBalance = totalBalance,
+            createdAt = LocalDateTime.now(),
         )
     }
 

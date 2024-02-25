@@ -208,7 +208,7 @@ class RecordDetailsViewModel @Inject constructor(
     }
 
     private fun handleOnAccountSelect(action: Action.OnAccountSelect) = intent {
-        val account = getAccount(GetAccountUseCase.Params(action.selection.value))!!
+        val account = getAccount(GetAccountUseCase.Params(action.selection.value)).first()!!
 
         when (action.selection.resultCode) {
             accountSelectionResultCode -> selectedAccount.value = account

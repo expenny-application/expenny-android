@@ -33,11 +33,6 @@
     <string name="types_label">Типы</string>
     <string name="without_category_label">Без категории</string>
     <string name="cash_label">Наличные</string>
-    <string name="daily_label">Ежедневно</string>
-    <string name="weekly_label">Еженедельно</string>
-    <string name="monthly_label">Ежемесечно</string>
-    <string name="quarterly_label">Ежеквартально</string>
-    <string name="annually_label">Ежегодно</string>
     <string name="expense_label">Затраты</string>
     <string name="income_label">Прибыль</string>
     <string name="transfer_label">Перевод</string>

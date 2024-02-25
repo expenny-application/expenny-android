@@ -31,7 +31,8 @@ internal fun RecordsListContent(
         dialog = state.dialog,
         scope = scope,
         recordActionsDialogState = recordActionsSheetState,
-        dateRecurrence = state.dateRangeState.dateRecurrence,
+        dateRangeSpans = state.dateRangeSpans,
+        dateRangeSpan = state.dateRangeSpanState.dateRangeSpan,
         selectionFilterData = state.selectionFilterData,
         filterSelection = state.filterSelectionsState,
         onDialogAction = { onAction(it) }
@@ -58,8 +59,8 @@ internal fun RecordsListContent(
             ExpennyDateRangeFilterButton(
                 modifier = Modifier.navigationBarsPadding(),
                 isVisible = lazyListState.isScrollingUp() && !state.isSelectionMode,
-                currentDateRange = state.dateRangeState.dateRangeString,
-                onSelectDateRecurrenceClick = { onAction(Action.OnSelectDateRecurrenceClick) },
+                currentDateRange = state.dateRangeSpanState.dateRangeString,
+                onSelectDateRecurrenceClick = { onAction(Action.OnSelectDateRangeSpanClick) },
                 onPreviousDateRangeClick = { onAction(Action.OnPreviousDateRangeClick) },
                 onNextDateRangeClick = { onAction(Action.OnNextDateRangeClick) }
             )

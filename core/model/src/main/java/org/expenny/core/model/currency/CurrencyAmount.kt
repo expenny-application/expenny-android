@@ -7,8 +7,8 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 
 data class CurrencyAmount(
+    private val amountValue: BigDecimal,
     var currency: Currency,
-    private val amountValue: BigDecimal
 ) {
     val moneyValue = Money.of(org.joda.money.CurrencyUnit.of(currency.unit.code), amountValue)
     val value: BigDecimal = moneyValue.amount
@@ -27,14 +27,14 @@ data class CurrencyAmount(
             rate,
             RoundingMode.HALF_UP
         )
-        return CurrencyAmount(targetCurrency, moneyResult.amount)
+        return CurrencyAmount(moneyResult.amount, targetCurrency)
     }
 
     fun negated(): CurrencyAmount {
         if (value.isZero()) {
             return this
         }
-        return CurrencyAmount(currency, value.negate())
+        return CurrencyAmount(value.negate(), currency)
     }
 
     override fun toString(): String {

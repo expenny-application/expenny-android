@@ -11,7 +11,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import org.expenny.core.common.types.DateRecurrence
+import org.expenny.core.common.types.DateRangeSpan
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennyActionsBottomSheet
 import org.expenny.core.ui.components.ExpennyActionsBottomSheetItem
@@ -31,8 +31,9 @@ import org.expenny.feature.records.reducer.FilterSelectionsStateReducer
 internal fun RecordsDialog(
     dialog: State.Dialog?,
     scope: CoroutineScope,
+    dateRangeSpans: List<DateRangeSpan>,
+    dateRangeSpan: DateRangeSpan,
     recordActionsDialogState: SheetState,
-    dateRecurrence: DateRecurrence,
     selectionFilterData: SelectionFilterDataUi,
     filterSelection: FilterSelectionsStateReducer.State,
     onDialogAction: (Action.Dialog) -> Unit
@@ -46,12 +47,12 @@ internal fun RecordsDialog(
                 onDismiss = { onDialogAction(Action.Dialog.OnDialogDismiss) }
             )
         }
-        is State.Dialog.DateRecurrenceDialog -> {
+        is State.Dialog.DateRangeSpanDialog -> {
             ExpennySingleSelectionDialog(
-                label = stringResource(R.string.date_recurrence_label),
-                data = DateRecurrence.values().map { Pair(it, it.label) },
-                selection = dateRecurrence,
-                onSelect = { onDialogAction(Action.Dialog.OnDateRecurrenceSelect(it)) },
+                label = stringResource(R.string.date_span_label),
+                data = dateRangeSpans.map { Pair(it, it.label) },
+                selection = dateRangeSpan,
+                onSelect = { onDialogAction(Action.Dialog.OnDateRangeSpanSelect(it)) },
                 onDismiss = { onDialogAction(Action.Dialog.OnDialogDismiss) }
             )
         }

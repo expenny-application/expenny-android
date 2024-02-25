@@ -6,9 +6,9 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import org.expenny.core.common.types.DashboardWidget
-import org.expenny.core.common.types.TimePeriod
+import org.expenny.core.common.types.ChronoPeriod
 import org.expenny.core.common.viewmodel.*
-import org.expenny.core.domain.usecase.GetCategoryExpensesUseCase
+import org.expenny.core.domain.usecase.category.GetCategoryExpensesUseCase
 import org.expenny.core.domain.usecase.account.GetAccountsBalanceUseCase
 import org.expenny.core.domain.usecase.account.GetAccountsUseCase
 import org.expenny.core.domain.usecase.currency.GetCurrencyUseCase
@@ -54,7 +54,7 @@ class DashboardViewModel @Inject constructor(
 
     private val selectedCurrency = MutableStateFlow<Currency?>(null)
     private val selectedAccountIds = MutableStateFlow<List<Long>>(emptyList())
-    private val selectedTimePeriod = MutableStateFlow<TimePeriod>(State().currentTimePeriod)
+    private val selectedChronoPeriod = MutableStateFlow<ChronoPeriod>(State().currentChronoPeriod)
 
     override fun onAction(action: Action) {
         when (action) {
@@ -62,7 +62,7 @@ class DashboardViewModel @Inject constructor(
             is Action.OnAllAccountsSelect -> handleOnAllAccountsSelect()
             is Action.OnCategoryExpensesSelect -> handleOnCategoryExpensesSelect(action)
             is Action.OnCategoryExpensesDeselect -> handleOnCategoryExpensesDeselect()
-            is Action.OnExpensesTimeSpanChange -> handleOnExpensesTimeSpanChange(action)
+            is Action.OnExpensesChronoPeriodChange -> handleOnExpensesChronoPeriodChange(action)
             is Action.OnWidgetClick -> handleOnWidgetClick(action)
             is Action.OnCreateRecordClick -> {}
             is Action.OnCreateAccountClick -> handleOnCreateAccountClick()
@@ -156,10 +156,10 @@ class DashboardViewModel @Inject constructor(
         postSideEffect(Event.NavigateToRecords(filter))
     }
 
-    private fun handleOnExpensesTimeSpanChange(action: Action.OnExpensesTimeSpanChange) = intent {
-        selectedTimePeriod.value = action.timePeriod
+    private fun handleOnExpensesChronoPeriodChange(action: Action.OnExpensesChronoPeriodChange) = intent {
+        selectedChronoPeriod.value = action.chronoPeriod
         reduce {
-            state.copy(currentTimePeriod = action.timePeriod)
+            state.copy(currentChronoPeriod = action.chronoPeriod)
         }
     }
 
@@ -202,7 +202,7 @@ class DashboardViewModel @Inject constructor(
         repeatOnSubscription {
             combine(
                 selectedAccountIds,
-                selectedTimePeriod,
+                selectedChronoPeriod,
                 selectedCurrency.filterNotNull(),
             ) { accountIds, timeSpan, currency ->
                 Triple(accountIds, timeSpan, currency)
@@ -210,20 +210,20 @@ class DashboardViewModel @Inject constructor(
                 combine(
                     getAccountsBalance(GetAccountsBalanceUseCase.Params(accountIds, currency)),
                     getCategoryExpenses(GetCategoryExpensesUseCase.Params(currency, timeSpan, accountIds))
-                ) { accountsBalanceData, categoryExpensesData ->
-                    accountsBalanceData to categoryExpensesData
+                ) { accountsBalance, categoryExpenses ->
+                    accountsBalance to categoryExpenses
                 }
-            }.onEach { (accountsBalanceData, categoryExpensesData) ->
+            }.onEach { (accountsBalance, categoryExpenses) ->
                 reduce {
                     state.copy(
                         expensesData = state.expensesData.copy(
                             selectedEntry = null,
-                            totalAmount = amountMapper(categoryExpensesData.totalAmount),
-                            entries = expensesMapper(categoryExpensesData.expenses).toImmutableList(),
+                            totalAmount = amountMapper(categoryExpenses.amount),
+                            entries = expensesMapper(categoryExpenses.expenses).toImmutableList(),
                         ),
                         balanceData = state.balanceData.copy(
-                            lastRecord = accountsBalanceData.lastRecord?.copyWithoutDetails()?.let { recordMapper(it) },
-                            amount = amountMapper(accountsBalanceData.balance)
+                            lastRecord = accountsBalance.lastRecord?.copyWithoutDetails()?.let { recordMapper(it) },
+                            amount = amountMapper(accountsBalance.amount)
                         )
                     )
                 }

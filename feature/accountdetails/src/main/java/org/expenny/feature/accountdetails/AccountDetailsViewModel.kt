@@ -181,7 +181,7 @@ class AccountDetailsViewModel @Inject constructor(
     private fun setupInitialState() = intent {
         savedStateHandle.navArgs<AccountDetailsNavArgs>().also { args ->
             if (args.accountId != null) {
-                val account = getAccount(GetAccountUseCase.Params(args.accountId))!!
+                val account = getAccount(GetAccountUseCase.Params(args.accountId)).first()!!
 
                 currentAccount.value = account
                 selectedCurrency.value = account.currency

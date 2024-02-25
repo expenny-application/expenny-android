@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,7 +35,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableList
-import org.expenny.core.common.types.TimePeriod
+import org.expenny.core.common.types.ChronoPeriod
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennyDonutChart
 import org.expenny.core.ui.components.ExpennySegmentedTabRow
@@ -48,12 +49,12 @@ import org.expenny.feature.dashboard.model.DashboardExpensesUi
 @Composable
 internal fun DashboardExpensesSection(
     modifier: Modifier = Modifier,
-    timePeriods: ImmutableList<TimePeriod>,
+    chronoPeriods: ImmutableList<ChronoPeriod>,
     expensesData: DashboardExpensesUi,
-    currentTimePeriod: TimePeriod,
+    currentChronoPeriod: ChronoPeriod,
     onCategorySelect: (index: Int) -> Unit,
     onCategoryDeselect: () -> Unit,
-    onTimePeriodChange: (TimePeriod) -> Unit
+    onTimePeriodChange: (ChronoPeriod) -> Unit
 ) {
     ExpennyCard(modifier = modifier) {
         Column(
@@ -69,7 +70,8 @@ internal fun DashboardExpensesSection(
                 modifier = Modifier
                     .height(140.dp)
                     .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterHorizontally)
+                horizontalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterHorizontally),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 DashboardExpensesChart(
                     modifier = Modifier.weight(1f),
@@ -84,8 +86,8 @@ internal fun DashboardExpensesSection(
             }
             DashboardExpensesTimePeriodFilter(
                 modifier = Modifier.fillMaxWidth(),
-                timePeriods = timePeriods,
-                currentTimePeriod = currentTimePeriod,
+                chronoPeriods = chronoPeriods,
+                currentChronoPeriod = currentChronoPeriod,
                 onChange = onTimePeriodChange
             )
         }
@@ -157,16 +159,16 @@ private fun DashboardExpensesHeading(
 @Composable
 private fun DashboardExpensesTimePeriodFilter(
     modifier: Modifier = Modifier,
-    timePeriods: ImmutableList<TimePeriod>,
-    currentTimePeriod: TimePeriod,
-    onChange: (TimePeriod) -> Unit
+    chronoPeriods: ImmutableList<ChronoPeriod>,
+    currentChronoPeriod: ChronoPeriod,
+    onChange: (ChronoPeriod) -> Unit
 ) {
     ExpennySegmentedTabRow(
         modifier = modifier.height(40.dp),
-        tabs = timePeriods.map { it.label },
-        selectedTabIndex = timePeriods.indexOf(currentTimePeriod),
+        tabs = chronoPeriods.map { it.label },
+        selectedTabIndex = chronoPeriods.indexOf(currentChronoPeriod),
         onTabSelect = {
-            onChange(timePeriods[it])
+            onChange(chronoPeriods[it])
         }
     )
 }
@@ -198,7 +200,6 @@ private fun DashboardExpensesChart(
         contentAlignment = Alignment.Center
     ) {
         ExpennyDonutChart(
-            modifier = Modifier.fillMaxSize(),
             entries = expensesData.entries,
             progress = transitionProgress.value,
             selectedEntryIndex = expensesData.selectedEntryIndex,

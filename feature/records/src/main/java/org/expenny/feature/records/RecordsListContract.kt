@@ -1,14 +1,14 @@
 package org.expenny.feature.records
 
-import org.expenny.core.common.utils.StringResource
-import org.expenny.core.common.types.DateRecurrence
+import org.expenny.core.common.types.DateRangeSpan
 import org.expenny.core.common.types.RecordType
+import org.expenny.core.common.utils.StringResource
 import org.expenny.core.ui.data.selection.MultiSelection
 import org.expenny.core.ui.data.ui.RecordUi
 import org.expenny.feature.records.model.RecordActionType
 import org.expenny.feature.records.model.RecordsFilterType
 import org.expenny.feature.records.model.SelectionFilterDataUi
-import org.expenny.feature.records.reducer.DateRangeStateReducer
+import org.expenny.core.ui.reducers.DateRangeSpanStateReducer
 import org.expenny.feature.records.reducer.FilterSelectionsStateReducer
 
 data class State(
@@ -17,14 +17,15 @@ data class State(
     val records: List<RecordUi> = listOf(),
     val recordsSelection: MultiSelection<Long> = MultiSelection(emptyList()),
     val filterTypes: List<RecordsFilterType> = emptyList(),
-    val dateRangeState: DateRangeStateReducer.State = DateRangeStateReducer.State(),
+    val dateRangeSpans: List<DateRangeSpan> = DateRangeSpan.spans,
+    val dateRangeSpanState: DateRangeSpanStateReducer.State = DateRangeSpanStateReducer.State(),
     val filterSelectionsState: FilterSelectionsStateReducer.State = FilterSelectionsStateReducer.State(),
     val selectionFilterData: SelectionFilterDataUi = SelectionFilterDataUi(),
 ) {
     sealed interface Dialog {
         data object DeleteRecordDialog : Dialog
         data object RecordActionsDialog : Dialog
-        data object DateRecurrenceDialog : Dialog
+        data object DateRangeSpanDialog : Dialog
         data object RecordTypesDialog : Dialog
         data object AccountsDialog : Dialog
         data object CategoriesDialog : Dialog
@@ -34,7 +35,7 @@ data class State(
 
 sealed interface Action {
     sealed interface Dialog : Action {
-        class OnDateRecurrenceSelect(val dateRecurrence: DateRecurrence) : Dialog
+        class OnDateRangeSpanSelect(val dateRangeSpan: DateRangeSpan) : Dialog
         class OnRecordActionSelect(val action: RecordActionType) : Dialog
         class OnAccountsSelect(val selection: List<Long>) : Dialog
         class OnLabelsSelect(val selection: List<Long>) : Dialog
@@ -48,7 +49,7 @@ sealed interface Action {
     class OnFilterClick(val filterType: RecordsFilterType) : Action
     data object OnDeleteSelectedRecordsClick : Action
     data object OnClearFilterClick : Action
-    data object OnSelectDateRecurrenceClick : Action
+    data object OnSelectDateRangeSpanClick : Action
     data object OnNextDateRangeClick : Action
     data object OnPreviousDateRangeClick : Action
     data object OnAddRecordClick : Action
