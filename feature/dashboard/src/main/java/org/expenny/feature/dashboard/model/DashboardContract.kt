@@ -1,11 +1,10 @@
 package org.expenny.feature.dashboard.model
 
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
+import org.expenny.core.common.types.ChronoPeriod
 import org.expenny.core.common.types.DashboardWidget
 import org.expenny.core.common.types.RecordType
-import org.expenny.core.common.types.ChronoPeriod
 import org.expenny.core.ui.data.navargs.RecordsListFilterNavArg
 import org.expenny.core.ui.data.ui.AccountNameUi
 
@@ -13,8 +12,8 @@ data class State(
     val showAddRecordDialog: Boolean = false,
     val displayCurrency: String? = null,
     val selectAllAccounts: Boolean = true,
-    val selectedAccounts: ImmutableList<AccountNameUi> = persistentListOf(),
-    val accounts: ImmutableList<AccountNameUi> = persistentListOf(),
+    val selectedAccounts: List<AccountNameUi> = emptyList(),
+    val accounts: List<AccountNameUi> = emptyList(),
     val chronoPeriods: ImmutableList<ChronoPeriod> = ChronoPeriod.values().toList().toImmutableList(),
     val currentChronoPeriod: ChronoPeriod = chronoPeriods.first(),
     val widgets: ImmutableList<DashboardWidget> = DashboardWidget.values().toList().toImmutableList(),
@@ -35,7 +34,6 @@ sealed interface Action {
     object OnAllAccountsSelect : Action
     object OnCategoryExpensesDeselect : Action
     object OnDisplayCurrencyClick : Action
-    object OnCreateRecordClick : Action
     object OnCreateAccountClick : Action
 }
 

@@ -3,21 +3,26 @@ package org.expenny.feature.accounts
 import androidx.lifecycle.SavedStateHandle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import org.expenny.core.common.extensions.toggleItem
 import org.expenny.core.common.utils.StringResource.Companion.fromPluralRes
 import org.expenny.core.common.utils.StringResource.Companion.fromRes
-import org.expenny.core.common.viewmodel.*
-import org.expenny.core.domain.usecase.account.GetAccountRecordsUseCase
-import org.expenny.feature.accounts.navigation.AccountsListNavArgs
+import org.expenny.core.common.viewmodel.ExpennyActionViewModel
+import org.expenny.core.domain.usecase.account.GetAccountsUseCase
+import org.expenny.core.domain.usecase.record.GetRecordsUseCase
+import org.expenny.core.model.account.AccountRecords
+import org.expenny.core.model.record.Record
 import org.expenny.core.resources.R
-import org.expenny.core.ui.data.navargs.*
+import org.expenny.core.ui.data.navargs.LongArrayNavArg
+import org.expenny.core.ui.data.navargs.LongNavArg
 import org.expenny.core.ui.data.selection.MultiSelection
 import org.expenny.core.ui.data.selection.SingleSelection
 import org.expenny.core.ui.mapper.AccountMapper
 import org.expenny.feature.accounts.model.Action
 import org.expenny.feature.accounts.model.Event
 import org.expenny.feature.accounts.model.State
+import org.expenny.feature.accounts.navigation.AccountsListNavArgs
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
@@ -29,7 +34,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AccountsListViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
-    private val getAccountRecords: GetAccountRecordsUseCase,
+    private val getAccounts: GetAccountsUseCase,
+    private val getRecords: GetRecordsUseCase,
     private val accountMapper: AccountMapper
 ) : ExpennyActionViewModel<Action>(), ContainerHost<State, Event> {
 
@@ -91,7 +97,20 @@ class AccountsListViewModel @Inject constructor(
 
     private fun subscribeToAccounts() = intent {
         repeatOnSubscription {
-            getAccountRecords().collect {
+            combine(getAccounts(), getRecords()) { accounts, records ->
+                accounts
+                    .filter { it.id !in excludeIds }
+                    .map { account ->
+                        val accountRecords = records.filter {
+                            if (it is Record.Transfer) {
+                                it.transferAccount.id == account.id || it.account.id == account.id
+                            } else {
+                                it.account.id == account.id
+                            }
+                        }
+                        AccountRecords(account, accountRecords)
+                    }
+            }.collect {
                 reduce {
                     state.copy(accounts = accountMapper(it).filter { it.id !in excludeIds })
                 }

@@ -3,20 +3,30 @@ package org.expenny.feature.dashboard
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import org.expenny.core.common.types.DashboardWidget
 import org.expenny.core.common.types.ChronoPeriod
-import org.expenny.core.common.viewmodel.*
-import org.expenny.core.domain.usecase.category.GetCategoryExpensesUseCase
-import org.expenny.core.domain.usecase.account.GetAccountsBalanceUseCase
+import org.expenny.core.common.types.DashboardWidget
+import org.expenny.core.common.types.TransactionType
+import org.expenny.core.common.viewmodel.ExpennyActionViewModel
+import org.expenny.core.domain.usecase.GetCurrencyAmountSumUseCase
 import org.expenny.core.domain.usecase.account.GetAccountsUseCase
+import org.expenny.core.domain.usecase.category.GetCategoryStatementsUseCase
 import org.expenny.core.domain.usecase.currency.GetCurrencyUseCase
 import org.expenny.core.domain.usecase.currency.GetMainCurrencyUseCase
+import org.expenny.core.domain.usecase.record.GetRecordsUseCase
 import org.expenny.core.model.currency.Currency
 import org.expenny.core.model.record.Record
 import org.expenny.core.ui.data.navargs.RecordsListFilterNavArg
-import org.expenny.core.ui.mapper.*
+import org.expenny.core.ui.mapper.AccountNameMapper
+import org.expenny.core.ui.mapper.AmountMapper
+import org.expenny.core.ui.mapper.ExpensesMapper
+import org.expenny.core.ui.mapper.RecordMapper
 import org.expenny.feature.dashboard.model.Action
 import org.expenny.feature.dashboard.model.Event
 import org.expenny.feature.dashboard.model.State
@@ -30,8 +40,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
-    private val getCategoryExpenses: GetCategoryExpensesUseCase,
-    private val getAccountsBalance: GetAccountsBalanceUseCase,
+    private val getCategoryStatements: GetCategoryStatementsUseCase,
+    private val getCurrencyAmountSum: GetCurrencyAmountSumUseCase,
+    private val getRecords: GetRecordsUseCase,
     private val getAccounts: GetAccountsUseCase,
     private val getMainCurrency: GetMainCurrencyUseCase,
     private val getCurrencyUseCase: GetCurrencyUseCase,
@@ -48,7 +59,8 @@ class DashboardViewModel @Inject constructor(
         coroutineScope {
             launch { subscribeToDefaultDisplayCurrency() }
             launch { subscribeToAccounts() }
-            launch { subscribeToBalanceAndExpenses() }
+            launch { subscribeToBalance() }
+            launch { subscribeToExpenses() }
         }
     }
 
@@ -64,7 +76,6 @@ class DashboardViewModel @Inject constructor(
             is Action.OnCategoryExpensesDeselect -> handleOnCategoryExpensesDeselect()
             is Action.OnExpensesChronoPeriodChange -> handleOnExpensesChronoPeriodChange(action)
             is Action.OnWidgetClick -> handleOnWidgetClick(action)
-            is Action.OnCreateRecordClick -> {}
             is Action.OnCreateAccountClick -> handleOnCreateAccountClick()
             is Action.OnDisplayCurrencyClick -> handleOnDisplayCurrencyClick()
             is Action.OnDisplayCurrencySelect -> handleOnDisplayCurrencySelect(action)
@@ -186,48 +197,77 @@ class DashboardViewModel @Inject constructor(
     }
 
     private fun subscribeToAccounts() = intent {
+        getAccounts().collect {
+            reduce { state.copy(accounts = accountNameMapper(it)) }
+            handleOnAllAccountsSelect()
+        }
+    }
+
+    private fun subscribeToBalance() = intent {
         repeatOnSubscription {
-            getAccounts().collect {
-                accountNameMapper(it).toImmutableList().let { accounts ->
-                    reduce {
-                        state.copy(accounts = accounts)
-                    }
-                    handleOnAllAccountsSelect()
+            combine(
+                selectedAccountIds,
+                selectedCurrency.filterNotNull()
+            ) { accountIds, currency ->
+                Pair(accountIds, currency)
+            }.flatMapLatest { (accountIds, currency)->
+                combine(
+                    getAccounts(GetAccountsUseCase.Params(accountIds)),
+                    getRecords(GetRecordsUseCase.Params(accountIds))
+                ) { accounts, records ->
+                    val balances = accounts.map { it.totalBalance }
+                    val totalBalance = getCurrencyAmountSum(balances, currency)
+                    val recentRecord = records.firstOrNull()
+                    Pair(totalBalance, recentRecord)
+                }
+            }.collect { (totalBalance, recentRecord) ->
+                reduce {
+                    state.copy(
+                        balanceData = state.balanceData.copy(
+                            lastRecord = recentRecord?.copyWithoutDetails()?.let { recordMapper(it) },
+                            amount = amountMapper(totalBalance)
+                        )
+                    )
                 }
             }
         }
     }
 
-    private fun subscribeToBalanceAndExpenses() = intent {
+    private fun subscribeToExpenses() = intent {
         repeatOnSubscription {
             combine(
                 selectedAccountIds,
                 selectedChronoPeriod,
-                selectedCurrency.filterNotNull(),
-            ) { accountIds, timeSpan, currency ->
-                Triple(accountIds, timeSpan, currency)
-            }.flatMapLatest { (accountIds, timeSpan, currency) ->
-                combine(
-                    getAccountsBalance(GetAccountsBalanceUseCase.Params(accountIds, currency)),
-                    getCategoryExpenses(GetCategoryExpensesUseCase.Params(currency, timeSpan, accountIds))
-                ) { accountsBalance, categoryExpenses ->
-                    accountsBalance to categoryExpenses
+                selectedCurrency.filterNotNull()
+            ) { accountIds, chronoPeriod, currency ->
+                Triple(accountIds, chronoPeriod, currency)
+            }.flatMapLatest { (accountIds, chronoPeriod, currency) ->
+                getCategoryStatements(
+                    GetCategoryStatementsUseCase.Params(
+                        accountIds = accountIds,
+                        dateTimeRange = chronoPeriod.dateTimeRange(),
+                        transactionType = TransactionType.Outgoing
+                    )
+                ).map { statements ->
+                    val convertedStatements = statements.map {
+                        val amount = it.amount.convertTo(currency).abs()
+                        it.copy(amount)
+                    }
+                    val amounts = convertedStatements.map { it.amount }
+                    val totalAmount = getCurrencyAmountSum(amounts, currency)
+                    Pair(totalAmount, convertedStatements)
                 }
-            }.onEach { (accountsBalance, categoryExpenses) ->
+            }.collect { (totalAmount, statements) ->
                 reduce {
                     state.copy(
                         expensesData = state.expensesData.copy(
                             selectedEntry = null,
-                            totalAmount = amountMapper(categoryExpenses.amount),
-                            entries = expensesMapper(categoryExpenses.expenses).toImmutableList(),
-                        ),
-                        balanceData = state.balanceData.copy(
-                            lastRecord = accountsBalance.lastRecord?.copyWithoutDetails()?.let { recordMapper(it) },
-                            amount = amountMapper(accountsBalance.amount)
+                            totalAmount = amountMapper(totalAmount),
+                            entries = expensesMapper(statements),
                         )
                     )
                 }
-            }.collect()
+            }
         }
     }
 

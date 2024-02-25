@@ -18,14 +18,13 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import kotlinx.collections.immutable.ImmutableList
 import org.expenny.core.common.extensions.sumByDecimal
 import org.expenny.core.ui.data.ui.ChartEntryUi
 
 @Composable
 fun ExpennyDonutChart(
     modifier: Modifier = Modifier,
-    entries: ImmutableList<ChartEntryUi>,
+    entries: List<ChartEntryUi>,
     progress: Float,
     selectedEntryIndex: Int,
     onSliceSelect: (index: Int) -> Unit,

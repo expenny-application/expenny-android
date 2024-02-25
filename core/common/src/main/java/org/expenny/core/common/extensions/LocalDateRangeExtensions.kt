@@ -3,6 +3,7 @@ package org.expenny.core.common.extensions
 import org.expenny.core.common.utils.Constants
 import org.threeten.extra.LocalDateRange
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.Locale
@@ -38,4 +39,8 @@ fun LocalDateRange.toDatesList(): List<LocalDate> {
     return generateSequence(start) { it.plusDays(1) }
         .take(daysCount)
         .toList()
+}
+
+fun LocalDateRange.toClosedDateTimeRange(): ClosedRange<LocalDateTime> {
+    return start.atStartOfDay().rangeTo(endInclusive.atEndOfDay())
 }
