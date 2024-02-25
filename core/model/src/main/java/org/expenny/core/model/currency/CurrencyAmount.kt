@@ -34,7 +34,11 @@ data class CurrencyAmount(
         if (value.isZero()) {
             return this
         }
-        return CurrencyAmount(value.negate(), currency)
+        return copy(amountValue = value.negate())
+    }
+
+    fun abs(): CurrencyAmount {
+        return copy(amountValue = value.abs())
     }
 
     override fun toString(): String {

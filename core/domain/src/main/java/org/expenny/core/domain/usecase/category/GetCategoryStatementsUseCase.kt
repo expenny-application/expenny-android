@@ -2,10 +2,11 @@ package org.expenny.core.domain.usecase.category
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import org.expenny.core.common.types.TransactionType
 import org.expenny.core.domain.repository.RecordRepository
 import org.expenny.core.model.category.CategoryStatement
 import org.expenny.core.model.record.Record
-import org.threeten.extra.LocalDateRange
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 class GetCategoryStatementsUseCase @Inject constructor(
@@ -13,16 +14,19 @@ class GetCategoryStatementsUseCase @Inject constructor(
 ) {
 
     operator fun invoke(params: Params): Flow<List<CategoryStatement>> {
-        val accountId = params.accountId
-        val dateRange = params.dateRange
+        val accountIds = params.accountIds
+        val dateTimeRange = params.dateTimeRange
+        val transactionType = params.transactionType
 
         return recordRepository.getRecordsDesc().map { records ->
             val accountRecords = records
                 .filterIsInstance<Record.Transaction>()
                 .filter {
-                    val accountCondition = if (accountId != null) it.account.id == accountId else true
-                    val dateRangeCondition = dateRange.contains(it.date.toLocalDate())
-                    return@filter accountCondition && dateRangeCondition
+                    val transactionTypeCondition = if (transactionType != null) it.type == transactionType else true
+                    val accountsCondition = if (accountIds.isNotEmpty()) it.account.id in accountIds else true
+                    val dateRangeCondition = dateTimeRange.contains(it.date)
+
+                    return@filter transactionTypeCondition && accountsCondition && dateRangeCondition
                 }
 
             val listOfCategoryStatements = accountRecords
@@ -46,7 +50,8 @@ class GetCategoryStatementsUseCase @Inject constructor(
     }
 
     data class Params(
-        val accountId: Long? = null,
-        val dateRange: LocalDateRange
+        val accountIds: List<Long> = emptyList(),
+        val dateTimeRange: ClosedRange<LocalDateTime>,
+        val transactionType: TransactionType? = null
     )
 }

@@ -50,7 +50,7 @@ class GetRecordsUseCase @Inject constructor(
 
     private fun Record.matchesAccountsFilter(accounts: List<Long>): Boolean {
         return accounts.isEmpty()
-                || (this as? Record.Transaction)?.account?.id in accounts
+                || account.id in accounts
                 || (this as? Record.Transfer)?.transferAccount?.id in accounts
     }
 

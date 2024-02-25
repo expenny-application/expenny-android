@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
+import org.expenny.core.common.extensions.toClosedDateTimeRange
 import org.expenny.core.common.types.AccountTrendType
 import org.expenny.core.common.viewmodel.ExpennyActionViewModel
 import org.expenny.core.domain.usecase.account.GetAccountTrendUseCase
@@ -80,8 +81,8 @@ class AccountOverviewViewModel @Inject constructor(
         dateRangeSpanReducer.stateFlow.flatMapLatest {
             getCategoryStatements(
                 GetCategoryStatementsUseCase.Params(
-                    accountId = accountId,
-                    dateRange = it.dateRange
+                    accountIds = listOf(accountId),
+                    dateTimeRange = it.dateRange.toClosedDateTimeRange(),
                 )
             )
         }.collect {
