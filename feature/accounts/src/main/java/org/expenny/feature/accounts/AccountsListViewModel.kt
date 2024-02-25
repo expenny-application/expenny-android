@@ -8,7 +8,7 @@ import org.expenny.core.common.extensions.toggleItem
 import org.expenny.core.common.utils.StringResource.Companion.fromPluralRes
 import org.expenny.core.common.utils.StringResource.Companion.fromRes
 import org.expenny.core.common.viewmodel.*
-import org.expenny.core.domain.usecase.account.GetAccountsWithRecordsUseCase
+import org.expenny.core.domain.usecase.account.GetAccountRecordsUseCase
 import org.expenny.feature.accounts.navigation.AccountsListNavArgs
 import org.expenny.core.resources.R
 import org.expenny.core.ui.data.navargs.*
@@ -29,7 +29,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AccountsListViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
-    private val getAccountsWithRecords: GetAccountsWithRecordsUseCase,
+    private val getAccountRecords: GetAccountRecordsUseCase,
     private val accountMapper: AccountMapper
 ) : ExpennyActionViewModel<Action>(), ContainerHost<State, Event> {
 
@@ -91,7 +91,7 @@ class AccountsListViewModel @Inject constructor(
 
     private fun subscribeToAccounts() = intent {
         repeatOnSubscription {
-            getAccountsWithRecords().collect {
+            getAccountRecords().collect {
                 reduce {
                     state.copy(accounts = accountMapper(it).filter { it.id !in excludeIds })
                 }

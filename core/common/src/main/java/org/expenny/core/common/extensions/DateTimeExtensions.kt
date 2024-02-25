@@ -40,3 +40,9 @@ fun LocalDate.toWeekRange(): LocalDateRange {
         with(DayOfWeek.MONDAY), with(DayOfWeek.SUNDAY)
     )
 }
+
+fun LocalDate.toDayRange(): LocalDateRange {
+    return LocalDate.now().let {
+        LocalDateRange.ofClosed(it, it)
+    }
+}

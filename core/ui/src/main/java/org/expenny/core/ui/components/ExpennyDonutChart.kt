@@ -24,7 +24,7 @@ import org.expenny.core.ui.data.ui.ChartEntryUi
 
 @Composable
 fun ExpennyDonutChart(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     entries: ImmutableList<ChartEntryUi>,
     progress: Float,
     selectedEntryIndex: Int,

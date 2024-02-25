@@ -4,16 +4,16 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import org.expenny.core.domain.repository.AccountRepository
 import org.expenny.core.domain.repository.RecordRepository
-import org.expenny.core.model.account.AccountWithRecords
+import org.expenny.core.model.account.AccountRecords
 import org.expenny.core.model.record.Record
 import javax.inject.Inject
 
-class GetAccountsWithRecordsUseCase @Inject constructor(
+class GetAccountRecordsUseCase @Inject constructor(
     private val accountRepository: AccountRepository,
     private val recordRepository: RecordRepository,
 ) {
 
-    operator fun invoke(params: Params): Flow<List<AccountWithRecords>> {
+    operator fun invoke(params: Params): Flow<List<AccountRecords>> {
         return combine(
             accountRepository.getAccounts(),
             recordRepository.getRecordsDesc()
@@ -30,12 +30,12 @@ class GetAccountsWithRecordsUseCase @Inject constructor(
                         }
                     }
 
-                    AccountWithRecords(account, accountRecords)
+                    AccountRecords(account, accountRecords)
                 }
         }
     }
 
-    operator fun invoke(): Flow<List<AccountWithRecords>> {
+    operator fun invoke(): Flow<List<AccountRecords>> {
         return invoke(Params())
     }
 

@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import org.expenny.core.common.extensions.toDateString
@@ -31,7 +30,7 @@ import org.expenny.feature.records.model.RecordActionType
 import org.expenny.feature.records.model.RecordsFilterType
 import org.expenny.feature.records.model.SelectionFilterDataUi
 import org.expenny.feature.records.navigation.RecordsListNavArgs
-import org.expenny.feature.records.reducer.DateRangeStateReducer
+import org.expenny.core.ui.reducers.DateRangeSpanStateReducer
 import org.expenny.feature.records.reducer.FilterSelectionsStateReducer
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -57,7 +56,7 @@ class RecordsListViewModel @Inject constructor(
 
     private var selectedRecordId: Long? = null
 
-    private val dateRangeReducer = DateRangeStateReducer(viewModelScope)
+    private val dateRangeSpanReducer = DateRangeSpanStateReducer(viewModelScope)
     private val filterSelectionsReducer = FilterSelectionsStateReducer(viewModelScope)
 
     override val container = container<State, Event>(
@@ -68,7 +67,7 @@ class RecordsListViewModel @Inject constructor(
             launch { subscribeToRecords() }
             launch { subscribeToSelectionFilterData() }
             launch { subscribeToFilterSelectionsReducer() }
-            launch { subscribeToDateRangeReducer() }
+            launch { subscribeToDateRangeSpanReducer() }
             setNavArgs()
         }
     }
@@ -78,7 +77,7 @@ class RecordsListViewModel @Inject constructor(
             is Action.OnBackClick -> handleOnBackClick()
             is Action.OnAddRecordClick -> handleOnRecordAddClick()
             is Action.OnRecordClick -> handleOnRecordClick(action)
-            is Action.OnSelectDateRecurrenceClick -> handleOnSelectDateRecurrenceClick()
+            is Action.OnSelectDateRangeSpanClick -> handleOnSelectDateRangeSpanClick()
             is Action.OnRecordLongClick -> handleOnRecordLongClick(action)
             is Action.OnExitSelectionModeClick -> handleOnExitSelectionModeClick()
             is Action.OnSelectAllClick -> handleOnSelectAllClick()
@@ -89,7 +88,7 @@ class RecordsListViewModel @Inject constructor(
             is Action.OnFilterClick -> handleOnFilterClick(action)
             is Action.Dialog.OnRecordActionSelect -> handleOnRecordActionSelect(action)
             is Action.Dialog.OnDeleteRecordDialogConfirm -> handleOnDeleteRecordDialogConfirm()
-            is Action.Dialog.OnDateRecurrenceSelect -> handleOnSelectDateRecurrence(action)
+            is Action.Dialog.OnDateRangeSpanSelect -> handleOnSelectDateRangeSpan(action)
             is Action.Dialog.OnDialogDismiss -> handleOnDialogDismiss()
             is Action.Dialog.OnAccountsSelect -> handleOnAccountSelect(action)
             is Action.Dialog.OnRecordTypesSelect -> handleOnRecordTypesSelect(action)
@@ -183,11 +182,11 @@ class RecordsListViewModel @Inject constructor(
     }
 
     private fun handleOnNextDateRangeClick() {
-        dateRangeReducer.onNextDateRange()
+        dateRangeSpanReducer.onNextDateRange()
     }
 
     private fun handleOnPreviousDateRangeClick() {
-        dateRangeReducer.onPreviousDateRange()
+        dateRangeSpanReducer.onPreviousDateRange()
     }
 
     private fun handleOnClearFilterClick() {
@@ -211,13 +210,13 @@ class RecordsListViewModel @Inject constructor(
         }
     }
 
-    private fun handleOnSelectDateRecurrenceClick() = intent {
-        reduce { state.copy(dialog = State.Dialog.DateRecurrenceDialog) }
+    private fun handleOnSelectDateRangeSpanClick() = intent {
+        reduce { state.copy(dialog = State.Dialog.DateRangeSpanDialog) }
     }
 
-    private fun handleOnSelectDateRecurrence(action: Action.Dialog.OnDateRecurrenceSelect) {
+    private fun handleOnSelectDateRangeSpan(action: Action.Dialog.OnDateRangeSpanSelect) {
         handleOnDialogDismiss()
-        dateRangeReducer.onDateRecurrenceChange(action.dateRecurrence)
+        dateRangeSpanReducer.onDateRangeSpanChange(action.dateRangeSpan)
     }
 
     private fun handleOnDeleteRecordDialogConfirm() = intent {
@@ -278,7 +277,7 @@ class RecordsListViewModel @Inject constructor(
     private fun subscribeToRecords() = intent {
         repeatOnSubscription {
             combine(
-                dateRangeReducer.stateFlow,
+                dateRangeSpanReducer.stateFlow,
                 filterSelectionsReducer.stateFlow,
             ) { dateRangeState, filtersState ->
                 val selectedLabels = state.selectionFilterData.labels
@@ -293,7 +292,7 @@ class RecordsListViewModel @Inject constructor(
                     dateRange = dateRangeState.dateRange,
                     withoutCategory = filtersState.withoutCategory,
                 )
-            }.distinctUntilChanged().flatMapLatest { recordsParams ->
+            }.flatMapLatest { recordsParams ->
                 combine(
                     getRecords(recordsParams),
                     getMainCurrency()
@@ -345,10 +344,10 @@ class RecordsListViewModel @Inject constructor(
         }
     }
 
-    private fun subscribeToDateRangeReducer() = intent {
+    private fun subscribeToDateRangeSpanReducer() = intent {
         repeatOnSubscription {
-            dateRangeReducer.container.stateFlow.collect {
-                reduce { state.copy(dateRangeState = it) }
+            dateRangeSpanReducer.container.stateFlow.collect {
+                reduce { state.copy(dateRangeSpanState = it) }
             }
         }
     }

@@ -4,6 +4,7 @@ import org.expenny.core.common.types.AccountType
 import org.expenny.core.model.currency.Currency
 import org.expenny.core.model.currency.CurrencyAmount
 import org.expenny.core.model.profile.Profile
+import java.time.LocalDateTime
 
 data class Account(
     val id: Long,
@@ -14,6 +15,7 @@ data class Account(
     val currency: Currency,
     val startBalance: CurrencyAmount,
     val totalBalance: CurrencyAmount,
+    val createdAt: LocalDateTime,
 ) {
     val displayName: String
         get() = "$name • ${currency.unit.code}"

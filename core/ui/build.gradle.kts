@@ -42,4 +42,5 @@ dependencies {
     implementation(libs.destinations.core)
     implementation(libs.hilt.android)
     implementation(libs.joda.money)
+    implementation(libs.orbit.core)
 }

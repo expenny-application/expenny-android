@@ -45,11 +45,6 @@
     <string name="record_type_label">Record type</string>
     <string name="without_category_label">Without category</string>
     <string name="cash_label">Cash</string>
-    <string name="daily_label">Daily</string>
-    <string name="weekly_label">Weekly</string>
-    <string name="monthly_label">Monthly</string>
-    <string name="quarterly_label">Quarterly</string>
-    <string name="annually_label">Annually</string>
     <string name="expense_label">Expense</string>
     <string name="income_label">Income</string>
     <string name="transfer_label">Transfer</string>
@@ -104,6 +99,7 @@
     <string name="spent_by_label">Spent by %1$s</string>
     <string name="expenses_label">Expenses</string>
     <string name="widgets_label">Widgets</string>
+    <string name="current_value_label">Current value</string>
     <string name="total_balance_label">Total balance</string>
     <string name="last_record_label">Last record</string>
     <string name="show_more_label">Show more</string>
@@ -173,7 +169,7 @@
     <string name="end_date_label">End date</string>
     <string name="no_range_selected_label">No range selected</string>
     <string name="clear_filter_label">Clear filter</string>
-    <string name="date_recurrence_label">Date recurrence</string>
+    <string name="date_span_label">Date span</string>
     <string name="select_language_label">Select language</string>
     <string name="select_theme_label">Select theme</string>
     <string name="system_default_label">System default</string>
@@ -240,12 +236,25 @@
     </plurals>
 
     <!-- Arrays -->
-    <string-array name="time_period">
-        <item>Today</item>
+    <string-array name="chrono_period">
+        <item>24H</item>
+        <item>7D</item>
+        <item>1M</item>
+        <item>3M</item>
+        <item>6M</item>
+        <item>1Y</item>
+    </string-array>
+    <string-array name="date_range_span">
+        <item>Day</item>
         <item>Week</item>
         <item>Month</item>
         <item>Quarter</item>
         <item>Year</item>
+    </string-array>
+    <string-array name="trend_type">
+        <item>Balance</item>
+        <item>Expense</item>
+        <item>Income</item>
     </string-array>
     <string-array name="default_categories">
         <item>Groceries</item>

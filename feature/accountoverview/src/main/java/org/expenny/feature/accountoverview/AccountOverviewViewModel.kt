@@ -1,106 +1,140 @@
 package org.expenny.feature.accountoverview
 
-import com.patrykandpatrick.vico.core.entry.FloatEntry
-import com.patrykandpatrick.vico.core.entry.composed.plus
-import com.patrykandpatrick.vico.core.entry.entryOf
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
+import com.patrykandpatrick.vico.core.model.CartesianChartModelProducer
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
-import org.expenny.core.common.extensions.isZero
-import org.expenny.core.common.extensions.toYearRange
-import org.expenny.core.common.types.DateRecurrence
-import org.expenny.core.common.types.RecordType
-import org.expenny.core.common.types.TransactionType
+import org.expenny.core.common.types.AccountTrendType
 import org.expenny.core.common.viewmodel.ExpennyActionViewModel
+import org.expenny.core.domain.usecase.account.GetAccountTrendUseCase
 import org.expenny.core.domain.usecase.account.GetAccountUseCase
+import org.expenny.core.domain.usecase.category.GetCategoryStatementsUseCase
 import org.expenny.core.domain.usecase.record.GetRecordsUseCase
-import org.expenny.core.model.record.Record
+import org.expenny.core.ui.mapper.AmountMapper
+import org.expenny.core.ui.mapper.CategoryStatementMapper
+import org.expenny.core.ui.reducers.DateRangeSpanStateReducer
+import org.expenny.feature.accountoverview.model.AccountOverviewChartUi
+import org.expenny.feature.accountoverview.navigation.AccountOverviewNavArgs
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
-import org.threeten.extra.LocalDateRange
-import java.math.BigDecimal
-import java.time.LocalDate
-import java.time.Month
-import java.time.Period
-import java.time.Year
-import java.time.YearMonth
 import javax.inject.Inject
-import kotlin.random.Random
 
 @HiltViewModel
 class AccountOverviewViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle,
+    private val amountMapper: AmountMapper,
     private val getAccount: GetAccountUseCase,
-    private val getRecords: GetRecordsUseCase
+    private val getRecords: GetRecordsUseCase,
+    private val getAccountTrend: GetAccountTrendUseCase,
+    private val getCategoryStatements: GetCategoryStatementsUseCase,
+    private val categoryStatementMapper: CategoryStatementMapper,
 ): ExpennyActionViewModel<Action>(), ContainerHost<State, Event> {
+
+    internal val overviewChartModelProducer = CartesianChartModelProducer.build(Dispatchers.Main)
+
+    private val accountId = savedStateHandle.navArgs<AccountOverviewNavArgs>().accountId!!
+    private val dateRangeSpanReducer = DateRangeSpanStateReducer(viewModelScope)
+    private val selectedTrendType = MutableStateFlow<AccountTrendType>(State().trendType)
 
     override val container = container<State, Event>(
         initialState = State(),
         buildSettings = { exceptionHandler = defaultCoroutineExceptionHandler() }
     ) {
         coroutineScope {
-            launch {
-                intent {
-                    val accountRecords = getRecords(GetRecordsUseCase.Params(accounts = listOf(1))).first()
+            launch { subscribeToDateRangeSpanReducer() }
+            launch { subscribeToAccountTrend() }
+            launch { subscribeToAccount() }
+            launch { subscribeToStatements() }
+        }
+    }
 
-                    val expensesChartEntries = accountRecords.getMappedData(TransactionType.Outgoing).getChartEntries()
-                    val incomeChartEntries = accountRecords.getMappedData(TransactionType.Incoming).getChartEntries()
-
-                    val saldoChartEntries = (expensesChartEntries.toList() + incomeChartEntries.toList())
-                        .groupBy({ it.x }, { it.y })
-                        .map { (key, values) ->
-                            entryOf(key, values.saldo())
-                        }
-
-                    reduce {
-                        val debitCreditModelProducer = state.debitCreditChartEntryModelProducer.apply { setEntries(
-                            listOf(expensesChartEntries, incomeChartEntries)
-                        )}
-                        val saldoModelProducer = state.saldoChartEntryModelProducer.apply { setEntries(saldoChartEntries) }
-
-                        state.copy(
-                            debitCreditChartEntryModelProducer = debitCreditModelProducer,
-                            saldoChartEntryModelProducer = saldoModelProducer
-                        )
-                    }
-                }
+    private fun subscribeToAccountTrend() = intent {
+        combine(
+            dateRangeSpanReducer.stateFlow,
+            selectedTrendType
+        ) { dateRangeSpan, trendType ->
+            GetAccountTrendUseCase.Params(
+                accountId = accountId,
+                dateRange = dateRangeSpan.dateRange,
+                trendType = trendType
+            )
+        }.flatMapLatest { params ->
+            getAccountTrend(params)
+        }.collect {
+            reduce {
+                state.copy(overviewChart = AccountOverviewChartUi(it))
             }
         }
     }
 
-    private fun Iterable<Float>.saldo(): Float {
-        val debitCreditPair = Pair(firstOrNull() ?: 0f, lastOrNull() ?: 0f)
-        return debitCreditPair.second - debitCreditPair.first
+    private fun subscribeToStatements() = intent {
+        dateRangeSpanReducer.stateFlow.flatMapLatest {
+            getCategoryStatements(
+                GetCategoryStatementsUseCase.Params(
+                    accountId = accountId,
+                    dateRange = it.dateRange
+                )
+            )
+        }.collect {
+            reduce {
+                state.copy(statements = categoryStatementMapper(it))
+            }
+        }
     }
 
-    private fun Map<LocalDate, BigDecimal>.getChartEntries(): List<FloatEntry> {
-        val xValuesToDates = keys.associateBy { it.monthValue.toFloat() }
-        return xValuesToDates.keys.zip(values, ::entryOf)
+    private fun subscribeToAccount() = intent {
+        getAccount(GetAccountUseCase.Params(accountId))
+            .filterNotNull()
+            .collect {
+                reduce { state.copy(totalValue = amountMapper(it.totalBalance)) }
+            }
     }
 
-    private fun List<Record>.getMappedData(type: TransactionType): Map<LocalDate, BigDecimal> {
-        val data = filterIsInstance(Record.Transaction::class.java).filter { it.type == type}
-
-        if (data.isEmpty()) return emptyMap()
-
-//        val dateRange = LocalDate.now().toYearRange()
-//        var currentDate = dateRange.start
-//        val yearDates = mutableListOf<LocalDate>()
-//
-//        while (currentDate.isBefore(dateRange.end)) {
-//            yearDates.add(currentDate)
-//            currentDate = currentDate.plusMonths(1)
-//        }
-
-        // todo add start balance pair for income type
-        return data.groupingBy { it.date.toLocalDate().withDayOfMonth(1) }.eachSumBy { it.amount.value }
+    private fun subscribeToDateRangeSpanReducer() = intent {
+        dateRangeSpanReducer.container.stateFlow.collect {
+            reduce { state.copy(dateRangeSpanState = it) }
+        }
     }
-
-    fun <T, K> Grouping<T, K>.eachSumBy(selector: (T) -> BigDecimal) = fold(BigDecimal.ZERO) { acc, elem -> acc + selector(elem) }
 
     override fun onAction(action: Action) {
-        TODO("Not yet implemented")
+        when (action) {
+            is Action.OnTrendTypeChange -> {
+                intent {
+                    selectedTrendType.value = action.type
+                    reduce { state.copy(trendType = action.type) }
+                }
+            }
+            is Action.OnNextDateRangeClick -> {
+                dateRangeSpanReducer.onNextDateRange()
+            }
+            is Action.OnPreviousDateRangeClick -> {
+                dateRangeSpanReducer.onPreviousDateRange()
+            }
+            is Action.OnSelectDateRangeSpanClick -> {
+                intent {
+                    reduce { state.copy(dialog = State.Dialog.DateRangeSpanDialog) }
+                }
+            }
+            is Action.Dialog.OnDialogDismiss -> {
+                intent {
+                    reduce { state.copy(dialog = null) }
+                }
+            }
+            is Action.Dialog.OnDateRangeSpanSelect -> {
+                intent {
+                    reduce { state.copy(dialog = null) }
+                }
+                dateRangeSpanReducer.onDateRangeSpanChange(action.dateRangeSpan)
+            }
+        }
     }
 }
