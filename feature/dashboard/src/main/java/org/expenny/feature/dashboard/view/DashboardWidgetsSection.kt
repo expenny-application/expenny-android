@@ -12,7 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableList
-import org.expenny.core.common.types.DashboardWidget
+import org.expenny.core.common.types.DashboardWidgetType
 import org.expenny.core.ui.components.ExpennyIconBox
 import org.expenny.core.ui.extensions.icon
 import org.expenny.core.ui.extensions.label
@@ -24,8 +24,8 @@ import org.expenny.core.ui.foundation.ExpennyCard
 internal fun DashboardWidgetsSection(
     modifier: Modifier = Modifier,
     listState: LazyListState,
-    widgets: ImmutableList<DashboardWidget>,
-    onWidgetClick: (DashboardWidget) -> Unit
+    widgets: ImmutableList<DashboardWidgetType>,
+    onWidgetClick: (DashboardWidgetType) -> Unit
 ) {
     BoxWithConstraints(
         modifier = modifier.fillMaxWidth()
@@ -55,7 +55,7 @@ internal fun DashboardWidgetsSection(
 @Composable
 private fun DashboardWidgetCard(
     modifier: Modifier = Modifier,
-    widget: DashboardWidget,
+    widget: DashboardWidgetType,
     onClick: () -> Unit
 ) {
     ExpennyCard(

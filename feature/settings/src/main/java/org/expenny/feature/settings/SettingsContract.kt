@@ -3,12 +3,12 @@ package org.expenny.feature.settings
 import org.expenny.core.common.models.StringResource
 import org.expenny.core.common.types.ApplicationLanguage
 import org.expenny.core.common.types.ApplicationTheme
+import org.expenny.core.common.types.ProfileActionType
+import org.expenny.core.common.types.SettingsItemType
 import org.expenny.core.common.utils.Constants.DEFAULT_REMINDER_TIME_FORMAT
 import org.expenny.core.ui.data.ui.ItemUi
 import org.expenny.core.ui.data.ui.ProfileUi
 import org.expenny.core.ui.data.ui.SingleSelectionUi
-import org.expenny.feature.settings.model.ProfileActionType
-import org.expenny.feature.settings.model.SettingsItemType
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
@@ -39,18 +39,18 @@ data class State(
         data object ReminderTimeDialog : Dialog
 
         data class ProfileSelectionDialog(
-            val data: List<ItemUi>,
+            val data: List<ItemUi<Long>>,
             val selection: SingleSelectionUi<Long>
         ) : Dialog
 
         data class ThemesSelectionDialog(
-            val data: List<ItemUi>,
-            val selection: SingleSelectionUi<Long>
+            val data: List<ItemUi<ApplicationTheme>>,
+            val selection: SingleSelectionUi<ApplicationTheme>
         ) : Dialog
 
         data class LanguagesSelectionDialog(
-            val data: List<ItemUi>,
-            val selection: SingleSelectionUi<Long>
+            val data: List<ItemUi<ApplicationLanguage>>,
+            val selection: SingleSelectionUi<ApplicationLanguage>
         ) : Dialog
     }
 }
@@ -58,9 +58,9 @@ data class State(
 sealed interface Action {
     sealed interface Dialog : Action {
         class OnProfileActionTypeSelect(val type: ProfileActionType) : Dialog
-        class OnSwitchProfileClick(val profileId: Long?) : Dialog
-        class OnThemeSelect(val themeOrdinal: Long?) : Dialog
-        class OnLanguageSelect(val languageOrdinal: Long?) : Dialog
+        class OnSwitchProfileClick(val selection: SingleSelectionUi<Long>) : Dialog
+        class OnThemeSelect(val selection: SingleSelectionUi<ApplicationTheme>) : Dialog
+        class OnLanguageSelect(val selection: SingleSelectionUi<ApplicationLanguage>) : Dialog
         class OnReminderTimeChange(val time: LocalTime) : Dialog
         data object OnCreateProfileClick : Dialog
         data object OnDeleteApplicationDataDialogConfirm : Dialog

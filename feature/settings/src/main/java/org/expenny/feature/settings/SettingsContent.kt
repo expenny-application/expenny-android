@@ -17,9 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
-import org.expenny.core.ui.extensions.asRawString
-import org.expenny.core.ui.extensions.label
-import org.expenny.feature.settings.model.SettingsItemType
+import org.expenny.core.common.types.SettingsItemType
 import org.expenny.feature.settings.view.SettingsDataSection
 import org.expenny.feature.settings.view.SettingsDialog
 import org.expenny.feature.settings.view.SettingsGeneralSection

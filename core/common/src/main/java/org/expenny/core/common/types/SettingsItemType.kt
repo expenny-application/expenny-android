@@ -1,4 +1,4 @@
-package org.expenny.feature.settings.model
+package org.expenny.core.common.types
 
 enum class SettingsItemType {
     Profile,

@@ -12,9 +12,10 @@ import kotlinx.coroutines.launch
 import org.expenny.core.common.extensions.join
 import org.expenny.core.common.types.ApplicationLanguage
 import org.expenny.core.common.types.ApplicationTheme
-import org.expenny.core.common.models.StringResource
 import org.expenny.core.common.models.StringResource.Companion.fromRes
 import org.expenny.core.common.models.StringResource.Companion.fromStr
+import org.expenny.core.common.types.ProfileActionType
+import org.expenny.core.common.types.SettingsItemType
 import org.expenny.core.common.utils.StringResourceProvider
 import org.expenny.core.common.viewmodel.ExpennyActionViewModel
 import org.expenny.core.domain.repository.LocalRepository
@@ -39,8 +40,6 @@ import org.expenny.core.ui.data.ui.ItemUi
 import org.expenny.core.ui.data.ui.SingleSelectionUi
 import org.expenny.core.ui.extensions.labelResId
 import org.expenny.core.ui.mapper.ProfileMapper
-import org.expenny.feature.settings.model.ProfileActionType
-import org.expenny.feature.settings.model.SettingsItemType
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.SimpleSyntax
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -161,8 +160,8 @@ class SettingsViewModel @Inject constructor(
 
     private fun handleOnSwitchProfileClick(action: Action.Dialog.OnSwitchProfileClick) = intent {
         dismissDialog()
-        if (action.profileId != null) {
-            setCurrentProfile(SetCurrentProfileUseCase.Params(action.profileId))
+        action.selection.value?.let {
+            setCurrentProfile(SetCurrentProfileUseCase.Params(it))
             postSideEffect(Event.RestartApplication())
         }
     }
@@ -185,7 +184,7 @@ class SettingsViewModel @Inject constructor(
                     state.copy(
                         dialog = State.Dialog.ThemesSelectionDialog(
                             data = themes.mapToItemUi(),
-                            selection = SingleSelectionUi(state.theme?.ordinal?.toLong())
+                            selection = SingleSelectionUi(state.theme)
                         )
                     )
                 }
@@ -195,7 +194,7 @@ class SettingsViewModel @Inject constructor(
                     state.copy(
                         dialog = State.Dialog.LanguagesSelectionDialog(
                             data = languages.mapToItemUi(),
-                            selection = SingleSelectionUi(state.language.ordinal.toLong())
+                            selection = SingleSelectionUi(state.language)
                         )
                     )
                 }
@@ -244,7 +243,7 @@ class SettingsViewModel @Inject constructor(
     }
 
     private fun handleOnLanguageSelect(action: Action.Dialog.OnLanguageSelect) {
-        action.languageOrdinal?.toInt()?.let { ApplicationLanguage.values().getOrNull(it) }?.let {
+        action.selection.value?.let {
             AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(it.tag))
             intent {
                 reduce { state.copy(language = it) }
@@ -258,7 +257,7 @@ class SettingsViewModel @Inject constructor(
     }
 
     private fun handleOnThemeSelect(action: Action.Dialog.OnThemeSelect) = intent {
-        action.themeOrdinal?.toInt()?.let { ApplicationTheme.values().getOrNull(it) }?.let {
+        action.selection.value?.let {
             when (it) {
                 ApplicationTheme.Dark -> localRepository.setThemeDarkMode(true)
                 ApplicationTheme.Light -> localRepository.setThemeDarkMode(false)
@@ -373,11 +372,11 @@ class SettingsViewModel @Inject constructor(
 
     @JvmName("mapToApplicationLanguageItemUi")
     private fun List<ApplicationLanguage>.mapToItemUi() = map {
-        ItemUi(it.ordinal, stringProvider(fromRes(it.labelResId)))
+        ItemUi(it, stringProvider(fromRes(it.labelResId)))
     }
 
     @JvmName("mapToApplicationThemeItemUi")
     private fun List<ApplicationTheme>.mapToItemUi() = map {
-        ItemUi(it.ordinal, stringProvider(fromRes(it.labelResId)))
+        ItemUi(it, stringProvider(fromRes(it.labelResId)))
     }
 }

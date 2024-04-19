@@ -1,4 +1,4 @@
-package org.expenny.feature.records.model
+package org.expenny.core.common.types
 
 enum class RecordsFilterType {
     Accounts, Labels, Categories, Types, WithoutCategory

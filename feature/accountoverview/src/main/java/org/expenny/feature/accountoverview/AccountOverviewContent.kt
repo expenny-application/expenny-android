@@ -39,12 +39,12 @@ internal fun AccountOverviewContent(
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     when (state.dialog) {
-        is State.Dialog.DateRangeSpanDialog -> {
+        is State.Dialog.IntervalTypesDialog -> {
             ExpennySingleSelectionDialog(
-                title = stringResource(R.string.date_span_label),
+                title = stringResource(R.string.interval_type_label),
                 data = state.dialog.data,
                 selection = state.dialog.selection,
-                onSelectionChange = { onAction(Action.Dialog.OnDateRangeSpanSelect(it)) },
+                onSelectionChange = { onAction(Action.Dialog.OnIntervalTypeSelect(it)) },
                 onDismiss = { onAction(Action.Dialog.OnDialogDismiss) }
             )
         }
@@ -65,10 +65,10 @@ internal fun AccountOverviewContent(
         floatingActionButton = {
             ExpennyDateRangeFilterButton(
                 modifier = Modifier.navigationBarsPadding(),
-                currentDateRange = state.dateRangeSpanState.dateRangeString,
-                onSelectDateRecurrenceClick = { onAction(Action.OnSelectDateRangeSpanClick) },
-                onPreviousDateRangeClick = { onAction(Action.OnPreviousDateRangeClick) },
-                onNextDateRangeClick = { onAction(Action.OnNextDateRangeClick) }
+                currentDateRange = state.intervalState.dateRangeString,
+                onSelectDateRecurrenceClick = { onAction(Action.OnSelectIntervalClick) },
+                onPreviousDateRangeClick = { onAction(Action.OnPreviousIntervalClick) },
+                onNextDateRangeClick = { onAction(Action.OnNextIntervalClick) }
             )
         },
         floatingActionButtonPosition = FabPosition.Center,

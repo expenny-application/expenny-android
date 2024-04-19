@@ -10,8 +10,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import org.expenny.core.common.types.ChronoPeriod
-import org.expenny.core.common.types.DashboardWidget
+import org.expenny.core.common.types.PeriodType
+import org.expenny.core.common.types.DashboardWidgetType
 import org.expenny.core.common.types.TransactionType
 import org.expenny.core.common.viewmodel.ExpennyActionViewModel
 import org.expenny.core.domain.usecase.GetCurrencyAmountSumUseCase
@@ -66,7 +66,7 @@ class DashboardViewModel @Inject constructor(
 
     private val selectedCurrency = MutableStateFlow<Currency?>(null)
     private val selectedAccountIds = MutableStateFlow<List<Long>>(emptyList())
-    private val selectedChronoPeriod = MutableStateFlow<ChronoPeriod>(State().currentChronoPeriod)
+    private val selectedPeriodType = MutableStateFlow<PeriodType>(State().currentPeriodType)
 
     override fun onAction(action: Action) {
         when (action) {
@@ -74,7 +74,7 @@ class DashboardViewModel @Inject constructor(
             is Action.OnAllAccountsSelect -> handleOnAllAccountsSelect()
             is Action.OnCategoryExpensesSelect -> handleOnCategoryExpensesSelect(action)
             is Action.OnCategoryExpensesDeselect -> handleOnCategoryExpensesDeselect()
-            is Action.OnExpensesChronoPeriodChange -> handleOnExpensesChronoPeriodChange(action)
+            is Action.OnExpensesPeriodTypeChange -> handleOnExpensesPeriodTypeChange(action)
             is Action.OnWidgetClick -> handleOnWidgetClick(action)
             is Action.OnCreateAccountClick -> handleOnCreateAccountClick()
             is Action.OnDisplayCurrencyClick -> handleOnDisplayCurrencyClick()
@@ -154,8 +154,8 @@ class DashboardViewModel @Inject constructor(
 
     private fun handleOnWidgetClick(action: Action.OnWidgetClick) = intent {
         when (action.widget) {
-            DashboardWidget.Accounts -> postSideEffect(Event.NavigateToAccounts)
-            DashboardWidget.Records -> postSideEffect(Event.NavigateToRecords())
+            DashboardWidgetType.Accounts -> postSideEffect(Event.NavigateToAccounts)
+            DashboardWidgetType.Records -> postSideEffect(Event.NavigateToRecords())
             else -> {
                 // TODO
             }
@@ -167,10 +167,10 @@ class DashboardViewModel @Inject constructor(
         postSideEffect(Event.NavigateToRecords(filter))
     }
 
-    private fun handleOnExpensesChronoPeriodChange(action: Action.OnExpensesChronoPeriodChange) = intent {
-        selectedChronoPeriod.value = action.chronoPeriod
+    private fun handleOnExpensesPeriodTypeChange(action: Action.OnExpensesPeriodTypeChange) = intent {
+        selectedPeriodType.value = action.periodType
         reduce {
-            state.copy(currentChronoPeriod = action.chronoPeriod)
+            state.copy(currentPeriodType = action.periodType)
         }
     }
 
@@ -237,15 +237,15 @@ class DashboardViewModel @Inject constructor(
         repeatOnSubscription {
             combine(
                 selectedAccountIds,
-                selectedChronoPeriod,
+                selectedPeriodType,
                 selectedCurrency.filterNotNull()
-            ) { accountIds, chronoPeriod, currency ->
-                Triple(accountIds, chronoPeriod, currency)
-            }.flatMapLatest { (accountIds, chronoPeriod, currency) ->
+            ) { accountIds, periodType, currency ->
+                Triple(accountIds, periodType, currency)
+            }.flatMapLatest { (accountIds, periodType, currency) ->
                 getCategoryStatements(
                     GetCategoryStatementsUseCase.Params(
                         accountIds = accountIds,
-                        dateTimeRange = chronoPeriod.dateTimeRange(),
+                        dateTimeRange = periodType.dateTimeRange(),
                         transactionType = TransactionType.Outgoing
                     )
                 ).map { statements ->

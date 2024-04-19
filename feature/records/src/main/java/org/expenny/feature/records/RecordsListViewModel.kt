@@ -12,7 +12,9 @@ import org.expenny.core.common.extensions.addOrRemoveIfExist
 import org.expenny.core.common.models.StringResource.Companion.fromArrayRes
 import org.expenny.core.common.types.RecordType
 import org.expenny.core.common.models.StringResource.Companion.fromRes
-import org.expenny.core.common.types.DateRangeSpan
+import org.expenny.core.common.types.IntervalType
+import org.expenny.core.common.types.RecordActionType
+import org.expenny.core.common.types.RecordsFilterType
 import org.expenny.core.common.utils.StringResourceProvider
 import org.expenny.core.common.viewmodel.ExpennyActionViewModel
 import org.expenny.core.domain.usecase.GetCurrencyAmountSumUseCase
@@ -34,10 +36,8 @@ import org.expenny.core.ui.data.ui.SingleSelectionUi
 import org.expenny.core.ui.extensions.labelResId
 import org.expenny.core.ui.mapper.AmountMapper
 import org.expenny.core.ui.mapper.RecordMapper
-import org.expenny.feature.records.model.RecordActionType
-import org.expenny.feature.records.model.RecordsFilterType
 import org.expenny.feature.records.navigation.RecordsListNavArgs
-import org.expenny.core.ui.reducers.DateRangeSpanStateReducer
+import org.expenny.core.ui.reducers.IntervalTypeStateReducer
 import org.expenny.feature.records.reducer.FilterSelectionsStateReducer
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -62,15 +62,15 @@ class RecordsListViewModel @Inject constructor(
     private val stringProvider: StringResourceProvider
 ) : ExpennyActionViewModel<Action>(), ContainerHost<State, Event> {
 
-    private val dateRangeSpans: List<DateRangeSpan> = DateRangeSpan.spans
     private var accounts: List<Account> = emptyList()
     private var categories: List<Category> = emptyList()
     private var labels: List<String> = emptyList()
     private val recordTypes: List<RecordType> = RecordType.values().toList()
+    private val intervalTypes: List<IntervalType> = IntervalType.values().toList()
 
     private var selectedRecordId: Long? = null
 
-    private val dateRangeSpanReducer = DateRangeSpanStateReducer(viewModelScope)
+    private val intervalTypeReducer = IntervalTypeStateReducer(viewModelScope)
     private val filterSelectionsReducer = FilterSelectionsStateReducer(viewModelScope)
 
     override val container = container<State, Event>(
@@ -81,7 +81,7 @@ class RecordsListViewModel @Inject constructor(
             launch { subscribeToRecords() }
             launch { subscribeToSelectionFilterData() }
             launch { subscribeToFilterSelectionsReducer() }
-            launch { subscribeToDateRangeSpanReducer() }
+            launch { subscribeToIntervalReducer() }
             setNavArgs()
         }
     }
@@ -91,18 +91,18 @@ class RecordsListViewModel @Inject constructor(
             is Action.OnBackClick -> handleOnBackClick()
             is Action.OnAddRecordClick -> handleOnRecordAddClick()
             is Action.OnRecordClick -> handleOnRecordClick(action)
-            is Action.OnSelectDateRangeSpanClick -> handleOnSelectDateRangeSpanClick()
+            is Action.OnSelectIntervalTypeClick -> handleOnSelectIntervalTypeClick()
             is Action.OnRecordLongClick -> handleOnRecordLongClick(action)
             is Action.OnExitSelectionModeClick -> handleOnExitSelectionModeClick()
             is Action.OnSelectAllClick -> handleOnSelectAllClick()
-            is Action.OnNextDateRangeClick -> handleOnNextDateRangeClick()
-            is Action.OnPreviousDateRangeClick -> handleOnPreviousDateRangeClick()
+            is Action.OnNextIntervalClick -> handleOnNextIntervalClick()
+            is Action.OnPreviousIntervalClick -> handleOnPreviousIntervalClick()
             is Action.OnClearFilterClick -> handleOnClearFilterClick()
             is Action.OnDeleteSelectedRecordsClick -> handleOnDeleteSelectedRecordsClick()
             is Action.OnFilterClick -> handleOnFilterClick(action)
             is Action.Dialog.OnRecordActionSelect -> handleOnRecordActionSelect(action)
             is Action.Dialog.OnDeleteRecordDialogConfirm -> handleOnDeleteRecordDialogConfirm()
-            is Action.Dialog.OnDateRangeSpanSelect -> handleOnSelectDateRangeSpan(action)
+            is Action.Dialog.OnIntervalTypeSelect -> handleOnIntervalTypeSelect(action)
             is Action.Dialog.OnDialogDismiss -> handleOnDialogDismiss()
             is Action.Dialog.OnAccountsSelect -> handleOnAccountSelect(action)
             is Action.Dialog.OnRecordTypesSelect -> handleOnRecordTypesSelect(action)
@@ -231,12 +231,12 @@ class RecordsListViewModel @Inject constructor(
         }
     }
 
-    private fun handleOnNextDateRangeClick() {
-        dateRangeSpanReducer.onNextDateRange()
+    private fun handleOnNextIntervalClick() {
+        intervalTypeReducer.onNextInterval()
     }
 
-    private fun handleOnPreviousDateRangeClick() {
-        dateRangeSpanReducer.onPreviousDateRange()
+    private fun handleOnPreviousIntervalClick() {
+        intervalTypeReducer.onPreviousInterval()
     }
 
     private fun handleOnClearFilterClick() {
@@ -260,23 +260,21 @@ class RecordsListViewModel @Inject constructor(
         }
     }
 
-    private fun handleOnSelectDateRangeSpanClick() = intent {
-        val selectionIndex = dateRangeSpans.indexOf(state.dateRangeSpanState.dateRangeSpan)
+    private fun handleOnSelectIntervalTypeClick() = intent {
         reduce {
             state.copy(
-                dialog = State.Dialog.DateRangeSpanDialog(
-                    data = dateRangeSpans.mapToItemUi(),
-                    selection = SingleSelectionUi(selectionIndex.toLong())
+                dialog = State.Dialog.IntervalTypesDialog(
+                    data = intervalTypes.mapToItemUi(),
+                    selection = SingleSelectionUi(state.intervalState.intervalType)
                 )
             )
         }
     }
 
-    private fun handleOnSelectDateRangeSpan(action: Action.Dialog.OnDateRangeSpanSelect) {
+    private fun handleOnIntervalTypeSelect(action: Action.Dialog.OnIntervalTypeSelect) {
         handleOnDialogDismiss()
-        val dateRangeSpan = action.selection.value?.toInt()?.let { dateRangeSpans.getOrNull(it) }
-        if (dateRangeSpan != null) {
-            dateRangeSpanReducer.onDateRangeSpanChange(dateRangeSpan)
+        action.selection.value?.let {
+            intervalTypeReducer.onIntervalTypeChange(it)
         }
     }
 
@@ -327,7 +325,7 @@ class RecordsListViewModel @Inject constructor(
         savedStateHandle.navArgs<RecordsListNavArgs>().filter?.also { filter ->
             filterSelectionsReducer.setState(
                 FilterSelectionsStateReducer.State(
-                    recordTypesSelection = filter.types.map { it.ordinal.toLong() },
+                    recordTypesSelection = filter.types,
                     accountsSelection = filter.accounts,
                     categoriesSelection = filter.categories
                 )
@@ -338,22 +336,20 @@ class RecordsListViewModel @Inject constructor(
     private fun subscribeToRecords() = intent {
         repeatOnSubscription {
             combine(
-                dateRangeSpanReducer.stateFlow,
+                intervalTypeReducer.stateFlow,
                 filterSelectionsReducer.stateFlow,
-            ) { dateRangeState, filtersState ->
+            ) { intervalState, filtersState ->
                 val selectedLabels = labels.filterIndexed { index, _ ->
-                    index.toLong() in filtersState.labelsSelection
+                    index in filtersState.labelsSelection
                 }.map { it }
 
                 GetRecordsUseCase.Params(
-                    accounts = filtersState.accountsSelection,
                     labels = selectedLabels,
+                    accounts = filtersState.accountsSelection,
                     categories = filtersState.categoriesSelection,
-                    dateRange = dateRangeState.dateRange,
+                    dateRange = intervalState.dateRange,
                     withoutCategory = filtersState.withoutCategory,
-                    types = filtersState.recordTypesSelection.mapNotNull {
-                        RecordType.values().getOrNull(it.toInt())
-                    }
+                    types = filtersState.recordTypesSelection
                 )
             }.flatMapLatest { recordsParams ->
                 combine(
@@ -403,10 +399,10 @@ class RecordsListViewModel @Inject constructor(
         }
     }
 
-    private fun subscribeToDateRangeSpanReducer() = intent {
+    private fun subscribeToIntervalReducer() = intent {
         repeatOnSubscription {
-            dateRangeSpanReducer.container.stateFlow.collect {
-                reduce { state.copy(dateRangeSpanState = it) }
+            intervalTypeReducer.container.stateFlow.collect {
+                reduce { state.copy(intervalState = it) }
             }
         }
     }
@@ -422,12 +418,12 @@ class RecordsListViewModel @Inject constructor(
 
     @JvmName("mapRecordTypeToItemUi")
     private fun List<RecordType>.mapToItemUi() = map {
-        ItemUi(it.ordinal, stringProvider(fromRes(it.labelResId)))
+        ItemUi(it, stringProvider(fromRes(it.labelResId)))
     }
 
-    @JvmName("mapDateRangeSpanToItemUi")
-    private fun List<DateRangeSpan>.mapToItemUi() = mapIndexed { i, item ->
-        ItemUi(i, stringProvider(fromArrayRes(item.labelResId, i)))
+    @JvmName("mapIntervalTypeToItemUi")
+    private fun List<IntervalType>.mapToItemUi() = map {
+        ItemUi(it, stringProvider(fromArrayRes(it.labelResId, it.ordinal)))
     }
 
     private fun List<Record>.mapToUi(mainCurrency: Currency): List<RecordUi> {

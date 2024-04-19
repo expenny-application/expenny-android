@@ -12,7 +12,6 @@ import org.expenny.core.ui.components.ExpennyDateRangeFilterButton
 import org.expenny.core.ui.extensions.isScrollingUp
 import org.expenny.core.ui.utils.ExpennyDrawerState
 import org.expenny.feature.records.Action
-import org.expenny.feature.records.model.*
 import org.expenny.feature.records.State
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,10 +54,10 @@ internal fun RecordsListContent(
             ExpennyDateRangeFilterButton(
                 modifier = Modifier.navigationBarsPadding(),
                 isVisible = lazyListState.isScrollingUp() && !state.isSelectionMode,
-                currentDateRange = state.dateRangeSpanState.dateRangeString,
-                onSelectDateRecurrenceClick = { onAction(Action.OnSelectDateRangeSpanClick) },
-                onPreviousDateRangeClick = { onAction(Action.OnPreviousDateRangeClick) },
-                onNextDateRangeClick = { onAction(Action.OnNextDateRangeClick) }
+                currentDateRange = state.intervalState.dateRangeString,
+                onSelectDateRecurrenceClick = { onAction(Action.OnSelectIntervalTypeClick) },
+                onPreviousDateRangeClick = { onAction(Action.OnPreviousIntervalClick) },
+                onNextDateRangeClick = { onAction(Action.OnNextIntervalClick) }
             )
         },
         floatingActionButtonPosition = FabPosition.Center,

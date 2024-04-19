@@ -10,9 +10,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -35,7 +33,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableList
-import org.expenny.core.common.types.ChronoPeriod
+import org.expenny.core.common.types.PeriodType
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennyDonutChart
 import org.expenny.core.ui.components.ExpennySegmentedTabRow
@@ -49,12 +47,12 @@ import org.expenny.feature.dashboard.model.DashboardExpensesUi
 @Composable
 internal fun DashboardExpensesSection(
     modifier: Modifier = Modifier,
-    chronoPeriods: ImmutableList<ChronoPeriod>,
+    periodTypes: ImmutableList<PeriodType>,
     expensesData: DashboardExpensesUi,
-    currentChronoPeriod: ChronoPeriod,
+    currentPeriodType: PeriodType,
     onCategorySelect: (index: Int) -> Unit,
     onCategoryDeselect: () -> Unit,
-    onTimePeriodChange: (ChronoPeriod) -> Unit
+    onTimePeriodChange: (PeriodType) -> Unit
 ) {
     ExpennyCard(modifier = modifier) {
         Column(
@@ -86,8 +84,8 @@ internal fun DashboardExpensesSection(
             }
             DashboardExpensesTimePeriodFilter(
                 modifier = Modifier.fillMaxWidth(),
-                chronoPeriods = chronoPeriods,
-                currentChronoPeriod = currentChronoPeriod,
+                periodTypes = periodTypes,
+                currentPeriodType = currentPeriodType,
                 onChange = onTimePeriodChange
             )
         }
@@ -159,16 +157,16 @@ private fun DashboardExpensesHeading(
 @Composable
 private fun DashboardExpensesTimePeriodFilter(
     modifier: Modifier = Modifier,
-    chronoPeriods: ImmutableList<ChronoPeriod>,
-    currentChronoPeriod: ChronoPeriod,
-    onChange: (ChronoPeriod) -> Unit
+    periodTypes: ImmutableList<PeriodType>,
+    currentPeriodType: PeriodType,
+    onChange: (PeriodType) -> Unit
 ) {
     ExpennySegmentedTabRow(
         modifier = modifier.height(40.dp),
-        tabs = chronoPeriods.map { it.label },
-        selectedTabIndex = chronoPeriods.indexOf(currentChronoPeriod),
+        tabs = periodTypes.map { it.label },
+        selectedTabIndex = periodTypes.indexOf(currentPeriodType),
         onTabSelect = {
-            onChange(chronoPeriods[it])
+            onChange(periodTypes[it])
         }
     )
 }
