@@ -92,12 +92,12 @@ internal fun DashboardContent(
             )
             DashboardExpensesSection(
                 modifier = Modifier.fillMaxWidth(),
-                chronoPeriods = state.chronoPeriods,
+                periodTypes = state.periodTypes,
                 expensesData = state.expensesData,
-                currentChronoPeriod = state.currentChronoPeriod,
+                currentPeriodType = state.currentPeriodType,
                 onCategorySelect = { onAction(Action.OnCategoryExpensesSelect(it)) },
                 onCategoryDeselect = { onAction(Action.OnCategoryExpensesDeselect) },
-                onTimePeriodChange = { onAction(Action.OnExpensesChronoPeriodChange(it)) }
+                onTimePeriodChange = { onAction(Action.OnExpensesPeriodTypeChange(it)) }
             )
         }
     }

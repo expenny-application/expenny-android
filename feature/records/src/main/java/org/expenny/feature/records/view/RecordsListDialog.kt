@@ -9,15 +9,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import org.expenny.core.common.types.RecordActionType
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennyActionsBottomSheet
 import org.expenny.core.ui.components.ExpennyActionsBottomSheetItem
+import org.expenny.core.ui.extensions.icon
+import org.expenny.core.ui.extensions.label
 import org.expenny.core.ui.foundation.ExpennyMultiSelectionDialog
 import org.expenny.core.ui.foundation.ExpennySingleSelectionDialog
 import org.expenny.core.ui.foundation.ExpennyDialog
 import org.expenny.feature.records.Action
 import org.expenny.feature.records.State
-import org.expenny.feature.records.model.RecordActionType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,12 +38,12 @@ internal fun RecordsDialog(
                 onDismiss = { onDialogAction(Action.Dialog.OnDialogDismiss) }
             )
         }
-        is State.Dialog.DateRangeSpanDialog -> {
+        is State.Dialog.IntervalTypesDialog -> {
             ExpennySingleSelectionDialog(
-                title = stringResource(R.string.date_span_label),
+                title = stringResource(R.string.interval_type_label),
                 data = dialog.data,
                 selection = dialog.selection,
-                onSelectionChange = { onDialogAction(Action.Dialog.OnDateRangeSpanSelect(it)) },
+                onSelectionChange = { onDialogAction(Action.Dialog.OnIntervalTypeSelect(it)) },
                 onDismiss = { onDialogAction(Action.Dialog.OnDialogDismiss) }
             )
         }

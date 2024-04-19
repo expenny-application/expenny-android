@@ -1,6 +1,6 @@
 package org.expenny.core.common.types
 
-enum class DashboardWidget {
+enum class DashboardWidgetType {
     Records,
     Accounts,
     Budgets,

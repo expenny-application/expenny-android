@@ -20,11 +20,11 @@ class FilterSelectionsStateReducer(
         reduce { state.copy(categoriesSelection = selection) }
     }
 
-    fun onLabelsSelectionUpdate(selection: List<Long>) = intent {
+    fun onLabelsSelectionUpdate(selection: List<Int>) = intent {
         reduce { state.copy(labelsSelection = selection) }
     }
 
-    fun onRecordTypesSelectionUpdate(selection: List<Long>) = intent {
+    fun onRecordTypesSelectionUpdate(selection: List<RecordType>) = intent {
         reduce { state.copy(recordTypesSelection = selection) }
     }
 
@@ -45,10 +45,10 @@ class FilterSelectionsStateReducer(
     }
 
     data class State(
-        val recordTypesSelection: List<Long> = emptyList(),
+        val recordTypesSelection: List<RecordType> = emptyList(),
         val accountsSelection: List<Long> = emptyList(),
         val categoriesSelection: List<Long> = emptyList(),
-        val labelsSelection: List<Long> = emptyList(),
+        val labelsSelection: List<Int> = emptyList(),
         val withoutCategory: Boolean = false,
     ) : ContainerStateReducer.State {
 

@@ -19,14 +19,11 @@ import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,6 +42,7 @@ import androidx.compose.ui.window.DialogProperties
 import org.expenny.core.common.extensions.addOrRemoveIfExist
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennySelectionButton
+import org.expenny.core.ui.data.ui.AbstractItemUi
 import org.expenny.core.ui.data.ui.ItemUi
 import org.expenny.core.ui.data.ui.MultiSelectionUi
 import org.expenny.core.ui.data.ui.SelectionUi
@@ -159,12 +157,12 @@ fun ExpennyDeleteDialog(
 }
 
 @Composable
-fun ExpennySingleSelectionDialog(
+fun <T> ExpennySingleSelectionDialog(
     modifier: Modifier = Modifier,
     title: String,
-    data: List<ItemUi>,
-    selection: SingleSelectionUi<Long>,
-    onSelectionChange: (SingleSelectionUi<Long>) -> Unit,
+    data: List<ItemUi<T>>,
+    selection: SingleSelectionUi<T>,
+    onSelectionChange: (SingleSelectionUi<T>) -> Unit,
     onDismiss: () -> Unit
 ) {
     ExpennyDialog(
@@ -192,12 +190,12 @@ fun ExpennySingleSelectionDialog(
 }
 
 @Composable
-fun ExpennyMultiSelectionDialog(
+fun <T> ExpennyMultiSelectionDialog(
     modifier: Modifier = Modifier,
     title: String,
-    data: List<ItemUi>,
-    selection: MultiSelectionUi<Long>,
-    onSelectionChange: (MultiSelectionUi<Long>) -> Unit,
+    data: List<ItemUi<T>>,
+    selection: MultiSelectionUi<T>,
+    onSelectionChange: (MultiSelectionUi<T>) -> Unit,
     onDismiss: () -> Unit
 ) {
     var localSelection by remember { mutableStateOf(selection) }
@@ -230,70 +228,6 @@ fun ExpennyMultiSelectionDialog(
             )
         }
     )
-}
-
-@Composable
-private fun DialogContent(
-    modifier: Modifier = Modifier,
-    buttons: @Composable () -> Unit,
-    icon: (@Composable () -> Unit)?,
-    title: (@Composable () -> Unit)?,
-    text: @Composable (() -> Unit)?,
-) {
-    Surface(
-        modifier = modifier,
-        shape = MaterialTheme.shapes.medium,
-        color = MaterialTheme.colorScheme.surfaceContainer,
-    ) {
-        Column(
-            modifier = Modifier.padding(PaddingValues(all = 24.dp))
-        ) {
-            icon?.let {
-                CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurface) {
-                    Box(
-                        modifier = Modifier
-                            .padding(PaddingValues(bottom = 16.dp))
-                            .align(Alignment.CenterHorizontally)
-                    ) {
-                        icon()
-                    }
-                }
-            }
-            title?.let {
-                CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurface) {
-                    ProvideTextStyle(MaterialTheme.typography.titleLarge) {
-                        Box(
-                            modifier = Modifier
-                                .padding(PaddingValues(bottom = 16.dp))
-                                .align(
-                                    if (icon == null) Alignment.Start
-                                    else Alignment.CenterHorizontally
-                                ),
-                        ) {
-                            title()
-                        }
-                    }
-                }
-            }
-            text?.let {
-                CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurface) {
-                    ProvideTextStyle(MaterialTheme.typography.bodyLarge) {
-                        Box(
-                            modifier = Modifier
-                                .weight(weight = 1f, fill = false)
-                                .padding(PaddingValues(bottom = 16.dp))
-                                .align(Alignment.Start)
-                        ) {
-                            text()
-                        }
-                    }
-                }
-            }
-            Box(modifier = Modifier.align(Alignment.End)) {
-                buttons()
-            }
-        }
-    }
 }
 
 @Stable
@@ -360,14 +294,14 @@ class ExpennyDialogScope {
     }
 
     @Composable
-    inline fun <reified S : SelectionUi<Long>> DialogList(
+    inline fun <K, I : AbstractItemUi<K>, reified S : SelectionUi<K>> DialogList(
         modifier: Modifier = Modifier,
-        data: List<ItemUi>,
+        data: List<I>,
         selection: S,
         crossinline onSelectionChange: (S) -> Unit
     ) {
         val selectionType by rememberUpdatedState(selection.type)
-        val handleOnSelectionChange: (Long) -> Unit = {
+        val handleOnSelectionChange: (K) -> Unit = {
             val newSelection = when (selection) {
                 is SingleSelectionUi<*> -> SingleSelectionUi(it)
                 is MultiSelectionUi<*> -> MultiSelectionUi(selection.value.addOrRemoveIfExist(it))
@@ -391,10 +325,10 @@ class ExpennyDialogScope {
             items(data) {
                 DialogListItem(
                     selectionType = selectionType,
-                    isSelected = selection.contains(it.id),
+                    isSelected = selection.contains(it.key),
                     label = it.label,
                     onClick = {
-                        handleOnSelectionChange(it.id)
+                        handleOnSelectionChange(it.key)
                     }
                 )
             }

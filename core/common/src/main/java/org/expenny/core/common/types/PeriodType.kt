@@ -3,7 +3,7 @@ package org.expenny.core.common.types
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
-enum class ChronoPeriod {
+enum class PeriodType {
     Last24Hours,
     Last7Days,
     Last1Month,

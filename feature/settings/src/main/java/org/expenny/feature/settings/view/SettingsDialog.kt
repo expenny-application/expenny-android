@@ -10,17 +10,18 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import org.expenny.core.common.types.ProfileActionType
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennyActionsBottomSheet
 import org.expenny.core.ui.components.ExpennyActionsBottomSheetItem
 import org.expenny.core.ui.components.ExpennyTimePicker
-import org.expenny.core.ui.data.ui.ItemUi
-import org.expenny.core.ui.data.ui.SingleSelectionUi
+import org.expenny.core.ui.extensions.color
+import org.expenny.core.ui.extensions.icon
+import org.expenny.core.ui.extensions.label
 import org.expenny.core.ui.foundation.ExpennyDeleteDialog
-import org.expenny.core.ui.foundation.ExpennyDialog
+import org.expenny.core.ui.foundation.ExpennySingleSelectionDialog
 import org.expenny.feature.settings.Action
 import org.expenny.feature.settings.State
-import org.expenny.feature.settings.model.ProfileActionType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,17 +33,19 @@ internal fun SettingsDialog(
 ) {
     when (state.dialog) {
         is State.Dialog.ThemesSelectionDialog -> {
-            ThemeSelectionDialog(
-                themes = state.dialog.data,
-                selectedTheme = state.dialog.selection,
+            ExpennySingleSelectionDialog(
+                title = stringResource(R.string.select_theme_label),
+                data = state.dialog.data,
+                selection = state.dialog.selection,
                 onSelectionChange = { onDialogAction(Action.Dialog.OnThemeSelect(it)) },
                 onDismiss = { onDialogAction(Action.Dialog.OnDialogDismiss) }
             )
         }
         is State.Dialog.LanguagesSelectionDialog -> {
-            LanguageSelectionDialog(
-                languages = state.dialog.data,
-                selectedLanguage = state.dialog.selection,
+            ExpennySingleSelectionDialog(
+                title = stringResource(R.string.select_language_label),
+                data = state.dialog.data,
+                selection = state.dialog.selection,
                 onSelectionChange = { onDialogAction(Action.Dialog.OnLanguageSelect(it)) },
                 onDismiss = { onDialogAction(Action.Dialog.OnDialogDismiss) }
             )
@@ -64,9 +67,10 @@ internal fun SettingsDialog(
             )
         }
         is State.Dialog.ProfileSelectionDialog -> {
-            ProfileSelectionDialog(
-                profiles = state.dialog.data,
-                selectedProfile = state.dialog.selection,
+            ExpennySingleSelectionDialog(
+                title = stringResource(R.string.switch_profile_label),
+                data = state.dialog.data,
+                selection = state.dialog.selection,
                 onSelectionChange = { onDialogAction(Action.Dialog.OnSwitchProfileClick(it)) },
                 onDismiss = { onDialogAction(Action.Dialog.OnDialogDismiss) }
             )
@@ -131,94 +135,4 @@ private fun ProfileActionsDialog(
             }
         }
     }
-}
-
-@Composable
-private fun ThemeSelectionDialog(
-    themes: List<ItemUi>,
-    selectedTheme: SingleSelectionUi<Long>,
-    onSelectionChange: (Long?) -> Unit,
-    onDismiss: () -> Unit
-) {
-    ExpennyDialog(
-        onDismissRequest = onDismiss,
-        title = {
-            DialogTitle(text = stringResource(R.string.select_theme_label))
-        },
-        rightButton = {
-            DialogButton(
-                label = stringResource(R.string.cancel_button),
-                onClick = onDismiss
-            )
-        },
-        list = {
-            DialogList(
-                data = themes,
-                selection = selectedTheme,
-                onSelectionChange = {
-                    onSelectionChange(it.value)
-                }
-            )
-        }
-    )
-}
-
-@Composable
-private fun LanguageSelectionDialog(
-    languages: List<ItemUi>,
-    selectedLanguage: SingleSelectionUi<Long>,
-    onSelectionChange: (Long?) -> Unit,
-    onDismiss: () -> Unit
-) {
-    ExpennyDialog(
-        onDismissRequest = onDismiss,
-        title = {
-            DialogTitle(text = stringResource(R.string.select_language_label))
-        },
-        rightButton = {
-            DialogButton(
-                label = stringResource(R.string.cancel_button),
-                onClick = onDismiss
-            )
-        },
-        list = {
-            DialogList(
-                data = languages,
-                selection = selectedLanguage,
-                onSelectionChange = {
-                    onSelectionChange(it.value)
-                }
-            )
-        }
-    )
-}
-
-@Composable
-private fun ProfileSelectionDialog(
-    profiles: List<ItemUi>,
-    selectedProfile: SingleSelectionUi<Long>,
-    onSelectionChange: (Long?) -> Unit,
-    onDismiss: () -> Unit
-) {
-    ExpennyDialog(
-        onDismissRequest = onDismiss,
-        title = {
-            DialogTitle(text = stringResource(R.string.switch_profile_label))
-        },
-        rightButton = {
-            DialogButton(
-                label = stringResource(R.string.cancel_button),
-                onClick = onDismiss
-            )
-        },
-        list = {
-            DialogList(
-                data = profiles,
-                selection = selectedProfile,
-                onSelectionChange = {
-                    onSelectionChange(it.value)
-                }
-            )
-        }
-    )
 }

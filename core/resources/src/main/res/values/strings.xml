@@ -169,7 +169,7 @@
     <string name="end_date_label">End date</string>
     <string name="no_range_selected_label">No range selected</string>
     <string name="clear_filter_label">Clear filter</string>
-    <string name="date_span_label">Date span</string>
+    <string name="interval_type_label">Interval type</string>
     <string name="select_language_label">Select language</string>
     <string name="select_theme_label">Select theme</string>
     <string name="system_default_label">System default</string>
@@ -236,7 +236,7 @@
     </plurals>
 
     <!-- Arrays -->
-    <string-array name="chrono_period">
+    <string-array name="period_type">
         <item>24H</item>
         <item>7D</item>
         <item>1M</item>
@@ -244,7 +244,7 @@
         <item>6M</item>
         <item>1Y</item>
     </string-array>
-    <string-array name="date_range_span">
+    <string-array name="interval_type">
         <item>Day</item>
         <item>Week</item>
         <item>Month</item>

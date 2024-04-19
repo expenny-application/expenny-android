@@ -12,9 +12,8 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import org.expenny.core.common.extensions.toClosedDateTimeRange
-import org.expenny.core.common.models.StringResource
-import org.expenny.core.common.types.AccountTrendType
-import org.expenny.core.common.types.DateRangeSpan
+import org.expenny.core.common.models.StringResource.Companion.fromArrayRes
+import org.expenny.core.common.types.IntervalType
 import org.expenny.core.common.utils.StringResourceProvider
 import org.expenny.core.common.viewmodel.ExpennyActionViewModel
 import org.expenny.core.domain.usecase.account.GetAccountTrendUseCase
@@ -26,7 +25,7 @@ import org.expenny.core.ui.data.ui.SingleSelectionUi
 import org.expenny.core.ui.extensions.labelResId
 import org.expenny.core.ui.mapper.AmountMapper
 import org.expenny.core.ui.mapper.CategoryStatementMapper
-import org.expenny.core.ui.reducers.DateRangeSpanStateReducer
+import org.expenny.core.ui.reducers.IntervalTypeStateReducer
 import org.expenny.feature.accountoverview.model.AccountOverviewChartUi
 import org.expenny.feature.accountoverview.navigation.AccountOverviewNavArgs
 import org.orbitmvi.orbit.ContainerHost
@@ -50,16 +49,16 @@ class AccountOverviewViewModel @Inject constructor(
     internal val overviewChartModelProducer = CartesianChartModelProducer.build(Dispatchers.Main)
 
     private val accountId = savedStateHandle.navArgs<AccountOverviewNavArgs>().accountId!!
-    private val dateRangeSpans = listOf(DateRangeSpan.Week(), DateRangeSpan.Month(), DateRangeSpan.Year())
-    private val dateRangeSpanReducer = DateRangeSpanStateReducer(viewModelScope)
-    private val selectedTrendType = MutableStateFlow<AccountTrendType>(State().trendType)
+    private val intervals = listOf(IntervalType.Week, IntervalType.Month, IntervalType.Year)
+    private val intervalReducer = IntervalTypeStateReducer(viewModelScope)
+    private val selectedTrendType = MutableStateFlow(State().trendType)
 
     override val container = container<State, Event>(
         initialState = State(),
         buildSettings = { exceptionHandler = defaultCoroutineExceptionHandler() }
     ) {
         coroutineScope {
-            launch { subscribeToDateRangeSpanReducer() }
+            launch { subscribeToIntervalReducer() }
             launch { subscribeToAccountTrend() }
             launch { subscribeToAccount() }
             launch { subscribeToStatements() }
@@ -68,12 +67,12 @@ class AccountOverviewViewModel @Inject constructor(
 
     private fun subscribeToAccountTrend() = intent {
         combine(
-            dateRangeSpanReducer.stateFlow,
+            intervalReducer.stateFlow,
             selectedTrendType
-        ) { dateRangeSpan, trendType ->
+        ) { intervalState, trendType ->
             GetAccountTrendUseCase.Params(
                 accountId = accountId,
-                dateRange = dateRangeSpan.dateRange,
+                dateRange = intervalState.dateRange,
                 trendType = trendType
             )
         }.flatMapLatest { params ->
@@ -86,7 +85,7 @@ class AccountOverviewViewModel @Inject constructor(
     }
 
     private fun subscribeToStatements() = intent {
-        dateRangeSpanReducer.stateFlow.flatMapLatest {
+        intervalReducer.stateFlow.flatMapLatest {
             getCategoryStatements(
                 GetCategoryStatementsUseCase.Params(
                     accountIds = listOf(accountId),
@@ -108,9 +107,9 @@ class AccountOverviewViewModel @Inject constructor(
             }
     }
 
-    private fun subscribeToDateRangeSpanReducer() = intent {
-        dateRangeSpanReducer.container.stateFlow.collect {
-            reduce { state.copy(dateRangeSpanState = it) }
+    private fun subscribeToIntervalReducer() = intent {
+        intervalReducer.container.stateFlow.collect {
+            reduce { state.copy(intervalState = it) }
         }
     }
 
@@ -122,20 +121,19 @@ class AccountOverviewViewModel @Inject constructor(
                     reduce { state.copy(trendType = action.type) }
                 }
             }
-            is Action.OnNextDateRangeClick -> {
-                dateRangeSpanReducer.onNextDateRange()
+            is Action.OnNextIntervalClick -> {
+                intervalReducer.onNextInterval()
             }
-            is Action.OnPreviousDateRangeClick -> {
-                dateRangeSpanReducer.onPreviousDateRange()
+            is Action.OnPreviousIntervalClick -> {
+                intervalReducer.onPreviousInterval()
             }
-            is Action.OnSelectDateRangeSpanClick -> {
+            is Action.OnSelectIntervalClick -> {
                 intent {
-                    val selectionIndex = dateRangeSpans.indexOf(state.dateRangeSpanState.dateRangeSpan)
                     reduce {
                         state.copy(
-                            dialog = State.Dialog.DateRangeSpanDialog(
-                                data = dateRangeSpans.mapToItemUi(),
-                                selection = SingleSelectionUi(selectionIndex.toLong())
+                            dialog = State.Dialog.IntervalTypesDialog(
+                                data = intervals.mapToItemUi(),
+                                selection = SingleSelectionUi(state.intervalState.intervalType)
                             )
                         )
                     }
@@ -146,20 +144,19 @@ class AccountOverviewViewModel @Inject constructor(
                     reduce { state.copy(dialog = null) }
                 }
             }
-            is Action.Dialog.OnDateRangeSpanSelect -> {
+            is Action.Dialog.OnIntervalTypeSelect -> {
                 intent {
                     reduce { state.copy(dialog = null) }
                 }
-                val dateRangeSpan = action.selection.value?.toInt()?.let { dateRangeSpans.getOrNull(it) }
-                if (dateRangeSpan != null) {
-                    dateRangeSpanReducer.onDateRangeSpanChange(dateRangeSpan)
+                action.selection.value?.let {
+                    intervalReducer.onIntervalTypeChange(it)
                 }
             }
         }
     }
 
-    @JvmName("mapDateRangeSpanToItemUi")
-    private fun List<DateRangeSpan>.mapToItemUi() = mapIndexed { i, item ->
-        ItemUi(i, stringProvider(StringResource.fromArrayRes(item.labelResId, i)))
+    @JvmName("mapIntervalTypeToItemUi")
+    private fun List<IntervalType>.mapToItemUi() = map {
+        ItemUi(it, stringProvider(fromArrayRes(it.labelResId, it.ordinal)))
     }
 }

@@ -25,10 +25,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import org.expenny.core.common.types.RecordsFilterType
 import org.expenny.core.resources.R
 import org.expenny.core.ui.foundation.ExpennyChip
 import org.expenny.core.ui.foundation.ExpennySelectableChip
-import org.expenny.feature.records.model.RecordsFilterType
 import org.expenny.feature.records.reducer.FilterSelectionsStateReducer
 
 @Composable
