@@ -2,7 +2,6 @@ package org.expenny.core.ui.components
 
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -15,7 +14,6 @@ import com.commandiron.wheel_picker_compose.WheelDatePicker
 import com.commandiron.wheel_picker_compose.core.WheelPickerDefaults
 import org.expenny.core.resources.R
 import org.expenny.core.ui.foundation.ExpennyDialog
-import org.expenny.core.ui.foundation.ExpennyTextButton
 import org.expenny.core.ui.theme.ExpennyTheme
 import java.time.LocalDate
 
@@ -23,7 +21,6 @@ import java.time.LocalDate
 @Composable
 fun ExpennyDatePicker(
     modifier: Modifier = Modifier,
-    title: String = stringResource(R.string.select_date_label),
     currentDate: LocalDate?,
     yearsRange: IntRange? = IntRange(1970, LocalDate.now().year),
     minDate: LocalDate = LocalDate.MIN,
@@ -31,20 +28,17 @@ fun ExpennyDatePicker(
     onSelect: (LocalDate) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    var date by rememberSaveable { mutableStateOf(currentDate ?: LocalDate.now()) }
+    var localDate by rememberSaveable { mutableStateOf(currentDate ?: LocalDate.now()) }
 
     ExpennyDialog(
         modifier = modifier.wrapContentWidth(),
         onDismissRequest = onDismiss,
         title = {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleLarge
-            )
+            DialogTitle(text = stringResource(R.string.select_date_label))
         },
-        content = {
+        body = {
             WheelDatePicker(
-                startDate = date,
+                startDate = localDate,
                 minDate = minDate,
                 maxDate = maxDate,
                 yearsRange = yearsRange,
@@ -56,24 +50,24 @@ fun ExpennyDatePicker(
                     border = null,
                 ),
                 onSnappedDate = {
-                    date = it
+                    localDate = it
                 }
             )
         },
-        confirmButton = {
-            ExpennyTextButton(
+        rightButton = {
+            DialogButton(
+                label = stringResource(R.string.select_button),
                 onClick = {
-                    onSelect(date)
+                    onSelect(localDate)
                     onDismiss()
                 }
-            ) {
-                Text(text = stringResource(R.string.select_button))
-            }
+            )
         },
-        dismissButton = {
-            ExpennyTextButton(onClick = onDismiss) {
-                Text(text = stringResource(R.string.cancel_button))
-            }
+        leftButton = {
+            DialogButton(
+                label = stringResource(R.string.cancel_button),
+                onClick = onDismiss
+            )
         }
     )
 }

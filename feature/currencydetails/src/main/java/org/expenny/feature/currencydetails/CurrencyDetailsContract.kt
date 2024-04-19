@@ -1,6 +1,6 @@
 package org.expenny.feature.currencydetails
 
-import org.expenny.core.common.utils.StringResource
+import org.expenny.core.common.models.StringResource
 import org.expenny.core.resources.R
 import org.expenny.core.ui.data.field.InputField
 import org.expenny.core.ui.data.field.MonetaryInputField

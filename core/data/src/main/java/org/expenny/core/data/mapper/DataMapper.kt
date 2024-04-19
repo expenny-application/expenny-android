@@ -59,13 +59,13 @@ object DataMapper {
         return Profile(
             id = profileId,
             name = name,
-            currencyUnit = android.icu.util.Currency.getInstance(currencyCode).toModel()
+            currencyUnit = java.util.Currency.getInstance(currencyCode).toModel()
         )
     }
 
     internal fun SettlementCurrencyEmbedded.toModel(): Currency {
         val profile = currencyProfile.toModel()
-        val currencyUnit = android.icu.util.Currency.getInstance(currency.code).toModel()
+        val currencyUnit = java.util.Currency.getInstance(currency.code).toModel()
         val baseToQuoteRate = currency.baseToQuoteRate.setScale(CURRENCY_RATE_SCALE)
         val quoteToBaseRate = baseToQuoteRate.invert()
 
@@ -81,7 +81,7 @@ object DataMapper {
         )
     }
 
-    internal fun android.icu.util.Currency.toModel(): CurrencyUnit {
+    internal fun java.util.Currency.toModel(): CurrencyUnit {
         return CurrencyUnit(
             id = numericCode.toLong(),
             name = displayName,

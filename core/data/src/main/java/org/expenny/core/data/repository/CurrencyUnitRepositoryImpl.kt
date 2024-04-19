@@ -1,6 +1,5 @@
 package org.expenny.core.data.repository
 
-import android.icu.util.Currency
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import org.expenny.core.data.mapper.DataMapper.toModel
@@ -10,6 +9,7 @@ import org.expenny.core.model.currency.CurrencyUnit
 import org.expenny.core.model.resource.RemoteResult
 import org.expenny.core.network.EcbService
 import org.expenny.core.network.EcbService.Companion.ECB_BASE_UNIT
+import java.util.Currency
 import javax.inject.Inject
 
 class CurrencyUnitRepositoryImpl @Inject constructor(
@@ -19,30 +19,28 @@ class CurrencyUnitRepositoryImpl @Inject constructor(
     private val currencyUnits
         get() = listOf<Currency>(
             Currency.getInstance("ALL"),
-            Currency.getInstance("AMD"),
             Currency.getInstance("AUD"),
-            Currency.getInstance("AZN"),
-            Currency.getInstance("BYN"),
-            Currency.getInstance("BYR"),
             Currency.getInstance("BAM"),
+            Currency.getInstance("BYN"),
             Currency.getInstance("BGN"),
+            Currency.getInstance("CHF"),
             Currency.getInstance("CZK"),
             Currency.getInstance("DKK"),
-            Currency.getInstance("HRK"),
             Currency.getInstance("GEL"),
             Currency.getInstance("HUF"),
-            Currency.getInstance("ISK"),
+            Currency.getInstance("INR"),
             Currency.getInstance("EUR"),
-            Currency.getInstance("MDL"),
             Currency.getInstance("MKD"),
+            Currency.getInstance("MDL"),
             Currency.getInstance("NOK"),
             Currency.getInstance("PLN"),
+            Currency.getInstance("RSD"),
             Currency.getInstance("RON"),
             Currency.getInstance("RUB"),
-            Currency.getInstance("RSD"),
-            Currency.getInstance("SEK"),
             Currency.getInstance("CHF"),
+            Currency.getInstance("CNY"),
             Currency.getInstance("TRY"),
+            Currency.getInstance("SEK"),
             Currency.getInstance("UAH"),
             Currency.getInstance("USD"),
             Currency.getInstance("GBP"),

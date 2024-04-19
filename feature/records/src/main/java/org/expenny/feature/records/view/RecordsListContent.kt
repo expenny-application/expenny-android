@@ -31,10 +31,6 @@ internal fun RecordsListContent(
         dialog = state.dialog,
         scope = scope,
         recordActionsDialogState = recordActionsSheetState,
-        dateRangeSpans = state.dateRangeSpans,
-        dateRangeSpan = state.dateRangeSpanState.dateRangeSpan,
-        selectionFilterData = state.selectionFilterData,
-        filterSelection = state.filterSelectionsState,
         onDialogAction = { onAction(it) }
     )
 
@@ -45,7 +41,7 @@ internal fun RecordsListContent(
         topBar = {
             RecordsListToolbar(
                 isSelectionMode = state.isSelectionMode,
-                selectionCount = state.recordsSelection.data.size,
+                selectionCount = state.recordsSelection.value.size,
                 drawerState = drawerState,
                 scrollBehavior = scrollBehavior,
                 onBackClick = { onAction(Action.OnBackClick) },

@@ -1,14 +1,10 @@
 package org.expenny.feature.passcode.view
 
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import org.expenny.core.resources.R
 import org.expenny.core.ui.foundation.ExpennyDialog
-import org.expenny.core.ui.foundation.ExpennyTextButton
 
 @Composable
 internal fun PasscodeInfoDialog(
@@ -17,26 +13,18 @@ internal fun PasscodeInfoDialog(
     ExpennyDialog(
         onDismissRequest = onDismiss,
         icon = {
-            Icon(
-                painter = painterResource(R.drawable.ic_info),
-                contentDescription = null
-            )
+            DialogIcon(painter = painterResource(R.drawable.ic_info))
         },
         title = {
-            Text(text = stringResource(R.string.passcode_setup_label))
+            DialogTitle(text = stringResource(R.string.passcode_setup_label))
         },
-        content = {
-            Text(
-                text = stringResource(R.string.passcode_setup_paragraph),
-                textAlign = TextAlign.Center
-            )
+        body = {
+            DialogBody(text = stringResource(R.string.passcode_setup_paragraph))
         },
-        confirmButton = {
-            ExpennyTextButton(
-                onClick = onDismiss,
-                content = {
-                    Text(text = stringResource(R.string.ok_button))
-                }
+        rightButton = {
+            DialogButton(
+                label = stringResource(R.string.ok_button),
+                onClick = onDismiss
             )
         }
     )

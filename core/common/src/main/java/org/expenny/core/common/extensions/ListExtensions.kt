@@ -18,7 +18,7 @@ infix fun <T> List<T>.equalsIgnoreOrder(other: List<T>): Boolean {
     return this.size == other.size && this.toSet() == other.toSet()
 }
 
-fun <T> List<T>.toggleItem(item: T): MutableList<T> {
+fun <T> List<T>.addOrRemoveIfExist(item: T): MutableList<T> {
     return toMutableList().apply {
         if (contains(item)) remove(item) else add(item)
     }

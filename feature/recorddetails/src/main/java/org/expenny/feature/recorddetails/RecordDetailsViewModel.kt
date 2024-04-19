@@ -14,9 +14,9 @@ import org.expenny.core.common.extensions.toLocalTime
 import org.expenny.core.common.extensions.toTimeString
 import org.expenny.core.common.types.RecordType
 import org.expenny.core.common.utils.Constants.NULL_ID
-import org.expenny.core.common.utils.ErrorMessage
+import org.expenny.core.common.models.ErrorMessage
 import org.expenny.core.common.utils.ExternalFilesDirectoryHandler
-import org.expenny.core.common.utils.StringResource.Companion.fromRes
+import org.expenny.core.common.models.StringResource.Companion.fromRes
 import org.expenny.core.common.viewmodel.ExpennyActionViewModel
 import org.expenny.core.domain.usecase.ValidateInputUseCase
 import org.expenny.core.domain.usecase.account.GetAccountUseCase

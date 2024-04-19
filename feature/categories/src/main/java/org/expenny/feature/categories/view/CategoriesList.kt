@@ -13,8 +13,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import org.expenny.core.ui.components.ExpennyIconBox
 import org.expenny.core.ui.components.ExpennySelectionButton
-import org.expenny.core.ui.data.selection.SelectionType
-import org.expenny.core.ui.data.selection.SingleSelection
+import org.expenny.core.ui.data.ui.SelectionType
+import org.expenny.core.ui.data.ui.SingleSelectionUi
 import org.expenny.core.ui.data.ui.CategoryUi
 import org.expenny.core.ui.extensions.type
 import org.expenny.core.ui.foundation.ExpennyCard
@@ -24,7 +24,7 @@ import org.expenny.core.ui.foundation.ExpennyVerticalList
 @Composable
 internal fun CategoriesList(
     modifier: Modifier = Modifier,
-    selection: SingleSelection<Long>?,
+    selection: SingleSelectionUi<Long>?,
     categories: List<CategoryUi>,
     onCategoryClick: (Long) -> Unit,
 ) {

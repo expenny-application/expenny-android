@@ -7,7 +7,7 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
-import org.expenny.core.ui.data.selection.SelectionType
+import org.expenny.core.ui.data.ui.SelectionType
 
 
 @OptIn(ExperimentalMaterial3Api::class)

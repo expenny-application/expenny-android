@@ -1,7 +1,7 @@
 package org.expenny.feature.categorydetails
 
 import androidx.compose.ui.graphics.Color
-import org.expenny.core.common.utils.StringResource
+import org.expenny.core.common.models.StringResource
 import org.expenny.core.resources.R
 import org.expenny.core.ui.data.field.InputField
 import org.expenny.core.ui.theme.ExpennyColor

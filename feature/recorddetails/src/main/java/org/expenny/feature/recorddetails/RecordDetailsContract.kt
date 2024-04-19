@@ -5,7 +5,7 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import org.expenny.core.common.extensions.toDateString
 import org.expenny.core.common.extensions.toTimeString
-import org.expenny.core.common.utils.StringResource
+import org.expenny.core.common.models.StringResource
 import org.expenny.core.common.types.RecordType
 import org.expenny.core.resources.R
 import org.expenny.core.ui.data.field.InputField

@@ -1,6 +1,5 @@
 package org.expenny.feature.settings.view
 
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
@@ -9,21 +8,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennyActionsBottomSheet
 import org.expenny.core.ui.components.ExpennyActionsBottomSheetItem
 import org.expenny.core.ui.components.ExpennyTimePicker
-import org.expenny.core.ui.data.selection.SelectionType
-import org.expenny.core.ui.data.ui.ProfileUi
-import org.expenny.core.ui.extensions.label
+import org.expenny.core.ui.data.ui.ItemUi
+import org.expenny.core.ui.data.ui.SingleSelectionUi
+import org.expenny.core.ui.foundation.ExpennyDeleteDialog
 import org.expenny.core.ui.foundation.ExpennyDialog
-import org.expenny.core.ui.foundation.ExpennyListDialog
-import org.expenny.core.ui.foundation.ExpennyListDialogItem
-import org.expenny.core.ui.foundation.ExpennySingleSelectionDialog
-import org.expenny.core.ui.foundation.ExpennyTextButton
 import org.expenny.feature.settings.Action
 import org.expenny.feature.settings.State
 import org.expenny.feature.settings.model.ProfileActionType
@@ -37,23 +31,19 @@ internal fun SettingsDialog(
     onDialogAction: (Action.Dialog) -> Unit
 ) {
     when (state.dialog) {
-        is State.Dialog.ThemeDialog -> {
-            if (state.selectedTheme != null) {
-                ExpennySingleSelectionDialog(
-                    label = stringResource(R.string.select_theme_label),
-                    data = state.themes.map { Pair(it, it.label) },
-                    selection = state.selectedTheme,
-                    onSelect = { onDialogAction(Action.Dialog.OnThemeSelect(it)) },
-                    onDismiss = { onDialogAction(Action.Dialog.OnDialogDismiss) }
-                )
-            }
+        is State.Dialog.ThemesSelectionDialog -> {
+            ThemeSelectionDialog(
+                themes = state.dialog.data,
+                selectedTheme = state.dialog.selection,
+                onSelectionChange = { onDialogAction(Action.Dialog.OnThemeSelect(it)) },
+                onDismiss = { onDialogAction(Action.Dialog.OnDialogDismiss) }
+            )
         }
-        is State.Dialog.LanguageDialog -> {
-            ExpennySingleSelectionDialog(
-                label = stringResource(R.string.select_language_label),
-                data = state.languages.map { Pair(it, it.label) },
-                selection = state.selectedLanguage,
-                onSelect = { onDialogAction(Action.Dialog.OnLanguageSelect(it)) },
+        is State.Dialog.LanguagesSelectionDialog -> {
+            LanguageSelectionDialog(
+                languages = state.dialog.data,
+                selectedLanguage = state.dialog.selection,
+                onSelectionChange = { onDialogAction(Action.Dialog.OnLanguageSelect(it)) },
                 onDismiss = { onDialogAction(Action.Dialog.OnDialogDismiss) }
             )
         }
@@ -75,113 +65,38 @@ internal fun SettingsDialog(
         }
         is State.Dialog.ProfileSelectionDialog -> {
             ProfileSelectionDialog(
-                profiles = state.profiles,
-                selectedProfile = state.currentProfile,
-                onSwitch = { onDialogAction(Action.Dialog.OnSwitchProfileClick(it)) },
+                profiles = state.dialog.data,
+                selectedProfile = state.dialog.selection,
+                onSelectionChange = { onDialogAction(Action.Dialog.OnSwitchProfileClick(it)) },
                 onDismiss = { onDialogAction(Action.Dialog.OnDialogDismiss) }
             )
         }
         is State.Dialog.DeleteApplicationDataDialog -> {
-            DeleteApplicationDataDialog(
+            ExpennyDeleteDialog(
+                title = stringResource(R.string.delete_application_data_question_label),
+                body = stringResource(R.string.delete_application_data_paragraph),
                 onConfirm = { onDialogAction(Action.Dialog.OnDeleteApplicationDataDialogConfirm) },
                 onDismiss = { onDialogAction(Action.Dialog.OnDialogDismiss) }
             )
         }
         is State.Dialog.DeleteProfileDataDialog -> {
-            DeleteProfileDataDialog(
+            ExpennyDeleteDialog(
+                title = stringResource(R.string.delete_profile_data_question_label),
+                body = stringResource(R.string.delete_paragraph),
                 onConfirm = { onDialogAction(Action.Dialog.OnDeleteProfileDataDialogConfirm) },
                 onDismiss = { onDialogAction(Action.Dialog.OnDialogDismiss) }
             )
         }
         is State.Dialog.DeleteProfileDialog -> {
-            DeleteProfileDialog(
+            ExpennyDeleteDialog(
+                title = stringResource(R.string.delete_profile_question_label),
+                body = stringResource(R.string.delete_associated_data_paragraph),
                 onConfirm = { onDialogAction(Action.Dialog.OnDeleteProfileDialogConfirm) },
                 onDismiss = { onDialogAction(Action.Dialog.OnDialogDismiss) }
             )
         }
         else -> {}
     }
-}
-
-@Composable
-private fun DeleteDialog(
-    title: (@Composable () -> Unit)?,
-    content: @Composable (() -> Unit)? = null,
-    onDismiss: () -> Unit,
-    onConfirm: () -> Unit,
-) {
-    ExpennyDialog(
-        onDismissRequest = onDismiss,
-        title = title,
-        content = content,
-        confirmButton = {
-            ExpennyTextButton(
-                onClick = onConfirm,
-                content = {
-                    Text(text = stringResource(R.string.delete_button))
-                }
-            )
-        },
-        dismissButton = {
-            ExpennyTextButton(
-                onClick = onDismiss,
-                content = {
-                    Text(text = stringResource(R.string.cancel_button))
-                }
-            )
-        }
-    )
-}
-
-@Composable
-private fun DeleteApplicationDataDialog(
-    onDismiss: () -> Unit,
-    onConfirm: () -> Unit,
-) {
-    DeleteDialog(
-        onDismiss = onDismiss,
-        onConfirm = onConfirm,
-        title = {
-            Text(text = stringResource(R.string.delete_application_data_question_label))
-        },
-        content = {
-            Text(text = stringResource(R.string.delete_application_data_paragraph))
-        }
-    )
-}
-
-@Composable
-private fun DeleteProfileDataDialog(
-    onDismiss: () -> Unit,
-    onConfirm: () -> Unit,
-) {
-    DeleteDialog(
-        onDismiss = onDismiss,
-        onConfirm = onConfirm,
-        title = {
-            Text(text = stringResource(R.string.delete_profile_data_question_label))
-        },
-        content = {
-            Text(text = stringResource(R.string.delete_paragraph))
-        }
-    )
-}
-
-@Composable
-private fun DeleteProfileDialog(
-    onDismiss: () -> Unit,
-    onConfirm: () -> Unit,
-) {
-    DeleteDialog(
-        onDismiss = onDismiss,
-        onConfirm = onConfirm,
-        title = {
-            Text(text = stringResource(R.string.delete_profile_question_label))
-        },
-        content = {
-            Text(text = stringResource(R.string.delete_associated_data_paragraph))
-        }
-    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -219,41 +134,91 @@ private fun ProfileActionsDialog(
 }
 
 @Composable
-private fun ProfileSelectionDialog(
-    profiles: List<ProfileUi>,
-    selectedProfile: ProfileUi?,
-    onSwitch: (Long) -> Unit,
-    onDismiss: () -> Unit,
+private fun ThemeSelectionDialog(
+    themes: List<ItemUi>,
+    selectedTheme: SingleSelectionUi<Long>,
+    onSelectionChange: (Long?) -> Unit,
+    onDismiss: () -> Unit
 ) {
-    ExpennyListDialog(
+    ExpennyDialog(
         onDismissRequest = onDismiss,
         title = {
-            Text(text = stringResource(R.string.switch_profile_label))
+            DialogTitle(text = stringResource(R.string.select_theme_label))
         },
-        confirmButton = {
-            ExpennyTextButton(
-                onClick = onDismiss,
-                content = {
-                    Text(text = stringResource(R.string.cancel_button))
-                }
+        rightButton = {
+            DialogButton(
+                label = stringResource(R.string.cancel_button),
+                onClick = onDismiss
             )
         },
-        listContent = {
-            items(profiles) { profile ->
-                ExpennyListDialogItem(
-                    selectionType = SelectionType.Single,
-                    isSelected = selectedProfile?.id == profile.id,
-                    onClick = {
-                        onSwitch(profile.id)
-                    }
-                ) {
-                    Text(
-                        text = profile.displayName,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1
-                    )
+        list = {
+            DialogList(
+                data = themes,
+                selection = selectedTheme,
+                onSelectionChange = {
+                    onSelectionChange(it.value)
                 }
-            }
+            )
+        }
+    )
+}
+
+@Composable
+private fun LanguageSelectionDialog(
+    languages: List<ItemUi>,
+    selectedLanguage: SingleSelectionUi<Long>,
+    onSelectionChange: (Long?) -> Unit,
+    onDismiss: () -> Unit
+) {
+    ExpennyDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            DialogTitle(text = stringResource(R.string.select_language_label))
+        },
+        rightButton = {
+            DialogButton(
+                label = stringResource(R.string.cancel_button),
+                onClick = onDismiss
+            )
+        },
+        list = {
+            DialogList(
+                data = languages,
+                selection = selectedLanguage,
+                onSelectionChange = {
+                    onSelectionChange(it.value)
+                }
+            )
+        }
+    )
+}
+
+@Composable
+private fun ProfileSelectionDialog(
+    profiles: List<ItemUi>,
+    selectedProfile: SingleSelectionUi<Long>,
+    onSelectionChange: (Long?) -> Unit,
+    onDismiss: () -> Unit
+) {
+    ExpennyDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            DialogTitle(text = stringResource(R.string.switch_profile_label))
+        },
+        rightButton = {
+            DialogButton(
+                label = stringResource(R.string.cancel_button),
+                onClick = onDismiss
+            )
+        },
+        list = {
+            DialogList(
+                data = profiles,
+                selection = selectedProfile,
+                onSelectionChange = {
+                    onSelectionChange(it.value)
+                }
+            )
         }
     )
 }

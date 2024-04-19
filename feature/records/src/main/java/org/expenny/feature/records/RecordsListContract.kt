@@ -1,13 +1,12 @@
 package org.expenny.feature.records
 
-import org.expenny.core.common.types.DateRangeSpan
-import org.expenny.core.common.types.RecordType
-import org.expenny.core.common.utils.StringResource
-import org.expenny.core.ui.data.selection.MultiSelection
+import org.expenny.core.common.models.StringResource
+import org.expenny.core.ui.data.ui.ItemUi
+import org.expenny.core.ui.data.ui.MultiSelectionUi
 import org.expenny.core.ui.data.ui.RecordUi
+import org.expenny.core.ui.data.ui.SingleSelectionUi
 import org.expenny.feature.records.model.RecordActionType
 import org.expenny.feature.records.model.RecordsFilterType
-import org.expenny.feature.records.model.SelectionFilterDataUi
 import org.expenny.core.ui.reducers.DateRangeSpanStateReducer
 import org.expenny.feature.records.reducer.FilterSelectionsStateReducer
 
@@ -15,32 +14,50 @@ data class State(
     val dialog: Dialog? = null,
     val isSelectionMode: Boolean = false,
     val records: List<RecordUi> = listOf(),
-    val recordsSelection: MultiSelection<Long> = MultiSelection(emptyList()),
+    val recordsSelection: MultiSelectionUi<Long> = MultiSelectionUi(emptyList()),
     val filterTypes: List<RecordsFilterType> = emptyList(),
-    val dateRangeSpans: List<DateRangeSpan> = DateRangeSpan.spans,
     val dateRangeSpanState: DateRangeSpanStateReducer.State = DateRangeSpanStateReducer.State(),
     val filterSelectionsState: FilterSelectionsStateReducer.State = FilterSelectionsStateReducer.State(),
-    val selectionFilterData: SelectionFilterDataUi = SelectionFilterDataUi(),
 ) {
     sealed interface Dialog {
         data object DeleteRecordDialog : Dialog
         data object RecordActionsDialog : Dialog
-        data object DateRangeSpanDialog : Dialog
-        data object RecordTypesDialog : Dialog
-        data object AccountsDialog : Dialog
-        data object CategoriesDialog : Dialog
-        data object LabelsDialog : Dialog
+
+        data class DateRangeSpanDialog(
+            val data: List<ItemUi>,
+            val selection: SingleSelectionUi<Long>
+        ) : Dialog
+
+        data class RecordTypesDialog(
+            val data: List<ItemUi>,
+            val selection: MultiSelectionUi<Long>
+        ) : Dialog
+
+        data class AccountsDialog(
+            val data: List<ItemUi>,
+            val selection: MultiSelectionUi<Long>
+        ) : Dialog
+
+        data class CategoriesDialog(
+            val data: List<ItemUi>,
+            val selection: MultiSelectionUi<Long>
+        ) : Dialog
+
+        data class LabelsDialog(
+            val data: List<ItemUi>,
+            val selection: MultiSelectionUi<Long>
+        ) : Dialog
     }
 }
 
 sealed interface Action {
     sealed interface Dialog : Action {
-        class OnDateRangeSpanSelect(val dateRangeSpan: DateRangeSpan) : Dialog
+        class OnDateRangeSpanSelect(val selection: SingleSelectionUi<Long>) : Dialog
         class OnRecordActionSelect(val action: RecordActionType) : Dialog
-        class OnAccountsSelect(val selection: List<Long>) : Dialog
-        class OnLabelsSelect(val selection: List<Long>) : Dialog
-        class OnCategoriesSelect(val selection: List<Long>) : Dialog
-        class OnRecordTypesSelect(val selection: List<RecordType>) : Dialog
+        class OnAccountsSelect(val selection: MultiSelectionUi<Long>) : Dialog
+        class OnLabelsSelect(val selection: MultiSelectionUi<Long>) : Dialog
+        class OnCategoriesSelect(val selection: MultiSelectionUi<Long>) : Dialog
+        class OnRecordTypesSelect(val selection: MultiSelectionUi<Long>) : Dialog
         data object OnDeleteRecordDialogConfirm : Dialog
         data object OnDialogDismiss : Dialog
     }

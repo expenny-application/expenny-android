@@ -7,6 +7,8 @@ import org.expenny.core.common.types.AccountTrendType
 import org.expenny.core.common.types.DateRangeSpan
 import org.expenny.core.ui.data.ui.AmountUi
 import org.expenny.core.ui.data.ui.CategoryStatementUi
+import org.expenny.core.ui.data.ui.ItemUi
+import org.expenny.core.ui.data.ui.SingleSelectionUi
 import org.expenny.core.ui.reducers.DateRangeSpanStateReducer
 import org.expenny.feature.accountoverview.model.AccountOverviewChartUi
 
@@ -22,13 +24,16 @@ data class State(
     val dialog: Dialog? = null,
 ) {
     sealed interface Dialog {
-        data object DateRangeSpanDialog : Dialog
+        data class DateRangeSpanDialog(
+            val data: List<ItemUi>,
+            val selection: SingleSelectionUi<Long>
+        ) : Dialog
     }
 }
 
 sealed interface Action {
     sealed interface Dialog : Action {
-        class OnDateRangeSpanSelect(val dateRangeSpan: DateRangeSpan) : Dialog
+        class OnDateRangeSpanSelect(val selection: SingleSelectionUi<Long>) : Dialog
         data object OnDialogDismiss : Dialog
     }
     class OnTrendTypeChange(val type: AccountTrendType) : Action

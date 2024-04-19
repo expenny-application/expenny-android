@@ -1,7 +1,7 @@
 package org.expenny.core.domain.validators
 
 import android.graphics.Color
-import org.expenny.core.common.utils.StringResource
+import org.expenny.core.common.models.StringResource
 import org.expenny.core.resources.R
 
 class ColorHexValidator(

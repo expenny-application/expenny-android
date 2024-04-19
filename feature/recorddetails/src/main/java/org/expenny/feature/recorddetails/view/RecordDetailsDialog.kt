@@ -1,16 +1,12 @@
 package org.expenny.feature.recorddetails.view
 
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennyDatePicker
 import org.expenny.core.ui.components.ExpennyTimePicker
 import org.expenny.core.ui.foundation.ExpennyDialog
-import org.expenny.core.ui.foundation.ExpennyTextButton
 import org.expenny.feature.recorddetails.Action
 import org.expenny.feature.recorddetails.State
 import java.time.LocalDate
@@ -78,26 +74,18 @@ private fun ConversionDialog(
     ExpennyDialog(
         onDismissRequest = onDismiss,
         icon = {
-            Icon(
-                painter = painterResource(R.drawable.ic_info),
-                contentDescription = null
-            )
+            DialogIcon(painter = painterResource(R.drawable.ic_info))
         },
         title = {
-            Text(text = stringResource(R.string.amount_conversion_label))
+            DialogTitle(text = stringResource(R.string.amount_conversion_label))
         },
-        content = {
-            Text(
-                text = stringResource(R.string.amount_conversion_paragraph),
-                textAlign = TextAlign.Center
-            )
+        body = {
+            DialogBody(text = stringResource(R.string.amount_conversion_paragraph))
         },
-        confirmButton = {
-            ExpennyTextButton(
+        rightButton = {
+            DialogButton(
                 onClick = onDismiss,
-                content = {
-                    Text(text = stringResource(R.string.ok_button))
-                }
+                label = stringResource(R.string.ok_button)
             )
         }
     )
@@ -111,25 +99,21 @@ private fun DeleteRecordDialog(
     ExpennyDialog(
         onDismissRequest = onDismiss,
         title = {
-            Text(text = stringResource(R.string.delete_record_question_label))
+            DialogTitle(text = stringResource(R.string.delete_record_question_label))
         },
-        content = {
-            Text(text = stringResource(R.string.delete_record_paragraph))
+        body = {
+            DialogBody(text = stringResource(R.string.delete_record_paragraph))
         },
-        confirmButton = {
-            ExpennyTextButton(
+        rightButton = {
+            DialogButton(
                 onClick = onConfirm,
-                content = {
-                    Text(text = stringResource(R.string.delete_button))
-                }
+                label = stringResource(R.string.delete_button)
             )
         },
-        dismissButton = {
-            ExpennyTextButton(
+        leftButton = {
+            DialogButton(
                 onClick = onDismiss,
-                content = {
-                    Text(text = stringResource(R.string.cancel_button))
-                }
+                label = stringResource(R.string.cancel_button)
             )
         }
     )
@@ -144,20 +128,22 @@ private fun ReceiptSourceDialog(
     ExpennyDialog(
         onDismissRequest = onDismiss,
         title = {
-            Text(text = stringResource(R.string.add_receipt_label))
+            DialogTitle(text = stringResource(R.string.add_receipt_label))
         },
-        content = {
-            Text(text = stringResource(R.string.image_source_paragraph))
+        body = {
+            DialogBody(text = stringResource(R.string.image_source_paragraph))
         },
-        confirmButton = {
-            ExpennyTextButton(onClick = onGalleryClick) {
-                Text(text = stringResource(R.string.gallery_button))
-            }
+        rightButton = {
+            DialogButton(
+                label = stringResource(R.string.gallery_button),
+                onClick = onGalleryClick
+            )
         },
-        dismissButton = {
-            ExpennyTextButton(onClick = onCameraClick) {
-                Text(text = stringResource(R.string.camera_button))
-            }
+        leftButton = {
+            DialogButton(
+                label = stringResource(R.string.camera_button),
+                onClick = onCameraClick
+            )
         }
     )
 }
@@ -170,25 +156,21 @@ private fun ResetTransferDialog(
     ExpennyDialog(
         onDismissRequest = onDismiss,
         title = {
-            Text(text = stringResource(R.string.change_record_type_question_label))
+            DialogTitle(text = stringResource(R.string.change_record_type_question_label))
         },
-        content = {
-            Text(text = stringResource(R.string.change_record_type_paragraph))
+        body = {
+            DialogBody(text = stringResource(R.string.change_record_type_paragraph))
         },
-        confirmButton = {
-            ExpennyTextButton(
+        rightButton = {
+            DialogButton(
                 onClick = onConfirm,
-                content = {
-                    Text(text = stringResource(R.string.change_button))
-                }
+                label = stringResource(R.string.change_button)
             )
         },
-        dismissButton = {
-            ExpennyTextButton(
+        leftButton = {
+            DialogButton(
                 onClick = onDismiss,
-                content = {
-                    Text(text = stringResource(R.string.cancel_button))
-                }
+                label = stringResource(R.string.cancel_button)
             )
         }
     )
@@ -201,26 +183,18 @@ private fun TransferDisclaimerDialog(
     ExpennyDialog(
         onDismissRequest = onDismiss,
         icon = {
-            Icon(
-                painter = painterResource(R.drawable.ic_info),
-                contentDescription = null
-            )
+            DialogIcon(painter = painterResource(R.drawable.ic_info))
         },
         title = {
-            Text(text = stringResource(R.string.transfers_label))
+            DialogTitle(text = stringResource(R.string.transfers_label))
         },
-        content = {
-            Text(
-                text = stringResource(R.string.transfer_disclaimer_paragraph),
-                textAlign = TextAlign.Center
-            )
+        body = {
+            DialogBody(text = stringResource(R.string.transfer_disclaimer_paragraph))
         },
-        confirmButton = {
-            ExpennyTextButton(
+        rightButton = {
+            DialogButton(
                 onClick = onDismiss,
-                content = {
-                    Text(text = stringResource(R.string.ok_button))
-                }
+                label = stringResource(R.string.ok_button),
             )
         }
     )

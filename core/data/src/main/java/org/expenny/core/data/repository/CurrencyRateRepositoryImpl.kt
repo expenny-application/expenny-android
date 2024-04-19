@@ -1,6 +1,5 @@
 package org.expenny.core.data.repository
 
-import android.icu.util.Currency
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -15,6 +14,7 @@ import org.expenny.core.network.dto.EcbRateReferenceDto
 import java.math.BigDecimal
 import java.math.RoundingMode.HALF_UP
 import java.time.LocalDate
+import java.util.Currency
 import javax.inject.Inject
 
 class CurrencyRateRepositoryImpl @Inject constructor(

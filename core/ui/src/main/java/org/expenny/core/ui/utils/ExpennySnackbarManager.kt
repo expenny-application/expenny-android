@@ -7,8 +7,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import org.expenny.core.common.utils.StringResource
-import org.expenny.core.common.utils.asRawString
+import org.expenny.core.common.models.StringResource
+import org.expenny.core.common.extensions.asRawString
 import java.util.UUID
 
 data class ExpennySnackbarVisuals(

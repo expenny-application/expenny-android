@@ -1,6 +1,6 @@
 package org.expenny.feature.profilesetup
 
-import org.expenny.core.common.utils.StringResource
+import org.expenny.core.common.models.StringResource
 import org.expenny.core.ui.data.field.CheckBoxField
 import org.expenny.core.ui.data.field.InputField
 import org.expenny.core.ui.data.field.MonetaryInputField

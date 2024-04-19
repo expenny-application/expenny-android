@@ -1,14 +1,17 @@
 package org.expenny.core.ui.data.ui
 
-data class ProfileUi(
+data class ItemUi(
     val id: Long,
-    val name: String,
-    val currency: String,
-    val displayName: String,
+    val label: String,
 ) {
+    constructor(
+        id: Int,
+        label: String,
+    ) : this(id.toLong(), label)
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is ProfileUi) return false
+        if (other !is ItemUi) return false
         if (id != other.id) return false
         return true
     }

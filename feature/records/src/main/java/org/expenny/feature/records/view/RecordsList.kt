@@ -25,8 +25,8 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import org.expenny.core.ui.components.ExpennyRecord
 import org.expenny.core.ui.components.ExpennySelectionButton
-import org.expenny.core.ui.data.selection.MultiSelection
-import org.expenny.core.ui.data.selection.SelectionType
+import org.expenny.core.ui.data.ui.MultiSelectionUi
+import org.expenny.core.ui.data.ui.SelectionType
 import org.expenny.core.ui.data.ui.RecordUi
 import org.expenny.core.ui.foundation.ExpennyCard
 
@@ -35,7 +35,7 @@ internal fun RecordsList(
     modifier: Modifier = Modifier,
     lazyListState: LazyListState,
     isSelectionMode: Boolean,
-    selection: MultiSelection<Long>,
+    selection: MultiSelectionUi<Long>,
     records: List<RecordUi>,
     onRecordClick: (Long) -> Unit,
     onRecordLongClick: (Long) -> Unit,

@@ -9,7 +9,7 @@ import org.expenny.core.common.viewmodel.*
 import org.expenny.core.domain.usecase.currencyunit.GetAvailableCurrencyUnitsUseCase
 import org.expenny.core.domain.usecase.currencyunit.GetCurrencyUnitsUseCase
 import org.expenny.core.ui.data.navargs.LongNavArg
-import org.expenny.core.ui.data.selection.SingleSelection
+import org.expenny.core.ui.data.ui.SingleSelectionUi
 import org.expenny.core.ui.data.ui.CurrencyUnitUi
 import org.expenny.core.ui.mapper.CurrencyUnitMapper
 import org.expenny.feature.currencyunits.navigation.CurrencyUnitsListNavArgs
@@ -88,7 +88,7 @@ class CurrencyUnitsListViewModel @Inject constructor(
         savedStateHandle.navArgs<CurrencyUnitsListNavArgs>().also { args ->
             intent {
                 reduce {
-                    state.copy(selection = SingleSelection(args.selection.value))
+                    state.copy(selection = SingleSelectionUi(args.selection.value))
                 }
             }
         }

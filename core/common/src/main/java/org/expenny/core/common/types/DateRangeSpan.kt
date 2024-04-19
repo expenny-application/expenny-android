@@ -11,10 +11,6 @@ import java.time.Period
 
 sealed class DateRangeSpan(val initialDateRange: LocalDateRange) {
 
-    companion object {
-        val spans = listOf(Day(), Week(), Month(), Quarter(), Year())
-    }
-
     internal abstract val period: Period
     internal open val boundsStartDate: LocalDate by lazy { bounds.start }
     internal open val boundsEndDate: LocalDate by lazy { bounds.endInclusive }
@@ -79,5 +75,9 @@ sealed class DateRangeSpan(val initialDateRange: LocalDateRange) {
 
     class Year(date: LocalDate = LocalDate.now()) : DateRangeSpan(date.toYearRange()) {
         override val period: Period = Period.ofYears(1)
+    }
+
+    companion object {
+        val spans = listOf(Day(), Week(), Month(), Quarter(), Year())
     }
 }

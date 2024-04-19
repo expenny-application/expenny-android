@@ -1,6 +1,5 @@
-package org.expenny.core.common.utils
+package org.expenny.core.common.models
 
-import android.content.res.Resources
 import android.os.Parcelable
 import androidx.annotation.ArrayRes
 import androidx.annotation.PluralsRes
@@ -24,11 +23,4 @@ sealed class StringResource : Parcelable {
     class IdArrayStringResource(@ArrayRes val id: Int, val index: Int) : StringResource()
 
     class IdQuantityStringResource(@PluralsRes val pluralId: Int, val quantity: Int) : StringResource()
-}
-
-fun StringResource.asRawString(resources: Resources) : String = when (this) {
-    is StringResource.SimpleStringResource -> this.str
-    is StringResource.IdStringResource -> resources.getString(this.id, *this.args)
-    is StringResource.IdArrayStringResource -> resources.getStringArray(this.id)[this.index]
-    is StringResource.IdQuantityStringResource -> resources.getQuantityString(this.pluralId, this.quantity)
 }
