@@ -1,6 +1,6 @@
 package org.expenny.core.domain.validators
 
-import org.expenny.core.common.utils.StringResource
+import org.expenny.core.common.models.StringResource
 
 data class ValidationResult(
     val isValid: Boolean,

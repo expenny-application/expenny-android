@@ -3,7 +3,7 @@ package org.expenny.feature.passcode
 import androidx.annotation.StringRes
 import androidx.biometric.BiometricPrompt.CryptoObject
 import org.expenny.core.common.utils.Constants
-import org.expenny.core.common.utils.StringResource
+import org.expenny.core.common.models.StringResource
 import org.expenny.core.resources.R
 import org.expenny.feature.passcode.model.PasscodeType
 import org.expenny.feature.passcode.model.PasscodeValidationResult

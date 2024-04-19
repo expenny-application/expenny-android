@@ -2,7 +2,7 @@ package org.expenny.core.common.viewmodel
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.*
-import org.expenny.core.common.utils.ErrorMessage
+import org.expenny.core.common.models.ErrorMessage
 import timber.log.Timber
 
 abstract class ExpennyViewModel : ViewModel() {

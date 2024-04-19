@@ -2,7 +2,6 @@ package org.expenny.core.ui.components
 
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,10 +17,8 @@ import com.commandiron.wheel_picker_compose.core.TimeFormat
 import com.commandiron.wheel_picker_compose.core.WheelPickerDefaults
 import org.expenny.core.resources.R
 import org.expenny.core.ui.foundation.ExpennyDialog
-import org.expenny.core.ui.foundation.ExpennyTextButton
 import org.expenny.core.ui.theme.ExpennyTheme
 import java.time.LocalTime
-
 
 @Composable
 fun ExpennyTimePicker(
@@ -31,20 +28,17 @@ fun ExpennyTimePicker(
     onSelect: (LocalTime) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    var time: LocalTime by rememberSaveable { mutableStateOf(currentTime ?: LocalTime.now()) }
+    var localTime by rememberSaveable { mutableStateOf(currentTime ?: LocalTime.now()) }
 
     ExpennyDialog(
         modifier = Modifier.wrapContentWidth(),
         onDismissRequest = onDismiss,
         title = {
-            Text(
-                text = stringResource(R.string.select_time_label),
-                style = MaterialTheme.typography.titleLarge
-            )
+            DialogTitle(text = stringResource(R.string.select_time_label))
         },
-        content = {
+        body = {
             WheelTimePicker(
-                startTime = time,
+                startTime = localTime,
                 minTime = minTime,
                 maxTime = maxTime,
                 size = DpSize(256.dp, 128.dp),
@@ -57,24 +51,24 @@ fun ExpennyTimePicker(
                     border = null
                 ),
                 onSnappedTime = {
-                    time = it
+                    localTime = it
                 }
             )
         },
-        confirmButton = {
-            ExpennyTextButton(
+        rightButton = {
+            DialogButton(
+                label = stringResource(R.string.select_button),
                 onClick = {
-                    onSelect(time)
+                    onSelect(localTime)
                     onDismiss()
                 }
-            ) {
-                Text(text = stringResource(R.string.select_button))
-            }
+            )
         },
-        dismissButton = {
-            ExpennyTextButton(onClick = onDismiss) {
-                Text(text = stringResource(R.string.cancel_button))
-            }
+        leftButton = {
+            DialogButton(
+                label = stringResource(R.string.cancel_button),
+                onClick = onDismiss
+            )
         }
     )
 }

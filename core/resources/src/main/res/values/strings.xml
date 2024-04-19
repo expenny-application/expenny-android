@@ -314,4 +314,7 @@
     <string name="reminder_channel_name">Reminder</string>
     <string name="reminder_notification_title">Hey Friend!</string>
     <string name="reminder_notification_body">Just a gentle nudge to give your cash flow a quick check-in today</string>
+
+    <!-- Accessibility -->
+    <string name="icon_a11y">Icon</string>
 </resources>

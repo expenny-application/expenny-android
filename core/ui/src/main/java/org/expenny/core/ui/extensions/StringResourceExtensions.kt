@@ -4,12 +4,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
-import org.expenny.core.common.utils.StringResource
+import org.expenny.core.common.models.StringResource
 
 @Composable
-fun StringResource.asRawString() : String = when (this) {
-    is StringResource.SimpleStringResource -> this.str
-    is StringResource.IdStringResource -> stringResource(this.id, *this.args)
-    is StringResource.IdArrayStringResource -> stringArrayResource(this.id)[this.index]
-    is StringResource.IdQuantityStringResource -> pluralStringResource(this.pluralId, this.quantity)
+fun StringResource.asRawString() = when (this) {
+    is StringResource.SimpleStringResource -> str
+    is StringResource.IdStringResource -> stringResource(id, *args)
+    is StringResource.IdArrayStringResource -> stringArrayResource(id)[index]
+    is StringResource.IdQuantityStringResource -> pluralStringResource(pluralId, quantity)
 }

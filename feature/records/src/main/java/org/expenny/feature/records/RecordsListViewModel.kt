@@ -8,9 +8,12 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import org.expenny.core.common.extensions.toDateString
-import org.expenny.core.common.extensions.toggleItem
+import org.expenny.core.common.extensions.addOrRemoveIfExist
+import org.expenny.core.common.models.StringResource.Companion.fromArrayRes
 import org.expenny.core.common.types.RecordType
-import org.expenny.core.common.utils.StringResource.Companion.fromRes
+import org.expenny.core.common.models.StringResource.Companion.fromRes
+import org.expenny.core.common.types.DateRangeSpan
+import org.expenny.core.common.utils.StringResourceProvider
 import org.expenny.core.common.viewmodel.ExpennyActionViewModel
 import org.expenny.core.domain.usecase.GetCurrencyAmountSumUseCase
 import org.expenny.core.domain.usecase.account.GetAccountsUseCase
@@ -19,16 +22,20 @@ import org.expenny.core.domain.usecase.currency.GetMainCurrencyUseCase
 import org.expenny.core.domain.usecase.record.DeleteRecordUseCase
 import org.expenny.core.domain.usecase.record.GetRecordLabelsUseCase
 import org.expenny.core.domain.usecase.record.GetRecordsUseCase
+import org.expenny.core.model.account.Account
+import org.expenny.core.model.category.Category
 import org.expenny.core.model.currency.Currency
 import org.expenny.core.model.record.Record
 import org.expenny.core.resources.R
-import org.expenny.core.ui.data.selection.MultiSelection
+import org.expenny.core.ui.data.ui.ItemUi
+import org.expenny.core.ui.data.ui.MultiSelectionUi
 import org.expenny.core.ui.data.ui.RecordUi
+import org.expenny.core.ui.data.ui.SingleSelectionUi
+import org.expenny.core.ui.extensions.labelResId
 import org.expenny.core.ui.mapper.AmountMapper
 import org.expenny.core.ui.mapper.RecordMapper
 import org.expenny.feature.records.model.RecordActionType
 import org.expenny.feature.records.model.RecordsFilterType
-import org.expenny.feature.records.model.SelectionFilterDataUi
 import org.expenny.feature.records.navigation.RecordsListNavArgs
 import org.expenny.core.ui.reducers.DateRangeSpanStateReducer
 import org.expenny.feature.records.reducer.FilterSelectionsStateReducer
@@ -52,7 +59,14 @@ class RecordsListViewModel @Inject constructor(
     private val amountMapper: AmountMapper,
     private val getMainCurrency: GetMainCurrencyUseCase,
     private val getCurrencyAmountSum: GetCurrencyAmountSumUseCase,
+    private val stringProvider: StringResourceProvider
 ) : ExpennyActionViewModel<Action>(), ContainerHost<State, Event> {
+
+    private val dateRangeSpans: List<DateRangeSpan> = DateRangeSpan.spans
+    private var accounts: List<Account> = emptyList()
+    private var categories: List<Category> = emptyList()
+    private var labels: List<String> = emptyList()
+    private val recordTypes: List<RecordType> = RecordType.values().toList()
 
     private var selectedRecordId: Long? = null
 
@@ -100,16 +114,52 @@ class RecordsListViewModel @Inject constructor(
     private fun handleOnFilterClick(action: Action.OnFilterClick) = intent {
         when (action.filterType) {
             RecordsFilterType.Types -> {
-                reduce { state.copy(dialog = State.Dialog.RecordTypesDialog) }
+                reduce {
+                    state.copy(
+                        dialog = State.Dialog.RecordTypesDialog(
+                            data = recordTypes.mapToItemUi(),
+                            selection = MultiSelectionUi(
+                                state.filterSelectionsState.recordTypesSelection
+                            )
+                        )
+                    )
+                }
             }
             RecordsFilterType.Accounts -> {
-                reduce { state.copy(dialog = State.Dialog.AccountsDialog) }
+                reduce {
+                    state.copy(
+                        dialog = State.Dialog.AccountsDialog(
+                            data = accounts.mapToItemUi(),
+                            selection = MultiSelectionUi(
+                                state.filterSelectionsState.accountsSelection
+                            )
+                        )
+                    )
+                }
             }
             RecordsFilterType.Categories -> {
-                reduce { state.copy(dialog = State.Dialog.CategoriesDialog) }
+                reduce {
+                    state.copy(
+                        dialog = State.Dialog.CategoriesDialog(
+                            data = categories.mapToItemUi(),
+                            selection = MultiSelectionUi(
+                                state.filterSelectionsState.categoriesSelection
+                            )
+                        )
+                    )
+                }
             }
             RecordsFilterType.Labels -> {
-                reduce { state.copy(dialog = State.Dialog.LabelsDialog) }
+                reduce {
+                    state.copy(
+                        dialog = State.Dialog.LabelsDialog(
+                            data = labels.mapToItemUi(),
+                            selection = MultiSelectionUi(
+                                state.filterSelectionsState.labelsSelection
+                            )
+                        )
+                    )
+                }
             }
             RecordsFilterType.WithoutCategory -> {
                 filterSelectionsReducer.onWithoutCategorySelect()
@@ -119,22 +169,22 @@ class RecordsListViewModel @Inject constructor(
 
     private fun handleOnLabelsSelect(action: Action.Dialog.OnLabelsSelect) {
         handleOnDialogDismiss()
-        filterSelectionsReducer.onLabelsSelectionUpdate(action.selection)
+        filterSelectionsReducer.onLabelsSelectionUpdate(action.selection.value)
     }
 
     private fun handleOnCategoriesSelect(action: Action.Dialog.OnCategoriesSelect) {
         handleOnDialogDismiss()
-        filterSelectionsReducer.onCategoriesSelectionUpdate(action.selection)
+        filterSelectionsReducer.onCategoriesSelectionUpdate(action.selection.value)
     }
 
     private fun handleOnRecordTypesSelect(action: Action.Dialog.OnRecordTypesSelect) {
         handleOnDialogDismiss()
-        filterSelectionsReducer.onRecordTypesSelectionUpdate(action.selection)
+        filterSelectionsReducer.onRecordTypesSelectionUpdate(action.selection.value)
     }
 
     private fun handleOnAccountSelect(action: Action.Dialog.OnAccountsSelect) {
         handleOnDialogDismiss()
-        filterSelectionsReducer.onAccountsSelectionUpdate(action.selection)
+        filterSelectionsReducer.onAccountsSelectionUpdate(action.selection.value)
     }
 
     private fun handleOnRecordLongClick(action: Action.OnRecordLongClick) = intent {
@@ -175,9 +225,9 @@ class RecordsListViewModel @Inject constructor(
 
     private fun handleOnSelectAllClick() = intent {
         val recordsIds = state.records.filterIsInstance<RecordUi.Item>().map { it.id }
-        val newSelection = if (state.recordsSelection.data.containsAll(recordsIds)) emptyList() else recordsIds
+        val newSelection = if (state.recordsSelection.value.containsAll(recordsIds)) emptyList() else recordsIds
         reduce {
-            state.copy(recordsSelection = MultiSelection(newSelection))
+            state.copy(recordsSelection = MultiSelectionUi(newSelection))
         }
     }
 
@@ -194,7 +244,7 @@ class RecordsListViewModel @Inject constructor(
     }
 
     private fun handleOnDeleteSelectedRecordsClick() = intent {
-        if (state.recordsSelection.data.isNotEmpty()) {
+        if (state.recordsSelection.value.isNotEmpty()) {
             reduce { state.copy(dialog = State.Dialog.DeleteRecordDialog) }
         } else {
             postSideEffect(Event.ShowMessage(fromRes(R.string.required_selection_error)))
@@ -205,25 +255,36 @@ class RecordsListViewModel @Inject constructor(
         reduce {
             state.copy(
                 isSelectionMode = false,
-                recordsSelection = MultiSelection(emptyList())
+                recordsSelection = MultiSelectionUi(emptyList())
             )
         }
     }
 
     private fun handleOnSelectDateRangeSpanClick() = intent {
-        reduce { state.copy(dialog = State.Dialog.DateRangeSpanDialog) }
+        val selectionIndex = dateRangeSpans.indexOf(state.dateRangeSpanState.dateRangeSpan)
+        reduce {
+            state.copy(
+                dialog = State.Dialog.DateRangeSpanDialog(
+                    data = dateRangeSpans.mapToItemUi(),
+                    selection = SingleSelectionUi(selectionIndex.toLong())
+                )
+            )
+        }
     }
 
     private fun handleOnSelectDateRangeSpan(action: Action.Dialog.OnDateRangeSpanSelect) {
         handleOnDialogDismiss()
-        dateRangeSpanReducer.onDateRangeSpanChange(action.dateRangeSpan)
+        val dateRangeSpan = action.selection.value?.toInt()?.let { dateRangeSpans.getOrNull(it) }
+        if (dateRangeSpan != null) {
+            dateRangeSpanReducer.onDateRangeSpanChange(dateRangeSpan)
+        }
     }
 
     private fun handleOnDeleteRecordDialogConfirm() = intent {
         handleOnDialogDismiss()
 
         if (state.isSelectionMode) {
-            deleteRecord(*state.recordsSelection.data.toLongArray())
+            deleteRecord(*state.recordsSelection.value.toLongArray())
             handleOnExitSelectionModeClick()
         } else {
             deleteRecord(selectedRecordId!!)
@@ -234,7 +295,7 @@ class RecordsListViewModel @Inject constructor(
 
     private fun handleOnRecordClick(action: Action.OnRecordClick) = intent {
         if (state.isSelectionMode) {
-            state.recordsSelection.data.toggleItem(action.id).also {
+            state.recordsSelection.value.addOrRemoveIfExist(action.id).also {
                 reduce {
                     state.copy(
                         recordsSelection = state.recordsSelection.copy(it),
@@ -266,7 +327,7 @@ class RecordsListViewModel @Inject constructor(
         savedStateHandle.navArgs<RecordsListNavArgs>().filter?.also { filter ->
             filterSelectionsReducer.setState(
                 FilterSelectionsStateReducer.State(
-                    recordTypesSelection = filter.types,
+                    recordTypesSelection = filter.types.map { it.ordinal.toLong() },
                     accountsSelection = filter.accounts,
                     categoriesSelection = filter.categories
                 )
@@ -280,17 +341,19 @@ class RecordsListViewModel @Inject constructor(
                 dateRangeSpanReducer.stateFlow,
                 filterSelectionsReducer.stateFlow,
             ) { dateRangeState, filtersState ->
-                val selectedLabels = state.selectionFilterData.labels
-                    .filter { it.first in filtersState.labelsSelection }
-                    .map { it.second }
+                val selectedLabels = labels.filterIndexed { index, _ ->
+                    index.toLong() in filtersState.labelsSelection
+                }.map { it }
 
                 GetRecordsUseCase.Params(
                     accounts = filtersState.accountsSelection,
                     labels = selectedLabels,
                     categories = filtersState.categoriesSelection,
-                    types = filtersState.recordTypesSelection,
                     dateRange = dateRangeState.dateRange,
                     withoutCategory = filtersState.withoutCategory,
+                    types = filtersState.recordTypesSelection.mapNotNull {
+                        RecordType.values().getOrNull(it.toInt())
+                    }
                 )
             }.flatMapLatest { recordsParams ->
                 combine(
@@ -320,25 +383,21 @@ class RecordsListViewModel @Inject constructor(
                 getLabels(),
                 getCategories(),
             ) { accounts, labels, categories ->
-                SelectionFilterDataUi(
-                    accounts = accounts.map { Pair(it.id, it.displayName) },
-                    categories = categories.map { Pair(it.id, it.name) },
-                    labels = labels.mapIndexed { i, s -> Pair(i.toLong(), s) },
-                    recordTypes = RecordType.values().toList()
-                )
-            }.collect {
+                Triple(accounts, labels, categories)
+            }.collect { (accounts, labels, categories) ->
+                this@RecordsListViewModel.accounts = accounts
+                this@RecordsListViewModel.labels = labels
+                this@RecordsListViewModel.categories = categories
+
                 val recordsFilterTypes = buildList {
-                    if (it.accounts.isNotEmpty()) add(RecordsFilterType.Accounts)
-                    if (it.categories.isNotEmpty()) add(RecordsFilterType.Categories)
-                    if (it.labels.isNotEmpty()) add(RecordsFilterType.Labels)
-                    add(RecordsFilterType.Types)
+                    if (accounts.isNotEmpty()) add(RecordsFilterType.Accounts)
+                    if (categories.isNotEmpty()) add(RecordsFilterType.Categories)
+                    if (labels.isNotEmpty()) add(RecordsFilterType.Labels)
+                    if (recordTypes.isNotEmpty()) add(RecordsFilterType.Types)
                     add(RecordsFilterType.WithoutCategory)
                 }
                 reduce {
-                    state.copy(
-                        selectionFilterData = it,
-                        filterTypes = recordsFilterTypes
-                    )
+                    state.copy(filterTypes = recordsFilterTypes)
                 }
             }
         }
@@ -350,6 +409,25 @@ class RecordsListViewModel @Inject constructor(
                 reduce { state.copy(dateRangeSpanState = it) }
             }
         }
+    }
+
+    @JvmName("mapAccountToItemUi")
+    private fun List<Account>.mapToItemUi() = map { ItemUi(it.id, it.displayName) }
+
+    @JvmName("mapCategoryToItemUi")
+    private fun List<Category>.mapToItemUi() = map { ItemUi(it.id, it.name) }
+
+    @JvmName("mapLabelToItemUi")
+    private fun List<String>.mapToItemUi() = mapIndexed { i, label -> ItemUi(i, label) }
+
+    @JvmName("mapRecordTypeToItemUi")
+    private fun List<RecordType>.mapToItemUi() = map {
+        ItemUi(it.ordinal, stringProvider(fromRes(it.labelResId)))
+    }
+
+    @JvmName("mapDateRangeSpanToItemUi")
+    private fun List<DateRangeSpan>.mapToItemUi() = mapIndexed { i, item ->
+        ItemUi(i, stringProvider(fromArrayRes(item.labelResId, i)))
     }
 
     private fun List<Record>.mapToUi(mainCurrency: Currency): List<RecordUi> {

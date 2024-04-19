@@ -1,6 +1,6 @@
 package org.expenny.feature.accountdetails
 
-import org.expenny.core.common.utils.StringResource
+import org.expenny.core.common.models.StringResource
 import org.expenny.core.common.types.AccountType
 import org.expenny.core.resources.R
 import org.expenny.core.ui.data.field.InputField

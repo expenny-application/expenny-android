@@ -4,12 +4,12 @@ import androidx.lifecycle.SavedStateHandle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import org.expenny.core.common.utils.StringResource
+import org.expenny.core.common.models.StringResource
 import org.expenny.core.common.viewmodel.*
 import org.expenny.core.domain.usecase.category.GetCategoriesUseCase
 import org.expenny.core.resources.R
 import org.expenny.core.ui.data.navargs.LongNavArg
-import org.expenny.core.ui.data.selection.SingleSelection
+import org.expenny.core.ui.data.ui.SingleSelectionUi
 import org.expenny.core.ui.mapper.CategoryMapper
 import org.expenny.feature.categories.navigation.CategoriesListNavArgs
 import org.orbitmvi.orbit.ContainerHost
@@ -77,7 +77,7 @@ class CategoriesListViewModel @Inject constructor(
                 reduce {
                     state.copy(
                         toolbarTitle = StringResource.fromRes(R.string.select_category_label),
-                        selection = SingleSelection(args.selection.value)
+                        selection = SingleSelectionUi(args.selection.value)
                     )
                 }
             } else {

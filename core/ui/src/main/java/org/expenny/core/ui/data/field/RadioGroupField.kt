@@ -1,6 +1,6 @@
 package org.expenny.core.ui.data.field
 
-import org.expenny.core.common.utils.StringResource
+import org.expenny.core.common.models.StringResource
 
 data class RadioGroupField(
     val value: Int = -1,

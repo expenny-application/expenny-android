@@ -3,15 +3,19 @@ package org.expenny.feature.settings
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
+import org.expenny.core.common.extensions.join
 import org.expenny.core.common.types.ApplicationLanguage
 import org.expenny.core.common.types.ApplicationTheme
+import org.expenny.core.common.models.StringResource
+import org.expenny.core.common.models.StringResource.Companion.fromRes
+import org.expenny.core.common.models.StringResource.Companion.fromStr
+import org.expenny.core.common.utils.StringResourceProvider
 import org.expenny.core.common.viewmodel.ExpennyActionViewModel
 import org.expenny.core.domain.repository.LocalRepository
 import org.expenny.core.domain.usecase.preferences.GetBiometricStatusUseCase
@@ -30,6 +34,10 @@ import org.expenny.core.domain.usecase.profile.GetProfilesUseCase
 import org.expenny.core.domain.usecase.profile.SetCurrentProfileUseCase
 import org.expenny.core.model.biometric.BiometricStatus.AvailableButNotEnrolled
 import org.expenny.core.model.biometric.BiometricStatus.Ready
+import org.expenny.core.model.profile.Profile
+import org.expenny.core.ui.data.ui.ItemUi
+import org.expenny.core.ui.data.ui.SingleSelectionUi
+import org.expenny.core.ui.extensions.labelResId
 import org.expenny.core.ui.mapper.ProfileMapper
 import org.expenny.feature.settings.model.ProfileActionType
 import org.expenny.feature.settings.model.SettingsItemType
@@ -59,14 +67,19 @@ class SettingsViewModel @Inject constructor(
     private val setReminderTimePreference: SetReminderTimePreferenceUseCase,
     private val getCanSendAlarms: GetCanSendAlarmsUseCase,
     private val profileMapper: ProfileMapper,
+    private val stringProvider: StringResourceProvider,
 ) : ExpennyActionViewModel<Action>(), ContainerHost<State, Event> {
+
+    private var profiles: List<Profile> = emptyList()
+    private val languages: List<ApplicationLanguage> = ApplicationLanguage.values().toList()
+    private val themes: List<ApplicationTheme> = ApplicationTheme.values().toList()
 
     override val container = container<State, Event>(
         initialState = State(),
         buildSettings = { exceptionHandler = defaultCoroutineExceptionHandler() }
     ) {
         coroutineScope {
-            setSelectedLanguage()
+            setCurrentLanguage()
             launch { subscribeToCurrentProfile() }
             launch { subscribeToProfiles() }
             launch { subscribeToThemePreference() }
@@ -100,7 +113,14 @@ class SettingsViewModel @Inject constructor(
                 handleOnCreateProfileClick()
             }
             ProfileActionType.SwitchProfile -> {
-                reduce { state.copy(dialog = State.Dialog.ProfileSelectionDialog) }
+                reduce {
+                    state.copy(
+                        dialog = State.Dialog.ProfileSelectionDialog(
+                            data = profiles.mapToItemUi(),
+                            selection = SingleSelectionUi(state.profile?.id)
+                        )
+                    )
+                }
             }
             ProfileActionType.DeleteProfile -> {
                 reduce { state.copy(dialog = State.Dialog.DeleteProfileDialog) }
@@ -141,8 +161,10 @@ class SettingsViewModel @Inject constructor(
 
     private fun handleOnSwitchProfileClick(action: Action.Dialog.OnSwitchProfileClick) = intent {
         dismissDialog()
-        setCurrentProfile(SetCurrentProfileUseCase.Params(action.profileId))
-        postSideEffect(Event.RestartApplication())
+        if (action.profileId != null) {
+            setCurrentProfile(SetCurrentProfileUseCase.Params(action.profileId))
+            postSideEffect(Event.RestartApplication())
+        }
     }
 
     private fun handleOnReminderTimeChange(action: Action.Dialog.OnReminderTimeChange) = intent {
@@ -159,10 +181,24 @@ class SettingsViewModel @Inject constructor(
                 reduce { state.copy(dialog = State.Dialog.ProfileActionsDialog) }
             }
             SettingsItemType.Theme -> {
-                reduce { state.copy(dialog = State.Dialog.ThemeDialog) }
+                reduce {
+                    state.copy(
+                        dialog = State.Dialog.ThemesSelectionDialog(
+                            data = themes.mapToItemUi(),
+                            selection = SingleSelectionUi(state.theme?.ordinal?.toLong())
+                        )
+                    )
+                }
             }
             SettingsItemType.Language -> {
-                reduce { state.copy(dialog = State.Dialog.LanguageDialog) }
+                reduce {
+                    state.copy(
+                        dialog = State.Dialog.LanguagesSelectionDialog(
+                            data = languages.mapToItemUi(),
+                            selection = SingleSelectionUi(state.language.ordinal.toLong())
+                        )
+                    )
+                }
             }
             SettingsItemType.Currencies -> {
                 postSideEffect(Event.NavigateToCurrencies)
@@ -207,14 +243,12 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    private fun handleOnLanguageSelect(action: Action.Dialog.OnLanguageSelect): Job {
-        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(action.language.tag))
-        return intent {
-            reduce {
-                state.copy(
-                    selectedLanguage = action.language,
-                    dialog = null
-                )
+    private fun handleOnLanguageSelect(action: Action.Dialog.OnLanguageSelect) {
+        action.languageOrdinal?.toInt()?.let { ApplicationLanguage.values().getOrNull(it) }?.let {
+            AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(it.tag))
+            intent {
+                reduce { state.copy(language = it) }
+                dismissDialog()
             }
         }
     }
@@ -224,37 +258,35 @@ class SettingsViewModel @Inject constructor(
     }
 
     private fun handleOnThemeSelect(action: Action.Dialog.OnThemeSelect) = intent {
-        when (action.theme) {
-            ApplicationTheme.Dark -> localRepository.setThemeDarkMode(true)
-            ApplicationTheme.Light -> localRepository.setThemeDarkMode(false)
-            ApplicationTheme.SystemDefault -> localRepository.setThemeSystemDefault()
+        action.themeOrdinal?.toInt()?.let { ApplicationTheme.values().getOrNull(it) }?.let {
+            when (it) {
+                ApplicationTheme.Dark -> localRepository.setThemeDarkMode(true)
+                ApplicationTheme.Light -> localRepository.setThemeDarkMode(false)
+                ApplicationTheme.SystemDefault -> localRepository.setThemeSystemDefault()
+            }
+            reduce { state.copy(theme = it) }
+            dismissDialog()
         }
-        reduce { state.copy(selectedTheme = action.theme) }
-        dismissDialog()
     }
 
     private fun subscribeToCurrentProfile() = intent {
-        getCurrentProfile().filterNotNull().collect {
+        getCurrentProfile().filterNotNull().collect { profile ->
             reduce {
-                state.copy(currentProfile = profileMapper(it))
+                state.copy(profile = profileMapper(profile))
             }
         }
     }
 
     private fun subscribeToProfiles() = intent {
-        getProfiles().collect {
+        getProfiles().collect { newProfiles ->
             val profileActions = buildList {
-                if (it.size > 1) add(ProfileActionType.SwitchProfile)
+                if (newProfiles.size > 1) add(ProfileActionType.SwitchProfile)
                 add(ProfileActionType.CreateProfile)
                 add(ProfileActionType.DeleteProfileData)
                 add(ProfileActionType.DeleteProfile)
             }
-            reduce {
-                state.copy(
-                    profiles = profileMapper(it),
-                    profileActions = profileActions
-                )
-            }
+            reduce { state.copy(profileActions = profileActions) }
+            profiles = newProfiles
         }
     }
 
@@ -300,20 +332,20 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    private fun setSelectedLanguage() = intent {
-        reduce {
-            val localeTag = AppCompatDelegate.getApplicationLocales().toLanguageTags()
-            val selectedLanguage = ApplicationLanguage.tagOf(localeTag).let {
-                when (it) {
-                    null -> {
-                        // couldn't parse locale tag, fallback to system default
-                        AppCompatDelegate.setApplicationLocales(LocaleListCompat.getEmptyLocaleList())
-                        ApplicationLanguage.SystemDefault
-                    }
-                    else -> it
+    private fun setCurrentLanguage() {
+        val localeTag = AppCompatDelegate.getApplicationLocales().toLanguageTags()
+        val selectedLanguage = ApplicationLanguage.tagOf(localeTag).let {
+            when (it) {
+                null -> {
+                    // couldn't parse locale tag, fallback to system default
+                    AppCompatDelegate.setApplicationLocales(LocaleListCompat.getEmptyLocaleList())
+                    ApplicationLanguage.SystemDefault
                 }
+                else -> it
             }
-            state.copy(selectedLanguage = selectedLanguage)
+        }
+        intent {
+            reduce { state.copy(language = selectedLanguage) }
         }
     }
 
@@ -325,14 +357,27 @@ class SettingsViewModel @Inject constructor(
                     false -> ApplicationTheme.Light
                     null -> ApplicationTheme.SystemDefault
                 }
-            }.collect {
-                reduce {
-                    state.copy(selectedTheme = it)
-                }
+            }.collect { applicationTheme ->
+                reduce { state.copy(theme = applicationTheme) }
             }
     }
 
     private suspend fun SimpleSyntax<State, Event>.dismissDialog() {
         reduce { state.copy(dialog = null) }
+    }
+
+    @JvmName("mapToProfileItemUi")
+    private fun List<Profile>.mapToItemUi() = map {
+        ItemUi(it.id, stringProvider(fromStr(it.name.join(it.currencyUnit.code))))
+    }
+
+    @JvmName("mapToApplicationLanguageItemUi")
+    private fun List<ApplicationLanguage>.mapToItemUi() = map {
+        ItemUi(it.ordinal, stringProvider(fromRes(it.labelResId)))
+    }
+
+    @JvmName("mapToApplicationThemeItemUi")
+    private fun List<ApplicationTheme>.mapToItemUi() = map {
+        ItemUi(it.ordinal, stringProvider(fromRes(it.labelResId)))
     }
 }

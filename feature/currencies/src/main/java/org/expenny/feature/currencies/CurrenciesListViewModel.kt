@@ -4,10 +4,10 @@ import androidx.lifecycle.SavedStateHandle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import org.expenny.core.common.utils.StringResource.Companion.fromRes
+import org.expenny.core.common.models.StringResource.Companion.fromRes
 import org.expenny.core.common.viewmodel.*
 import org.expenny.core.domain.usecase.currency.GetCurrenciesUseCase
-import org.expenny.core.ui.data.selection.SingleSelection
+import org.expenny.core.ui.data.ui.SingleSelectionUi
 import org.expenny.core.ui.mapper.CurrencyMapper
 import org.expenny.feature.currencies.navigation.CurrenciesListNavArgs
 import org.expenny.core.resources.R
@@ -80,7 +80,7 @@ class CurrenciesListViewModel @Inject constructor(
                     reduce {
                         state.copy(
                             toolbarTitle = fromRes(R.string.select_currency_label),
-                            selection = SingleSelection(args.selection.value)
+                            selection = SingleSelectionUi(args.selection.value)
                         )
                     }
                 } else {

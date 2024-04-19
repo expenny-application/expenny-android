@@ -22,7 +22,6 @@ import com.patrykandpatrick.vico.core.model.CartesianChartModelProducer
 import kotlinx.coroutines.CoroutineScope
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennyDateRangeFilterButton
-import org.expenny.core.ui.extensions.label
 import org.expenny.core.ui.foundation.ExpennySingleSelectionDialog
 import org.expenny.feature.accountoverview.view.AccountOverviewChartCard
 import org.expenny.feature.accountoverview.view.AccountOverviewToolbar
@@ -42,10 +41,10 @@ internal fun AccountOverviewContent(
     when (state.dialog) {
         is State.Dialog.DateRangeSpanDialog -> {
             ExpennySingleSelectionDialog(
-                label = stringResource(R.string.date_span_label),
-                data = state.dateRangeSpans.map { Pair(it, it.label) },
-                selection = state.dateRangeSpanState.dateRangeSpan,
-                onSelect = { onAction(Action.Dialog.OnDateRangeSpanSelect(it)) },
+                title = stringResource(R.string.date_span_label),
+                data = state.dialog.data,
+                selection = state.dialog.selection,
+                onSelectionChange = { onAction(Action.Dialog.OnDateRangeSpanSelect(it)) },
                 onDismiss = { onAction(Action.Dialog.OnDialogDismiss) }
             )
         }

@@ -1,11 +1,9 @@
 package org.expenny.feature.profilesetup.view
 
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import org.expenny.core.resources.R
 import org.expenny.core.ui.foundation.ExpennyDialog
-import org.expenny.core.ui.foundation.ExpennyTextButton
 
 @Composable
 internal fun ProfileSetupAbortDialog(
@@ -15,25 +13,21 @@ internal fun ProfileSetupAbortDialog(
     ExpennyDialog(
         onDismissRequest = onDismiss,
         title = {
-            Text(text = stringResource(R.string.abort_setup_label))
+            DialogTitle(text = stringResource(R.string.abort_setup_label))
         },
-        content = {
-            Text(text = stringResource(R.string.get_started_abort_paragraph))
+        body = {
+            DialogBody(text = stringResource(R.string.get_started_abort_paragraph))
         },
-        confirmButton = {
-            ExpennyTextButton(
+        rightButton = {
+            DialogButton(
                 onClick = onConfirm,
-                content = {
-                    Text(text = stringResource(R.string.abort_button))
-                }
+                label = stringResource(R.string.abort_button)
             )
         },
-        dismissButton = {
-            ExpennyTextButton(
+        leftButton = {
+            DialogButton(
                 onClick = onDismiss,
-                content = {
-                    Text(text = stringResource(R.string.continue_button))
-                }
+                label = stringResource(R.string.continue_button)
             )
         }
     )

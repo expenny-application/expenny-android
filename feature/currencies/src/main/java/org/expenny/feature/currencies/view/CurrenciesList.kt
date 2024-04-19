@@ -15,8 +15,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennySelectionButton
-import org.expenny.core.ui.data.selection.SelectionType
-import org.expenny.core.ui.data.selection.SingleSelection
+import org.expenny.core.ui.data.ui.SelectionType
+import org.expenny.core.ui.data.ui.SingleSelectionUi
 import org.expenny.core.ui.data.ui.CurrencyUi
 import org.expenny.core.ui.extensions.type
 import org.expenny.core.ui.foundation.ExpennyCard
@@ -25,7 +25,7 @@ import org.expenny.core.ui.foundation.ExpennyVerticalList
 @Composable
 internal fun CurrenciesList(
     modifier: Modifier = Modifier,
-    selection: SingleSelection<Long>?,
+    selection: SingleSelectionUi<Long>?,
     currencies: List<CurrencyUi>,
     onCurrencyClick: (Long, Boolean) -> Unit,
 ) {

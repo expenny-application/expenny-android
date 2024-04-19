@@ -17,6 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
+import org.expenny.core.ui.extensions.asRawString
+import org.expenny.core.ui.extensions.label
 import org.expenny.feature.settings.model.SettingsItemType
 import org.expenny.feature.settings.view.SettingsDataSection
 import org.expenny.feature.settings.view.SettingsDialog
@@ -80,15 +82,15 @@ internal fun SettingsList(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(32.dp),
     ) {
-        state.currentProfile?.let {
+        state.profile?.let {
             SettingsProfileSection(
                 profileName = it.displayName,
                 onProfileClick = { onSettingsItemTypeClick(SettingsItemType.Profile) }
             )
         }
         SettingsGeneralSection(
-            language = state.selectedLanguage,
-            theme = state.selectedTheme,
+            language = state.language,
+            theme = state.theme,
             onLanguageClick = { onSettingsItemTypeClick(SettingsItemType.Language) },
             onThemeClick = { onSettingsItemTypeClick(SettingsItemType.Theme) },
             onCategorizationClick = { onSettingsItemTypeClick(SettingsItemType.Categorization) },

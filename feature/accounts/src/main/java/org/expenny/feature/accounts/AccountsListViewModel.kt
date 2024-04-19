@@ -5,9 +5,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
-import org.expenny.core.common.extensions.toggleItem
-import org.expenny.core.common.utils.StringResource.Companion.fromPluralRes
-import org.expenny.core.common.utils.StringResource.Companion.fromRes
+import org.expenny.core.common.extensions.addOrRemoveIfExist
+import org.expenny.core.common.models.StringResource.Companion.fromPluralRes
+import org.expenny.core.common.models.StringResource.Companion.fromRes
 import org.expenny.core.common.viewmodel.ExpennyActionViewModel
 import org.expenny.core.domain.usecase.account.GetAccountsUseCase
 import org.expenny.core.domain.usecase.record.GetRecordsUseCase
@@ -16,8 +16,8 @@ import org.expenny.core.model.record.Record
 import org.expenny.core.resources.R
 import org.expenny.core.ui.data.navargs.LongArrayNavArg
 import org.expenny.core.ui.data.navargs.LongNavArg
-import org.expenny.core.ui.data.selection.MultiSelection
-import org.expenny.core.ui.data.selection.SingleSelection
+import org.expenny.core.ui.data.ui.MultiSelectionUi
+import org.expenny.core.ui.data.ui.SingleSelectionUi
 import org.expenny.core.ui.mapper.AccountMapper
 import org.expenny.feature.accounts.model.Action
 import org.expenny.feature.accounts.model.Event
@@ -70,22 +70,21 @@ class AccountsListViewModel @Inject constructor(
     }
 
     private fun handleOnConfirmSelectionClick() = intent {
-        val results = (state.selection as MultiSelection<Long>).data.toLongArray()
+        val results = (state.selection as MultiSelectionUi<Long>).value.toLongArray()
         postSideEffect(Event.NavigateBackWithResult(LongArrayNavArg(results)))
     }
 
     private fun handleOnAccountClick(action: Action.OnAccountClick) = intent {
         when (val selection = state.selection) {
-            is SingleSelection -> {
+            is SingleSelectionUi -> {
                 postSideEffect(Event.NavigateBackWithResult(LongNavArg(action.id, selectionResultCode)))
             }
-            is MultiSelection -> {
-                val newSelectionData = selection.data.toggleItem(action.id)
-
+            is MultiSelectionUi -> {
+                val newSelectionData = selection.value.addOrRemoveIfExist(action.id)
                 reduce {
                     state.copy(
                         showConfirmButton = newSelectionData.isNotEmpty(),
-                        selection = MultiSelection(data = newSelectionData)
+                        selection = MultiSelectionUi(value = newSelectionData)
                     )
                 }
             }
@@ -132,8 +131,8 @@ class AccountsListViewModel @Inject constructor(
                             is LongNavArg -> fromPluralRes(R.plurals.select_account_quantity_label, 1)
                         },
                         selection = when (args.selection) {
-                            is LongArrayNavArg -> MultiSelection(args.selection.values.toList())
-                            is LongNavArg -> SingleSelection(args.selection.value)
+                            is LongArrayNavArg -> MultiSelectionUi(args.selection.values.toList())
+                            is LongNavArg -> SingleSelectionUi(args.selection.value)
                         }
                     )
                 }

@@ -1,6 +1,6 @@
 package org.expenny.feature.recorddetails.model
 
-import org.expenny.core.common.utils.StringResource
+import org.expenny.core.common.models.StringResource
 
 data class LabelsInputField(
     val value: String = "",

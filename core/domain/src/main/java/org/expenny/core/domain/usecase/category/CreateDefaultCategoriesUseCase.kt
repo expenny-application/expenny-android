@@ -1,7 +1,7 @@
 package org.expenny.core.domain.usecase.category
 
 import android.graphics.Color
-import org.expenny.core.common.utils.StringResource.Companion.fromArrayRes
+import org.expenny.core.common.models.StringResource.Companion.fromArrayRes
 import org.expenny.core.common.utils.StringResourceProvider
 import org.expenny.core.domain.repository.CategoryRepository
 import org.expenny.core.model.category.CategoryCreate

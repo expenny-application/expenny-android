@@ -21,8 +21,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.OpenResultRecipient
 import org.expenny.core.ui.utils.ExpennySnackbarManager
-import org.expenny.core.common.utils.StringResource.Companion.fromRes
-import org.expenny.core.ui.data.navargs.LongArrayNavArg
+import org.expenny.core.common.models.StringResource.Companion.fromRes
 import org.expenny.core.ui.data.navargs.LongNavArg
 import org.expenny.core.ui.data.navargs.NavArgResult
 import org.expenny.core.ui.theme.ExpennyTheme

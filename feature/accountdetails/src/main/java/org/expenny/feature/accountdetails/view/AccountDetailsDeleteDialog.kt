@@ -1,11 +1,9 @@
 package org.expenny.feature.accountdetails.view
 
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import org.expenny.core.resources.R
 import org.expenny.core.ui.foundation.ExpennyDialog
-import org.expenny.core.ui.foundation.ExpennyTextButton
 
 @Composable
 internal fun AccountDetailsDeleteDialog(
@@ -15,25 +13,21 @@ internal fun AccountDetailsDeleteDialog(
     ExpennyDialog(
         onDismissRequest = onDismiss,
         title = {
-            Text(text = stringResource(R.string.delete_account_question_label))
+            DialogTitle(text = stringResource(R.string.delete_account_question_label))
         },
-        content = {
-            Text(text = stringResource(R.string.delete_associated_data_paragraph))
+        body = {
+            DialogBody(text = stringResource(R.string.delete_associated_data_paragraph))
         },
-        confirmButton = {
-            ExpennyTextButton(
-                onClick = onConfirm,
-                content = {
-                    Text(text = stringResource(R.string.delete_button))
-                }
+        rightButton = {
+            DialogButton(
+                label = stringResource(R.string.delete_button),
+                onClick = onConfirm
             )
         },
-        dismissButton = {
-            ExpennyTextButton(
-                onClick = onDismiss,
-                content = {
-                    Text(text = stringResource(R.string.cancel_button))
-                }
+        leftButton = {
+            DialogButton(
+                label = stringResource(R.string.cancel_button),
+                onClick = onDismiss
             )
         }
     )

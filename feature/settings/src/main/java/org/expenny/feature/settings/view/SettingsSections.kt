@@ -154,7 +154,7 @@ internal fun SettingsDataSection(
 @Composable
 internal fun SettingsGeneralSection(
     modifier: Modifier = Modifier,
-    language: ApplicationLanguage,
+    language: ApplicationLanguage?,
     theme: ApplicationTheme?,
     onLanguageClick: () -> Unit,
     onThemeClick: () -> Unit,
@@ -168,7 +168,7 @@ internal fun SettingsGeneralSection(
         SectionSelectionItem(
             title = stringResource(R.string.language_label),
             icon = painterResource(R.drawable.ic_language),
-            value = language.label,
+            value = language?.label.orEmpty(),
             onClick = onLanguageClick
         )
         SectionSelectionItem(

@@ -1,8 +1,8 @@
-package org.expenny.core.common.utils
+package org.expenny.core.common.models
 
 import android.database.sqlite.SQLiteConstraintException
 import android.database.sqlite.SQLiteException
-import org.expenny.core.common.utils.StringResource.Companion.fromRes
+import org.expenny.core.common.models.StringResource.Companion.fromRes
 import org.expenny.core.resources.R
 
 class ErrorMessage(throwable: Throwable) {
@@ -21,5 +21,4 @@ class ErrorMessage(throwable: Throwable) {
         is NullPointerException -> fromRes(R.string.data_not_exists_error)
         else -> fromRes(R.string.internal_error)
     }
-
 }

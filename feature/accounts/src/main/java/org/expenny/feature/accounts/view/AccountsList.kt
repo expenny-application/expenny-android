@@ -19,8 +19,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennySelectionButton
-import org.expenny.core.ui.data.selection.Selection
-import org.expenny.core.ui.data.selection.SelectionType
+import org.expenny.core.ui.data.ui.SelectionUi
+import org.expenny.core.ui.data.ui.SelectionType
 import org.expenny.core.ui.data.ui.AccountUi
 import org.expenny.core.ui.data.ui.AmountUi
 import org.expenny.core.ui.extensions.type
@@ -31,7 +31,7 @@ import org.expenny.core.ui.foundation.ExpennyVerticalList
 internal fun AccountsList(
     modifier: Modifier = Modifier,
     lazyListState: LazyListState,
-    selection: Selection<Long>?,
+    selection: SelectionUi<Long>?,
     accounts: List<AccountUi>,
     onAccountClick: (Long) -> Unit,
 ) {

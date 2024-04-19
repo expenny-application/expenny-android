@@ -7,8 +7,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.expenny.core.common.utils.Constants
-import org.expenny.core.common.utils.StringResource.Companion.fromRes
-import org.expenny.core.common.utils.StringResource.Companion.fromStr
+import org.expenny.core.common.models.StringResource.Companion.fromRes
+import org.expenny.core.common.models.StringResource.Companion.fromStr
 import org.expenny.core.common.viewmodel.ExpennyActionViewModel
 import org.expenny.core.domain.usecase.preferences.GetBiometricCryptoObjectUseCase
 import org.expenny.core.domain.usecase.preferences.GetBiometricPreferenceUseCase

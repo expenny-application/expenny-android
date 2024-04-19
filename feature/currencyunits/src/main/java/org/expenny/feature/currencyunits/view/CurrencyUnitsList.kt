@@ -16,7 +16,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.expenny.core.ui.data.selection.SingleSelection
+import org.expenny.core.ui.data.ui.SingleSelectionUi
 import org.expenny.core.ui.data.ui.CurrencyUnitUi
 import org.expenny.core.ui.foundation.ExpennyCard
 import org.expenny.core.ui.foundation.ExpennyGroupedVerticalList
@@ -25,7 +25,7 @@ import java.util.SortedMap
 @Composable
 internal fun CurrencyUnitsList(
     modifier: Modifier = Modifier,
-    selection: SingleSelection<Long>,
+    selection: SingleSelectionUi<Long>,
     currencyUnits: SortedMap<String, List<CurrencyUnitUi>>,
     onCurrencyUnitClick: (Long) -> Unit,
 ) {

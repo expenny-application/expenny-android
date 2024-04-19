@@ -1,24 +1,27 @@
 package org.expenny.core.ui.extensions
 
-import org.expenny.core.ui.data.selection.MultiSelection
-import org.expenny.core.ui.data.selection.Selection
-import org.expenny.core.ui.data.selection.SelectionType
-import org.expenny.core.ui.data.selection.SingleSelection
+import org.expenny.core.ui.data.ui.MultiSelectionUi
+import org.expenny.core.ui.data.ui.SelectionUi
+import org.expenny.core.ui.data.ui.SelectionType
+import org.expenny.core.ui.data.ui.SingleSelectionUi
 
-val Selection<*>.type
+val SelectionUi<*>.type
     get() = when(this) {
-        is SingleSelection<*> -> SelectionType.Single
-        is MultiSelection<*> -> SelectionType.Multi
+        is SingleSelectionUi<*> -> SelectionType.Single
+        is MultiSelectionUi<*> -> SelectionType.Multi
     }
 
-val Selection<*>.size
+val SelectionUi<*>.size
     get() = when(this) {
-        is SingleSelection<*> -> 1
-        is MultiSelection<*> -> this.data.size
+        is SingleSelectionUi<*> -> if (value == null) 0 else 1
+        is MultiSelectionUi<*> -> value.size
     }
 
-val Selection<*>.isNotEmpty
-    get() = size > 0
+fun <T> SelectionUi<T>.empty() = when(this) {
+    is SingleSelectionUi<T> -> copy(null)
+    is MultiSelectionUi<T> -> copy(emptyList())
+}
 
-val Selection<*>.isEmpty
-    get() = size == 0
+fun SelectionUi<*>.isNotEmpty() = size > 0
+
+fun SelectionUi<*>.isEmpty() = size == 0
