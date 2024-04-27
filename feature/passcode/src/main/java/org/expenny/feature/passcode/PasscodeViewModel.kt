@@ -9,7 +9,7 @@ import kotlinx.coroutines.launch
 import org.expenny.core.common.utils.Constants
 import org.expenny.core.common.models.StringResource.Companion.fromRes
 import org.expenny.core.common.models.StringResource.Companion.fromStr
-import org.expenny.core.common.viewmodel.ExpennyActionViewModel
+import org.expenny.core.ui.base.ExpennyViewModel
 import org.expenny.core.domain.usecase.preferences.GetBiometricCryptoObjectUseCase
 import org.expenny.core.domain.usecase.preferences.GetBiometricPreferenceUseCase
 import org.expenny.core.domain.usecase.preferences.GetPasscodePreferenceUseCase
@@ -39,7 +39,7 @@ class PasscodeViewModel @Inject constructor(
     private val getBiometricCryptoObject: GetBiometricCryptoObjectUseCase,
     private val getPasscodePreference: GetPasscodePreferenceUseCase,
     private val setPasscodePreference: SetPasscodePreferenceUseCase,
-) : ExpennyActionViewModel<Action>(), ContainerHost<State, Event> {
+) : ExpennyViewModel<Action>(), ContainerHost<State, Event> {
 
     private var validPasscode: String = ""
     private val state get() = container.stateFlow.value

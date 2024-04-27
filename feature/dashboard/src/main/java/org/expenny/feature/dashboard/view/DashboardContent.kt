@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
-import org.expenny.core.ui.utils.ExpennyDrawerState
+import org.expenny.core.ui.base.ExpennyDrawerManager
 import org.expenny.feature.dashboard.model.Action
 import org.expenny.feature.dashboard.model.State
 
@@ -18,7 +18,7 @@ import org.expenny.feature.dashboard.model.State
 @Composable
 internal fun DashboardContent(
     state: State,
-    drawerState: ExpennyDrawerState,
+    drawerState: ExpennyDrawerManager,
     scope: CoroutineScope,
     scrollState: ScrollState,
     addRecordSheetState: SheetState,

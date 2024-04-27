@@ -15,17 +15,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.*
 import androidx.navigation.compose.rememberNavController
-import org.expenny.core.ui.utils.ExpennySnackbarManager
-import org.expenny.core.ui.foundation.ExpennySnackbar
+import org.expenny.core.ui.base.ExpennySnackbarManager
+import org.expenny.core.ui.components.ExpennySnackbar
 import com.ramcosta.composedestinations.spec.NavGraphSpec
 import com.ramcosta.composedestinations.spec.Route
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import org.expenny.navigation.*
 import org.expenny.navigation.ExpennyNavigation
-import org.expenny.core.ui.utils.ExpennyDrawerState
-import org.expenny.main.drawer.MainNavigationDrawer
-import org.expenny.main.drawer.DrawerTab
+import org.expenny.core.ui.base.ExpennyDrawerManager
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalAnimationApi::class)
@@ -36,31 +34,31 @@ internal fun MainScreen(startRoute: Route) {
     val navController = state.navHostController
     val currentDestination = navController.currentDestination?.route
     val isCurrentNavGraphDestinationStart = currentDestination in DrawerTab.startRoutes.drop(1)
-    val enableDrawerGestures = state.drawerState.isDrawerTabAsState && currentDestination != DrawerTab.Settings.route
+    val enableDrawerGestures = state.drawerManager.isDrawerTabAsState && currentDestination != DrawerTab.Settings.route
 
-    BackHandler(state.drawerState.drawer.isOpen) {
-        state.drawerState.animateTo(DrawerValue.Closed)
+    BackHandler(state.drawerManager.drawer.isOpen) {
+        state.drawerManager.animateTo(DrawerValue.Closed)
     }
 
     BackHandler(
-        state.drawerState.isDrawerTabAsState
+        state.drawerManager.isDrawerTabAsState
                 && isCurrentNavGraphDestinationStart
-                && state.drawerState.drawer.isClosed
+                && state.drawerManager.drawer.isClosed
     ) {
         navController.navigateFirstTab()
     }
 
     ModalNavigationDrawer(
         gesturesEnabled = enableDrawerGestures,
-        drawerState = state.drawerState.drawer,
+        drawerState = state.drawerManager.drawer,
         drawerContent = {
-            if (state.drawerState.isDrawerTabAsState) {
+            if (state.drawerManager.isDrawerTabAsState) {
                 val currentSelectedTab by navController.currentTabAsState()
 
                 MainNavigationDrawer(
                     currentTab = currentSelectedTab,
                     onTabSelect = {
-                        state.drawerState.animateTo(DrawerValue.Closed) {
+                        state.drawerManager.animateTo(DrawerValue.Closed) {
                             navController.navigateTab(it)
                         }
                     }
@@ -75,7 +73,7 @@ internal fun MainScreen(startRoute: Route) {
             },
         ) { _ ->
             ExpennyNavigation(
-                expennyState = state,
+                mainState = state,
                 startRoute = startRoute
             )
         }
@@ -106,25 +104,25 @@ private fun rememberExpennyState(
     snackbarManager: ExpennySnackbarManager = ExpennySnackbarManager(LocalContext.current.resources),
     navHostController: NavHostController = rememberNavController(),
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
-    drawerState: ExpennyDrawerState = rememberExpennyDrawerState(navHostController, coroutineScope)
+    drawerState: ExpennyDrawerManager = rememberExpennyDrawerManager(navHostController, coroutineScope)
 ) = remember(snackbarHostState, navHostController, coroutineScope, snackbarManager) {
-    ExpennyState(
-        snackbarHostState = snackbarHostState,
-        drawerState = drawerState,
-        navHostController = navHostController,
+    MainState(
+        drawerManager = drawerState,
         snackbarManager = snackbarManager,
+        snackbarHostState = snackbarHostState,
+        navHostController = navHostController,
         coroutineScope = coroutineScope,
     )
 }
 
 @Composable
-private fun rememberExpennyDrawerState(
+private fun rememberExpennyDrawerManager(
     navHostController: NavHostController,
     coroutineScope: CoroutineScope,
     drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed),
     tabs: List<NavGraphSpec> = DrawerTab.values().map { it.navGraph },
 ) = remember(navHostController, coroutineScope, drawerState, tabs) {
-    ExpennyDrawerState(
+    ExpennyDrawerManager(
         drawer = drawerState,
         tabs = tabs,
         navController = navHostController,

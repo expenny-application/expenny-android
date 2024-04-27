@@ -29,7 +29,7 @@ import org.expenny.core.common.types.ApplicationTheme
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennySection
 import org.expenny.core.ui.extensions.label
-import org.expenny.core.ui.foundation.ExpennyCard
+import org.expenny.core.ui.components.ExpennyCard
 
 @Composable
 internal fun SettingsSensitiveSection(

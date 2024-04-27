@@ -3,13 +3,13 @@ package org.expenny.feature.categorydetails
 import androidx.compose.ui.graphics.Color
 import org.expenny.core.common.models.StringResource
 import org.expenny.core.resources.R
-import org.expenny.core.ui.data.field.InputField
-import org.expenny.core.ui.theme.ExpennyColor
+import org.expenny.core.ui.data.InputUi
+import org.expenny.core.ui.foundation.ExpennyColor
 
 data class State(
     val toolbarTitle: StringResource = StringResource.fromRes(R.string.add_category_label),
     val showDeleteButton: Boolean = false,
-    val nameInput: InputField = InputField(),
+    val nameInput: InputUi = InputUi(),
     val showDeleteDialog: Boolean = false,
     val colors: List<Color> = listOf(
         ExpennyColor.Red, ExpennyColor.DeepPurple, ExpennyColor.Yellow,

@@ -14,9 +14,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennyRecord
-import org.expenny.core.ui.data.ui.AmountUi
-import org.expenny.core.ui.data.ui.RecordUi
-import org.expenny.core.ui.foundation.ExpennyCard
+import org.expenny.core.ui.data.AmountUi
+import org.expenny.core.ui.data.RecordUi
+import org.expenny.core.ui.components.ExpennyCard
 import org.expenny.feature.dashboard.model.DashboardBalanceUi
 
 @Composable

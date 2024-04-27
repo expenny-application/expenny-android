@@ -35,9 +35,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennySection
-import org.expenny.core.ui.data.field.InputField
+import org.expenny.core.ui.data.InputUi
 import org.expenny.core.ui.extensions.asRawString
-import org.expenny.core.ui.foundation.ExpennyInputField
+import org.expenny.core.ui.components.ExpennyInputField
 import org.expenny.feature.categorydetails.State
 
 @Composable
@@ -93,7 +93,7 @@ private fun NameInputField(
     modifier: Modifier = Modifier,
     iconResId: Int?,
     iconColor: Color?,
-    state: InputField,
+    state: InputUi,
     onValueChange: (String) -> Unit
 ) {
     with(state) {

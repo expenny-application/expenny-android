@@ -19,13 +19,13 @@ import kotlinx.collections.immutable.ImmutableList
 import org.expenny.core.common.types.RecordType
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennySegmentedTabRow
-import org.expenny.core.ui.data.field.InputField
-import org.expenny.core.ui.data.field.MonetaryInputField
+import org.expenny.core.ui.data.InputUi
+import org.expenny.core.ui.data.DecimalInputUi
 import org.expenny.core.ui.extensions.asRawString
 import org.expenny.core.ui.extensions.label
-import org.expenny.core.ui.foundation.ExpennyMonetaryInputField
-import org.expenny.core.ui.foundation.ExpennySelectInputField
-import org.expenny.core.ui.theme.surfaceInput
+import org.expenny.core.ui.components.ExpennyMonetaryInputField
+import org.expenny.core.ui.components.ExpennySelectInputField
+import org.expenny.core.ui.foundation.surfaceInput
 import org.expenny.feature.recorddetails.State
 import java.math.BigDecimal
 
@@ -127,7 +127,7 @@ private fun RecordTypeTabRow(
 @Composable
 private fun AmountInputField(
     modifier: Modifier = Modifier,
-    state: MonetaryInputField,
+    state: DecimalInputUi,
     currency: String,
     onValueChange: (BigDecimal) -> Unit
 ) {
@@ -144,7 +144,7 @@ private fun AmountInputField(
 @Composable
 private fun TransferAmountInputField(
     modifier: Modifier = Modifier,
-    state: MonetaryInputField,
+    state: DecimalInputUi,
     currency: String,
     onValueChange: (BigDecimal) -> Unit
 ) {
@@ -161,7 +161,7 @@ private fun TransferAmountInputField(
 @Composable
 private fun SelectCategoryInputField(
     modifier: Modifier = Modifier,
-    state: InputField,
+    state: InputUi,
     onClick: () -> Unit
 ) {
     with(state) {
@@ -181,7 +181,7 @@ private fun SelectCategoryInputField(
 @Composable
 private fun SelectAccountInputField(
     modifier: Modifier = Modifier,
-    state: InputField,
+    state: InputUi,
     onClick: () -> Unit
 ) {
     with(state) {
@@ -201,7 +201,7 @@ private fun SelectAccountInputField(
 @Composable
 private fun SelectTransferAccountInputField(
     modifier: Modifier = Modifier,
-    state: InputField,
+    state: InputUi,
     onClick: () -> Unit
 ) {
     with(state) {
@@ -221,7 +221,7 @@ private fun SelectTransferAccountInputField(
 @Composable
 private fun SelectDateInputField(
     modifier: Modifier = Modifier,
-    state: InputField,
+    state: InputUi,
     onClick: () -> Unit
 ) {
     with(state) {
@@ -241,7 +241,7 @@ private fun SelectDateInputField(
 @Composable
 private fun SelectTimeInputField(
     modifier: Modifier = Modifier,
-    state: InputField,
+    state: InputUi,
     onClick: () -> Unit
 ) {
     with(state) {

@@ -18,13 +18,13 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennySection
-import org.expenny.core.ui.data.field.InputField
-import org.expenny.core.ui.data.field.MonetaryInputField
+import org.expenny.core.ui.data.InputUi
+import org.expenny.core.ui.data.DecimalInputUi
 import org.expenny.core.ui.extensions.asRawString
-import org.expenny.core.ui.components.ExpennyCheckBoxGroup
-import org.expenny.core.ui.foundation.ExpennyMonetaryInputField
-import org.expenny.core.ui.foundation.ExpennyReadonlyInputField
-import org.expenny.core.ui.foundation.ExpennySelectInputField
+import org.expenny.core.ui.components.ExpennyCheckboxInput
+import org.expenny.core.ui.components.ExpennyMonetaryInputField
+import org.expenny.core.ui.components.ExpennyReadonlyInputField
+import org.expenny.core.ui.components.ExpennySelectInputField
 import org.expenny.feature.currencydetails.State
 import java.math.BigDecimal
 
@@ -87,10 +87,12 @@ internal fun CurrencyDetailsInputForm(
                                 isUpdatable = isUpdatable,
                                 onUpdateClick = onUpdateClick
                             )
-                            ExpennyCheckBoxGroup(
-                                label = stringResource(R.string.subscribe_to_rates_updates_message),
+                            ExpennyCheckboxInput(
                                 isChecked = isSubscribedToUpdates,
-                                onClick = onSubscribeToUpdatesCheckboxChange
+                                onClick = onSubscribeToUpdatesCheckboxChange,
+                                caption = {
+                                    Caption(text = stringResource(R.string.subscribe_to_rates_updates_message))
+                                }
                             )
                         }
                     }
@@ -103,7 +105,7 @@ internal fun CurrencyDetailsInputForm(
 @Composable
 private fun LastUpdateInputField(
     modifier: Modifier = Modifier,
-    state: InputField,
+    state: InputUi,
     isUpdatable: Boolean,
     onUpdateClick: () -> Unit
 ) {
@@ -135,7 +137,7 @@ private fun LastUpdateInputField(
 @Composable
 private fun SelectCurrencyUnitInputField(
     modifier: Modifier = Modifier,
-    state: InputField,
+    state: InputUi,
     onClick: () -> Unit
 ) {
     with(state) {
@@ -155,7 +157,7 @@ private fun SelectCurrencyUnitInputField(
 @Composable
 private fun RateInputField(
     modifier: Modifier = Modifier,
-    state: MonetaryInputField,
+    state: DecimalInputUi,
     currency: String,
     label: String,
     onValueChange: (BigDecimal) -> Unit

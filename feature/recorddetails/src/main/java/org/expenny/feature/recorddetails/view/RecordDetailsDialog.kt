@@ -6,7 +6,7 @@ import androidx.compose.ui.res.stringResource
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennyDatePicker
 import org.expenny.core.ui.components.ExpennyTimePicker
-import org.expenny.core.ui.foundation.ExpennyDialog
+import org.expenny.core.ui.components.ExpennyDialog
 import org.expenny.feature.recorddetails.Action
 import org.expenny.feature.recorddetails.State
 import java.time.LocalDate

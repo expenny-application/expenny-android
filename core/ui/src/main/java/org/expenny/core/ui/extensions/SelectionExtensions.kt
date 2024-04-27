@@ -1,9 +1,9 @@
 package org.expenny.core.ui.extensions
 
-import org.expenny.core.ui.data.ui.MultiSelectionUi
-import org.expenny.core.ui.data.ui.SelectionUi
-import org.expenny.core.ui.data.ui.SelectionType
-import org.expenny.core.ui.data.ui.SingleSelectionUi
+import org.expenny.core.ui.data.MultiSelectionUi
+import org.expenny.core.ui.data.SelectionUi
+import org.expenny.core.ui.data.SelectionType
+import org.expenny.core.ui.data.SingleSelectionUi
 
 val SelectionUi<*>.type
     get() = when(this) {

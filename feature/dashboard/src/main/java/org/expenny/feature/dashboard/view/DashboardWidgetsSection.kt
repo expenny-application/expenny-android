@@ -16,7 +16,7 @@ import org.expenny.core.common.types.DashboardWidgetType
 import org.expenny.core.ui.components.ExpennyIconBox
 import org.expenny.core.ui.extensions.icon
 import org.expenny.core.ui.extensions.label
-import org.expenny.core.ui.foundation.ExpennyCard
+import org.expenny.core.ui.components.ExpennyCard
 
 
 @OptIn(ExperimentalFoundationApi::class)

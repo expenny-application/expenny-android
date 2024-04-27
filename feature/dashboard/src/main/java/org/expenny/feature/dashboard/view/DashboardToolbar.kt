@@ -9,14 +9,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import org.expenny.core.resources.R
-import org.expenny.core.ui.utils.ExpennyDrawerState
+import org.expenny.core.ui.base.ExpennyDrawerManager
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun DashboardToolbar(
     scrollBehavior: TopAppBarScrollBehavior,
-    drawerState: ExpennyDrawerState,
+    drawerState: ExpennyDrawerManager,
     displayCurrency: String? = null,
     onDisplayCurrencyClick: () -> Unit
 ) {

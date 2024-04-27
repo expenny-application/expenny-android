@@ -22,12 +22,12 @@ import androidx.compose.ui.unit.dp
 import org.expenny.core.common.types.AccountType
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennySection
-import org.expenny.core.ui.data.field.InputField
-import org.expenny.core.ui.data.field.MonetaryInputField
+import org.expenny.core.ui.data.InputUi
+import org.expenny.core.ui.data.DecimalInputUi
 import org.expenny.core.ui.extensions.asRawString
-import org.expenny.core.ui.foundation.ExpennyInputField
-import org.expenny.core.ui.foundation.ExpennyMonetaryInputField
-import org.expenny.core.ui.foundation.ExpennySelectInputField
+import org.expenny.core.ui.components.ExpennyInputField
+import org.expenny.core.ui.components.ExpennyMonetaryInputField
+import org.expenny.core.ui.components.ExpennySelectInputField
 import org.expenny.feature.accountdetails.State
 import java.math.BigDecimal
 
@@ -103,7 +103,7 @@ internal fun AccountDetailsInputForm(
 @Composable
 private fun SelectCurrencyInputField(
     modifier: Modifier = Modifier,
-    state: InputField,
+    state: InputUi,
     onClick: () -> Unit
 ) {
     with(state) {
@@ -123,7 +123,7 @@ private fun SelectCurrencyInputField(
 @Composable
 private fun DescriptionInputField(
     modifier: Modifier = Modifier,
-    state: InputField,
+    state: InputUi,
     onValueChange: (String) -> Unit
 ) {
     with(state) {
@@ -144,7 +144,7 @@ private fun DescriptionInputField(
 @Composable
 private fun NameInputField(
     modifier: Modifier = Modifier,
-    state: InputField,
+    state: InputUi,
     onValueChange: (String) -> Unit
 ) {
     with(state) {
@@ -165,7 +165,7 @@ private fun NameInputField(
 @Composable
 private fun StartBalanceInputField(
     modifier: Modifier = Modifier,
-    state: MonetaryInputField,
+    state: DecimalInputUi,
     currency: String,
     onValueChange: (BigDecimal) -> Unit
 ) {

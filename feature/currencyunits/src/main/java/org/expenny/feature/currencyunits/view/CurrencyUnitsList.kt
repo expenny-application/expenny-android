@@ -16,10 +16,10 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.expenny.core.ui.data.ui.SingleSelectionUi
-import org.expenny.core.ui.data.ui.CurrencyUnitUi
-import org.expenny.core.ui.foundation.ExpennyCard
-import org.expenny.core.ui.foundation.ExpennyGroupedVerticalList
+import org.expenny.core.ui.data.SingleSelectionUi
+import org.expenny.core.ui.data.CurrencyUnitUi
+import org.expenny.core.ui.components.ExpennyCard
+import org.expenny.core.ui.components.ExpennyGroupedVerticalList
 import java.util.SortedMap
 
 @Composable

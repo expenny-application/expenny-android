@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import org.expenny.core.common.types.PeriodType
 import org.expenny.core.common.types.DashboardWidgetType
 import org.expenny.core.common.types.TransactionType
-import org.expenny.core.common.viewmodel.ExpennyActionViewModel
+import org.expenny.core.ui.base.ExpennyViewModel
 import org.expenny.core.domain.usecase.GetCurrencyAmountSumUseCase
 import org.expenny.core.domain.usecase.account.GetAccountsUseCase
 import org.expenny.core.domain.usecase.category.GetCategoryStatementsUseCase
@@ -50,7 +50,7 @@ class DashboardViewModel @Inject constructor(
     private val accountNameMapper: AccountNameMapper,
     private val amountMapper: AmountMapper,
     private val recordMapper: RecordMapper,
-) : ExpennyActionViewModel<Action>(), ContainerHost<State, Event> {
+) : ExpennyViewModel<Action>(), ContainerHost<State, Event> {
 
     override val container = container<State, Event>(
         initialState = State(),

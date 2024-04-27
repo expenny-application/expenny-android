@@ -76,7 +76,6 @@ class ManagedTakePhotoResultLauncher internal constructor(
 ) : ActivityResultLauncher<Uri>() {
     lateinit var inputUri: Uri
 
-    @Suppress("DeprecatedCallableAddReplaceWith")
     override fun unregister() {
         throw UnsupportedOperationException(
             "Registration is automatically handled by rememberLauncherForActivityResult"
@@ -88,6 +87,5 @@ class ManagedTakePhotoResultLauncher internal constructor(
         launcher.launch(input, options)
     }
 
-    @Suppress("UNCHECKED_CAST")
     override fun getContract(): ActivityResultContract<Uri, *> = contract.value
 }

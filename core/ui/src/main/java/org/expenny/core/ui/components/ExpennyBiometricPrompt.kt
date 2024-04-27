@@ -13,13 +13,6 @@ import androidx.compose.ui.res.stringResource
 import org.expenny.core.resources.R
 import org.expenny.core.ui.extensions.toast
 
-private val biometricsErrorsToIgnore = listOf(
-    BiometricPrompt.ERROR_NEGATIVE_BUTTON,
-    BiometricPrompt.ERROR_CANCELED,
-    BiometricPrompt.ERROR_USER_CANCELED,
-    //BiometricPrompt.ERROR_NO_BIOMETRICS
-)
-
 @Composable
 fun ExpennyBiometricPrompt(
     state: BiometricPromptState,
@@ -78,3 +71,9 @@ class BiometricPromptState {
         _showPrompt.value = false
     }
 }
+
+private val biometricsErrorsToIgnore = listOf(
+    BiometricPrompt.ERROR_NEGATIVE_BUTTON,
+    BiometricPrompt.ERROR_CANCELED,
+    BiometricPrompt.ERROR_USER_CANCELED,
+)

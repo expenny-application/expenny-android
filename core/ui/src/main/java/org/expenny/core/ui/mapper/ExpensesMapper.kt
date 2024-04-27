@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.Color
 import dagger.hilt.android.qualifiers.ApplicationContext
 import org.expenny.core.model.category.CategoryStatement
 import org.expenny.core.resources.R
-import org.expenny.core.ui.data.ui.ExpensesUi
+import org.expenny.core.ui.data.ExpensesUi
 import javax.inject.Inject
 
 class ExpensesMapper @Inject constructor(

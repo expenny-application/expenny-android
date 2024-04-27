@@ -22,7 +22,7 @@ import com.patrykandpatrick.vico.core.model.CartesianChartModelProducer
 import kotlinx.coroutines.CoroutineScope
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennyDateRangeFilterButton
-import org.expenny.core.ui.foundation.ExpennySingleSelectionDialog
+import org.expenny.core.ui.components.ExpennySingleSelectionDialog
 import org.expenny.feature.accountoverview.view.AccountOverviewChartCard
 import org.expenny.feature.accountoverview.view.AccountOverviewToolbar
 

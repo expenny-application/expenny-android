@@ -25,7 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.expenny.core.resources.R
-import org.expenny.core.ui.theme.ExpennyTheme
+import org.expenny.core.ui.foundation.ExpennyTheme
 
 @Composable
 internal fun PasscodeKeyboard(

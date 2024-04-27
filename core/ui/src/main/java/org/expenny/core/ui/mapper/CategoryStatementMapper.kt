@@ -1,7 +1,7 @@
 package org.expenny.core.ui.mapper
 
 import org.expenny.core.model.category.CategoryStatement
-import org.expenny.core.ui.data.ui.CategoryStatementUi
+import org.expenny.core.ui.data.CategoryStatementUi
 import javax.inject.Inject
 
 class CategoryStatementMapper @Inject constructor(

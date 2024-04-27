@@ -25,7 +25,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import org.expenny.core.ui.theme.surfaceInput
+import org.expenny.core.ui.foundation.surfaceInput
 import org.expenny.feature.passcode.model.PasscodeValidationResult
 import org.expenny.feature.passcode.model.PasscodeType
 

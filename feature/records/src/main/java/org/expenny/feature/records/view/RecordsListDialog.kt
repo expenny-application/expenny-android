@@ -1,9 +1,7 @@
 package org.expenny.feature.records.view
 
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.SheetState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -11,13 +9,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.expenny.core.common.types.RecordActionType
 import org.expenny.core.resources.R
-import org.expenny.core.ui.components.ExpennyActionsBottomSheet
-import org.expenny.core.ui.components.ExpennyActionsBottomSheetItem
+import org.expenny.core.ui.components.ExpennyBottomSheet
 import org.expenny.core.ui.extensions.icon
 import org.expenny.core.ui.extensions.label
-import org.expenny.core.ui.foundation.ExpennyMultiSelectionDialog
-import org.expenny.core.ui.foundation.ExpennySingleSelectionDialog
-import org.expenny.core.ui.foundation.ExpennyDialog
+import org.expenny.core.ui.components.ExpennyMultiSelectionDialog
+import org.expenny.core.ui.components.ExpennySingleSelectionDialog
+import org.expenny.core.ui.components.ExpennyDialog
 import org.expenny.feature.records.Action
 import org.expenny.feature.records.State
 
@@ -132,23 +129,23 @@ private fun RecordActionsSheet(
     onActionSelect: (RecordActionType) -> Unit,
     onDismiss: () -> Unit
 ) {
-    ExpennyActionsBottomSheet(
+    ExpennyBottomSheet(
         modifier = modifier,
+        onDismiss = onDismiss,
         sheetState = actionsSheetState,
-        onDismiss = onDismiss
-    ) {
-        RecordActionType.values().forEach { action ->
-            ExpennyActionsBottomSheetItem(
-                onClick = {
-                    scope.launch { actionsSheetState.hide() }.invokeOnCompletion {
-                        if (!actionsSheetState.isVisible) onActionSelect(action)
+        actions = {
+            RecordActionType.values().forEach { action ->
+                Action(
+                    icon = action.icon,
+                    text = action.label,
+                    onClick = {
+                        scope.launch { actionsSheetState.hide() }.invokeOnCompletion {
+                            if (!actionsSheetState.isVisible) onActionSelect(action)
+                        }
                     }
-                }
-            ) {
-                Icon(painter = action.icon, contentDescription = null)
-                Text(text = action.label)
+                )
             }
         }
-    }
+    )
 }
 

@@ -4,8 +4,8 @@ import org.expenny.core.common.extensions.isNegative
 import org.expenny.core.common.extensions.isZero
 import org.expenny.core.common.extensions.toDateString
 import org.expenny.core.model.record.Record
-import org.expenny.core.ui.data.ui.AmountUi
-import org.expenny.core.ui.data.ui.RecordUi
+import org.expenny.core.ui.data.AmountUi
+import org.expenny.core.ui.data.RecordUi
 import javax.inject.Inject
 
 class RecordMapper @Inject constructor(

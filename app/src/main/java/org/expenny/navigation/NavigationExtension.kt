@@ -9,7 +9,7 @@ import androidx.navigation.NavGraph
 import com.ramcosta.composedestinations.spec.NavGraphSpec
 import com.ramcosta.composedestinations.utils.isRouteOnBackStack
 import com.ramcosta.composedestinations.utils.startDestination
-import org.expenny.main.drawer.DrawerTab
+import org.expenny.main.DrawerTab
 import timber.log.Timber
 
 @Composable

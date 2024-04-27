@@ -25,8 +25,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import org.expenny.core.resources.R
 import org.expenny.core.ui.extensions.noRippleClickable
+import org.expenny.core.ui.components.*
 import org.expenny.core.ui.foundation.*
-import org.expenny.core.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

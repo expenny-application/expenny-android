@@ -1,7 +1,7 @@
 package org.expenny.core.ui.mapper
 
 import org.expenny.core.model.account.Account
-import org.expenny.core.ui.data.ui.AccountNameUi
+import org.expenny.core.ui.data.AccountNameUi
 import javax.inject.Inject
 
 class AccountNameMapper @Inject constructor() {

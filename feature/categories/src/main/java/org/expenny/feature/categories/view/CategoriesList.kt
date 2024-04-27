@@ -13,12 +13,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import org.expenny.core.ui.components.ExpennyIconBox
 import org.expenny.core.ui.components.ExpennySelectionButton
-import org.expenny.core.ui.data.ui.SelectionType
-import org.expenny.core.ui.data.ui.SingleSelectionUi
-import org.expenny.core.ui.data.ui.CategoryUi
+import org.expenny.core.ui.data.SelectionType
+import org.expenny.core.ui.data.SingleSelectionUi
+import org.expenny.core.ui.data.CategoryUi
 import org.expenny.core.ui.extensions.type
-import org.expenny.core.ui.foundation.ExpennyCard
-import org.expenny.core.ui.foundation.ExpennyVerticalList
+import org.expenny.core.ui.components.ExpennyCard
+import org.expenny.core.ui.components.ExpennyVerticalList
 
 
 @Composable

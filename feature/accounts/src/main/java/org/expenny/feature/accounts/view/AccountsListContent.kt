@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import org.expenny.core.ui.extensions.asRawString
 import org.expenny.core.ui.extensions.isScrollingUp
-import org.expenny.core.ui.utils.ExpennyDrawerState
+import org.expenny.core.ui.base.ExpennyDrawerManager
 import org.expenny.feature.accounts.model.Action
 import org.expenny.feature.accounts.model.State
 
@@ -24,7 +24,7 @@ import org.expenny.feature.accounts.model.State
 internal fun AccountsListContent(
     state: State,
     lazyListState: LazyListState,
-    drawerState: ExpennyDrawerState,
+    drawerState: ExpennyDrawerManager,
     onAction: (Action) -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()

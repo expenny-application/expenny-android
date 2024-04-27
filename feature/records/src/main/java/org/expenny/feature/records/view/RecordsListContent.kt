@@ -10,7 +10,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import kotlinx.coroutines.CoroutineScope
 import org.expenny.core.ui.components.ExpennyDateRangeFilterButton
 import org.expenny.core.ui.extensions.isScrollingUp
-import org.expenny.core.ui.utils.ExpennyDrawerState
+import org.expenny.core.ui.base.ExpennyDrawerManager
 import org.expenny.feature.records.Action
 import org.expenny.feature.records.State
 
@@ -20,7 +20,7 @@ internal fun RecordsListContent(
     state: State,
     scope: CoroutineScope,
     recordActionsSheetState: SheetState,
-    drawerState: ExpennyDrawerState,
+    drawerState: ExpennyDrawerManager,
     lazyListState: LazyListState,
     onAction: (Action) -> Unit,
 ) {

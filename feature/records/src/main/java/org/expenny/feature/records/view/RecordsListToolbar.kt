@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import org.expenny.core.resources.R
-import org.expenny.core.ui.utils.ExpennyDrawerState
+import org.expenny.core.ui.base.ExpennyDrawerManager
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -16,7 +16,7 @@ import org.expenny.core.ui.utils.ExpennyDrawerState
 internal fun RecordsListToolbar(
     isSelectionMode: Boolean,
     selectionCount: Int,
-    drawerState: ExpennyDrawerState,
+    drawerState: ExpennyDrawerManager,
     scrollBehavior: TopAppBarScrollBehavior,
     onBackClick: () -> Unit,
     onCloseSelectionMode: () -> Unit,

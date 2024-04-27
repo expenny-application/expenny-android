@@ -7,7 +7,7 @@ import androidx.compose.runtime.*
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.result.ResultBackNavigator
-import org.expenny.core.ui.foundation.transitions.VerticalSlideTransitionStyle
+import org.expenny.core.ui.transitions.VerticalSlideTransitionStyle
 import org.expenny.feature.daterangepicker.navigation.DateRangePickerNavArgs
 import org.expenny.feature.daterangepicker.view.DateRangePickerContent
 import org.orbitmvi.orbit.compose.collectAsState

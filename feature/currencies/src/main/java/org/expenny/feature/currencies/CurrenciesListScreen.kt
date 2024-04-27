@@ -6,11 +6,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.result.ResultBackNavigator
-import org.expenny.core.ui.utils.ExpennySnackbarManager
+import org.expenny.core.ui.base.ExpennySnackbarManager
 import org.expenny.core.ui.data.navargs.LongNavArg
-import org.expenny.core.ui.data.ui.AmountUi
-import org.expenny.core.ui.data.ui.CurrencyUi
-import org.expenny.core.ui.theme.ExpennyTheme
+import org.expenny.core.ui.data.AmountUi
+import org.expenny.core.ui.data.CurrencyUi
+import org.expenny.core.ui.foundation.ExpennyTheme
 import org.expenny.feature.currencies.navigation.CurrenciesListNavArgs
 import org.expenny.feature.currencies.navigation.CurrenciesListNavigator
 import org.expenny.feature.currencies.view.CurrenciesListContent
@@ -30,7 +30,7 @@ fun CurrenciesListScreen(
 
     vm.collectSideEffect {
         when (it) {
-            is Event.ShowMessage -> snackbarManager.showMessage(it.message)
+            is Event.ShowMessage -> snackbarManager.showInfo(it.message)
             is Event.NavigateBackWithResult -> resultNavigator.navigateBack(it.selection)
             is Event.NavigateBack -> navigator.navigateBack()
             is Event.NavigateToCreateCurrency -> navigator.navigateToCreateCurrencyScreen()

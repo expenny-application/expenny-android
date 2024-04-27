@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import org.expenny.core.resources.R
-import org.expenny.core.ui.foundation.ExpennyTextButton
 
 @Composable
 internal fun BoxScope.DateRangePickerActionButton(
@@ -53,12 +52,6 @@ internal fun BoxScope.DateRangePickerActionButton(
                 text = selectedDateRangeCaption,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            ExpennyTextButton(
-                onClick = onClick,
-                content = {
-                    Text(text = stringResource(R.string.apply_button))
-                }
             )
         }
     }

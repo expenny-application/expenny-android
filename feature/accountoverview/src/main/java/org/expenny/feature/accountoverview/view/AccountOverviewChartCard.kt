@@ -60,7 +60,7 @@ import org.expenny.core.common.types.AccountTrendType
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennySegmentedTabRow
 import org.expenny.core.ui.extensions.label
-import org.expenny.core.ui.foundation.ExpennyCard
+import org.expenny.core.ui.components.ExpennyCard
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 

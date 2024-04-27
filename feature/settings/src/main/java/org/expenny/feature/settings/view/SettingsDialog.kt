@@ -1,25 +1,19 @@
 package org.expenny.feature.settings.view
 
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.SheetState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.expenny.core.common.types.ProfileActionType
 import org.expenny.core.resources.R
-import org.expenny.core.ui.components.ExpennyActionsBottomSheet
-import org.expenny.core.ui.components.ExpennyActionsBottomSheetItem
+import org.expenny.core.ui.components.ExpennyBottomSheet
 import org.expenny.core.ui.components.ExpennyTimePicker
-import org.expenny.core.ui.extensions.color
 import org.expenny.core.ui.extensions.icon
 import org.expenny.core.ui.extensions.label
-import org.expenny.core.ui.foundation.ExpennyDeleteDialog
-import org.expenny.core.ui.foundation.ExpennySingleSelectionDialog
+import org.expenny.core.ui.components.ExpennyDeleteDialog
+import org.expenny.core.ui.components.ExpennySingleSelectionDialog
 import org.expenny.feature.settings.Action
 import org.expenny.feature.settings.State
 
@@ -112,27 +106,27 @@ private fun ProfileActionsDialog(
     onActionTypeSelect: (ProfileActionType) -> Unit,
     onDismiss: () -> Unit
 ) {
-    ExpennyActionsBottomSheet(
+    ExpennyBottomSheet(
         sheetState = sheetState,
         onDismiss = onDismiss,
-    ) {
-        actions.forEach { actionType ->
-            ExpennyActionsBottomSheetItem(
-                onClick = {
-                    scope.launch { sheetState.hide() }.invokeOnCompletion {
-                        onDismiss()
-                        onActionTypeSelect(actionType)
+        actions = {
+            actions.forEach { actionType ->
+                Action(
+                    icon = actionType.icon,
+                    text = actionType.label,
+                    isSensitive = when (actionType) {
+                        ProfileActionType.DeleteProfile,
+                        ProfileActionType.DeleteProfileData -> true
+                        else -> false
+                    },
+                    onClick = {
+                        scope.launch { sheetState.hide() }.invokeOnCompletion {
+                            onDismiss()
+                            onActionTypeSelect(actionType)
+                        }
                     }
-                }
-            ) {
-                CompositionLocalProvider(LocalContentColor provides actionType.color) {
-                    Icon(
-                        painter = actionType.icon,
-                        contentDescription = null
-                    )
-                    Text(text = actionType.label)
-                }
+                )
             }
         }
-    }
+    )
 }

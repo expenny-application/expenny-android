@@ -45,8 +45,8 @@ import androidx.compose.ui.unit.dp
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennyLabel
 import org.expenny.core.ui.extensions.noRippleClickable
-import org.expenny.core.ui.foundation.animateInputFieldBorderAsState
-import org.expenny.core.ui.foundation.animateInputFieldContainerAsState
+import org.expenny.core.ui.components.animateInputFieldBorderAsState
+import org.expenny.core.ui.components.animateInputFieldContainerAsState
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable

@@ -9,7 +9,7 @@ import org.expenny.core.common.extensions.invert
 import org.expenny.core.common.extensions.toDateString
 import org.expenny.core.common.utils.Constants.CURRENCY_RATE_SCALE
 import org.expenny.core.common.models.StringResource.Companion.fromRes
-import org.expenny.core.common.viewmodel.ExpennyActionViewModel
+import org.expenny.core.ui.base.ExpennyViewModel
 import org.expenny.core.domain.usecase.ValidateInputUseCase
 import org.expenny.core.domain.usecase.currency.CreateCurrencyUseCase
 import org.expenny.core.domain.usecase.currency.DeleteCurrencyUseCase
@@ -51,7 +51,7 @@ class CurrencyDetailsViewModel @Inject constructor(
     private val updateCurrency: UpdateCurrencyUseCase,
     private val deleteCurrency: DeleteCurrencyUseCase,
     private val getLatestCurrencyRate: GetLatestCurrencyRateUseCase,
-) : ExpennyActionViewModel<Action>(), ContainerHost<State, Event> {
+) : ExpennyViewModel<Action>(), ContainerHost<State, Event> {
 
     private val currencyId: Long? = savedStateHandle.navArgs<CurrencyDetailsNavArgs>().currencyId
     private var currencyUnit: CurrencyUnit? = null

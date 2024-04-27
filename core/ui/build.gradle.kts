@@ -4,6 +4,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.parcelize")
     id("expenny.android.library.compose")
     id("org.jetbrains.kotlin.kapt")
+    id("expenny.android.hilt")
 }
 
 android {

@@ -16,8 +16,7 @@ import com.commandiron.wheel_picker_compose.WheelTimePicker
 import com.commandiron.wheel_picker_compose.core.TimeFormat
 import com.commandiron.wheel_picker_compose.core.WheelPickerDefaults
 import org.expenny.core.resources.R
-import org.expenny.core.ui.foundation.ExpennyDialog
-import org.expenny.core.ui.theme.ExpennyTheme
+import org.expenny.core.ui.foundation.ExpennyTheme
 import java.time.LocalTime
 
 @Composable

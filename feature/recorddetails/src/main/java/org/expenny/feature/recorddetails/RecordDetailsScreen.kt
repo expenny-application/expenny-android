@@ -20,14 +20,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.OpenResultRecipient
-import org.expenny.core.ui.utils.ExpennySnackbarManager
-import org.expenny.core.common.models.StringResource.Companion.fromRes
+import org.expenny.core.ui.base.ExpennySnackbarManager
 import org.expenny.core.ui.data.navargs.LongNavArg
 import org.expenny.core.ui.data.navargs.NavArgResult
-import org.expenny.core.ui.theme.ExpennyTheme
+import org.expenny.core.ui.foundation.ExpennyTheme
 import org.expenny.core.ui.utils.ManagedTakePhotoResultLauncher
 import org.expenny.core.ui.utils.TakePhoto
-import org.expenny.core.resources.R
 import org.expenny.core.ui.utils.rememberLauncherForTakePhotoResult
 import org.expenny.feature.recorddetails.navigation.RecordDetailsNavArgs
 import org.expenny.feature.recorddetails.navigation.RecordDetailsNavigator
@@ -50,13 +48,11 @@ fun RecordDetailsScreen(
     val amountInputFocusRequester = remember { FocusRequester() }
 
     val pickImageLauncher = rememberGalleryLauncher(
-        onSuccess = { vm.onAction(Action.OnReceiptSelect(it)) },
-        onFailure = { snackbarManager.showMessage(fromRes(R.string.internal_error)) }
+        onSuccess = { vm.onAction(Action.OnReceiptSelect(it)) }
     )
 
     val takePhotoLauncher = rememberCameraLauncher(
-        onSuccess = { vm.onAction(Action.OnReceiptCapture(it)) },
-        onFailure = { snackbarManager.showMessage(fromRes(R.string.internal_error)) }
+        onSuccess = { vm.onAction(Action.OnReceiptCapture(it)) }
     )
 
     accountResult.onNavResult { res ->
@@ -75,7 +71,7 @@ fun RecordDetailsScreen(
         when (it) {
             is Event.ShowMessage -> {
                 // set minActiveState to CREATED
-                snackbarManager.showMessage(it.message)
+                snackbarManager.showInfo(it.message)
             }
             is Event.OpenImageViewer -> {
                 launchImageViewer(context, it.uri)
@@ -121,12 +117,12 @@ private fun launchImageViewer(context: Context, uri: Uri) {
 @Composable
 private fun rememberCameraLauncher(
     onSuccess: (Uri) -> Unit,
-    onFailure: () -> Unit
+    onDismiss: () -> Unit = {}
 ): ManagedTakePhotoResultLauncher {
     return rememberLauncherForTakePhotoResult(
         contract = TakePhoto(),
         onResult = { uri ->
-            if (uri != null) onSuccess(uri) else onFailure()
+            if (uri != null) onSuccess(uri) else onDismiss()
         }
     )
 }
@@ -134,12 +130,12 @@ private fun rememberCameraLauncher(
 @Composable
 private fun rememberGalleryLauncher(
     onSuccess: (Uri) -> Unit,
-    onFailure: () -> Unit
+    onDismiss: () -> Unit = {}
 ): ManagedActivityResultLauncher<PickVisualMediaRequest, Uri?> {
     return rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri ->
-            if (uri != null) onSuccess(uri) else onFailure()
+            if (uri != null) onSuccess(uri) else onDismiss()
         }
     )
 }

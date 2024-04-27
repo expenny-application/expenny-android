@@ -74,7 +74,7 @@ internal fun ProfileSetupContent(
                 onAccountNameChange = { onAction(Action.OnAccountNameChange(it)) },
                 onAccountBalanceChange = { onAction(Action.OnAccountBalanceChange(it)) },
                 onSelectCurrencyClick = { onAction(Action.OnSelectCurrencyUnitClick) },
-                onSetupCashBalanceCheckBoxChange = { onAction(Action.OnSetupCashBalanceCheckBoxChange(it)) }
+                onSetupCashBalanceCheckboxChange = { onAction(Action.OnSetupCashBalanceCheckboxChange(it)) }
             )
             ProfileSetupCta(
                 modifier = Modifier

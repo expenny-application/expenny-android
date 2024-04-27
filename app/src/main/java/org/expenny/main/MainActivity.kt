@@ -32,7 +32,7 @@ import kotlinx.coroutines.launch
 import org.expenny.R
 import org.expenny.core.common.types.ApplicationTheme
 import org.expenny.core.common.utils.Constants
-import org.expenny.core.ui.theme.ExpennyTheme
+import org.expenny.core.ui.foundation.ExpennyTheme
 import org.expenny.navigation.ExpennyNavGraphs
 import timber.log.Timber
 

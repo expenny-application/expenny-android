@@ -9,7 +9,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.OpenResultRecipient
-import org.expenny.core.ui.utils.ExpennySnackbarManager
+import org.expenny.core.ui.base.ExpennySnackbarManager
 import org.expenny.core.ui.data.navargs.LongNavArg
 import org.expenny.feature.accountdetails.navigation.AccountDetailsNavArgs
 import org.expenny.feature.accountdetails.navigation.AccountDetailsNavigator
@@ -49,7 +49,7 @@ fun AccountDetailsScreen(
     vm.collectSideEffect {
         when (it) {
             is Event.NavigateToCurrenciesSelectionList -> navigator.navigateToCurrencySelectionListScreen(it.selectedId)
-            is Event.ShowMessage -> snackbarManager.showMessage(it.message)
+            is Event.ShowMessage -> snackbarManager.showInfo(it.message)
             is Event.NavigateBack -> navigator.navigateBack()
             is Event.RequestNameInputFocus -> nameInputFocusRequester.requestFocus()
         }

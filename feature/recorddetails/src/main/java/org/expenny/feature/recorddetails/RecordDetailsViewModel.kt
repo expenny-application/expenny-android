@@ -17,7 +17,7 @@ import org.expenny.core.common.utils.Constants.NULL_ID
 import org.expenny.core.common.models.ErrorMessage
 import org.expenny.core.common.utils.ExternalFilesDirectoryHandler
 import org.expenny.core.common.models.StringResource.Companion.fromRes
-import org.expenny.core.common.viewmodel.ExpennyActionViewModel
+import org.expenny.core.ui.base.ExpennyViewModel
 import org.expenny.core.domain.usecase.ValidateInputUseCase
 import org.expenny.core.domain.usecase.account.GetAccountUseCase
 import org.expenny.core.domain.usecase.account.GetLastUsedAccountUseCase
@@ -67,7 +67,7 @@ class RecordDetailsViewModel @Inject constructor(
     private val getLastUsedCategory: GetMostUsedCategoryUseCase,
     private val accountNameMapper: AccountNameMapper,
     private val filesDirectoryHandler: ExternalFilesDirectoryHandler,
-) : ExpennyActionViewModel<Action>(), ContainerHost<State, Event> {
+) : ExpennyViewModel<Action>(), ContainerHost<State, Event> {
 
     private var maxReceipts = 3
     private val accountSelectionResultCode = 1

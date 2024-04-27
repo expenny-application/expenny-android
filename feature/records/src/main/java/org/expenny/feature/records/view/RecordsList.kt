@@ -25,10 +25,10 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import org.expenny.core.ui.components.ExpennyRecord
 import org.expenny.core.ui.components.ExpennySelectionButton
-import org.expenny.core.ui.data.ui.MultiSelectionUi
-import org.expenny.core.ui.data.ui.SelectionType
-import org.expenny.core.ui.data.ui.RecordUi
-import org.expenny.core.ui.foundation.ExpennyCard
+import org.expenny.core.ui.data.MultiSelectionUi
+import org.expenny.core.ui.data.SelectionType
+import org.expenny.core.ui.data.RecordUi
+import org.expenny.core.ui.components.ExpennyCard
 
 @Composable
 internal fun RecordsList(

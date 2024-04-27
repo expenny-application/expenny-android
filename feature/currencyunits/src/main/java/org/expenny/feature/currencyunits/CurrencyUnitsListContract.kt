@@ -2,8 +2,8 @@ package org.expenny.feature.currencyunits
 
 import org.expenny.core.common.utils.Constants
 import org.expenny.core.ui.data.navargs.LongNavArg
-import org.expenny.core.ui.data.ui.SingleSelectionUi
-import org.expenny.core.ui.data.ui.CurrencyUnitUi
+import org.expenny.core.ui.data.SingleSelectionUi
+import org.expenny.core.ui.data.CurrencyUnitUi
 import java.util.SortedMap
 
 data class State(

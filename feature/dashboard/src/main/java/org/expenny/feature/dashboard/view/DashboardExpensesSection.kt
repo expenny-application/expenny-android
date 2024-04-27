@@ -37,10 +37,10 @@ import org.expenny.core.common.types.PeriodType
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennyDonutChart
 import org.expenny.core.ui.components.ExpennySegmentedTabRow
-import org.expenny.core.ui.data.ui.AmountUi
-import org.expenny.core.ui.data.ui.ExpensesUi
+import org.expenny.core.ui.data.AmountUi
+import org.expenny.core.ui.data.ExpensesUi
 import org.expenny.core.ui.extensions.label
-import org.expenny.core.ui.foundation.ExpennyCard
+import org.expenny.core.ui.components.ExpennyCard
 import org.expenny.feature.dashboard.model.DashboardExpensesUi
 
 

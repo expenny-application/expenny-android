@@ -5,13 +5,13 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import org.expenny.core.common.viewmodel.*
 import org.expenny.core.domain.usecase.currencyunit.GetAvailableCurrencyUnitsUseCase
 import org.expenny.core.domain.usecase.currencyunit.GetCurrencyUnitsUseCase
 import org.expenny.core.ui.data.navargs.LongNavArg
-import org.expenny.core.ui.data.ui.SingleSelectionUi
-import org.expenny.core.ui.data.ui.CurrencyUnitUi
+import org.expenny.core.ui.data.SingleSelectionUi
+import org.expenny.core.ui.data.CurrencyUnitUi
 import org.expenny.core.ui.mapper.CurrencyUnitMapper
+import org.expenny.core.ui.base.ExpennyViewModel
 import org.expenny.feature.currencyunits.navigation.CurrencyUnitsListNavArgs
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.blockingIntent
@@ -29,7 +29,7 @@ class CurrencyUnitsListViewModel @Inject constructor(
     private val getAvailableCurrencyUnits: GetAvailableCurrencyUnitsUseCase,
     private val getCurrencyUnits: GetCurrencyUnitsUseCase,
     private val currencyUnitMapper: CurrencyUnitMapper
-) : ExpennyActionViewModel<Action>(), ContainerHost<State, Event> {
+) : ExpennyViewModel<Action>(), ContainerHost<State, Event> {
 
     private val searchQuery = MutableStateFlow("")
     private val includeOnlyAvailable = savedStateHandle.navArgs<CurrencyUnitsListNavArgs>().includeOnlyAvailable
