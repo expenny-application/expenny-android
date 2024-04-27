@@ -3,8 +3,8 @@ package org.expenny.core.ui.mapper
 import androidx.compose.ui.graphics.Color
 import org.expenny.core.common.utils.ResourceIdProvider
 import org.expenny.core.model.category.Category
-import org.expenny.core.ui.data.ui.CategoryUi
-import org.expenny.core.ui.data.ui.IconUi
+import org.expenny.core.ui.data.CategoryUi
+import org.expenny.core.ui.data.IconUi
 import org.expenny.core.resources.R
 import javax.inject.Inject
 

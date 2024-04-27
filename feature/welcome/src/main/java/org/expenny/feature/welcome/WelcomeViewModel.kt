@@ -6,17 +6,17 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
-import org.expenny.core.common.viewmodel.ExpennyViewModel
+import org.expenny.core.ui.base.ExpennyViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-internal class WelcomeViewModel @Inject constructor() : ExpennyViewModel() {
+internal class WelcomeViewModel @Inject constructor() : ExpennyViewModel<Action>() {
 
     private val _event = MutableSharedFlow<Event>()
     val event: SharedFlow<Event> = _event.asSharedFlow()
 
-    fun onAction(event: Action) {
-        when (event) {
+    override fun onAction(action: Action) {
+        when (action) {
             is Action.OnCtaClick -> handleOnCtaClick()
         }
     }

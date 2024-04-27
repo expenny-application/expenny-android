@@ -18,16 +18,16 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennySection
-import org.expenny.core.ui.data.field.InputField
+import org.expenny.core.ui.data.InputUi
 import org.expenny.core.ui.extensions.asRawString
-import org.expenny.core.ui.foundation.ExpennyInputField
+import org.expenny.core.ui.components.ExpennyInputField
 import org.expenny.feature.recorddetails.model.LabelsInputField
 
 @Composable
 internal fun RecordDetailsAdditionsSection(
     modifier: Modifier = Modifier,
     labelsInputFieldState: LabelsInputField,
-    descriptionState: InputField,
+    descriptionState: InputUi,
     showSection: Boolean,
     receipts: List<Uri>,
     onAddLabel: (String) -> Unit,
@@ -104,7 +104,7 @@ private fun ReceiptsList(
 @Composable
 private fun DescriptionInputField(
     modifier: Modifier = Modifier,
-    state: InputField,
+    state: InputUi,
     onAddReceiptClick: () -> Unit,
     onValueChange: (String) -> Unit
 ) {

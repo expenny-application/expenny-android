@@ -6,7 +6,6 @@ import androidx.compose.animation.core.tween
 import androidx.navigation.NavBackStackEntry
 import com.ramcosta.composedestinations.spec.DestinationStyle
 
-@OptIn(ExperimentalAnimationApi::class)
 object WelcomeScreenTransitionStyle : DestinationStyle.Animated {
 
     override fun AnimatedContentTransitionScope<NavBackStackEntry>.exitTransition(): ExitTransition {

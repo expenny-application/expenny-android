@@ -3,8 +3,8 @@ package org.expenny.feature.currencies
 import org.expenny.core.common.models.StringResource
 import org.expenny.core.resources.R
 import org.expenny.core.ui.data.navargs.LongNavArg
-import org.expenny.core.ui.data.ui.SingleSelectionUi
-import org.expenny.core.ui.data.ui.CurrencyUi
+import org.expenny.core.ui.data.SingleSelectionUi
+import org.expenny.core.ui.data.CurrencyUi
 
 data class State(
     val toolbarTitle: StringResource = StringResource.fromRes(R.string.currencies_label),

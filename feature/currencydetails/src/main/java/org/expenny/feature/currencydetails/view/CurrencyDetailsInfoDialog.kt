@@ -5,7 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import org.expenny.core.resources.R
-import org.expenny.core.ui.foundation.ExpennyDialog
+import org.expenny.core.ui.components.ExpennyDialog
 
 @Composable
 internal fun CurrencyDetailsInfoDialog(

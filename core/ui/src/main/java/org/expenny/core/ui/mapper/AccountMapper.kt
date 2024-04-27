@@ -1,7 +1,7 @@
 package org.expenny.core.ui.mapper
 
 import org.expenny.core.model.account.AccountRecords
-import org.expenny.core.ui.data.ui.AccountUi
+import org.expenny.core.ui.data.AccountUi
 import javax.inject.Inject
 
 class AccountMapper @Inject constructor(

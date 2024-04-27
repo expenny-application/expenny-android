@@ -15,8 +15,7 @@ import org.expenny.core.common.models.StringResource.Companion.fromRes
 import org.expenny.core.common.types.IntervalType
 import org.expenny.core.common.types.RecordActionType
 import org.expenny.core.common.types.RecordsFilterType
-import org.expenny.core.common.utils.StringResourceProvider
-import org.expenny.core.common.viewmodel.ExpennyActionViewModel
+import org.expenny.core.ui.base.ExpennyViewModel
 import org.expenny.core.domain.usecase.GetCurrencyAmountSumUseCase
 import org.expenny.core.domain.usecase.account.GetAccountsUseCase
 import org.expenny.core.domain.usecase.category.GetCategoriesUseCase
@@ -29,10 +28,10 @@ import org.expenny.core.model.category.Category
 import org.expenny.core.model.currency.Currency
 import org.expenny.core.model.record.Record
 import org.expenny.core.resources.R
-import org.expenny.core.ui.data.ui.ItemUi
-import org.expenny.core.ui.data.ui.MultiSelectionUi
-import org.expenny.core.ui.data.ui.RecordUi
-import org.expenny.core.ui.data.ui.SingleSelectionUi
+import org.expenny.core.ui.data.ItemUi
+import org.expenny.core.ui.data.MultiSelectionUi
+import org.expenny.core.ui.data.RecordUi
+import org.expenny.core.ui.data.SingleSelectionUi
 import org.expenny.core.ui.extensions.labelResId
 import org.expenny.core.ui.mapper.AmountMapper
 import org.expenny.core.ui.mapper.RecordMapper
@@ -59,8 +58,7 @@ class RecordsListViewModel @Inject constructor(
     private val amountMapper: AmountMapper,
     private val getMainCurrency: GetMainCurrencyUseCase,
     private val getCurrencyAmountSum: GetCurrencyAmountSumUseCase,
-    private val stringProvider: StringResourceProvider
-) : ExpennyActionViewModel<Action>(), ContainerHost<State, Event> {
+) : ExpennyViewModel<Action>(), ContainerHost<State, Event> {
 
     private var accounts: List<Account> = emptyList()
     private var categories: List<Category> = emptyList()
@@ -418,12 +416,12 @@ class RecordsListViewModel @Inject constructor(
 
     @JvmName("mapRecordTypeToItemUi")
     private fun List<RecordType>.mapToItemUi() = map {
-        ItemUi(it, stringProvider(fromRes(it.labelResId)))
+        ItemUi(it, provideString(fromRes(it.labelResId)))
     }
 
     @JvmName("mapIntervalTypeToItemUi")
     private fun List<IntervalType>.mapToItemUi() = map {
-        ItemUi(it, stringProvider(fromArrayRes(it.labelResId, it.ordinal)))
+        ItemUi(it, provideString(fromArrayRes(it.labelResId, it.ordinal)))
     }
 
     private fun List<Record>.mapToUi(mainCurrency: Currency): List<RecordUi> {

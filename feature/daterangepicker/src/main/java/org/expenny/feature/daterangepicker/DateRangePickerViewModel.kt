@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import org.expenny.core.common.extensions.toDateString
-import org.expenny.core.common.viewmodel.*
+import org.expenny.core.ui.base.ExpennyViewModel
 import org.expenny.feature.daterangepicker.navigation.DateRangePickerNavArgs
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -25,7 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DateRangePickerViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
-) : ExpennyActionViewModel<Action>(), ContainerHost<State, Event> {
+) : ExpennyViewModel<Action>(), ContainerHost<State, Event> {
 
     private val selectedStartDateMillsState = MutableStateFlow<Long?>(null)
     private val selectedEndDateMillsState = MutableStateFlow<Long?>(null)

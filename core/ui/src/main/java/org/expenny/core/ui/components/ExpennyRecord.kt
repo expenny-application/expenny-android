@@ -21,8 +21,8 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import org.expenny.core.resources.R
-import org.expenny.core.ui.data.ui.IconUi
-import org.expenny.core.ui.data.ui.RecordUi
+import org.expenny.core.ui.data.IconUi
+import org.expenny.core.ui.data.RecordUi
 
 @Composable
 fun ExpennyRecord(

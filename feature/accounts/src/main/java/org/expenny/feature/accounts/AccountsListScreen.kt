@@ -7,8 +7,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 import org.expenny.core.ui.data.navargs.NavArgResult
-import org.expenny.core.ui.utils.ExpennyDrawerState
-import org.expenny.core.ui.utils.ExpennySnackbarManager
+import org.expenny.core.ui.base.ExpennyDrawerManager
+import org.expenny.core.ui.base.ExpennySnackbarManager
 import org.expenny.feature.accounts.model.Event
 import org.expenny.feature.accounts.navigation.AccountsListNavArgs
 import org.expenny.feature.accounts.navigation.AccountsListNavigator
@@ -22,7 +22,7 @@ fun AccountsListScreen(
     snackbarManager: ExpennySnackbarManager,
     navigator: AccountsListNavigator,
     resultNavigator: ResultBackNavigator<NavArgResult>,
-    drawerState: ExpennyDrawerState
+    drawerState: ExpennyDrawerManager
 ) {
     val vm: AccountsListViewModel = hiltViewModel()
     val state by vm.collectAsState()

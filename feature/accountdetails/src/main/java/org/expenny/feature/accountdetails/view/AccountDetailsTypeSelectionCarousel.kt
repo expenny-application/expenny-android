@@ -5,15 +5,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.expenny.core.common.types.AccountType
 import org.expenny.core.ui.extensions.icon
 import org.expenny.core.ui.extensions.label
-import org.expenny.core.ui.foundation.ExpennySelectableChip
+import org.expenny.core.ui.components.ExpennyChip
 
 @Composable
 internal fun AccountDetailsTypeSelectionCarousel(
@@ -29,20 +27,17 @@ internal fun AccountDetailsTypeSelectionCarousel(
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(types) { type ->
-            ExpennySelectableChip(
+            ExpennyChip(
                 modifier = Modifier.height(48.dp),
                 isSelected = type == selection,
                 onClick = {
                     onTypeSelect(type)
                 },
                 label = {
-                    Text(text = type.label)
+                    ChipLabel(text = type.label)
                 },
                 leadingIcon = {
-                    Icon(
-                        painter = type.icon,
-                        contentDescription = null
-                    )
+                    ChipIcon(painter = type.icon)
                 }
             )
         }

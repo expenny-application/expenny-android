@@ -6,7 +6,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import org.expenny.core.resources.R
-import org.expenny.core.ui.foundation.ExpennyTextButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -17,14 +16,7 @@ internal fun DateRangePickerToolbar(
 ) {
     TopAppBar(
         actions = {
-            if (showClearButton) {
-                ExpennyTextButton(
-                    onClick = onClearClick,
-                    content = {
-                        Text(text = stringResource(R.string.clear_button))
-                    }
-                )
-            }
+
         },
         navigationIcon = {
             IconButton(onClick = onCloseClick) {

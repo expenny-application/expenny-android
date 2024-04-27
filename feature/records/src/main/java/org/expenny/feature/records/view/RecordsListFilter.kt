@@ -9,10 +9,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Badge
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,8 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import org.expenny.core.common.types.RecordsFilterType
 import org.expenny.core.resources.R
-import org.expenny.core.ui.foundation.ExpennyChip
-import org.expenny.core.ui.foundation.ExpennySelectableChip
+import org.expenny.core.ui.components.ExpennyChip
 import org.expenny.feature.records.reducer.FilterSelectionsStateReducer
 
 @Composable
@@ -60,19 +57,30 @@ internal fun RecordsListFilter(
                 items(filterTypes) { filterType ->
                     when (filterType) {
                         RecordsFilterType.WithoutCategory -> {
-                            BooleanFilter(
-                                label = filterType.label,
+                            ExpennyChip(
+                                modifier = modifier,
                                 isSelected = filterSelectionsState.withoutCategory,
-                                onClick = { onClick(filterType) }
+                                onClick = { onClick(filterType) },
+                                label = {
+                                    ChipLabel(text = filterType.label)
+                                }
                             )
                         }
                         else -> {
                             val selectionSize = filterSelectionsState.selectionSizeByFilterType(filterType)
-                            SelectionFilter(
-                                label = filterType.label,
-                                selectionSize = selectionSize,
+                            ExpennyChip(
+                                modifier = modifier,
                                 isSelected = selectionSize > 0,
-                                onClick = { onClick(filterType) }
+                                count = selectionSize,
+                                onClick = {
+                                    onClick(filterType)
+                                },
+                                trailingIcon = {
+                                    ChipIcon(painter = painterResource(R.drawable.ic_expand))
+                                },
+                                label = {
+                                    ChipLabel(text = filterType.label)
+                                }
                             )
                         }
                     }
@@ -80,48 +88,6 @@ internal fun RecordsListFilter(
             }
         }
     }
-}
-
-@Composable
-private fun BooleanFilter(
-    modifier: Modifier = Modifier,
-    label: String,
-    isSelected: Boolean,
-    onClick: () -> Unit
-) {
-    ExpennySelectableChip(
-        modifier = modifier,
-        isSelected = isSelected,
-        onClick = onClick,
-        label = {
-            Text(text = label)
-        }
-    )
-}
-
-@Composable
-private fun SelectionFilter(
-    modifier: Modifier = Modifier,
-    label: String,
-    selectionSize: Int,
-    isSelected: Boolean,
-    onClick: () -> Unit
-) {
-    ExpennySelectableChip(
-        modifier = modifier,
-        isSelected = isSelected,
-        leadingIcon = filterItemBadge(selectionSize),
-        onClick = onClick,
-        trailingIcon = {
-            Icon(
-                painter = painterResource(R.drawable.ic_expand),
-                contentDescription = null
-            )
-        },
-        label = {
-            Text(text = label)
-        }
-    )
 }
 
 @Composable
@@ -134,13 +100,11 @@ private fun FilterIcon(
 
     Box(modifier = modifier) {
         ExpennyChip(
+            isSelected = false,
             onClick = { showMenu = true },
-            leadingIcon = filterItemBadge(selectionSize),
-            trailingIcon = {
-                Icon(
-                    painter = painterResource(R.drawable.ic_filter),
-                    contentDescription = null
-                )
+            count = selectionSize,
+            label = {
+                ChipIcon(painter = painterResource(R.drawable.ic_filter))
             },
         )
         DropdownMenu(
@@ -162,20 +126,6 @@ private fun FilterIcon(
             )
         }
     }
-}
-
-@Composable
-private fun filterItemBadge(selectionSize: Int): @Composable (() -> Unit)? {
-    return if (selectionSize > defaultFilterSelectionSize) {
-        {
-            Badge(
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.primaryContainer
-            ) {
-                Text(text = selectionSize.toString())
-            }
-        }
-    } else null
 }
 
 private val RecordsFilterType.label: String

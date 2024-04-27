@@ -3,8 +3,8 @@ package org.expenny.feature.accountdetails
 import org.expenny.core.common.models.StringResource
 import org.expenny.core.common.types.AccountType
 import org.expenny.core.resources.R
-import org.expenny.core.ui.data.field.InputField
-import org.expenny.core.ui.data.field.MonetaryInputField
+import org.expenny.core.ui.data.InputUi
+import org.expenny.core.ui.data.DecimalInputUi
 import java.math.BigDecimal
 
 data class State(
@@ -15,10 +15,10 @@ data class State(
     val showDeleteDialog: Boolean = false,
     val selectedType: AccountType = AccountType.values()[0],
     val selectedCurrency: String = "",
-    val currencyInput: InputField = InputField(),
-    val nameInput: InputField = InputField(),
-    val descriptionInput: InputField = InputField(isRequired = false),
-    val startBalanceInput: MonetaryInputField = MonetaryInputField(isRequired = false),
+    val currencyInput: InputUi = InputUi(),
+    val nameInput: InputUi = InputUi(),
+    val descriptionInput: InputUi = InputUi(isRequired = false),
+    val startBalanceInput: DecimalInputUi = DecimalInputUi(isRequired = false),
 )
 
 sealed interface Action {

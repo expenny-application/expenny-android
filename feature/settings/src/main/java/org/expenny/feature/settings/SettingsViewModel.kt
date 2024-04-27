@@ -16,8 +16,7 @@ import org.expenny.core.common.models.StringResource.Companion.fromRes
 import org.expenny.core.common.models.StringResource.Companion.fromStr
 import org.expenny.core.common.types.ProfileActionType
 import org.expenny.core.common.types.SettingsItemType
-import org.expenny.core.common.utils.StringResourceProvider
-import org.expenny.core.common.viewmodel.ExpennyActionViewModel
+import org.expenny.core.ui.base.ExpennyViewModel
 import org.expenny.core.domain.repository.LocalRepository
 import org.expenny.core.domain.usecase.preferences.GetBiometricStatusUseCase
 import org.expenny.core.domain.usecase.preferences.DeletePasscodePreferenceUseCase
@@ -36,8 +35,8 @@ import org.expenny.core.domain.usecase.profile.SetCurrentProfileUseCase
 import org.expenny.core.model.biometric.BiometricStatus.AvailableButNotEnrolled
 import org.expenny.core.model.biometric.BiometricStatus.Ready
 import org.expenny.core.model.profile.Profile
-import org.expenny.core.ui.data.ui.ItemUi
-import org.expenny.core.ui.data.ui.SingleSelectionUi
+import org.expenny.core.ui.data.ItemUi
+import org.expenny.core.ui.data.SingleSelectionUi
 import org.expenny.core.ui.extensions.labelResId
 import org.expenny.core.ui.mapper.ProfileMapper
 import org.orbitmvi.orbit.ContainerHost
@@ -66,8 +65,7 @@ class SettingsViewModel @Inject constructor(
     private val setReminderTimePreference: SetReminderTimePreferenceUseCase,
     private val getCanSendAlarms: GetCanSendAlarmsUseCase,
     private val profileMapper: ProfileMapper,
-    private val stringProvider: StringResourceProvider,
-) : ExpennyActionViewModel<Action>(), ContainerHost<State, Event> {
+) : ExpennyViewModel<Action>(), ContainerHost<State, Event> {
 
     private var profiles: List<Profile> = emptyList()
     private val languages: List<ApplicationLanguage> = ApplicationLanguage.values().toList()
@@ -365,18 +363,18 @@ class SettingsViewModel @Inject constructor(
         reduce { state.copy(dialog = null) }
     }
 
-    @JvmName("mapToProfileItemUi")
+    @JvmName("mapProfileToItemUi")
     private fun List<Profile>.mapToItemUi() = map {
-        ItemUi(it.id, stringProvider(fromStr(it.name.join(it.currencyUnit.code))))
+        ItemUi(it.id, provideString(fromStr(it.name.join(it.currencyUnit.code))))
     }
 
-    @JvmName("mapToApplicationLanguageItemUi")
+    @JvmName("mapApplicationLanguageToItemUi")
     private fun List<ApplicationLanguage>.mapToItemUi() = map {
-        ItemUi(it, stringProvider(fromRes(it.labelResId)))
+        ItemUi(it, provideString(fromRes(it.labelResId)))
     }
 
-    @JvmName("mapToApplicationThemeItemUi")
+    @JvmName("mapApplicationThemeToItemUi")
     private fun List<ApplicationTheme>.mapToItemUi() = map {
-        ItemUi(it, stringProvider(fromRes(it.labelResId)))
+        ItemUi(it, provideString(fromRes(it.labelResId)))
     }
 }

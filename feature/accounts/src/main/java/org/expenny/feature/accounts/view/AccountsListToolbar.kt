@@ -5,13 +5,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import org.expenny.core.resources.R
-import org.expenny.core.ui.utils.ExpennyDrawerState
+import org.expenny.core.ui.base.ExpennyDrawerManager
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun AccountsListToolbar(
-    drawerState: ExpennyDrawerState,
+    drawerState: ExpennyDrawerManager,
     title: String,
     scrollBehavior: TopAppBarScrollBehavior,
     onAddClick: () -> Unit,

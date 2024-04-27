@@ -7,7 +7,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.OpenResultRecipient
-import org.expenny.core.ui.utils.ExpennySnackbarManager
+import org.expenny.core.ui.base.ExpennySnackbarManager
 import org.expenny.core.ui.data.navargs.LongNavArg
 import org.expenny.feature.currencydetails.navigation.CurrencyDetailsNavArgs
 import org.expenny.feature.currencydetails.navigation.CurrencyDetailsNavigator
@@ -38,7 +38,7 @@ fun CurrencyDetailsScreen(
                 navigator.navigateToAvailableCurrencyUnitSelectionListScreen(it.selectedId)
             }
             is Event.ShowMessage -> {
-                snackbarManager.showMessage(it.message)
+                snackbarManager.showInfo(it.message)
             }
             is Event.NavigateBack -> {
                 navigator.navigateBack()

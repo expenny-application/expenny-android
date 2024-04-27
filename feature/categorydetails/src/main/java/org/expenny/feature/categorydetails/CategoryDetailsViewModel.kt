@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import org.expenny.core.common.utils.ResourceIdProvider
 import org.expenny.core.common.utils.ResourceNameProvider
 import org.expenny.core.common.models.StringResource
-import org.expenny.core.common.viewmodel.ExpennyActionViewModel
+import org.expenny.core.ui.base.ExpennyViewModel
 import org.expenny.core.domain.usecase.ValidateInputUseCase
 import org.expenny.core.domain.usecase.category.CreateCategoryUseCase
 import org.expenny.core.domain.usecase.category.DeleteCategoryUseCase
@@ -41,7 +41,7 @@ class CategoryDetailsViewModel @Inject constructor(
     private val validateInput: ValidateInputUseCase,
     private val resourceNameProvider: ResourceNameProvider,
     private val resourceIdProvider: ResourceIdProvider,
-) : ExpennyActionViewModel<Action>(), ContainerHost<State, Event> {
+) : ExpennyViewModel<Action>(), ContainerHost<State, Event> {
 
     private val currentCategory = MutableStateFlow<Category?>(null)
 

@@ -37,7 +37,7 @@ import org.expenny.feature.settings.navigation.SettingsNavigator
 import org.expenny.feature.splash.navigation.SplashNavigator
 import org.expenny.feature.welcome.navigation.WelcomeNavigator
 import org.expenny.main.MainActivity
-import org.expenny.main.drawer.DrawerTab
+import org.expenny.main.DrawerTab
 
 class ExpennyNavigator(
     private val navGraph: NavGraphSpec,

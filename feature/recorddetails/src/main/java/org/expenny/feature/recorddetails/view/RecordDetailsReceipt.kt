@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.documentfile.provider.DocumentFile
 import coil.compose.AsyncImage
 import org.expenny.core.resources.R
-import org.expenny.core.ui.foundation.ExpennyCard
+import org.expenny.core.ui.components.ExpennyCard
 
 @Composable
 internal fun RecordDetailsReceipt(

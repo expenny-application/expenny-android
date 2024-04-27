@@ -8,8 +8,8 @@ import org.expenny.core.common.extensions.toTimeString
 import org.expenny.core.common.models.StringResource
 import org.expenny.core.common.types.RecordType
 import org.expenny.core.resources.R
-import org.expenny.core.ui.data.field.InputField
-import org.expenny.core.ui.data.field.MonetaryInputField
+import org.expenny.core.ui.data.InputUi
+import org.expenny.core.ui.data.DecimalInputUi
 import org.expenny.core.ui.data.navargs.LongNavArg
 import org.expenny.feature.recorddetails.model.LabelsInputField
 import java.math.BigDecimal
@@ -28,15 +28,15 @@ data class State(
     val showTransferAccountInput: Boolean = false,
     val transferAmountCurrency: String = "",
     val amountCurrency: String = "",
-    val amountInput: MonetaryInputField = MonetaryInputField(),
-    val transferAmountInput: MonetaryInputField = MonetaryInputField(),
-    val categoryInput: InputField = InputField(),
-    val accountInput: InputField = InputField(),
-    val transferAccountInput: InputField = InputField(),
-    val dateInput: InputField = InputField(value = LocalDate.now().toDateString()),
-    val timeInput: InputField = InputField(value = LocalTime.now().toTimeString()),
+    val amountInput: DecimalInputUi = DecimalInputUi(),
+    val transferAmountInput: DecimalInputUi = DecimalInputUi(),
+    val categoryInput: InputUi = InputUi(),
+    val accountInput: InputUi = InputUi(),
+    val transferAccountInput: InputUi = InputUi(),
+    val dateInput: InputUi = InputUi(value = LocalDate.now().toDateString()),
+    val timeInput: InputUi = InputUi(value = LocalTime.now().toTimeString()),
     val labelsInput: LabelsInputField = LabelsInputField(),
-    val descriptionInput: InputField = InputField(isRequired = false),
+    val descriptionInput: InputUi = InputUi(isRequired = false),
     val receipts: List<Uri> = listOf(),
     val dialog: Dialog? = null
 ) {

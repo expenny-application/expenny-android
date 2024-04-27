@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.DialogProperties
 import org.expenny.core.resources.R
-import org.expenny.core.ui.foundation.ExpennyDialog
+import org.expenny.core.ui.components.ExpennyDialog
 
 @Composable
 internal fun ProfileSetupConfirmationDialog(

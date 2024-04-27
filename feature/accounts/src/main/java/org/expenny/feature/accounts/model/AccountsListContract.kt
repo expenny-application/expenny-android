@@ -4,8 +4,8 @@ import kotlinx.collections.immutable.persistentListOf
 import org.expenny.core.common.models.StringResource
 import org.expenny.core.resources.R
 import org.expenny.core.ui.data.navargs.NavArgResult
-import org.expenny.core.ui.data.ui.SelectionUi
-import org.expenny.core.ui.data.ui.AccountUi
+import org.expenny.core.ui.data.SelectionUi
+import org.expenny.core.ui.data.AccountUi
 
 data class State(
     val toolbarTitle: StringResource = StringResource.fromRes(R.string.accounts_label),

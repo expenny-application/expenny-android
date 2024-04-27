@@ -8,7 +8,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.OpenResultRecipient
-import org.expenny.core.ui.utils.ExpennySnackbarManager
+import org.expenny.core.ui.base.ExpennySnackbarManager
 import org.expenny.core.ui.data.navargs.LongNavArg
 import org.expenny.feature.profilesetup.navigation.ProfileSetupNavigator
 import org.expenny.feature.profilesetup.style.ProfileSetupScreenTransitionStyle
@@ -39,7 +39,7 @@ fun ProfileSetupScreen(
 
     vm.collectSideEffect {
         when (it) {
-            is Event.ShowMessage -> snackbarManager.showMessage(it.message)
+            is Event.ShowMessage -> snackbarManager.showInfo(it.message)
             is Event.NavigateToHome -> navigator.navigateToHome()
             is Event.NavigateToCurrencyUnitsSelectionList -> navigator.navigateToCurrencyUnitSelectionListScreen(it.selectedId)
             is Event.NavigateBack -> navigator.navigateBack()

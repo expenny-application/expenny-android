@@ -2,7 +2,7 @@ package org.expenny.core.ui.mapper
 
 import org.expenny.core.common.extensions.join
 import org.expenny.core.model.currency.CurrencyUnit
-import org.expenny.core.ui.data.ui.CurrencyUnitUi
+import org.expenny.core.ui.data.CurrencyUnitUi
 import javax.inject.Inject
 
 class CurrencyUnitMapper @Inject constructor() {

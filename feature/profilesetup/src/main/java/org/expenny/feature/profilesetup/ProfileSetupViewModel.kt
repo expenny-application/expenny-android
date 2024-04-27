@@ -7,8 +7,6 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import org.expenny.core.common.models.ErrorMessage
 import org.expenny.core.common.models.StringResource.Companion.fromRes
-import org.expenny.core.common.utils.StringResourceProvider
-import org.expenny.core.common.viewmodel.*
 import org.expenny.core.domain.usecase.profile.CreateProfileUseCase
 import org.expenny.core.domain.usecase.ValidateInputUseCase
 import org.expenny.core.domain.usecase.account.CreateDefaultAccountUseCase
@@ -17,6 +15,7 @@ import org.expenny.core.domain.validators.*
 import org.expenny.core.model.currency.CurrencyUnit
 import org.expenny.core.resources.R
 import org.expenny.core.ui.mapper.CurrencyUnitMapper
+import org.expenny.core.ui.base.ExpennyViewModel
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.blockingIntent
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -29,13 +28,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class ProfileSetupViewModel @Inject constructor(
-    private val provideString: StringResourceProvider,
     private val validateInput: ValidateInputUseCase,
     private val createProfile: CreateProfileUseCase,
     private val createDefaultAccount: CreateDefaultAccountUseCase,
     private val getCurrencyUnit: GetCurrencyUnitUseCase,
     private val currencyUnitMapper: CurrencyUnitMapper,
-) : ExpennyActionViewModel<Action>(), ContainerHost<State, Event> {
+) : ExpennyViewModel<Action>(), ContainerHost<State, Event> {
 
     private val selectedCurrencyUnit: MutableStateFlow<CurrencyUnit?> = MutableStateFlow(null)
 
@@ -54,7 +52,7 @@ internal class ProfileSetupViewModel @Inject constructor(
 
     override fun onAction(action: Action) {
         when (action) {
-            is Action.OnSetupCashBalanceCheckBoxChange -> handleOnSetupCashBalanceCheckBoxChange(action)
+            is Action.OnSetupCashBalanceCheckboxChange -> handleOnSetupCashBalanceCheckboxChange(action)
             is Action.OnNameChange -> handleOnNameChange(action)
             is Action.OnCurrencyUnitSelect -> handleOnCurrencyUnitSelect(action)
             is Action.OnAccountNameChange -> handleOnAccountNameChange(action)
@@ -82,7 +80,7 @@ internal class ProfileSetupViewModel @Inject constructor(
                 currencyUnitId = selectedCurrencyUnit.value!!.id
             )
         )
-        if (state.setupCashBalanceCheckBox.value) {
+        if (state.setupCashBalanceCheckbox.value) {
             createDefaultAccount(
                 CreateDefaultAccountUseCase.Params(
                     name = state.accountNameInput.value,
@@ -120,11 +118,11 @@ internal class ProfileSetupViewModel @Inject constructor(
         selectedCurrencyUnit.value = getCurrencyUnit(GetCurrencyUnitUseCase.Params(action.id))
     }
 
-    private fun handleOnSetupCashBalanceCheckBoxChange(action: Action.OnSetupCashBalanceCheckBoxChange) = intent {
+    private fun handleOnSetupCashBalanceCheckboxChange(action: Action.OnSetupCashBalanceCheckboxChange) = intent {
         reduce {
             state.copy(
-                setupCashBalanceCheckBox = state.setupCashBalanceCheckBox.copy(value = action.isChecked),
-                showSetupCashBalanceInputFields = action.isChecked
+                setupCashBalanceCheckbox = state.setupCashBalanceCheckbox.copy(value = action.isChecked),
+                showSetupCashBalanceInputs = action.isChecked
             )
         }
     }
@@ -163,7 +161,7 @@ internal class ProfileSetupViewModel @Inject constructor(
     }
 
     private fun handleOnCtaClick() = intent {
-        if (state.setupCashBalanceCheckBox.value) {
+        if (state.setupCashBalanceCheckbox.value) {
             setup()
             postSideEffect(Event.NavigateToHome)
         } else {
@@ -187,8 +185,8 @@ internal class ProfileSetupViewModel @Inject constructor(
         reduce {
             state.copy(
                 showConfirmationDialog = false,
-                showSetupCashBalanceInputFields = true,
-                setupCashBalanceCheckBox = state.setupCashBalanceCheckBox.copy(value = true),
+                showSetupCashBalanceInputs = true,
+                setupCashBalanceCheckbox = state.setupCashBalanceCheckbox.copy(value = true),
             )
         }
     }
@@ -204,7 +202,7 @@ internal class ProfileSetupViewModel @Inject constructor(
                 .onEach {
                     reduce {
                         state.copy(
-                            showSetupCashBalanceCheckBox = true,
+                            showSetupCashBalanceCheckbox = true,
                             selectedCurrency = it.code,
                             selectCurrencyInput = state.selectCurrencyInput.copy(
                                 value = currencyUnitMapper(it).preview
@@ -222,7 +220,7 @@ internal class ProfileSetupViewModel @Inject constructor(
         fun isFormValid() = buildList {
             add(validateName(state.nameInput.value))
             add(validateCurrency(state.selectCurrencyInput.value))
-            if (state.showSetupCashBalanceInputFields) {
+            if (state.showSetupCashBalanceInputs) {
                 add(validateAccountName(state.accountNameInput.value))
                 add(validateAccountBalance(state.accountBalanceInput.value))
             }

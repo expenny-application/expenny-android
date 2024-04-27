@@ -5,10 +5,10 @@ import org.expenny.core.common.types.IntervalType
 import org.expenny.core.common.types.RecordActionType
 import org.expenny.core.common.types.RecordType
 import org.expenny.core.common.types.RecordsFilterType
-import org.expenny.core.ui.data.ui.ItemUi
-import org.expenny.core.ui.data.ui.MultiSelectionUi
-import org.expenny.core.ui.data.ui.RecordUi
-import org.expenny.core.ui.data.ui.SingleSelectionUi
+import org.expenny.core.ui.data.ItemUi
+import org.expenny.core.ui.data.MultiSelectionUi
+import org.expenny.core.ui.data.RecordUi
+import org.expenny.core.ui.data.SingleSelectionUi
 import org.expenny.core.ui.reducers.IntervalTypeStateReducer
 import org.expenny.feature.records.reducer.FilterSelectionsStateReducer
 

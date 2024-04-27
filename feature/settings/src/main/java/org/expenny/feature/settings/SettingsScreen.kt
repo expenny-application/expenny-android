@@ -10,10 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
-import androidx.core.os.bundleOf
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
-import org.expenny.core.ui.utils.ExpennySnackbarManager
+import org.expenny.core.ui.base.ExpennySnackbarManager
 import org.expenny.feature.settings.navigation.SettingsNavigator
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -56,7 +55,7 @@ fun SettingsScreen(
                 activity.startActivity(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM))
             }
             is Event.ShowMessage -> {
-                snackbarManager.showMessage(it.message)
+                snackbarManager.showInfo(it.message)
             }
             is Event.RestartApplication -> {
                 navigator.restartApplication(it.isDataCleanupRequested)

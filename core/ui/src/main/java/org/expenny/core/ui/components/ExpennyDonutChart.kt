@@ -19,7 +19,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import org.expenny.core.common.extensions.sumByDecimal
-import org.expenny.core.ui.data.ui.ChartEntryUi
+import org.expenny.core.ui.data.ChartEntryUi
 
 @Composable
 fun ExpennyDonutChart(

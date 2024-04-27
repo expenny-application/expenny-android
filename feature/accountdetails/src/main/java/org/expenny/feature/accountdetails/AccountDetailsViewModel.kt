@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 import org.expenny.core.common.extensions.setScaleNoRounding
 import org.expenny.core.common.models.ErrorMessage
 import org.expenny.core.common.models.StringResource.Companion.fromRes
-import org.expenny.core.common.viewmodel.*
+import org.expenny.core.ui.base.*
 import org.expenny.core.domain.usecase.ValidateInputUseCase
 import org.expenny.core.domain.usecase.account.*
 import org.expenny.core.domain.usecase.currency.GetCurrencyUseCase
@@ -20,6 +20,7 @@ import org.expenny.core.model.account.Account
 import org.expenny.core.model.currency.Currency
 import org.expenny.core.resources.R
 import org.expenny.core.ui.mapper.CurrencyMapper
+import org.expenny.core.ui.base.ExpennyViewModel
 import org.expenny.feature.accountdetails.navigation.AccountDetailsNavArgs
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.annotation.OrbitExperimental
@@ -39,7 +40,7 @@ class AccountDetailsViewModel @Inject constructor(
     private val deleteAccount: DeleteAccountUseCase,
     private val getCurrency: GetCurrencyUseCase,
     private val currencyMapper: CurrencyMapper
-) : ExpennyActionViewModel<Action>(), ContainerHost<State, Event> {
+) : ExpennyViewModel<Action>(), ContainerHost<State, Event> {
 
     private val currentAccount = MutableStateFlow<Account?>(null)
     private val selectedCurrency = MutableStateFlow<Currency?>(null)

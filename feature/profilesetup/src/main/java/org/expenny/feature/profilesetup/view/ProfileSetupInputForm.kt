@@ -12,13 +12,13 @@ import androidx.compose.ui.unit.dp
 import org.expenny.core.ui.extensions.asRawString
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennyExpandableContent
-import org.expenny.core.ui.components.ExpennyCheckBoxGroup
-import org.expenny.core.ui.foundation.ExpennyInputField
-import org.expenny.core.ui.foundation.ExpennyMonetaryInputField
-import org.expenny.core.ui.foundation.ExpennySelectInputField
-import org.expenny.core.ui.data.field.CheckBoxField
-import org.expenny.core.ui.data.field.InputField
-import org.expenny.core.ui.data.field.MonetaryInputField
+import org.expenny.core.ui.components.ExpennyCheckboxInput
+import org.expenny.core.ui.components.ExpennyInputField
+import org.expenny.core.ui.components.ExpennyMonetaryInputField
+import org.expenny.core.ui.components.ExpennySelectInputField
+import org.expenny.core.ui.data.CheckboxInputUi
+import org.expenny.core.ui.data.InputUi
+import org.expenny.core.ui.data.DecimalInputUi
 import org.expenny.feature.profilesetup.State
 import java.math.BigDecimal
 
@@ -30,7 +30,7 @@ internal fun ProfileSetupInputForm(
     onAccountNameChange: (String) -> Unit,
     onAccountBalanceChange: (BigDecimal) -> Unit,
     onSelectCurrencyClick: () -> Unit,
-    onSetupCashBalanceCheckBoxChange: (Boolean) -> Unit,
+    onSetupCashBalanceCheckboxChange: (Boolean) -> Unit,
 ) {
     Column(
         modifier = modifier,
@@ -50,7 +50,7 @@ internal fun ProfileSetupInputForm(
         )
 
         ExpennyExpandableContent(
-            isExpanded = state.showSetupCashBalanceInputFields,
+            isExpanded = state.showSetupCashBalanceInputs,
             content = {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -70,30 +70,32 @@ internal fun ProfileSetupInputForm(
                 }
             }
         )
-        if (state.showSetupCashBalanceCheckBox) {
-            SetupCashBalanceCheckBox(
+        if (state.showSetupCashBalanceCheckbox) {
+            SetupCashBalanceCheckbox(
                 modifier = Modifier.fillMaxWidth(),
-                state = state.setupCashBalanceCheckBox,
-                onValueChange = onSetupCashBalanceCheckBoxChange
+                state = state.setupCashBalanceCheckbox,
+                onValueChange = onSetupCashBalanceCheckboxChange
             )
         }
     }
 }
 
 @Composable
-private fun SetupCashBalanceCheckBox(
+private fun SetupCashBalanceCheckbox(
     modifier: Modifier = Modifier,
-    state: CheckBoxField,
+    state: CheckboxInputUi,
     onValueChange: (Boolean) -> Unit
 ) {
     with(state) {
-        ExpennyCheckBoxGroup(
+        ExpennyCheckboxInput(
             modifier = modifier,
-            label = stringResource(R.string.set_cash_balance_paragraph),
             error = error?.asRawString(),
             isChecked = value,
-            isRequired = required,
-            onClick = onValueChange
+            isRequired = isRequired,
+            onClick = onValueChange,
+            caption = {
+                Caption(text = stringResource(R.string.set_cash_balance_paragraph))
+            }
         )
     }
 }
@@ -101,7 +103,7 @@ private fun SetupCashBalanceCheckBox(
 @Composable
 private fun NameInputField(
     modifier: Modifier = Modifier,
-    state: InputField,
+    state: InputUi,
     onValueChange: (String) -> Unit
 ) {
     with(state) {
@@ -122,7 +124,7 @@ private fun NameInputField(
 @Composable
 private fun SelectCurrencyInputField(
     modifier: Modifier = Modifier,
-    state: InputField,
+    state: InputUi,
     onClick: () -> Unit
 ) {
     with(state) {
@@ -141,7 +143,7 @@ private fun SelectCurrencyInputField(
 @Composable
 private fun AccountNameInputField(
     modifier: Modifier = Modifier,
-    state: InputField,
+    state: InputUi,
     onValueChange: (String) -> Unit
 ) {
     with(state) {
@@ -162,7 +164,7 @@ private fun AccountNameInputField(
 @Composable
 private fun AccountBalanceInputField(
     modifier: Modifier = Modifier,
-    state: MonetaryInputField,
+    state: DecimalInputUi,
     currency: String,
     onValueChange: (BigDecimal) -> Unit
 ) {

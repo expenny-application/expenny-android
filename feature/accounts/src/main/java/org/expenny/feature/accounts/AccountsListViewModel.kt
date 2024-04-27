@@ -8,7 +8,7 @@ import kotlinx.coroutines.launch
 import org.expenny.core.common.extensions.addOrRemoveIfExist
 import org.expenny.core.common.models.StringResource.Companion.fromPluralRes
 import org.expenny.core.common.models.StringResource.Companion.fromRes
-import org.expenny.core.common.viewmodel.ExpennyActionViewModel
+import org.expenny.core.ui.base.ExpennyViewModel
 import org.expenny.core.domain.usecase.account.GetAccountsUseCase
 import org.expenny.core.domain.usecase.record.GetRecordsUseCase
 import org.expenny.core.model.account.AccountRecords
@@ -16,8 +16,8 @@ import org.expenny.core.model.record.Record
 import org.expenny.core.resources.R
 import org.expenny.core.ui.data.navargs.LongArrayNavArg
 import org.expenny.core.ui.data.navargs.LongNavArg
-import org.expenny.core.ui.data.ui.MultiSelectionUi
-import org.expenny.core.ui.data.ui.SingleSelectionUi
+import org.expenny.core.ui.data.MultiSelectionUi
+import org.expenny.core.ui.data.SingleSelectionUi
 import org.expenny.core.ui.mapper.AccountMapper
 import org.expenny.feature.accounts.model.Action
 import org.expenny.feature.accounts.model.Event
@@ -37,7 +37,7 @@ class AccountsListViewModel @Inject constructor(
     private val getAccounts: GetAccountsUseCase,
     private val getRecords: GetRecordsUseCase,
     private val accountMapper: AccountMapper
-) : ExpennyActionViewModel<Action>(), ContainerHost<State, Event> {
+) : ExpennyViewModel<Action>(), ContainerHost<State, Event> {
 
     private var selectionResultCode: Int = 0
     private var excludeIds: LongArray = LongArray(0)

@@ -3,7 +3,7 @@ package org.expenny.feature.accountdetails.view
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import org.expenny.core.resources.R
-import org.expenny.core.ui.foundation.ExpennyDialog
+import org.expenny.core.ui.components.ExpennyDialog
 
 @Composable
 internal fun AccountDetailsDeleteDialog(

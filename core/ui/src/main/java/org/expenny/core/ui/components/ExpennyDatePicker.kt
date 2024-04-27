@@ -13,8 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.commandiron.wheel_picker_compose.WheelDatePicker
 import com.commandiron.wheel_picker_compose.core.WheelPickerDefaults
 import org.expenny.core.resources.R
-import org.expenny.core.ui.foundation.ExpennyDialog
-import org.expenny.core.ui.theme.ExpennyTheme
+import org.expenny.core.ui.foundation.ExpennyTheme
 import java.time.LocalDate
 
 

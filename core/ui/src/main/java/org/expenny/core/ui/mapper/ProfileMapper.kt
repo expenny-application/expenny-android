@@ -2,7 +2,7 @@ package org.expenny.core.ui.mapper
 
 import org.expenny.core.common.extensions.join
 import org.expenny.core.model.profile.Profile
-import org.expenny.core.ui.data.ui.ProfileUi
+import org.expenny.core.ui.data.ProfileUi
 import javax.inject.Inject
 
 class ProfileMapper @Inject constructor() {

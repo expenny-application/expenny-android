@@ -6,9 +6,9 @@ import org.expenny.core.common.types.ApplicationTheme
 import org.expenny.core.common.types.ProfileActionType
 import org.expenny.core.common.types.SettingsItemType
 import org.expenny.core.common.utils.Constants.DEFAULT_REMINDER_TIME_FORMAT
-import org.expenny.core.ui.data.ui.ItemUi
-import org.expenny.core.ui.data.ui.ProfileUi
-import org.expenny.core.ui.data.ui.SingleSelectionUi
+import org.expenny.core.ui.data.ItemUi
+import org.expenny.core.ui.data.ProfileUi
+import org.expenny.core.ui.data.SingleSelectionUi
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 

@@ -5,10 +5,10 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import org.expenny.core.common.types.AccountTrendType
 import org.expenny.core.common.types.IntervalType
-import org.expenny.core.ui.data.ui.AmountUi
-import org.expenny.core.ui.data.ui.CategoryStatementUi
-import org.expenny.core.ui.data.ui.ItemUi
-import org.expenny.core.ui.data.ui.SingleSelectionUi
+import org.expenny.core.ui.data.AmountUi
+import org.expenny.core.ui.data.CategoryStatementUi
+import org.expenny.core.ui.data.ItemUi
+import org.expenny.core.ui.data.SingleSelectionUi
 import org.expenny.core.ui.reducers.IntervalTypeStateReducer
 import org.expenny.feature.accountoverview.model.AccountOverviewChartUi
 

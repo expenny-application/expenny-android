@@ -9,9 +9,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.OpenResultRecipient
-import kotlinx.coroutines.launch
 import org.expenny.core.ui.data.navargs.LongNavArg
-import org.expenny.core.ui.utils.ExpennyDrawerState
+import org.expenny.core.ui.base.ExpennyDrawerManager
 import org.expenny.feature.dashboard.model.Action
 import org.expenny.feature.dashboard.model.Event
 import org.expenny.feature.dashboard.navigation.DashboardNavigator
@@ -26,7 +25,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 fun DashboardScreen(
     navigator: DashboardNavigator,
     currencyResult: OpenResultRecipient<LongNavArg>,
-    drawerState: ExpennyDrawerState
+    drawerState: ExpennyDrawerManager
 ) {
     val vm: DashboardViewModel = hiltViewModel()
     val state by vm.collectAsState()

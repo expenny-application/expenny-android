@@ -1,7 +1,7 @@
 package org.expenny.core.ui.mapper
 
 import org.expenny.core.model.currency.CurrencyAmount
-import org.expenny.core.ui.data.ui.AmountUi
+import org.expenny.core.ui.data.AmountUi
 import javax.inject.Inject
 
 class AmountMapper @Inject constructor() {

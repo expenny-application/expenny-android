@@ -6,7 +6,7 @@ import org.expenny.core.common.types.PeriodType
 import org.expenny.core.common.types.DashboardWidgetType
 import org.expenny.core.common.types.RecordType
 import org.expenny.core.ui.data.navargs.RecordsListFilterNavArg
-import org.expenny.core.ui.data.ui.AccountNameUi
+import org.expenny.core.ui.data.AccountNameUi
 
 data class State(
     val showAddRecordDialog: Boolean = false,

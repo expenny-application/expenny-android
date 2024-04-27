@@ -11,9 +11,13 @@ import com.ramcosta.composedestinations.rememberNavHostEngine
 import com.ramcosta.composedestinations.scope.DestinationScopeWithNoDependencies
 import com.ramcosta.composedestinations.scope.resultRecipient
 import com.ramcosta.composedestinations.spec.Route
+import org.expenny.core.ui.transitions.defaultEnterNavigationTransition
+import org.expenny.core.ui.transitions.defaultExitNavigationTransition
+import org.expenny.core.ui.transitions.defaultPopEnterNavigationTransition
+import org.expenny.core.ui.transitions.defaultPopExitNavigationTransition
 import org.expenny.core.ui.data.navargs.LongNavArg
 import org.expenny.core.ui.data.navargs.NavArgResult
-import org.expenny.core.ui.foundation.transitions.*
+import org.expenny.core.ui.transitions.*
 import org.expenny.feature.accountdetails.AccountDetailsScreen
 import org.expenny.feature.accountdetails.destinations.AccountDetailsScreenDestination
 import org.expenny.feature.accounts.destinations.AccountsListScreenDestination
@@ -28,7 +32,7 @@ import org.expenny.feature.profilesetup.ProfileSetupScreen
 import org.expenny.feature.profilesetup.destinations.ProfileSetupScreenDestination
 import org.expenny.feature.recorddetails.RecordDetailsScreen
 import org.expenny.feature.recorddetails.destinations.RecordDetailsScreenDestination
-import org.expenny.main.ExpennyState
+import org.expenny.main.MainState
 
 @OptIn(
     ExperimentalAnimationApi::class
@@ -36,7 +40,7 @@ import org.expenny.main.ExpennyState
 @Composable
 internal fun ExpennyNavigation(
     modifier: Modifier = Modifier,
-    expennyState: ExpennyState,
+    mainState: MainState,
     startRoute: Route
 ) {
     val engine = rememberNavHostEngine(
@@ -53,25 +57,25 @@ internal fun ExpennyNavigation(
         engine = engine,
         startRoute = startRoute,
         navGraph = ExpennyNavGraphs.root,
-        navController = expennyState.navHostController,
+        navController = mainState.navHostController,
         dependenciesContainerBuilder = {
             dependency(currentNavigator())
             dependency(navBackStackEntry)
-            dependency(expennyState.snackbarManager)
-            dependency(expennyState.drawerState)
+            dependency(mainState.snackbarManager)
+            dependency(mainState.drawerManager)
         }
     ) {
         // Explicit screen destinations to resolve resultRecipient
         composable(ProfileSetupScreenDestination) {
             ProfileSetupScreen(
-                snackbarManager = expennyState.snackbarManager,
+                snackbarManager = mainState.snackbarManager,
                 navigator = currentNavigator(),
                 currencyUnitResult = resultRecipient<CurrencyUnitsListScreenDestination, LongNavArg>(),
             )
         }
         composable(AccountDetailsScreenDestination) {
             AccountDetailsScreen(
-                snackbarManager = expennyState.snackbarManager,
+                snackbarManager = mainState.snackbarManager,
                 navigator = currentNavigator(),
                 currencyResult = resultRecipient<CurrenciesListScreenDestination, LongNavArg>(),
             )
@@ -80,19 +84,19 @@ internal fun ExpennyNavigation(
             DashboardScreen(
                 navigator = currentNavigator(),
                 currencyResult = resultRecipient<CurrenciesListScreenDestination, LongNavArg>(),
-                drawerState = expennyState.drawerState
+                drawerState = mainState.drawerManager
             )
         }
         composable(CurrencyDetailsScreenDestination) {
             CurrencyDetailsScreen(
-                snackbarManager = expennyState.snackbarManager,
+                snackbarManager = mainState.snackbarManager,
                 navigator = currentNavigator(),
                 currencyUnitResult = resultRecipient<CurrencyUnitsListScreenDestination, LongNavArg>(),
             )
         }
         composable(RecordDetailsScreenDestination) {
             RecordDetailsScreen(
-                snackbarManager = expennyState.snackbarManager,
+                snackbarManager = mainState.snackbarManager,
                 navigator = currentNavigator(),
                 accountResult = resultRecipient<AccountsListScreenDestination, NavArgResult>(),
                 categoryResult = resultRecipient<CategoriesListScreenDestination, LongNavArg>()

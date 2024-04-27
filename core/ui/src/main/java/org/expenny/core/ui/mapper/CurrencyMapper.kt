@@ -3,8 +3,8 @@ package org.expenny.core.ui.mapper
 import org.expenny.core.common.extensions.join
 import org.expenny.core.common.extensions.toCurrencyAmountString
 import org.expenny.core.model.currency.Currency
-import org.expenny.core.ui.data.ui.AmountUi
-import org.expenny.core.ui.data.ui.CurrencyUi
+import org.expenny.core.ui.data.AmountUi
+import org.expenny.core.ui.data.CurrencyUi
 import javax.inject.Inject
 
 class CurrencyMapper @Inject constructor() {

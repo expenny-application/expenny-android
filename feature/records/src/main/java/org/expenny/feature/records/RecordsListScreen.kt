@@ -6,8 +6,8 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.*
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
-import org.expenny.core.ui.utils.ExpennySnackbarManager
-import org.expenny.core.ui.utils.ExpennyDrawerState
+import org.expenny.core.ui.base.ExpennySnackbarManager
+import org.expenny.core.ui.base.ExpennyDrawerManager
 import org.expenny.feature.records.navigation.RecordsListNavArgs
 import org.expenny.feature.records.navigation.RecordsListNavigator
 import org.expenny.feature.records.view.RecordsListContent
@@ -20,7 +20,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 fun RecordsListScreen(
     snackbarManager: ExpennySnackbarManager,
     navigator: RecordsListNavigator,
-    drawerState: ExpennyDrawerState
+    drawerState: ExpennyDrawerManager
 ) {
     val vm: RecordsListViewModel = hiltViewModel()
     val state by vm.collectAsState()
@@ -43,7 +43,7 @@ fun RecordsListScreen(
                 navigator.navigateToCloneRecordScreen(it.id)
             }
             is Event.ShowMessage -> {
-                snackbarManager.showMessage(it.message)
+                snackbarManager.showInfo(it.message)
             }
         }
     }

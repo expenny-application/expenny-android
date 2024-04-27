@@ -2,8 +2,8 @@ package org.expenny.feature.dashboard.model
 
 import org.expenny.core.common.extensions.isWhole
 import org.expenny.core.common.extensions.percentageOf
-import org.expenny.core.ui.data.ui.AmountUi
-import org.expenny.core.ui.data.ui.ExpensesUi
+import org.expenny.core.ui.data.AmountUi
+import org.expenny.core.ui.data.ExpensesUi
 
 data class DashboardExpensesUi(
     val totalAmount: AmountUi? = null,

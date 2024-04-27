@@ -14,14 +14,13 @@ import kotlinx.coroutines.launch
 import org.expenny.core.common.extensions.toClosedDateTimeRange
 import org.expenny.core.common.models.StringResource.Companion.fromArrayRes
 import org.expenny.core.common.types.IntervalType
-import org.expenny.core.common.utils.StringResourceProvider
-import org.expenny.core.common.viewmodel.ExpennyActionViewModel
 import org.expenny.core.domain.usecase.account.GetAccountTrendUseCase
 import org.expenny.core.domain.usecase.account.GetAccountUseCase
 import org.expenny.core.domain.usecase.category.GetCategoryStatementsUseCase
 import org.expenny.core.domain.usecase.record.GetRecordsUseCase
-import org.expenny.core.ui.data.ui.ItemUi
-import org.expenny.core.ui.data.ui.SingleSelectionUi
+import org.expenny.core.ui.base.ExpennyViewModel
+import org.expenny.core.ui.data.ItemUi
+import org.expenny.core.ui.data.SingleSelectionUi
 import org.expenny.core.ui.extensions.labelResId
 import org.expenny.core.ui.mapper.AmountMapper
 import org.expenny.core.ui.mapper.CategoryStatementMapper
@@ -43,8 +42,7 @@ class AccountOverviewViewModel @Inject constructor(
     private val getAccountTrend: GetAccountTrendUseCase,
     private val getCategoryStatements: GetCategoryStatementsUseCase,
     private val categoryStatementMapper: CategoryStatementMapper,
-    private val stringProvider: StringResourceProvider,
-): ExpennyActionViewModel<Action>(), ContainerHost<State, Event> {
+): ExpennyViewModel<Action>(), ContainerHost<State, Event> {
 
     internal val overviewChartModelProducer = CartesianChartModelProducer.build(Dispatchers.Main)
 
@@ -157,6 +155,6 @@ class AccountOverviewViewModel @Inject constructor(
 
     @JvmName("mapIntervalTypeToItemUi")
     private fun List<IntervalType>.mapToItemUi() = map {
-        ItemUi(it, stringProvider(fromArrayRes(it.labelResId, it.ordinal)))
+        ItemUi(it, provideString(fromArrayRes(it.labelResId, it.ordinal)))
     }
 }

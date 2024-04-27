@@ -2,8 +2,8 @@ package org.expenny.feature.currencydetails
 
 import org.expenny.core.common.models.StringResource
 import org.expenny.core.resources.R
-import org.expenny.core.ui.data.field.InputField
-import org.expenny.core.ui.data.field.MonetaryInputField
+import org.expenny.core.ui.data.InputUi
+import org.expenny.core.ui.data.DecimalInputUi
 import java.math.BigDecimal
 
 data class State(
@@ -17,10 +17,10 @@ data class State(
     val dialog: Dialog? = null,
     val baseCurrency: String = "",
     val quoteCurrency: String = "",
-    val lastUpdateInput: InputField = InputField(),
-    val currencyUnitInput: InputField = InputField(isRequired = true),
-    val baseToQuoteRateInput: MonetaryInputField = MonetaryInputField(isRequired = true),
-    val quoteToBaseRateInput: MonetaryInputField = MonetaryInputField(isRequired = true),
+    val lastUpdateInput: InputUi = InputUi(),
+    val currencyUnitInput: InputUi = InputUi(isRequired = true),
+    val baseToQuoteRateInput: DecimalInputUi = DecimalInputUi(isRequired = true),
+    val quoteToBaseRateInput: DecimalInputUi = DecimalInputUi(isRequired = true),
 ) {
     sealed interface Dialog {
         data object InfoDialog : Dialog
