@@ -37,7 +37,6 @@ class CurrencyUnitRepositoryImpl @Inject constructor(
             Currency.getInstance("RSD"),
             Currency.getInstance("RON"),
             Currency.getInstance("RUB"),
-            Currency.getInstance("CHF"),
             Currency.getInstance("CNY"),
             Currency.getInstance("TRY"),
             Currency.getInstance("SEK"),
