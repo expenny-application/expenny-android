@@ -67,7 +67,7 @@ internal fun DashboardContent(
                 .padding(
                     start = 16.dp,
                     end = 16.dp,
-                    top = 16.dp,
+                    top = 8.dp,
                     bottom = 72.dp
                 ),
             verticalArrangement = Arrangement.spacedBy(16.dp)
