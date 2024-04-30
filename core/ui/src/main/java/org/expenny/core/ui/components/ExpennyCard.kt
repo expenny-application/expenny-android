@@ -39,7 +39,7 @@ fun ExpennyCard(
                 )
                 .combinedClickable(
                     interactionSource = interactionSource,
-                    indication = rememberRipple(),
+                    indication = LocalIndication.current,
                     enabled = true,
                     onClick = onClick,
                     onLongClick = onLongClick
