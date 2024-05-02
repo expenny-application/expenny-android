@@ -6,8 +6,8 @@ import org.expenny.core.common.extensions.mapFlatten
 import org.expenny.core.data.mapper.DataMapper.toModel
 import org.expenny.core.data.mapper.DataMapper.toEntity
 import org.expenny.core.database.ExpennyDatabase
+import org.expenny.core.datastore.ExpennyDataStore
 import org.expenny.core.domain.repository.CurrencyRepository
-import org.expenny.core.domain.repository.LocalRepository
 import org.expenny.core.model.currency.Currency
 import org.expenny.core.model.currency.CurrencyCreate
 import org.expenny.core.model.currency.CurrencyUpdate
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 class CurrencyRepositoryImpl @Inject constructor(
     private val database: ExpennyDatabase,
-    private val localRepository: LocalRepository,
+    private val preferences: ExpennyDataStore
 ) : CurrencyRepository {
     private val settlementCurrencyDao = database.currencyDao()
     private val accountDao = database.accountDao()
@@ -23,7 +23,7 @@ class CurrencyRepositoryImpl @Inject constructor(
 
     override fun getCurrencies(): Flow<List<Currency>> {
         return combine(
-            localRepository.getCurrentProfileId(),
+            preferences.getCurrentProfileId(),
             settlementCurrencyDao.selectAll()
         ) { profileId, currencies ->
             currencies.filter { it.currency.profileId == profileId }
@@ -35,7 +35,7 @@ class CurrencyRepositoryImpl @Inject constructor(
     }
 
     override fun getMainCurrency(): Flow<Currency?> {
-        return localRepository.getCurrentProfileId()
+        return preferences.getCurrentProfileId()
             .filterNotNull()
             .flatMapLatest { settlementCurrencyDao.selectMain(it) }
             .map { it?.toModel() }

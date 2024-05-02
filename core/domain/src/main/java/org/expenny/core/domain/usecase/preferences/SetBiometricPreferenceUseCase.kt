@@ -1,11 +1,11 @@
 package org.expenny.core.domain.usecase.preferences
 
+import org.expenny.core.datastore.ExpennyDataStore
 import org.expenny.core.domain.repository.BiometricRepository
-import org.expenny.core.domain.repository.LocalRepository
 import javax.inject.Inject
 
 class SetBiometricPreferenceUseCase @Inject constructor(
-    private val localRepository: LocalRepository,
+    private val preferences: ExpennyDataStore,
     private val biometricRepository: BiometricRepository
 ) {
 
@@ -15,6 +15,6 @@ class SetBiometricPreferenceUseCase @Inject constructor(
         } else {
             biometricRepository.clearSecretKey()
         }
-        localRepository.setBiometricEnrolled(isEnrolled)
+        preferences.setIsBiometricEnrolled(isEnrolled)
     }
 }

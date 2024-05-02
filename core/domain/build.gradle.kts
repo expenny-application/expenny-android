@@ -12,6 +12,7 @@ dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:resources"))
     implementation(project(":core:model"))
+    implementation(project(":core:datastore"))
 
     implementation(libs.androidx.biometric)
     implementation(libs.kotlinx.coroutines.core)

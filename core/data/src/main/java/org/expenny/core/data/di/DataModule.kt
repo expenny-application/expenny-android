@@ -10,7 +10,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import org.expenny.core.data.*
 import org.expenny.core.data.repository.AccountRepositoryImpl
 import org.expenny.core.data.repository.BiometricRepositoryImpl
 import org.expenny.core.data.repository.CategoryRepositoryImpl
@@ -18,11 +17,11 @@ import org.expenny.core.data.repository.CurrencyRateRepositoryImpl
 import org.expenny.core.data.repository.CurrencyRepositoryImpl
 import org.expenny.core.data.repository.CurrencyUnitRepositoryImpl
 import org.expenny.core.data.repository.FileRepositoryImpl
-import org.expenny.core.data.repository.LocalRepositoryImpl
 import org.expenny.core.data.repository.ProfileRepositoryImpl
 import org.expenny.core.data.repository.RecordFileRepositoryImpl
 import org.expenny.core.data.repository.RecordRepositoryImpl
 import org.expenny.core.data.repository.AlarmRepositoryImpl
+import org.expenny.core.data.repository.InstitutionRepositoryImpl
 import org.expenny.core.data.repository.WorkRepositoryImpl
 import org.expenny.core.domain.repository.*
 import javax.inject.Singleton
@@ -42,9 +41,6 @@ interface DataModule {
 
     @Binds
     fun bindCurrencyUnitRepository(currencyUnitRepositoryImpl: CurrencyUnitRepositoryImpl): CurrencyUnitRepository
-
-    @Binds
-    fun bindLocalRepository(localRepositoryImpl: LocalRepositoryImpl): LocalRepository
 
     @Binds
     fun bindProfileRepository(profileRepositoryImpl: ProfileRepositoryImpl): ProfileRepository
@@ -69,6 +65,9 @@ interface DataModule {
 
     @Binds
     fun bindReminderRepository(alarmRepositoryImpl: AlarmRepositoryImpl): AlarmRepository
+
+    @Binds
+    fun bindInstitutionRepository(institutionRepositoryImpl: InstitutionRepositoryImpl): InstitutionRepository
 
     companion object {
 

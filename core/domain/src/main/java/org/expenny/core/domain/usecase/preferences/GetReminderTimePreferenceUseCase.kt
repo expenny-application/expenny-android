@@ -1,15 +1,15 @@
 package org.expenny.core.domain.usecase.preferences
 
 import kotlinx.coroutines.flow.Flow
-import org.expenny.core.domain.repository.LocalRepository
+import org.expenny.core.datastore.ExpennyDataStore
 import java.time.LocalTime
 import javax.inject.Inject
 
 class GetReminderTimePreferenceUseCase @Inject constructor(
-    private val localRepository: LocalRepository
+    private val preferences: ExpennyDataStore,
 ) {
 
     operator fun invoke(): Flow<LocalTime> {
-        return localRepository.getReminderTime()
+        return preferences.getReminderTime()
     }
 }

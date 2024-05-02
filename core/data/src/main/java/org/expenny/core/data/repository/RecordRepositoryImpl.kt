@@ -11,9 +11,9 @@ import org.expenny.core.common.types.TransactionType
 import org.expenny.core.data.mapper.DataMapper.toEntity
 import org.expenny.core.data.mapper.DataMapper.toModel
 import org.expenny.core.database.ExpennyDatabase
+import org.expenny.core.datastore.ExpennyDataStore
 import org.expenny.core.domain.repository.AccountRepository
 import org.expenny.core.domain.repository.FileRepository
-import org.expenny.core.domain.repository.LocalRepository
 import org.expenny.core.domain.repository.RecordFileRepository
 import org.expenny.core.domain.repository.RecordRepository
 import org.expenny.core.model.file.FileCreate
@@ -24,15 +24,15 @@ import javax.inject.Inject
 
 class RecordRepositoryImpl @Inject constructor(
     private val database: ExpennyDatabase,
+    private val preferences: ExpennyDataStore,
     private val accountRepository: AccountRepository,
-    private val localRepository: LocalRepository,
     private val recordFileRepository: RecordFileRepository,
     private val fileRepository: FileRepository,
 ) : RecordRepository {
     private val recordDao = database.recordDao()
 
     override fun getRecordsDesc(): Flow<List<Record>> {
-        return localRepository.getCurrentProfileId()
+        return preferences.getCurrentProfileId()
             .filterNotNull()
             .flatMapLatest { profileId ->
                 recordDao.selectAllDesc(profileId)
@@ -40,7 +40,7 @@ class RecordRepositoryImpl @Inject constructor(
     }
 
     override fun getRecordsAsc(): Flow<List<Record>> {
-        return localRepository.getCurrentProfileId()
+        return preferences.getCurrentProfileId()
             .filterNotNull()
             .flatMapLatest { profileId ->
                 recordDao.selectAllAsc(profileId)

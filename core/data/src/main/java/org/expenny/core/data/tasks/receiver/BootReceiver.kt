@@ -8,8 +8,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import org.expenny.core.datastore.ExpennyDataStore
 import org.expenny.core.domain.repository.AlarmRepository
-import org.expenny.core.domain.repository.LocalRepository
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -18,7 +18,7 @@ import kotlin.coroutines.EmptyCoroutineContext
 @AndroidEntryPoint
 class BootReceiver : HiltBroadcastReceiver() {
 
-    @Inject lateinit var localRepository: LocalRepository
+    @Inject lateinit var preferences: ExpennyDataStore
     @Inject lateinit var alarmRepository: AlarmRepository
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -27,7 +27,7 @@ class BootReceiver : HiltBroadcastReceiver() {
         if (intent.action == "android.intent.action.BOOT_COMPLETED") {
             Timber.i("${intent.action} intent action received")
             goAsync {
-                localRepository.getReminderTime().first().also {
+                preferences.getReminderTime().first().also {
                     alarmRepository.setReminderAlarm(it)
                 }
             }

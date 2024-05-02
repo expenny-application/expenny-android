@@ -8,9 +8,9 @@ import org.expenny.core.common.extensions.mapFlatten
 import org.expenny.core.data.mapper.DataMapper.toEntity
 import org.expenny.core.data.mapper.DataMapper.toModel
 import org.expenny.core.database.ExpennyDatabase
+import org.expenny.core.datastore.ExpennyDataStore
 import org.expenny.core.model.account.Account
 import org.expenny.core.domain.repository.AccountRepository
-import org.expenny.core.domain.repository.LocalRepository
 import org.expenny.core.model.account.AccountCreate
 import org.expenny.core.model.account.AccountUpdate
 import java.math.BigDecimal
@@ -18,14 +18,14 @@ import javax.inject.Inject
 
 class AccountRepositoryImpl @Inject constructor(
     private val database: ExpennyDatabase,
-    private val localRepository: LocalRepository
+    private val preferences: ExpennyDataStore,
 ): AccountRepository {
     private val accountDao = database.accountDao()
     private val recordDao = database.recordDao()
 
     override fun getAccounts(): Flow<List<Account>> {
         return combine(
-            localRepository.getCurrentProfileId().filterNotNull(),
+            preferences.getCurrentProfileId().filterNotNull(),
             accountDao.selectAll()
         ) { profileId, accounts ->
             accounts.filter { it.account.profileId == profileId }
