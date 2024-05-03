@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteException
 import org.expenny.core.common.models.StringResource.Companion.fromRes
 import org.expenny.core.resources.R
 
-class ErrorMessage(throwable: Throwable) {
+class ErrorMessage(throwable: Throwable?) {
 
     val text: StringResource = when (throwable) {
         is SQLiteConstraintException -> {

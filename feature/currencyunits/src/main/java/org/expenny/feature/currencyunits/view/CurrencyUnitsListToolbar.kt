@@ -27,7 +27,6 @@ internal fun CurrencyUnitsListToolbar(
             IconButton(onClick = onCloseClick) {
                 Icon(
                     painter = painterResource(R.drawable.ic_close),
-                    tint = MaterialTheme.colorScheme.onSurface,
                     contentDescription = null
                 )
             }

@@ -122,7 +122,7 @@ dependencies {
     implementation(project(":feature:settings"))
     implementation(project(":feature:accountoverview"))
     implementation(project(":feature:passcode"))
-    implementation(project(":feature:sync"))
+    implementation(project(":feature:institution"))
 
     implementation("androidx.constraintlayout:constraintlayout:2.1.3")
 

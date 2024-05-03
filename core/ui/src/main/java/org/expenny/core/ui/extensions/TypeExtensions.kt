@@ -9,6 +9,7 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import org.expenny.core.common.types.AccountTrendType
 import org.expenny.core.common.types.AccountType
+import org.expenny.core.common.types.LocalAccountType
 import org.expenny.core.common.types.ApplicationLanguage
 import org.expenny.core.common.types.ApplicationTheme
 import org.expenny.core.common.types.DashboardWidgetType
@@ -23,25 +24,23 @@ import org.expenny.core.resources.R
 val AccountTrendType.label: String
     @Composable get() = stringArrayResource(R.array.trend_type)[ordinal]
 
-val AccountType.label: String
+val LocalAccountType.label: String
     @Composable get() = stringResource(
         when (this) {
-            AccountType.General -> R.string.general_label
-            AccountType.Bank -> R.string.bank_label
-            AccountType.Card -> R.string.card_label
-            AccountType.Savings -> R.string.savings_label
-            AccountType.Cash -> R.string.cash_label
+            LocalAccountType.General -> R.string.general_label
+            LocalAccountType.Card -> R.string.card_label
+            LocalAccountType.Savings -> R.string.savings_label
+            LocalAccountType.Cash -> R.string.cash_label
         }
     )
 
-val AccountType.icon: Painter
+val LocalAccountType.icon: Painter
     @Composable get() = painterResource(
         when (this) {
-            AccountType.General -> R.drawable.ic_wallet
-            AccountType.Bank -> R.drawable.ic_bank
-            AccountType.Card -> R.drawable.ic_card
-            AccountType.Savings -> R.drawable.ic_safe
-            AccountType.Cash -> R.drawable.ic_cash
+            LocalAccountType.General -> R.drawable.ic_wallet
+            LocalAccountType.Card -> R.drawable.ic_card
+            LocalAccountType.Savings -> R.drawable.ic_safe
+            LocalAccountType.Cash -> R.drawable.ic_cash
         }
     )
 
@@ -153,4 +152,19 @@ val RecordType.icon
         RecordType.Expense -> painterResource(R.drawable.ic_expense)
         RecordType.Income -> painterResource(R.drawable.ic_income)
         RecordType.Transfer -> painterResource(R.drawable.ic_transfer)
+    }
+
+val AccountType.label
+    @Composable get() = stringArrayResource(R.array.account_type)[ordinal]
+
+val AccountType.message
+    @Composable get() = when (this) {
+        AccountType.Bank -> stringResource(R.string.bank_account_message)
+        AccountType.Local -> stringResource(R.string.local_account_message)
+    }
+
+val AccountType.benefits
+    @Composable get() = when (this) {
+        AccountType.Bank -> stringArrayResource(R.array.bank_account_benefits)
+        AccountType.Local -> stringArrayResource(R.array.local_account_benefits)
     }

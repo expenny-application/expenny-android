@@ -19,7 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import org.expenny.core.common.types.AccountType
+import org.expenny.core.common.types.LocalAccountType
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennySection
 import org.expenny.core.ui.data.InputUi
@@ -42,7 +42,7 @@ internal fun AccountDetailsInputForm(
     onDescriptionChange: (String) -> Unit,
     onStartBalanceChange: (BigDecimal) -> Unit,
     onSelectCurrencyClick: () -> Unit,
-    onTypeSelect: (AccountType) -> Unit,
+    onTypeSelect: (LocalAccountType) -> Unit,
     onAdditionsSectionVisibilityChange: (Boolean) -> Unit,
 ) {
     Column(

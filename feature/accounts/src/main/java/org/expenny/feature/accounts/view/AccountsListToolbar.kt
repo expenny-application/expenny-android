@@ -1,12 +1,10 @@
 package org.expenny.feature.accounts.view
 
-import androidx.compose.animation.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import org.expenny.core.resources.R
 import org.expenny.core.ui.base.ExpennyDrawerManager
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

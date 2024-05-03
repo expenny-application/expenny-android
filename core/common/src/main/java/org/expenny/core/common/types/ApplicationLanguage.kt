@@ -7,8 +7,6 @@ enum class ApplicationLanguage(val tag: String) {
     Russian(tag = "ru");
 
     companion object {
-        fun tagOf(tag: String): ApplicationLanguage? {
-            return ApplicationLanguage.values().firstOrNull { it.tag == tag }
-        }
+        fun tagOf(tag: String) = entries.firstOrNull { it.tag == tag }
     }
 }

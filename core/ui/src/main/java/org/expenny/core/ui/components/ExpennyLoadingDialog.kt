@@ -17,10 +17,6 @@ import androidx.compose.ui.window.DialogProperties
 
 @Composable
 fun ExpennyLoadingDialog() {
-    val backgroundColor =
-        if (isSystemInDarkTheme()) Color.White.copy(0.3f)
-        else Color.Black.copy(0.3f)
-
     Dialog(
         onDismissRequest = {},
         properties = DialogProperties(
@@ -32,12 +28,12 @@ fun ExpennyLoadingDialog() {
             modifier = Modifier
                 .size(100.dp)
                 .background(
-                    color = backgroundColor,
-                    shape = MaterialTheme.shapes.small
+                    color = MaterialTheme.colorScheme.surfaceContainer,
+                    shape = MaterialTheme.shapes.medium
                 ),
             contentAlignment = Alignment.Center,
         ) {
-            CircularProgressIndicator(color = MaterialTheme.colorScheme.surface)
+            CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
         }
     }
 }

@@ -18,8 +18,11 @@ import org.expenny.core.ui.base.ExpennySnackbarManager
 import org.expenny.core.ui.components.ExpennySnackbar
 import com.ramcosta.composedestinations.spec.NavGraphSpec
 import com.ramcosta.composedestinations.spec.Route
+import com.ramcosta.composedestinations.utils.currentDestinationAsState
+import com.ramcosta.composedestinations.utils.currentDestinationFlow
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.map
 import org.expenny.navigation.*
 import org.expenny.navigation.ExpennyNavigation
 import org.expenny.core.ui.base.ExpennyDrawerManager
@@ -31,6 +34,7 @@ internal fun MainScreen(startRoute: Route) {
     val state = rememberExpennyState()
 
     val navController = state.navHostController
+    val currentSelectedTab by navController.currentTabAsState()
     val currentDestination = navController.currentDestination?.route
     val isCurrentNavGraphDestinationStart = currentDestination in DrawerTab.startRoutes.drop(1)
     val enableDrawerGestures = state.drawerManager.isDrawerTabAsState && currentDestination != DrawerTab.Settings.route
@@ -51,18 +55,14 @@ internal fun MainScreen(startRoute: Route) {
         gesturesEnabled = enableDrawerGestures,
         drawerState = state.drawerManager.drawer,
         drawerContent = {
-            if (state.drawerManager.isDrawerTabAsState) {
-                val currentSelectedTab by navController.currentTabAsState()
-
-                MainNavigationDrawer(
-                    currentTab = currentSelectedTab,
-                    onTabSelect = {
-                        state.drawerManager.animateTo(DrawerValue.Closed) {
-                            navController.navigateTab(it)
-                        }
+            MainNavigationDrawer(
+                currentTab = currentSelectedTab,
+                onTabSelect = {
+                    state.drawerManager.animateTo(DrawerValue.Closed) {
+                        navController.navigateTab(it)
                     }
-                )
-            }
+                }
+            )
         }
     ) {
         Scaffold(

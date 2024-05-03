@@ -18,7 +18,7 @@ class ExpennyDrawerManager(
     private val coroutineScope: CoroutineScope
 ) {
 
-    private val isDrawerTab: Boolean
+    val isDrawerTab: Boolean
         get() {
             return navController.currentBackStackEntry?.destination?.route in tabs.map { it.startRoute.route }
         }

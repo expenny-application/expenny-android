@@ -20,6 +20,7 @@ import org.expenny.core.ui.data.SingleSelectionUi
 import org.expenny.core.ui.data.CurrencyUnitUi
 import org.expenny.core.ui.components.ExpennyCard
 import org.expenny.core.ui.components.ExpennyGroupedVerticalList
+import org.expenny.core.ui.components.ExpennyRadioButton
 import java.util.SortedMap
 
 @Composable
@@ -57,7 +58,6 @@ internal fun CurrencyUnitsList(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CurrencyUnitItem(
     modifier: Modifier = Modifier,
@@ -87,12 +87,10 @@ private fun CurrencyUnitItem(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
-                RadioButton(
-                    selected = isSelected,
-                    onClick = onClick
-                )
-            }
+            ExpennyRadioButton(
+                isChecked = isSelected,
+                onClick = onClick
+            )
         }
     }
 }

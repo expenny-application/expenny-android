@@ -97,6 +97,11 @@ val ColorScheme.surfaceInput: Color
         return MaterialTheme.colorScheme.surfaceContainer
     }
 
+val ColorScheme.primaryFixed: Color
+    @Composable get() {
+        return Color(0xFF0756CE)
+    }
+
 val ColorScheme.positive: Color
     @Composable get() {
         return if (isSystemInDarkTheme()) Color(0xFF81C784) else Color(0xFF00C853)

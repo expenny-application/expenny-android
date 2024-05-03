@@ -152,7 +152,7 @@ class AccountDetailsViewModel @Inject constructor(
                 )
             }
             postSideEffect(Event.ShowMessage(fromRes(R.string.saved_message)))
-            postSideEffect(Event.NavigateBack)
+            postSideEffect(Event.NavigateBackToAccountsList)
         }
     }
 
@@ -167,7 +167,7 @@ class AccountDetailsViewModel @Inject constructor(
             deleteAccount(currentAccount.value!!.id)
 
             postSideEffect(Event.ShowMessage(fromRes(R.string.deleted_message)))
-            postSideEffect(Event.NavigateBack)
+            postSideEffect(Event.NavigateBackToAccountsList)
         }
     }
 

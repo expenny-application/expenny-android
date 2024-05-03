@@ -1,7 +1,7 @@
 package org.expenny.core.domain.usecase.account
 
 import kotlinx.coroutines.flow.first
-import org.expenny.core.common.types.AccountType
+import org.expenny.core.common.types.LocalAccountType
 import org.expenny.core.domain.usecase.currency.GetMainCurrencyUseCase
 import java.math.BigDecimal
 import javax.inject.Inject
@@ -18,7 +18,7 @@ class CreateDefaultAccountUseCase @Inject constructor(
             with(params) {
                 CreateAccountUseCase.Params(
                     currencyId = mainCurrencyId,
-                    type = AccountType.Cash,
+                    type = LocalAccountType.Cash,
                     description = "",
                     name = name,
                     startBalance = startBalance

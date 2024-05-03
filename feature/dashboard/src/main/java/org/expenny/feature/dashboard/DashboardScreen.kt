@@ -47,9 +47,6 @@ fun DashboardScreen(
             is Event.NavigateToDisplayCurrencySelection -> {
                 navigator.navigateToCurrencySelectionListScreen(it.selectedId)
             }
-            is Event.NavigateToCreateAccount -> {
-                navigator.navigateToCreateAccountScreen()
-            }
             is Event.NavigateToAccounts -> {
                 navigator.navigateToAccountsListScreen()
             }

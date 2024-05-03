@@ -388,7 +388,7 @@ class CurrencyDetailsViewModel @Inject constructor(
                     }
                     is RemoteResult.Success -> {
                         reduce { state.copy(dialog = null) }
-                        result.data!!.also {
+                        result.data.also {
                             onSuccess(it)
                             onComplete(it)
                         }

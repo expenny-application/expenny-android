@@ -3,6 +3,7 @@ package org.expenny.core.ui.components
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.material.ripple.rememberRipple
@@ -23,7 +24,7 @@ fun ExpennyCard(
     onClick: () -> Unit,
     onLongClick: () -> Unit = {},
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    content: @Composable ColumnScope.() -> Unit
+    content: @Composable BoxScope.() -> Unit
 ) {
     CompositionLocalProvider(
         LocalContentColor provides contentColorFor(MaterialTheme.colorScheme.surfaceContainer)
@@ -44,17 +45,16 @@ fun ExpennyCard(
                     onClick = onClick,
                     onLongClick = onLongClick
                 ),
-            propagateMinConstraints = true
-        ) {
-            Column(content = content)
-        }
+            propagateMinConstraints = true,
+            content = content,
+        )
     }
 }
 
 @Composable
 fun ExpennyCard(
     modifier: Modifier = Modifier,
-    content: @Composable ColumnScope.() -> Unit
+    content: @Composable BoxScope.() -> Unit
 ) {
     Surface(
         modifier = modifier,
@@ -62,7 +62,7 @@ fun ExpennyCard(
         color = MaterialTheme.colorScheme.surfaceContainer,
         shadowElevation = 0.dp,
     ) {
-        Column(content = content)
+        Box(content = content)
     }
 }
 

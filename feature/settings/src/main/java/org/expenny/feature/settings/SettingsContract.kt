@@ -16,7 +16,7 @@ data class State(
     val profile: ProfileUi? = null,
     val theme: ApplicationTheme? = null,
     val language: ApplicationLanguage = ApplicationLanguage.SystemDefault,
-    val profileActions: List<ProfileActionType> = ProfileActionType.values().toList(),
+    val profileActions: List<ProfileActionType> = ProfileActionType.entries,
     val isUsePasscodeSelected: Boolean = false,
     val isUseBiometricSelected: Boolean = false,
     val isBiometricAvailable: Boolean = false,

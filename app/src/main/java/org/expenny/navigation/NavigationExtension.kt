@@ -18,10 +18,7 @@ internal fun NavController.currentTabAsState(): State<NavGraphSpec> {
 
     DisposableEffect(this) {
         val listener = NavController.OnDestinationChangedListener { _, destination, _ ->
-
-            currentBackStack.value.printStack()
-
-            destination.tabNavGraph().also {
+            destination.tabNavGraphOrNull()?.let {
                 selectedItem.value = it
             }
         }
@@ -36,7 +33,7 @@ internal fun NavController.currentTabAsState(): State<NavGraphSpec> {
 }
 
 internal fun NavController.navigateFirstTab() {
-    navigateTab(DrawerTab.values().first().navGraph)
+    navigateTab(DrawerTab.entries.first().navGraph)
 }
 
 internal fun NavController.navigateTab(tabNavGraph: NavGraphSpec) {
@@ -73,7 +70,7 @@ internal fun NavController.navigateTab(tabNavGraph: NavGraphSpec) {
     }
 }
 
-private fun NavDestination.tabNavGraph(): NavGraphSpec {
+private fun NavDestination.tabNavGraphOrNull(): NavGraphSpec? {
     hierarchy.forEach { destination ->
         ExpennyNavGraphs.home.nestedNavGraphs.forEach { navGraph ->
             if (destination.route == navGraph.route) {
@@ -82,7 +79,7 @@ private fun NavDestination.tabNavGraph(): NavGraphSpec {
         }
     }
 
-    throw RuntimeException("Unknown nav graph for tab destination: $route")
+    return null
 }
 
 internal fun NavDestination.navGraph(): NavGraphSpec {
@@ -108,7 +105,7 @@ internal fun NavDestination.navGraph(): NavGraphSpec {
 internal val NavDestination.parentNavGraph: NavGraph
     get() = hierarchy.first { it is NavGraph } as NavGraph
 
-private fun List<NavBackStackEntry>.printStack() {
+fun List<NavBackStackEntry>.printStack() {
     val stack = toMutableList()
         .map { it.destination.route }
         .toTypedArray().contentToString()

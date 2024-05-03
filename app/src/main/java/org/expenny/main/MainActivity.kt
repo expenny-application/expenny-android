@@ -1,9 +1,11 @@
 package org.expenny.main
 
+import android.content.res.Resources
 import android.os.Bundle
 import android.view.ViewTreeObserver
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.LocalTonalElevationEnabled
@@ -35,6 +37,7 @@ import org.expenny.core.common.utils.Constants
 import org.expenny.core.ui.foundation.ExpennyTheme
 import org.expenny.navigation.ExpennyNavGraphs
 import timber.log.Timber
+import java.util.Locale
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -53,6 +56,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
+
+        overrideDefaultLocale()
 
         setContentView(R.layout.activity_root)
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -164,5 +169,22 @@ class MainActivity : AppCompatActivity() {
         ApplicationTheme.SystemDefault -> isSystemInDarkTheme()
         ApplicationTheme.Light -> false
         ApplicationTheme.Dark -> true
+    }
+
+    private fun overrideDefaultLocale() {
+        val applicationLocales = AppCompatDelegate.getApplicationLocales()
+
+        val preferredLocaleLanguage = if (applicationLocales.isEmpty) {
+            Resources.getSystem().configuration.getLocales()[0].language
+        } else {
+            applicationLocales.toLanguageTags()
+        }
+
+        if (preferredLocaleLanguage != Locale.getDefault().language) {
+            Timber.i("Overriding default locale: $preferredLocaleLanguage")
+            Locale.setDefault(Locale(preferredLocaleLanguage))
+        }
+
+        Timber.i("Default locale: ${Locale.getDefault().toLanguageTag()}")
     }
 }

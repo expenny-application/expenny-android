@@ -24,8 +24,9 @@ class ExpennyDataStore @Inject constructor(
     private val isDarkThemeKey = booleanPreferencesKey("is_dark_theme")
     private val isOnboardingPassedKey = booleanPreferencesKey("is_onboarding_passed")
     private val isSetupPassedKey = booleanPreferencesKey("is_setup_passed")
-    private val goCardlessAccessToken = stringPreferencesKey("gocardless_access_token")
-    private val goCardlessRefreshToken = stringPreferencesKey("gocardless_refresh_token")
+    private val goCardlessAccessTokenKey = stringPreferencesKey("gocardless_access_token")
+    private val goCardlessRefreshTokenKey = stringPreferencesKey("gocardless_refresh_token")
+    private val installationIdKey = stringPreferencesKey("installation_id")
 
     suspend fun setCurrentProfileId(value: Long) = put(currentProfileIdKey, value)
 
@@ -52,9 +53,11 @@ class ExpennyDataStore @Inject constructor(
 
     suspend fun setIsSetupPassed(value: Boolean) = put(isSetupPassedKey, value)
 
-    suspend fun setGoCardlessAccessToken(value: String) = put(goCardlessAccessToken, value)
+    suspend fun setGoCardlessAccessToken(value: String) = put(goCardlessAccessTokenKey, value)
 
-    suspend fun setGoCardlessRefreshToken(value: String) = put(goCardlessRefreshToken, value)
+    suspend fun setGoCardlessRefreshToken(value: String) = put(goCardlessRefreshTokenKey, value)
+
+    suspend fun setInstallationId(value: String) = put(installationIdKey, value)
 
     fun isDarkTheme() = get(isDarkThemeKey)
 
@@ -66,13 +69,15 @@ class ExpennyDataStore @Inject constructor(
 
     fun isReminderEnabled() = get(isReminderEnabledKey, false)
 
-    fun getGoCardlessAccessToken() = get(goCardlessAccessToken)
+    fun getGoCardlessAccessToken() = get(goCardlessAccessTokenKey)
 
-    fun getGoCardlessRefreshToken() = get(goCardlessRefreshToken)
+    fun getGoCardlessRefreshToken() = get(goCardlessRefreshTokenKey)
 
     fun getCurrentProfileId() = get(currentProfileIdKey)
 
     fun getPasscode() = get(passcodeKey)
+
+    fun getInstallationId() = get(installationIdKey)
 
     fun getReminderTime() = get(reminderTimeUtcKey, Constants.DEFAULT_REMINDER_TIME).map { timeUtc ->
         LocalTime.parse(timeUtc, DateTimeFormatter.ofPattern(Constants.DEFAULT_REMINDER_TIME_FORMAT))

@@ -1,6 +1,7 @@
 package org.expenny.core.domain.usecase.institution
 
 import kotlinx.coroutines.flow.Flow
+import org.expenny.core.datastore.BuildConfig
 import org.expenny.core.domain.repository.InstitutionRepository
 import org.expenny.core.model.institution.Institution
 import org.expenny.core.model.resource.RemoteResult
@@ -11,7 +12,11 @@ class GetInstitutionsUseCase @Inject constructor(
 ) {
 
     operator fun invoke(params: Params) : Flow<RemoteResult<List<Institution>>> {
-        return repository.getInstitutions(params.countryCode)
+        return if (BuildConfig.DEBUG) {
+            repository.getSandboxInstitutions()
+        } else {
+            repository.getInstitutions(params.countryCode)
+        }
     }
 
     data class Params(

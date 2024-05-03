@@ -18,8 +18,6 @@ fun SplashScreen(
     val vm: SplashViewModel = hiltViewModel()
     val isProfileStored by vm.isProfileStored.collectAsState()
 
-    println("isProfileStored $isProfileStored")
-
     LaunchedEffect(isProfileStored) {
         when (isProfileStored) {
             true -> navigator.navigateToHome()

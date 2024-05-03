@@ -47,7 +47,10 @@ fun ExpennySearchAppBar(
 
         DisposableEffect(Unit) {
             searchFocusRequester.requestFocus()
-            onDispose {}
+            onDispose {
+                showSearch = false
+                onQueryChange("")
+            }
         }
 
         BackHandler(enabled = true) {

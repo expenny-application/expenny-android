@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import org.expenny.core.common.models.ErrorMessage
+import org.expenny.core.common.models.StringResource
 import org.expenny.core.common.utils.StringResourceProvider
 import timber.log.Timber
 import javax.inject.Inject
@@ -20,6 +21,10 @@ abstract class ExpennyViewModel<Action> : ViewModel() {
             Timber.e(throwable.stackTraceToString())
             onCoroutineException(errorMessage)
         }
+    }
+
+    protected fun parseError(throwable: Throwable?): StringResource {
+        return ErrorMessage(throwable).text
     }
 
     protected open fun onCoroutineException(message: ErrorMessage) {}

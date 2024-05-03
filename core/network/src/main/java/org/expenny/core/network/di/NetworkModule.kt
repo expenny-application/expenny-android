@@ -11,6 +11,7 @@ import io.ktor.client.plugins.*
 import io.ktor.client.plugins.auth.*
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
+import io.ktor.client.plugins.cache.HttpCache
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.accept
@@ -88,6 +89,8 @@ object NetworkModule {
                 }
                 level = LogLevel.ALL
             }
+
+            install(HttpCache)
 
             install(ContentNegotiation) {
                 json(

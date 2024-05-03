@@ -64,6 +64,5 @@ class CurrencySyncWorker @AssistedInject constructor(
             .filterIsInstance<RemoteResult.Success<List<CurrencyRate>>>()
             .first()
             .data
-            .orEmpty()
     }
 }

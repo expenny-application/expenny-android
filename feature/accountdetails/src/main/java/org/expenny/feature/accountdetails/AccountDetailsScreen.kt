@@ -51,6 +51,7 @@ fun AccountDetailsScreen(
             is Event.NavigateToCurrenciesSelectionList -> navigator.navigateToCurrencySelectionListScreen(it.selectedId)
             is Event.ShowMessage -> snackbarManager.showInfo(it.message)
             is Event.NavigateBack -> navigator.navigateBack()
+            is Event.NavigateBackToAccountsList -> navigator.navigateBackToAccountsList()
             is Event.RequestNameInputFocus -> nameInputFocusRequester.requestFocus()
         }
     }

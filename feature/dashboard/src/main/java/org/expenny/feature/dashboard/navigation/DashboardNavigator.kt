@@ -7,6 +7,5 @@ interface DashboardNavigator {
     fun navigateToAccountsListScreen()
     fun navigateToRecordsListScreen(filter: RecordsListFilterNavArg? = null)
     fun navigateToCreateRecordScreen(recordType: RecordType)
-    fun navigateToCreateAccountScreen()
     fun navigateToCurrencySelectionListScreen(selectedId: Long?)
 }
