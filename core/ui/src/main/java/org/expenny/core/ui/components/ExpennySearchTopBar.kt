@@ -1,7 +1,6 @@
 package org.expenny.core.ui.components
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -25,12 +24,10 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import org.expenny.core.resources.R
 import org.expenny.core.ui.extensions.noRippleClickable
-import org.expenny.core.ui.components.*
-import org.expenny.core.ui.foundation.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExpennySearchAppBar(
+fun ExpennySearchTopBar(
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior? = null,
     searchQuery: String,

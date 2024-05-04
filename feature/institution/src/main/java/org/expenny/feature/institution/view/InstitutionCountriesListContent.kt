@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennyCard
 import org.expenny.core.ui.components.ExpennyLoadingContainer
-import org.expenny.core.ui.components.ExpennySearchAppBar
+import org.expenny.core.ui.components.ExpennySearchTopBar
 import org.expenny.core.ui.components.ExpennyVerticalList
 import org.expenny.core.ui.data.InstitutionCountryUi
 import org.expenny.feature.institution.contract.InstitutionCountriesListAction
@@ -45,7 +45,7 @@ internal fun InstitutionCountriesListContent(
             .imePadding()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            ExpennySearchAppBar(
+            ExpennySearchTopBar(
                 scrollBehavior = scrollBehavior,
                 title = {
                     Text(text = stringResource(R.string.select_institution_country_label))

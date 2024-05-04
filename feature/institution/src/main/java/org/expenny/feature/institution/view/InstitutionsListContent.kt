@@ -30,7 +30,7 @@ import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennyAsyncImage
 import org.expenny.core.ui.components.ExpennyCard
 import org.expenny.core.ui.components.ExpennyLoadingContainer
-import org.expenny.core.ui.components.ExpennySearchAppBar
+import org.expenny.core.ui.components.ExpennySearchTopBar
 import org.expenny.core.ui.components.ExpennyVerticalList
 import org.expenny.core.ui.data.InstitutionUi
 import org.expenny.feature.institution.contract.InstitutionsListAction
@@ -50,7 +50,7 @@ internal fun InstitutionsListContent(
             .imePadding()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            ExpennySearchAppBar(
+            ExpennySearchTopBar(
                 scrollBehavior = scrollBehavior,
                 title = {
                     Text(text = stringResource(R.string.select_institution_label))

@@ -79,7 +79,7 @@ class InstitutionRequisitionViewModel @Inject constructor(
                         state.copy(
                             isLoading = false,
                             url = it.data.url,
-                            redirectUrl = it.data.redirectUrl,
+                            redirectUrl = "${it.data.redirectUrl}?ref=${it.data.id}",
                         )
                     }
                 }
