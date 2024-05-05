@@ -1,5 +1,6 @@
 package org.expenny.core.ui.components
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.Bundle
@@ -73,6 +74,7 @@ fun ExpennyWebView(
     }
 }
 
+@SuppressLint("SetJavaScriptEnabled")
 @Composable
 fun ExpennyWebView(
     modifier: Modifier = Modifier,
@@ -116,6 +118,7 @@ fun ExpennyWebView(
                 onCreated(this)
 
                 this.layoutParams = layoutParams
+                this.settings.javaScriptEnabled = true
 
                 state.viewState?.let {
                     this.restoreState(it)
