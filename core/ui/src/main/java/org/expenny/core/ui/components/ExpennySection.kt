@@ -43,7 +43,7 @@ fun ExpennySection(
         Row(
             modifier = modifier
                 .fillMaxWidth()
-                .height(titleHeightDp)
+                .height(32.dp)
                 .clickable { onClick() },
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
@@ -80,7 +80,7 @@ fun ExpennySection(
         Box(
             modifier = modifier
                 .fillMaxWidth()
-                .height(titleHeightDp),
+                .height(32.dp),
         ) {
             Text(
                 text = title,
@@ -91,5 +91,3 @@ fun ExpennySection(
         content()
     }
 }
-
-private val titleHeightDp = 32.dp

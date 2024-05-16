@@ -7,7 +7,8 @@ import kotlinx.coroutines.launch
 import org.expenny.core.common.models.StringResource.Companion.fromRes
 import org.expenny.core.domain.usecase.institution.CreateInstitutionRequisitionUseCase
 import org.expenny.core.domain.usecase.institution.DeleteInstitutionRequisitionUseCase
-import org.expenny.core.model.resource.RemoteResult
+import org.expenny.core.domain.usecase.institution.GetInstitutionRequisitionUseCase
+import org.expenny.core.common.utils.RemoteResult
 import org.expenny.core.ui.base.ExpennyViewModel
 import org.expenny.feature.institution.contract.InstitutionRequisitionAction
 import org.expenny.feature.institution.contract.InstitutionRequisitionEvent
@@ -15,6 +16,7 @@ import org.expenny.feature.institution.contract.InstitutionRequisitionEvent.Show
 import org.expenny.feature.institution.contract.InstitutionRequisitionEvent.ShowError
 import org.expenny.feature.institution.contract.InstitutionRequisitionEvent.NavigateBack
 import org.expenny.feature.institution.contract.InstitutionRequisitionEvent.NavigateToBackToAccountsList
+import org.expenny.feature.institution.contract.InstitutionRequisitionEvent.NavigateToInstitutionAccountsPreview
 import org.expenny.feature.institution.contract.InstitutionRequisitionState
 import org.expenny.feature.institution.navArgs
 import org.expenny.feature.institution.navigation.InstitutionRequisitionNavArgs
@@ -28,7 +30,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class InstitutionRequisitionViewModel @Inject constructor(
-    private val savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle,
+    private val getInstitutionRequisition: GetInstitutionRequisitionUseCase,
     private val createInstitutionRequisition: CreateInstitutionRequisitionUseCase,
     private val deleteInstitutionRequisition: DeleteInstitutionRequisitionUseCase,
 ) : ExpennyViewModel<InstitutionRequisitionAction>(),
@@ -63,8 +66,25 @@ class InstitutionRequisitionViewModel @Inject constructor(
     }
 
     private fun handleOnRequisitionGranted() = intent {
-        postSideEffect(ShowMessage(fromRes(R.string.requisition_granted_message)))
-        postSideEffect(NavigateToBackToAccountsList)
+        getInstitutionRequisition(GetInstitutionRequisitionUseCase.Params(requisitionId)).collect {
+            when (it) {
+                is RemoteResult.Loading -> {
+                    reduce { state.copy(isLoading = true) }
+                }
+                is RemoteResult.Success -> {
+                    if (it.data.status == "LN" && it.data.accounts.isNotEmpty()) {
+                        postSideEffect(NavigateToInstitutionAccountsPreview(requisitionId))
+                    } else {
+                        postSideEffect(ShowError(fromRes(R.string.internal_error)))
+                        postSideEffect(NavigateToBackToAccountsList)
+                    }
+                }
+                is RemoteResult.Error -> {
+                    postSideEffect(ShowError(parseError(it.throwable)))
+                    postSideEffect(NavigateToBackToAccountsList)
+                }
+            }
+        }
     }
 
     private fun subscribeToRequisition() = intent {
@@ -79,7 +99,7 @@ class InstitutionRequisitionViewModel @Inject constructor(
                         state.copy(
                             isLoading = false,
                             url = it.data.url,
-                            redirectUrl = "${it.data.redirectUrl}?ref=${it.data.id}",
+                            redirectUrl = it.data.redirectUrl,
                         )
                     }
                 }

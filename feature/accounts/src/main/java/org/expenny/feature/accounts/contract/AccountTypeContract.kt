@@ -15,7 +15,7 @@ sealed interface AccountTypeAction {
 }
 
 sealed interface AccountTypeEvent {
-    data object NavigateToInstitutionCountriesList : AccountTypeEvent
+    data object NavigateToInstitutionsList : AccountTypeEvent
     data object NavigateToCreateAccount : AccountTypeEvent
     data object NavigateBack : AccountTypeEvent
 }

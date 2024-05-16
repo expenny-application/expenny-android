@@ -6,10 +6,14 @@ import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
-import io.ktor.client.statement.HttpResponse
 import io.ktor.http.isSuccess
+import org.expenny.core.network.dto.GoCardlessAccountBalanceDto
+import org.expenny.core.network.dto.GoCardlessAccountBalancesWrapperDto
+import org.expenny.core.network.dto.GoCardlessAccountDetailsDto
+import org.expenny.core.network.dto.GoCardlessAccountDetailsWrapperDto
+import org.expenny.core.network.dto.GoCardlessAccountDto
 import org.expenny.core.network.dto.GoCardlessInstitutionDto
-import org.expenny.core.network.dto.GoCardlessInstitutionRequisitionDto
+import org.expenny.core.network.dto.GoCardlessRequisitionDto
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -17,19 +21,19 @@ class GoCardlessService @Inject constructor(
     @Named("gocardless") private val goCardlessClient: HttpClient
 ) {
 
-    suspend fun getInstitutions(countryCode: String): List<GoCardlessInstitutionDto> {
-        return goCardlessClient.get("institutions") {
-            url {
-                parameters.append("country", countryCode)
+    suspend fun getInstitutions(countryCode: String? = null): List<GoCardlessInstitutionDto> {
+        return if (countryCode.isNullOrBlank()) {
+            goCardlessClient.get("institutions/")
+        } else {
+            goCardlessClient.get("institutions") {
+                url {
+                    parameters.append("country", countryCode)
+                }
             }
         }.body<List<GoCardlessInstitutionDto>>()
     }
 
-    suspend fun getInstitutions(): List<GoCardlessInstitutionDto> {
-        return goCardlessClient.get("institutions/").body<List<GoCardlessInstitutionDto>>()
-    }
-
-    suspend fun createInstitutionRequisition(institutionId: String): GoCardlessInstitutionRequisitionDto {
+    suspend fun createInstitutionRequisition(institutionId: String): GoCardlessRequisitionDto {
         return goCardlessClient.post("requisitions/") {
             setBody(
                 mapOf(
@@ -37,15 +41,31 @@ class GoCardlessService @Inject constructor(
                     "institution_id" to institutionId
                 )
             )
-        }.body<GoCardlessInstitutionRequisitionDto>()
+        }.body<GoCardlessRequisitionDto>()
     }
 
-    suspend fun getInstitutionRequisition(requisitionId: String): GoCardlessInstitutionRequisitionDto {
+    suspend fun getInstitutionRequisition(requisitionId: String): GoCardlessRequisitionDto {
         return goCardlessClient.get("requisitions/$requisitionId/")
-            .body<GoCardlessInstitutionRequisitionDto>()
+            .body<GoCardlessRequisitionDto>()
     }
 
     suspend fun deleteInstitutionRequisition(requisitionId: String): Boolean {
         return goCardlessClient.delete("requisitions/$requisitionId/").status.isSuccess()
+    }
+
+    suspend fun getInstitutionAccount(accountId: String): GoCardlessAccountDto {
+        return goCardlessClient.get("accounts/$accountId/").body<GoCardlessAccountDto>()
+    }
+
+    suspend fun getInstitutionAccountDetails(accountId: String): GoCardlessAccountDetailsDto {
+        val wrapper = goCardlessClient.get("accounts/$accountId/details/")
+            .body<GoCardlessAccountDetailsWrapperDto>()
+        return wrapper.account
+    }
+
+    suspend fun getInstitutionAccountBalances(accountId: String): List<GoCardlessAccountBalanceDto> {
+        val wrapper = goCardlessClient.get("accounts/$accountId/balances/")
+            .body<GoCardlessAccountBalancesWrapperDto>()
+        return wrapper.balances
     }
 }

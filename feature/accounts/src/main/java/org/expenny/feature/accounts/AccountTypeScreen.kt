@@ -23,8 +23,8 @@ fun AccountTypeScreen(
         when (it) {
             is AccountTypeEvent.NavigateToCreateAccount ->
                 navigator.navigateToCreateAccountScreen()
-            is AccountTypeEvent.NavigateToInstitutionCountriesList ->
-                navigator.navigateToInstitutionCountriesListScreen()
+            is AccountTypeEvent.NavigateToInstitutionsList ->
+                navigator.navigateToInstitutionsListScreen()
             is AccountTypeEvent.NavigateBack ->
                 navigator.navigateBack()
         }

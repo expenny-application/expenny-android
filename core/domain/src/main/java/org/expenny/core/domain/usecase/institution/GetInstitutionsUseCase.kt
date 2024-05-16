@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import org.expenny.core.datastore.BuildConfig
 import org.expenny.core.domain.repository.InstitutionRepository
 import org.expenny.core.model.institution.Institution
-import org.expenny.core.model.resource.RemoteResult
+import org.expenny.core.common.utils.RemoteResult
 import javax.inject.Inject
 
 class GetInstitutionsUseCase @Inject constructor(
@@ -20,6 +20,6 @@ class GetInstitutionsUseCase @Inject constructor(
     }
 
     data class Params(
-        val countryCode: String
+        val countryCode: String?
     )
 }

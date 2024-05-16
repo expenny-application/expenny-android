@@ -10,8 +10,6 @@ class InstitutionCountryMapper @Inject constructor() {
         return InstitutionCountryUi(
             code = model.code,
             country = model.country,
-            flag = model.flag,
-            institutionsCount = model.institutionsCount
         )
     }
 

@@ -5,7 +5,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import org.expenny.core.common.utils.Constants.CURRENCY_RATE_SCALE
 import org.expenny.core.data.mapper.DataMapper.toModel
-import org.expenny.core.data.utils.remoteResultMediator
+import org.expenny.core.common.utils.remoteResultMediator
 import org.expenny.core.domain.repository.CurrencyRateRepository
 import org.expenny.core.model.currency.CurrencyRate
 import org.expenny.core.network.EcbService

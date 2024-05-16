@@ -13,7 +13,7 @@ import org.expenny.feature.institution.viewmodel.InstitutionsListViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
-@Destination(navArgsDelegate = InstitutionsListNavArgs::class)
+@Destination
 @Composable
 fun InstitutionsListScreen(
     snackbarManager: ExpennySnackbarManager,

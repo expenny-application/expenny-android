@@ -31,7 +31,9 @@ fun InstitutionRequisitionScreen(
     vm.collectSideEffect {
         when (it) {
             is InstitutionRequisitionEvent.NavigateToBackToAccountsList ->
-                navigator.navigateBackToAccountsList()
+                navigator.navigateBackToAccountsListScreen()
+            is InstitutionRequisitionEvent.NavigateToInstitutionAccountsPreview ->
+                navigator.navigateToInstitutionAccountsPreviewScreen(it.requisitionId)
             is InstitutionRequisitionEvent.ShowError ->
                 snackbarManager.showError(it.message)
             is InstitutionRequisitionEvent.ShowMessage ->

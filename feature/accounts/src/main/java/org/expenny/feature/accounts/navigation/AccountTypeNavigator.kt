@@ -1,7 +1,7 @@
 package org.expenny.feature.accounts.navigation
 
 interface AccountTypeNavigator {
-    fun navigateToInstitutionCountriesListScreen()
+    fun navigateToInstitutionsListScreen()
     fun navigateToCreateAccountScreen()
     fun navigateBack()
 }

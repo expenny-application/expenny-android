@@ -28,6 +28,7 @@ import org.expenny.feature.currencydetails.destinations.CurrencyDetailsScreenDes
 import org.expenny.feature.currencydetails.navigation.CurrencyDetailsNavigator
 import org.expenny.feature.currencyunits.destinations.CurrencyUnitsListScreenDestination
 import org.expenny.feature.dashboard.navigation.DashboardNavigator
+import org.expenny.feature.institution.destinations.InstitutionAccountsPreviewScreenDestination
 import org.expenny.feature.passcode.destinations.PasscodeScreenDestination
 import org.expenny.feature.passcode.model.PasscodeType
 import org.expenny.feature.passcode.navigation.PasscodeNavigator
@@ -39,10 +40,9 @@ import org.expenny.feature.records.destinations.RecordsListScreenDestination
 import org.expenny.feature.records.navigation.RecordsListNavigator
 import org.expenny.feature.settings.navigation.SettingsNavigator
 import org.expenny.feature.splash.navigation.SplashNavigator
-import org.expenny.feature.institution.navigation.InstitutionCountriesListNavigator
-import org.expenny.feature.institution.destinations.InstitutionCountriesListScreenDestination
 import org.expenny.feature.institution.destinations.InstitutionRequisitionScreenDestination
 import org.expenny.feature.institution.destinations.InstitutionsListScreenDestination
+import org.expenny.feature.institution.navigation.InstitutionAccountsPreviewNavigator
 import org.expenny.feature.institution.navigation.InstitutionRequisitionNavigator
 import org.expenny.feature.institution.navigation.InstitutionsListNavigator
 import org.expenny.feature.welcome.navigation.WelcomeNavigator
@@ -67,9 +67,9 @@ class ExpennyNavigator(
     PasscodeNavigator,
     CategoryDetailsNavigator,
     AccountTypeNavigator,
-    InstitutionCountriesListNavigator,
     InstitutionsListNavigator,
-    InstitutionRequisitionNavigator {
+    InstitutionRequisitionNavigator,
+    InstitutionAccountsPreviewNavigator {
 
     override fun navigateToSetup() {
         navController.navigate(ExpennyNavGraphs.setup) {
@@ -87,7 +87,7 @@ class ExpennyNavigator(
         }
     }
 
-    override fun navigateBackToAccountsList() {
+    override fun navigateBackToAccountsListScreen() {
         val parentNavGraph = navController.currentBackStackEntry?.navGraph()
         val destination = parentNavGraph?.destinationsByRoute?.mapKeys {
             (it.value as DynamicDestinationSpec<*>).originalDestination.route
@@ -98,6 +98,12 @@ class ExpennyNavigator(
         } else {
             navController.popBackStack()
         }
+    }
+
+    override fun navigateToInstitutionAccountsPreviewScreen(requisitionId: String) {
+        navController.navigate(
+            InstitutionAccountsPreviewScreenDestination(requisitionId) within navGraph
+        )
     }
 
     override fun navigateToCreateProfileScreen() {
@@ -234,12 +240,6 @@ class ExpennyNavigator(
         )
     }
 
-    override fun navigateToInstitutionCountriesListScreen() {
-        navController.navigate(
-            direction = InstitutionCountriesListScreenDestination() within navGraph
-        )
-    }
-
     override fun navigateToCreateAccountScreen() {
         navController.navigate(
             direction = AccountDetailsScreenDestination() within navGraph
@@ -264,9 +264,9 @@ class ExpennyNavigator(
         )
     }
 
-    override fun navigateToInstitutionsListScreen(countryCode: String) {
+    override fun navigateToInstitutionsListScreen() {
         navController.navigate(
-            direction = InstitutionsListScreenDestination(countryCode) within navGraph
+            direction = InstitutionsListScreenDestination() within navGraph
         )
     }
 

@@ -1,23 +1,28 @@
 package org.expenny.feature.institution.viewmodel
 
-import androidx.lifecycle.SavedStateHandle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
-import org.expenny.core.domain.usecase.institution.CreateInstitutionRequisitionUseCase
 import org.expenny.core.domain.usecase.institution.GetInstitutionsUseCase
-import org.expenny.core.model.resource.RemoteResult
+import org.expenny.core.common.utils.RemoteResult
+import org.expenny.core.domain.usecase.institution.GetInstitutionCountriesUseCase
+import org.expenny.core.model.institution.InstitutionCountry
 import org.expenny.core.ui.base.ExpennyViewModel
+import org.expenny.core.ui.data.InstitutionCountryUi
 import org.expenny.feature.institution.contract.InstitutionsListAction
 import org.expenny.feature.institution.contract.InstitutionsListEvent
 import org.expenny.feature.institution.contract.InstitutionsListEvent.NavigateToInstitutionRequisition
 import org.expenny.feature.institution.contract.InstitutionsListEvent.NavigateBack
 import org.expenny.feature.institution.contract.InstitutionsListEvent.ShowError
 import org.expenny.feature.institution.contract.InstitutionsListState
-import org.expenny.feature.institution.navigation.InstitutionsListNavArgs
 import org.expenny.core.ui.data.InstitutionUi
+import org.expenny.core.ui.data.ItemUi
+import org.expenny.core.ui.data.SingleSelectionUi
+import org.expenny.core.ui.mapper.InstitutionCountryMapper
 import org.expenny.core.ui.mapper.InstitutionMapper
-import org.expenny.feature.institution.navArgs
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.blockingIntent
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -29,20 +34,26 @@ import javax.inject.Inject
 @HiltViewModel
 class InstitutionsListViewModel @Inject constructor(
     private val getInstitutions: GetInstitutionsUseCase,
-    private val createInstitutionRequisition: CreateInstitutionRequisitionUseCase,
-    private val savedStateHandle: SavedStateHandle,
-    private val institutionMapper: InstitutionMapper
+    private val getInstitutionCountries: GetInstitutionCountriesUseCase,
+    private val institutionMapper: InstitutionMapper,
+    private val institutionCountryMapper: InstitutionCountryMapper
 ) : ExpennyViewModel<InstitutionsListAction>(),
     ContainerHost<InstitutionsListState, InstitutionsListEvent> {
 
-    private val countryCode = savedStateHandle.navArgs<InstitutionsListNavArgs>().countryCode
     private var latestInstitutions: List<InstitutionUi> = emptyList()
+    private var countries: List<InstitutionCountry> = emptyList()
+
+    private val countryCodeState = MutableStateFlow<String?>(null)
+    private val institutionsListLoadingState = MutableStateFlow(true)
+    private val countriesListLoadingState = MutableStateFlow(true)
 
     override val container = container<InstitutionsListState, InstitutionsListEvent>(
         initialState = InstitutionsListState(),
         buildSettings = { exceptionHandler = defaultCoroutineExceptionHandler() }
     ) {
         coroutineScope {
+            launch { subscribeToLoadingStates() }
+            launch { subscribeToCountries() }
             launch { subscribeToInstitutions() }
         }
     }
@@ -51,7 +62,37 @@ class InstitutionsListViewModel @Inject constructor(
         when (action) {
             is InstitutionsListAction.OnInstitutionSelect -> handleOnInstitutionSelect(action)
             is InstitutionsListAction.OnSearchQueryChange -> handleOnSearchQueryChange(action)
+            is InstitutionsListAction.OnSelectCountryClick -> handleOnSelectCountryClick()
             is InstitutionsListAction.OnBackClick -> handleOnBackClick()
+            is InstitutionsListAction.Dialog.OnCountrySelect -> handleOnCountrySelect(action)
+            is InstitutionsListAction.Dialog.OnDialogDismiss -> handleOnDialogDismiss()
+        }
+    }
+
+    private fun handleOnDialogDismiss() = intent {
+        reduce { state.copy(countrySelectionDialog = null) }
+    }
+
+    private fun handleOnCountrySelect(action: InstitutionsListAction.Dialog.OnCountrySelect) = intent {
+        countryCodeState.value = action.selection.value?.code
+        reduce {
+            state.copy(
+                country = action.selection.value,
+                countrySelectionDialog = null
+            )
+        }
+    }
+
+    private fun handleOnSelectCountryClick() = intent {
+        if (countries.isNotEmpty()) {
+            reduce {
+                state.copy(
+                    countrySelectionDialog = InstitutionsListState.CountrySelectionDialog(
+                        data = countries.mapToItemUi(),
+                        selection = SingleSelectionUi(state.country)
+                    )
+                )
+            }
         }
     }
 
@@ -78,26 +119,59 @@ class InstitutionsListViewModel @Inject constructor(
         postSideEffect(NavigateBack)
     }
 
-    private fun subscribeToInstitutions() = intent {
-        getInstitutions(GetInstitutionsUseCase.Params(countryCode)).collect {
+    private fun subscribeToLoadingStates() = intent {
+        combine(
+            institutionsListLoadingState,
+            countriesListLoadingState,
+        ) { isInstitutionsListLoading, isCountriesListLoading ->
+            isInstitutionsListLoading || isCountriesListLoading
+        }.collect { isLoading ->
+            reduce { state.copy(isLoading = isLoading) }
+        }
+    }
+
+    private fun subscribeToCountries() = intent {
+        getInstitutionCountries().collect {
             when (it) {
                 is RemoteResult.Loading -> {
-                    reduce { state.copy(isLoading = true) }
+                    countriesListLoadingState.value = true
                 }
                 is RemoteResult.Success -> {
+                    countriesListLoadingState.value = false
+                    countries = it.data
+                }
+                is RemoteResult.Error -> {
+                    countriesListLoadingState.value = false
+                }
+            }
+        }
+    }
+
+    private fun subscribeToInstitutions() = intent {
+        countryCodeState.flatMapLatest {
+            getInstitutions(GetInstitutionsUseCase.Params(it))
+        }.collect {
+            when (it) {
+                is RemoteResult.Loading -> {
+                    institutionsListLoadingState.value = true
+                }
+                is RemoteResult.Success -> {
+                    institutionsListLoadingState.value = false
                     latestInstitutions = institutionMapper(it.data)
                     reduce {
                         state.copy(
-                            isLoading = false,
                             institutions = latestInstitutions,
                         )
                     }
                 }
                 is RemoteResult.Error -> {
-                    reduce { state.copy(isLoading = false) }
+                    institutionsListLoadingState.value = false
                     postSideEffect(ShowError(parseError(it.throwable)))
                 }
             }
         }
     }
+
+    private fun List<InstitutionCountry>.mapToItemUi(): List<ItemUi<InstitutionCountryUi?>> =
+        institutionCountryMapper(this).map { ItemUi(it, it.country) }
 }

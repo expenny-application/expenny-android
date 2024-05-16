@@ -42,7 +42,7 @@ class AccountTypeViewModel @Inject constructor() :
 
     private fun handleOnCtaButtonClick() = intent {
         when (state.selectedType) {
-            AccountType.Bank -> postSideEffect(AccountTypeEvent.NavigateToInstitutionCountriesList)
+            AccountType.Bank -> postSideEffect(AccountTypeEvent.NavigateToInstitutionsList)
             AccountType.Local -> postSideEffect(AccountTypeEvent.NavigateToCreateAccount)
             else -> {}
         }

@@ -21,8 +21,10 @@ import org.expenny.core.data.repository.ProfileRepositoryImpl
 import org.expenny.core.data.repository.RecordFileRepositoryImpl
 import org.expenny.core.data.repository.RecordRepositoryImpl
 import org.expenny.core.data.repository.AlarmRepositoryImpl
+import org.expenny.core.data.repository.InstitutionAccountRepositoryImpl
 import org.expenny.core.data.repository.InstitutionCountryRepositoryImpl
 import org.expenny.core.data.repository.InstitutionRepositoryImpl
+import org.expenny.core.data.repository.InstitutionRequisitionRepositoryImpl
 import org.expenny.core.data.repository.WorkRepositoryImpl
 import org.expenny.core.domain.repository.*
 import javax.inject.Singleton
@@ -72,6 +74,12 @@ interface DataModule {
 
     @Binds
     fun bindInstitutionCountryRepository(institutionCountryRepositoryImpl: InstitutionCountryRepositoryImpl): InstitutionCountryRepository
+
+    @Binds
+    fun bindInstitutionRequisitionRepository(institutionRequisitionRepositoryImpl: InstitutionRequisitionRepositoryImpl): InstitutionRequisitionRepository
+
+    @Binds
+    fun bindInstitutionAccountRepository(institutionAccountRepositoryImpl: InstitutionAccountRepositoryImpl): InstitutionAccountRepository
 
     companion object {
 

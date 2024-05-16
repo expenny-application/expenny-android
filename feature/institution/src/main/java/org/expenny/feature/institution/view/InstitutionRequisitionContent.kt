@@ -1,7 +1,5 @@
 package org.expenny.feature.institution.view
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -10,12 +8,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import org.expenny.core.ui.components.ExpennyLoadingContainer
 import org.expenny.core.ui.components.ExpennyWebView
 import org.expenny.core.ui.components.ExpennyWebViewTopBar
 import org.expenny.core.ui.components.rememberExpennyWebViewState
-import org.expenny.core.ui.foundation.primaryFixed
 import org.expenny.feature.institution.contract.InstitutionRequisitionAction
 import org.expenny.feature.institution.contract.InstitutionRequisitionState
 
@@ -48,21 +44,17 @@ internal fun InstitutionRequisitionContent(
             )
         },
         contentWindowInsets = WindowInsets.statusBars,
-        containerColor = Color.White,
+        containerColor = MaterialTheme.colorScheme.surface
     ) { paddingValues ->
-        Box {
+        ExpennyLoadingContainer(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
+            isLoading = webViewState.isLoading || state.isLoading,
+        ) {
             ExpennyWebView(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues),
+                modifier = Modifier.fillMaxSize(),
                 state = webViewState,
-            )
-            ExpennyLoadingContainer(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.White),
-                isLoading = webViewState.isLoading || state.isLoading,
-                color = MaterialTheme.colorScheme.primaryFixed
             )
         }
     }

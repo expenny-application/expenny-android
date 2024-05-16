@@ -19,14 +19,12 @@ class CreateCurrencyUseCase @Inject constructor(
     suspend operator fun invoke(params: Params): Long {
         val currencyCode = currencyUnitRepository.getCurrencyUnit(params.currencyUnitId)!!.code
         val profileId = getCurrentProfile().first()!!.id
-        val quoteRate = params.quoteToBaseRate
-        val baseRate = BigDecimal.ONE.divide(quoteRate, quoteRate.scale(), RoundingMode.HALF_UP)
 
         return currencyRepository.createCurrency(
             CurrencyCreate(
                 profileId = profileId,
                 code = currencyCode,
-                baseToQuoteRate = baseRate,
+                baseToQuoteRate = params.baseToQuoteRate,
                 isSubscribedToRateUpdates = params.isSubscribedToRateUpdates
             )
         ).also { updateCurrencySyncWorkState() }
@@ -34,7 +32,7 @@ class CreateCurrencyUseCase @Inject constructor(
 
     data class Params(
         val currencyUnitId: Long,
-        val quoteToBaseRate: BigDecimal,
+        val baseToQuoteRate: BigDecimal,
         val isSubscribedToRateUpdates: Boolean
     )
 }

@@ -25,8 +25,7 @@ class CreateAccountUseCase @Inject constructor(
                     type = type,
                     description = description,
                     startBalance = startBalance,
-                    // the same as start balance because it is new
-                    totalBalance = startBalance
+                    totalBalance = startBalance // the same as start balance because it is new
                 )
             }
         )

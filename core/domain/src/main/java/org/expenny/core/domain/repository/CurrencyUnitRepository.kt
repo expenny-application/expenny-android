@@ -2,7 +2,7 @@ package org.expenny.core.domain.repository
 
 import kotlinx.coroutines.flow.Flow
 import org.expenny.core.model.currency.CurrencyUnit
-import org.expenny.core.model.resource.RemoteResult
+import org.expenny.core.common.utils.RemoteResult
 
 interface CurrencyUnitRepository {
 

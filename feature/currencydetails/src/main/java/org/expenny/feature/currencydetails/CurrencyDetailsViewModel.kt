@@ -23,7 +23,7 @@ import org.expenny.core.domain.validators.RequiredStringValidator
 import org.expenny.core.model.currency.Currency
 import org.expenny.core.model.currency.CurrencyRate
 import org.expenny.core.model.currency.CurrencyUnit
-import org.expenny.core.model.resource.RemoteResult
+import org.expenny.core.common.utils.RemoteResult
 import org.expenny.core.resources.R
 import org.expenny.core.ui.mapper.CurrencyUnitMapper
 import org.expenny.feature.currencydetails.navigation.CurrencyDetailsNavArgs
@@ -86,8 +86,8 @@ class CurrencyDetailsViewModel @Inject constructor(
                 if (currency != null) {
                     setEditCurrency()
                     setCurrencyData(currency)
-                    setBaseToQuoteRate(currency.baseToQuoteRate)
                     setQuoteToBaseRate(currency.quoteToBaseRate)
+                    setBaseToQuoteRate(currency.baseToQuoteRate)
                     setIsSubscribableToUpdates(mainCurrency.unit, currency.unit)
                 } else {
                     setAddCurrency()
@@ -181,8 +181,8 @@ class CurrencyDetailsViewModel @Inject constructor(
                             )
                         )
                     }
-                    setBaseToQuoteRate(it.rate)
                     setQuoteToBaseRate(it.rate.invert())
+                    setBaseToQuoteRate(it.rate)
                 },
                 onError = {
                     if (newCurrencyUnit != currencyUnit) {
@@ -192,8 +192,8 @@ class CurrencyDetailsViewModel @Inject constructor(
                                 isSubscribableToUpdates = false,
                             )
                         }
-                        setBaseToQuoteRate(ONE.setScale(CURRENCY_RATE_SCALE))
                         setQuoteToBaseRate(ONE.setScale(CURRENCY_RATE_SCALE))
+                        setBaseToQuoteRate(ONE.setScale(CURRENCY_RATE_SCALE))
                     }
                 }
             )
@@ -206,7 +206,7 @@ class CurrencyDetailsViewModel @Inject constructor(
                 createCurrency(
                     CreateCurrencyUseCase.Params(
                         currencyUnitId = currencyUnit!!.id,
-                        quoteToBaseRate = state.quoteToBaseRateInput.value,
+                        baseToQuoteRate = state.baseToQuoteRateInput.value,
                         isSubscribedToRateUpdates = state.isSubscribedToUpdates
                     )
                 )
@@ -214,7 +214,7 @@ class CurrencyDetailsViewModel @Inject constructor(
                 updateCurrency(
                     UpdateCurrencyUseCase.Params(
                         id = currencyId,
-                        quoteToBaseRate = state.quoteToBaseRateInput.value,
+                        baseToQuoteRate = state.baseToQuoteRateInput.value,
                         isSubscribedToRateUpdates = state.isSubscribedToUpdates
                     )
                 )
@@ -373,8 +373,10 @@ class CurrencyDetailsViewModel @Inject constructor(
     ) {
         intent {
             getLatestCurrencyRate(
-                base = base.code,
-                quote = quote.code
+                GetLatestCurrencyRateUseCase.Params(
+                    base = base.code,
+                    quote = quote.code
+                )
             ).collect { result ->
                 when (result) {
                     is RemoteResult.Loading -> {

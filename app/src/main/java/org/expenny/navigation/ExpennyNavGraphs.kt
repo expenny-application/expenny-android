@@ -14,12 +14,12 @@ import org.expenny.feature.currencies.destinations.CurrenciesListScreenDestinati
 import org.expenny.feature.currencydetails.destinations.CurrencyDetailsScreenDestination
 import org.expenny.feature.currencyunits.destinations.CurrencyUnitsListScreenDestination
 import org.expenny.feature.dashboard.destinations.DashboardScreenDestination
+import org.expenny.feature.institution.destinations.InstitutionAccountsPreviewScreenDestination
 import org.expenny.feature.passcode.destinations.PasscodeScreenDestination
 import org.expenny.feature.profilesetup.destinations.ProfileSetupScreenDestination
 import org.expenny.feature.recorddetails.destinations.RecordDetailsScreenDestination
 import org.expenny.feature.records.destinations.RecordsListScreenDestination
 import org.expenny.feature.settings.destinations.SettingsScreenDestination
-import org.expenny.feature.institution.destinations.InstitutionCountriesListScreenDestination
 import org.expenny.feature.institution.destinations.InstitutionRequisitionScreenDestination
 import org.expenny.feature.institution.destinations.InstitutionsListScreenDestination
 import org.expenny.feature.welcome.destinations.WelcomeScreenDestination
@@ -44,9 +44,9 @@ object ExpennyNavGraphs {
             RecordDetailsScreenDestination,
             CategoriesListScreenDestination,
             CategoryDetailsScreenDestination,
-            InstitutionCountriesListScreenDestination,
             InstitutionsListScreenDestination,
-            InstitutionRequisitionScreenDestination
+            InstitutionRequisitionScreenDestination,
+            InstitutionAccountsPreviewScreenDestination
         ).routedIn(this).associateBy { it.route }
     }
 
@@ -72,9 +72,9 @@ object ExpennyNavGraphs {
             CurrencyUnitsListScreenDestination,
             CurrenciesListScreenDestination,
             CurrencyDetailsScreenDestination,
-            InstitutionCountriesListScreenDestination,
             InstitutionsListScreenDestination,
-            InstitutionRequisitionScreenDestination
+            InstitutionRequisitionScreenDestination,
+            InstitutionAccountsPreviewScreenDestination
         ).routedIn(this).associateBy { it.route }
     }
 

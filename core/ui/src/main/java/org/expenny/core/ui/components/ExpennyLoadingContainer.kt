@@ -15,14 +15,14 @@ fun ExpennyLoadingContainer(
     color: Color = MaterialTheme.colorScheme.primary,
     content: (@Composable () -> Unit)? = null
 ) {
-    if (isLoading) {
-        Box(
-            modifier = modifier,
-            contentAlignment = Alignment.Center
-        ) {
+    Box(
+        modifier = modifier,
+        contentAlignment = if (isLoading) Alignment.Center else Alignment.TopCenter
+    ) {
+        if (isLoading) {
             CircularProgressIndicator(color = color)
+        } else {
+            content?.invoke()
         }
-    } else {
-        content?.invoke()
     }
 }

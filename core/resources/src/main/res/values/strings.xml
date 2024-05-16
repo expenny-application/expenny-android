@@ -61,8 +61,10 @@
     <string name="setup_profile_label">Setup profile</string>
     <string name="select_currency_label">Select currency</string>
     <string name="select_currency_code_label">Select currency code</string>
+    <string name="all_countries_label">All countries</string>
     <string name="select_institution_country_label">Select institution country</string>
     <string name="select_institution_label">Select institution</string>
+    <string name="accounts_preview_label">Accounts preview</string>
     <string name="currency_label">Currency</string>
     <string name="currency_code_label">Currency code</string>
     <string name="last_updated_label">Last updated</string>
@@ -175,6 +177,7 @@
     <string name="interval_type_label">Interval type</string>
     <string name="select_language_label">Select language</string>
     <string name="select_theme_label">Select theme</string>
+    <string name="select_country_label">Select country</string>
     <string name="system_default_label">System default</string>
     <string name="start_balance_label">Start balance</string>
     <string name="confirm_passcode_label">Confirm entered passcode to finish setup</string>
@@ -237,6 +240,10 @@
         <item quantity="one">%d record</item>
         <item quantity="other">%d records</item>
     </plurals>
+    <plurals name="institutions_quantity_label">
+        <item quantity="one">%d institution</item>
+        <item quantity="other">%d institutions</item>
+    </plurals>
 
     <!-- Arrays -->
     <string-array name="period_type">
@@ -279,10 +286,8 @@
         <item>Other</item>
     </string-array>c
     <string-array name="bank_account_benefits">
-        <item>2,500+ banks in 30+ countries</item>
-        <item>Up to 50 active connections</item>
+        <item>2,500+ institutions in 30+ countries</item>
         <item>Licensed AISP provider, GDPR compliant, and ISO 27001 certified</item>
-        <item>Issued requisitions are renewable after 90 days</item>
     </string-array>
     <string-array name="local_account_benefits">
         <item>No limits</item>

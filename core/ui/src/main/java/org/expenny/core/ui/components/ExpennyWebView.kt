@@ -3,17 +3,21 @@ package org.expenny.core.ui.components
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
+import android.net.http.SslError
 import android.os.Bundle
+import android.webkit.SslErrorHandler
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.FrameLayout
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -29,6 +33,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.viewinterop.AndroidView
@@ -88,6 +94,7 @@ fun ExpennyWebView(
     factory: ((Context) -> WebView)? = null,
 ) {
     val webView = state.webView
+    val webViewBackgroundColor = MaterialTheme.colorScheme.surface
 
     BackHandler(captureBackPresses && navigator.canGoBack) {
         webView?.goBack()
@@ -117,6 +124,7 @@ fun ExpennyWebView(
             (factory?.invoke(context) ?: WebView(context)).apply {
                 onCreated(this)
 
+                this.setBackgroundColor(webViewBackgroundColor.toArgb())
                 this.layoutParams = layoutParams
                 this.settings.javaScriptEnabled = true
 

@@ -13,7 +13,7 @@ import org.expenny.core.domain.repository.CurrencyRepository
 import org.expenny.core.model.currency.Currency
 import org.expenny.core.model.currency.CurrencyRate
 import org.expenny.core.model.currency.CurrencyUpdate
-import org.expenny.core.model.resource.RemoteResult
+import org.expenny.core.common.utils.RemoteResult
 import java.time.LocalDate
 
 @HiltWorker

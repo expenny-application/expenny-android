@@ -1,9 +1,9 @@
 package org.expenny.core.data.repository
 import kotlinx.coroutines.flow.Flow
-import org.expenny.core.data.utils.remoteResultMediator
+import org.expenny.core.common.utils.remoteResultMediator
 import org.expenny.core.domain.repository.InstitutionCountryRepository
 import org.expenny.core.model.institution.InstitutionCountry
-import org.expenny.core.model.resource.RemoteResult
+import org.expenny.core.common.utils.RemoteResult
 import org.expenny.core.network.GoCardlessService
 import org.expenny.core.network.dto.GoCardlessInstitutionDto
 import java.util.Locale

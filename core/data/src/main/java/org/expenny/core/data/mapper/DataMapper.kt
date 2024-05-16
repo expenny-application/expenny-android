@@ -34,7 +34,7 @@ import org.expenny.core.model.profile.ProfileCreate
 import org.expenny.core.model.record.Record
 import org.expenny.core.model.record.RecordCreate
 import org.expenny.core.network.dto.GoCardlessInstitutionDto
-import org.expenny.core.network.dto.GoCardlessInstitutionRequisitionDto
+import org.expenny.core.network.dto.GoCardlessRequisitionDto
 import java.time.LocalDateTime
 
 object DataMapper {
@@ -279,12 +279,13 @@ object DataMapper {
         )
     }
 
-    internal fun GoCardlessInstitutionRequisitionDto.toModel(): InstitutionRequisition {
+    internal fun GoCardlessRequisitionDto.toModel(): InstitutionRequisition {
         return InstitutionRequisition(
             id = id,
             status = status,
-            redirectUrl = redirectUrl,
-            url = url
+            redirectBaseUrl = redirectUrl,
+            url = url,
+            accounts = accounts
         )
     }
 }
