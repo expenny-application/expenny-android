@@ -178,15 +178,15 @@ private fun NavigationDrawerOption(
     trailingContent: @Composable () -> Unit = {},
 ) {
     val iconColor by rememberUpdatedState(
-        if (isSelected) MaterialTheme.colorScheme.primary
+        if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer
         else MaterialTheme.colorScheme.onSurfaceVariant
     )
     val labelColor by rememberUpdatedState(
-        if (isSelected) MaterialTheme.colorScheme.primary
+        if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer
         else MaterialTheme.colorScheme.onSurfaceVariant
     )
     val backgroundColor by rememberUpdatedState(
-        if (isSelected) MaterialTheme.colorScheme.primary.copy(0.1f)
+        if (isSelected) MaterialTheme.colorScheme.primaryContainer
         else Color.Transparent
     )
     Row(

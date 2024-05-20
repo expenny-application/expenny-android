@@ -205,7 +205,7 @@ class CurrencyDetailsViewModel @Inject constructor(
             if (currencyId == null) {
                 createCurrency(
                     CreateCurrencyUseCase.Params(
-                        currencyUnitId = currencyUnit!!.id,
+                        currencyUnitCode = currencyUnit!!.code,
                         baseToQuoteRate = state.baseToQuoteRateInput.value,
                         isSubscribedToRateUpdates = state.isSubscribedToUpdates
                     )

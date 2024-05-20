@@ -9,9 +9,9 @@ import kotlinx.coroutines.launch
 import org.expenny.core.domain.usecase.institution.GetInstitutionsUseCase
 import org.expenny.core.common.utils.RemoteResult
 import org.expenny.core.domain.usecase.institution.GetInstitutionCountriesUseCase
-import org.expenny.core.model.institution.InstitutionCountry
+import org.expenny.core.model.common.Country
 import org.expenny.core.ui.base.ExpennyViewModel
-import org.expenny.core.ui.data.InstitutionCountryUi
+import org.expenny.core.ui.data.CountryUi
 import org.expenny.feature.institution.contract.InstitutionsListAction
 import org.expenny.feature.institution.contract.InstitutionsListEvent
 import org.expenny.feature.institution.contract.InstitutionsListEvent.NavigateToInstitutionRequisition
@@ -21,7 +21,7 @@ import org.expenny.feature.institution.contract.InstitutionsListState
 import org.expenny.core.ui.data.InstitutionUi
 import org.expenny.core.ui.data.ItemUi
 import org.expenny.core.ui.data.SingleSelectionUi
-import org.expenny.core.ui.mapper.InstitutionCountryMapper
+import org.expenny.core.ui.mapper.CountryMapper
 import org.expenny.core.ui.mapper.InstitutionMapper
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.blockingIntent
@@ -36,12 +36,12 @@ class InstitutionsListViewModel @Inject constructor(
     private val getInstitutions: GetInstitutionsUseCase,
     private val getInstitutionCountries: GetInstitutionCountriesUseCase,
     private val institutionMapper: InstitutionMapper,
-    private val institutionCountryMapper: InstitutionCountryMapper
+    private val countryMapper: CountryMapper
 ) : ExpennyViewModel<InstitutionsListAction>(),
     ContainerHost<InstitutionsListState, InstitutionsListEvent> {
 
     private var latestInstitutions: List<InstitutionUi> = emptyList()
-    private var countries: List<InstitutionCountry> = emptyList()
+    private var countries: List<Country> = emptyList()
 
     private val countryCodeState = MutableStateFlow<String?>(null)
     private val institutionsListLoadingState = MutableStateFlow(true)
@@ -108,7 +108,7 @@ class InstitutionsListViewModel @Inject constructor(
             reduce {
                 state.copy(
                     institutions = latestInstitutions.filter {
-                        it.name.contains(action.query)
+                        it.name.contains(action.query, ignoreCase = true)
                     }
                 )
             }
@@ -172,6 +172,6 @@ class InstitutionsListViewModel @Inject constructor(
         }
     }
 
-    private fun List<InstitutionCountry>.mapToItemUi(): List<ItemUi<InstitutionCountryUi?>> =
-        institutionCountryMapper(this).map { ItemUi(it, it.country) }
+    private fun List<Country>.mapToItemUi(): List<ItemUi<CountryUi?>> =
+        countryMapper(this).map { ItemUi(it, it.name) }
 }

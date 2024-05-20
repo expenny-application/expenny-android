@@ -8,7 +8,7 @@ import org.expenny.core.model.category.CategoryCreate
 import org.expenny.core.resources.R
 import javax.inject.Inject
 
-class CreateDefaultCategoriesUseCase @Inject constructor(
+class CreateInitialCategoriesUseCase @Inject constructor(
     private val categoryRepository: CategoryRepository,
     private val provideString: StringResourceProvider,
 ) {

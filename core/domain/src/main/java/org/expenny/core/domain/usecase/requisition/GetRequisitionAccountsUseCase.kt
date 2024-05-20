@@ -1,4 +1,4 @@
-package org.expenny.core.domain.usecase.institution
+package org.expenny.core.domain.usecase.requisition
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -10,7 +10,7 @@ import org.expenny.core.model.institution.InstitutionAccount
 import org.expenny.core.common.utils.RemoteResult
 import javax.inject.Inject
 
-class GetInstitutionAccountsUseCase @Inject constructor(
+class GetRequisitionAccountsUseCase @Inject constructor(
     private val institutionRequisitionRepository: InstitutionRequisitionRepository,
     private val institutionAccountRepository: InstitutionAccountRepository,
 ) {
@@ -20,10 +20,16 @@ class GetInstitutionAccountsUseCase @Inject constructor(
             .flatMapConcat { requisitionResult ->
                 when (requisitionResult) {
                     is RemoteResult.Success -> {
-                        val accountFlows = requisitionResult.data.accounts
-                            .map { institutionAccountRepository.getInstitutionAccount(it) }
+                        val accounts = requisitionResult.data.accounts
 
-                        combineRemoteResult(accountFlows)
+                        if (accounts.isEmpty()) {
+                            flowOf(RemoteResult.Success(emptyList()))
+                        } else {
+                            val accountFlows = accounts.map {
+                                institutionAccountRepository.getInstitutionAccount(it)
+                            }
+                            combineRemoteResult(accountFlows)
+                        }
                     }
                     is RemoteResult.Loading -> {
                         flowOf(RemoteResult.Loading)

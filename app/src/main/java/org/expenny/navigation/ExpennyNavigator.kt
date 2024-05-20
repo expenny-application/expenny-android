@@ -28,7 +28,6 @@ import org.expenny.feature.currencydetails.destinations.CurrencyDetailsScreenDes
 import org.expenny.feature.currencydetails.navigation.CurrencyDetailsNavigator
 import org.expenny.feature.currencyunits.destinations.CurrencyUnitsListScreenDestination
 import org.expenny.feature.dashboard.navigation.DashboardNavigator
-import org.expenny.feature.institution.destinations.InstitutionAccountsPreviewScreenDestination
 import org.expenny.feature.passcode.destinations.PasscodeScreenDestination
 import org.expenny.feature.passcode.model.PasscodeType
 import org.expenny.feature.passcode.navigation.PasscodeNavigator
@@ -42,7 +41,6 @@ import org.expenny.feature.settings.navigation.SettingsNavigator
 import org.expenny.feature.splash.navigation.SplashNavigator
 import org.expenny.feature.institution.destinations.InstitutionRequisitionScreenDestination
 import org.expenny.feature.institution.destinations.InstitutionsListScreenDestination
-import org.expenny.feature.institution.navigation.InstitutionAccountsPreviewNavigator
 import org.expenny.feature.institution.navigation.InstitutionRequisitionNavigator
 import org.expenny.feature.institution.navigation.InstitutionsListNavigator
 import org.expenny.feature.welcome.navigation.WelcomeNavigator
@@ -68,8 +66,7 @@ class ExpennyNavigator(
     CategoryDetailsNavigator,
     AccountTypeNavigator,
     InstitutionsListNavigator,
-    InstitutionRequisitionNavigator,
-    InstitutionAccountsPreviewNavigator {
+    InstitutionRequisitionNavigator {
 
     override fun navigateToSetup() {
         navController.navigate(ExpennyNavGraphs.setup) {
@@ -98,12 +95,6 @@ class ExpennyNavigator(
         } else {
             navController.popBackStack()
         }
-    }
-
-    override fun navigateToInstitutionAccountsPreviewScreen(requisitionId: String) {
-        navController.navigate(
-            InstitutionAccountsPreviewScreenDestination(requisitionId) within navGraph
-        )
     }
 
     override fun navigateToCreateProfileScreen() {

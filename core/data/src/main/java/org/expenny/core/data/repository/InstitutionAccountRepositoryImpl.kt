@@ -19,9 +19,9 @@ class InstitutionAccountRepositoryImpl @Inject constructor(
 
     override fun getInstitutionAccount(accountId: String): Flow<RemoteResult<InstitutionAccount>> {
         return remoteResultMediator {
-            val accountAsync = async { goCardlessService.getInstitutionAccount(accountId) }
-            val accountDetailsAsync = async { goCardlessService.getInstitutionAccountDetails(accountId) }
-            val accountBalancesAsync = async { goCardlessService.getInstitutionAccountBalances(accountId) }
+            val accountAsync = async { goCardlessService.getAccount(accountId) }
+            val accountDetailsAsync = async { goCardlessService.getAccountDetails(accountId) }
+            val accountBalancesAsync = async { goCardlessService.getAccountBalances(accountId) }
             val account = accountAsync.await()
             val accountDetails = accountDetailsAsync.await()
             val accountBalances = accountBalancesAsync.await()
@@ -32,7 +32,7 @@ class InstitutionAccountRepositoryImpl @Inject constructor(
                 institutionId = account.institutionId,
                 status = account.status,
                 iban = account.iban,
-                currency = Currency.getInstance(accountDetails.currency).toModel(),
+                currencyUnit = Currency.getInstance(accountDetails.currency).toModel(),
                 name = accountDetails.name,
                 ownerName = account.ownerName,
                 balance = accountBalances[0].balanceAmount.amount.toBigDecimal(),

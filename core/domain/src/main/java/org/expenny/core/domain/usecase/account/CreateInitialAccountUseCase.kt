@@ -6,7 +6,7 @@ import org.expenny.core.domain.usecase.currency.GetMainCurrencyUseCase
 import java.math.BigDecimal
 import javax.inject.Inject
 
-class CreateDefaultAccountUseCase @Inject constructor(
+class CreateInitialAccountUseCase @Inject constructor(
     private val getMainCurrency: GetMainCurrencyUseCase,
     private val createAccount: CreateAccountUseCase,
 ) {

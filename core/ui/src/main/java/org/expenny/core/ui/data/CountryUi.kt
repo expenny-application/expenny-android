@@ -1,6 +1,6 @@
 package org.expenny.core.ui.data
 
-data class InstitutionCountryUi(
+data class CountryUi(
+    val name: String,
     val code: String,
-    val country: String,
 )

@@ -29,6 +29,7 @@ import org.expenny.core.model.currency.CurrencyUpdate
 import org.expenny.core.model.file.FileCreate
 import org.expenny.core.model.institution.Institution
 import org.expenny.core.model.institution.InstitutionRequisition
+import org.expenny.core.model.institution.InstitutionRequisitionStatus
 import org.expenny.core.model.profile.Profile
 import org.expenny.core.model.profile.ProfileCreate
 import org.expenny.core.model.record.Record
@@ -282,7 +283,17 @@ object DataMapper {
     internal fun GoCardlessRequisitionDto.toModel(): InstitutionRequisition {
         return InstitutionRequisition(
             id = id,
-            status = status,
+            status = when (status) {
+                "CR" -> InstitutionRequisitionStatus.Created
+                "GC" -> InstitutionRequisitionStatus.GivingConsent
+                "UA" -> InstitutionRequisitionStatus.UndergoingAuthentication
+                "RJ" -> InstitutionRequisitionStatus.Rejected
+                "SA" -> InstitutionRequisitionStatus.SelectingAccount
+                "GA" -> InstitutionRequisitionStatus.GrantingAccess
+                "LN" -> InstitutionRequisitionStatus.Linked
+                "EX" -> InstitutionRequisitionStatus.Expired
+                else -> null
+            },
             redirectBaseUrl = redirectUrl,
             url = url,
             accounts = accounts

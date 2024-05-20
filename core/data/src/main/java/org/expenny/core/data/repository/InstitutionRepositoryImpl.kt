@@ -12,17 +12,26 @@ import javax.inject.Inject
 class InstitutionRepositoryImpl @Inject constructor(
     private val goCardlessService: GoCardlessService
 ) : InstitutionRepository {
+    private val sandboxInstitutionIdPrefix = "SANDBOXFINANCE"
 
     override fun getInstitutions(countryCode: String?): Flow<RemoteResult<List<Institution>>> {
         return remoteResultMediator {
-            goCardlessService.getInstitutions(countryCode).map { it.toModel() }
+            goCardlessService.getInstitutions(countryCode)
+                .filterNot { it.id.startsWith(sandboxInstitutionIdPrefix) }
+                .map { it.toModel() }
+        }
+    }
+
+    override fun getInstitution(institutionId: String): Flow<RemoteResult<Institution>> {
+        return remoteResultMediator {
+            goCardlessService.getInstitution(institutionId).toModel()
         }
     }
 
     override fun getSandboxInstitutions(): Flow<RemoteResult<List<Institution>>> {
         return remoteResultMediator {
             goCardlessService.getInstitutions()
-                .filter { it.id.startsWith("SANDBOXFINANCE") }
+                .filter { it.id.startsWith(sandboxInstitutionIdPrefix) }
                 .map { it.toModel() }
         }
     }

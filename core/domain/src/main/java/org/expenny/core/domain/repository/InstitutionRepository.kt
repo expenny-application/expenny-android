@@ -9,5 +9,7 @@ interface InstitutionRepository {
 
     fun getInstitutions(countryCode: String?): Flow<RemoteResult<List<Institution>>>
 
+    fun getInstitution(institutionId: String): Flow<RemoteResult<Institution>>
+
     fun getSandboxInstitutions(): Flow<RemoteResult<List<Institution>>>
 }

@@ -16,7 +16,6 @@ sealed interface InstitutionRequisitionAction {
 sealed interface InstitutionRequisitionEvent {
     class ShowMessage(val message: StringResource) : InstitutionRequisitionEvent
     class ShowError(val message: StringResource) : InstitutionRequisitionEvent
-    class NavigateToInstitutionAccountsPreview(val requisitionId: String) : InstitutionRequisitionEvent
     data object NavigateToBackToAccountsList : InstitutionRequisitionEvent
     data object NavigateBack : InstitutionRequisitionEvent
 }

@@ -46,7 +46,7 @@ class CurrencyUnitRepositoryImpl @Inject constructor(
         )
 
     override fun getCurrencyUnits(): Flow<List<CurrencyUnit>> {
-        return flowOf(currencyUnits.map { it.toModel() })
+        return flowOf(currencyUnits.map { it.toModel() }.sortedBy { it.code })
     }
 
     override fun getCurrencyUnit(id: Long): CurrencyUnit? {

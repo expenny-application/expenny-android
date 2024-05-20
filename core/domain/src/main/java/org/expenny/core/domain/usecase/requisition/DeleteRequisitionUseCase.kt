@@ -1,12 +1,11 @@
-package org.expenny.core.domain.usecase.institution
+package org.expenny.core.domain.usecase.requisition
 
 import kotlinx.coroutines.flow.Flow
-import org.expenny.core.domain.repository.InstitutionRepository
 import org.expenny.core.domain.repository.InstitutionRequisitionRepository
 import org.expenny.core.common.utils.RemoteResult
 import javax.inject.Inject
 
-class DeleteInstitutionRequisitionUseCase @Inject constructor(
+class DeleteRequisitionUseCase @Inject constructor(
     private val institutionRequisitionRepository: InstitutionRequisitionRepository
 ) {
 

@@ -5,18 +5,17 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import org.expenny.core.common.models.StringResource.Companion.fromRes
-import org.expenny.core.domain.usecase.institution.CreateInstitutionRequisitionUseCase
-import org.expenny.core.domain.usecase.institution.DeleteInstitutionRequisitionUseCase
-import org.expenny.core.domain.usecase.institution.GetInstitutionRequisitionUseCase
+import org.expenny.core.domain.usecase.requisition.CreateRequisitionUseCase
+import org.expenny.core.domain.usecase.requisition.DeleteRequisitionUseCase
+import org.expenny.core.domain.usecase.requisition.GetRequisitionUseCase
 import org.expenny.core.common.utils.RemoteResult
+import org.expenny.core.model.institution.InstitutionRequisitionStatus.Linked
 import org.expenny.core.ui.base.ExpennyViewModel
 import org.expenny.feature.institution.contract.InstitutionRequisitionAction
 import org.expenny.feature.institution.contract.InstitutionRequisitionEvent
-import org.expenny.feature.institution.contract.InstitutionRequisitionEvent.ShowMessage
 import org.expenny.feature.institution.contract.InstitutionRequisitionEvent.ShowError
 import org.expenny.feature.institution.contract.InstitutionRequisitionEvent.NavigateBack
 import org.expenny.feature.institution.contract.InstitutionRequisitionEvent.NavigateToBackToAccountsList
-import org.expenny.feature.institution.contract.InstitutionRequisitionEvent.NavigateToInstitutionAccountsPreview
 import org.expenny.feature.institution.contract.InstitutionRequisitionState
 import org.expenny.feature.institution.navArgs
 import org.expenny.feature.institution.navigation.InstitutionRequisitionNavArgs
@@ -31,9 +30,9 @@ import javax.inject.Inject
 @HiltViewModel
 class InstitutionRequisitionViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val getInstitutionRequisition: GetInstitutionRequisitionUseCase,
-    private val createInstitutionRequisition: CreateInstitutionRequisitionUseCase,
-    private val deleteInstitutionRequisition: DeleteInstitutionRequisitionUseCase,
+    private val getRequisition: GetRequisitionUseCase,
+    private val createRequisition: CreateRequisitionUseCase,
+    private val deleteRequisition: DeleteRequisitionUseCase,
 ) : ExpennyViewModel<InstitutionRequisitionAction>(),
     ContainerHost<InstitutionRequisitionState, InstitutionRequisitionEvent> {
 
@@ -58,22 +57,23 @@ class InstitutionRequisitionViewModel @Inject constructor(
 
     private fun handleOnRequisitionAborted() = intent {
         if (requisitionId.isNotBlank()) {
-            deleteInstitutionRequisition(DeleteInstitutionRequisitionUseCase.Params(requisitionId))
-                .collect { postSideEffect(NavigateBack) }
+            deleteRequisition(DeleteRequisitionUseCase.Params(requisitionId)).collect {
+                postSideEffect(NavigateBack)
+            }
         } else {
             postSideEffect(NavigateBack)
         }
     }
 
     private fun handleOnRequisitionGranted() = intent {
-        getInstitutionRequisition(GetInstitutionRequisitionUseCase.Params(requisitionId)).collect {
+        getRequisition(GetRequisitionUseCase.Params(requisitionId)).collect {
             when (it) {
                 is RemoteResult.Loading -> {
                     reduce { state.copy(isLoading = true) }
                 }
                 is RemoteResult.Success -> {
-                    if (it.data.status == "LN" && it.data.accounts.isNotEmpty()) {
-                        postSideEffect(NavigateToInstitutionAccountsPreview(requisitionId))
+                    if (it.data.status == Linked && it.data.accounts.isNotEmpty()) {
+                        postSideEffect(NavigateToBackToAccountsList)
                     } else {
                         postSideEffect(ShowError(fromRes(R.string.internal_error)))
                         postSideEffect(NavigateToBackToAccountsList)
@@ -88,7 +88,7 @@ class InstitutionRequisitionViewModel @Inject constructor(
     }
 
     private fun subscribeToRequisition() = intent {
-        createInstitutionRequisition(CreateInstitutionRequisitionUseCase.Params(institutionId)).collect {
+        createRequisition(CreateRequisitionUseCase.Params(institutionId)).collect {
             when (it) {
                 is RemoteResult.Loading -> {
                     reduce { state.copy(isLoading = true) }

@@ -10,7 +10,7 @@ data class InstitutionAccount(
     val institutionId: String,
     val status: String,
     val iban: String,
-    val currency: CurrencyUnit,
+    val currencyUnit: CurrencyUnit,
     val name: String,
     val ownerName: String,
     val balance: BigDecimal,

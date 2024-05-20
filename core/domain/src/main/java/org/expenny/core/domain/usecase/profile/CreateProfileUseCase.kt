@@ -3,7 +3,7 @@ package org.expenny.core.domain.usecase.profile
 import org.expenny.core.domain.repository.CurrencyRepository
 import org.expenny.core.domain.repository.CurrencyUnitRepository
 import org.expenny.core.domain.repository.ProfileRepository
-import org.expenny.core.domain.usecase.category.CreateDefaultCategoriesUseCase
+import org.expenny.core.domain.usecase.category.CreateInitialCategoriesUseCase
 import org.expenny.core.model.currency.CurrencyCreate
 import org.expenny.core.model.profile.ProfileCreate
 import java.math.BigDecimal
@@ -13,7 +13,7 @@ class CreateProfileUseCase @Inject constructor(
     private val setCurrentProfile: SetCurrentProfileUseCase,
     private val profileRepository: ProfileRepository,
     private val currencyRepository: CurrencyRepository,
-    private val createDefaultCategories: CreateDefaultCategoriesUseCase,
+    private val createInitialCategories: CreateInitialCategoriesUseCase,
     private val currencyUnitRepository: CurrencyUnitRepository
 ) {
 
@@ -23,7 +23,7 @@ class CreateProfileUseCase @Inject constructor(
 
         createMainCurrency(profileId, currencyCode)
         setCurrentProfile(SetCurrentProfileUseCase.Params(profileId))
-        createDefaultCategories(CreateDefaultCategoriesUseCase.Params(profileId))
+        createInitialCategories(CreateInitialCategoriesUseCase.Params(profileId))
 
         return profileId
     }

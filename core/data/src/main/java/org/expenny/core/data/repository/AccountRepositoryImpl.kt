@@ -1,9 +1,7 @@
 package org.expenny.core.data.repository
 
 import androidx.room.withTransaction
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.withContext
 import org.expenny.core.common.extensions.mapFlatten
 import org.expenny.core.data.mapper.DataMapper.toEntity
 import org.expenny.core.data.mapper.DataMapper.toModel
@@ -37,15 +35,11 @@ class AccountRepositoryImpl @Inject constructor(
     }
 
     override suspend fun createAccount(account: AccountCreate): Long {
-        return withContext(Dispatchers.IO) {
-            accountDao.insert(account.toEntity())
-        }
+        return accountDao.insert(account.toEntity())
     }
 
     override suspend fun updateAccount(account: AccountUpdate) {
-        withContext(Dispatchers.IO) {
-            accountDao.update(account.toEntity())
-        }
+        accountDao.update(account.toEntity())
     }
 
     override suspend fun updateAccountBalance(id: Long, amendment: BigDecimal) {

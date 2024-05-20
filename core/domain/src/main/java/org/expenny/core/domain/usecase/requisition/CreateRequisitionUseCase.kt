@@ -1,14 +1,14 @@
-package org.expenny.core.domain.usecase.institution
+package org.expenny.core.domain.usecase.requisition
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import org.expenny.core.domain.repository.InstitutionRepository
 import org.expenny.core.domain.repository.InstitutionRequisitionRepository
 import org.expenny.core.model.institution.InstitutionRequisition
 import org.expenny.core.common.utils.RemoteResult
+import org.expenny.core.domain.usecase.institution.GetInstitutionSyncEnabledUseCase
 import javax.inject.Inject
 
-class CreateInstitutionRequisitionUseCase @Inject constructor(
+class CreateRequisitionUseCase @Inject constructor(
     private val institutionRequisitionRepository: InstitutionRequisitionRepository,
     private val getInstitutionSyncEnabled: GetInstitutionSyncEnabledUseCase,
 ) {

@@ -15,19 +15,19 @@ class InstitutionRequisitionRepositoryImpl @Inject constructor(
 
     override fun createInstitutionRequisition(institutionId: String): Flow<RemoteResult<InstitutionRequisition>> {
         return remoteResultMediator {
-            goCardlessService.createInstitutionRequisition(institutionId).toModel()
+            goCardlessService.createRequisition(institutionId).toModel()
         }
     }
 
     override fun getInstitutionRequisition(requisitionId: String): Flow<RemoteResult<InstitutionRequisition>> {
         return remoteResultMediator {
-            goCardlessService.getInstitutionRequisition(requisitionId).toModel()
+            goCardlessService.getRequisition(requisitionId).toModel()
         }
     }
 
     override fun deleteInstitutionRequisition(requisitionId: String): Flow<RemoteResult<Boolean>> {
         return remoteResultMediator {
-            goCardlessService.deleteInstitutionRequisition(requisitionId)
+            goCardlessService.deleteRequisition(requisitionId)
         }
     }
 }
