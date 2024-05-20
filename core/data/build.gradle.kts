@@ -19,7 +19,7 @@ dependencies {
     implementation(project(":core:datastore"))
 
     // Workaround for https://github.com/firebase/firebase-android-sdk/issues/5467
-    implementation("com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava")
+    // implementation("com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava")
 
     implementation(libs.androidx.biometric)
     implementation(libs.androidx.core.ktx)
