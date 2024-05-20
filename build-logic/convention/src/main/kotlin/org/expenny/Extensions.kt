@@ -17,6 +17,8 @@ fun Properties.getStringPropertyOrEmpty(key: String) =
     takeIf { containsKey(key) }?.let { this[key].toString() } ?: ""
 
 fun DefaultConfig.addBuildConfigField(key: String) {
-    val property = System.getenv(key) ?: loadProperties("local.properties").getStringPropertyOrEmpty(key)
-    buildConfigField("String", key, "\"${property}\"")
+    val property = System.getenv(key) ?: loadProperties("local.properties")?.getStringPropertyOrEmpty(key)
+    property?.let {
+        buildConfigField("String", key, "\"${property}\"")
+    }
 }
