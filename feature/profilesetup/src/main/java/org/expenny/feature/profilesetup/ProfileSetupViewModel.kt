@@ -16,6 +16,9 @@ import org.expenny.core.model.currency.CurrencyUnit
 import org.expenny.core.resources.R
 import org.expenny.core.ui.mapper.CurrencyUnitMapper
 import org.expenny.core.ui.base.ExpennyViewModel
+import org.expenny.feature.profilesetup.contract.ProfileSetupAction
+import org.expenny.feature.profilesetup.contract.ProfileSetupEvent
+import org.expenny.feature.profilesetup.contract.ProfileSetupState
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.blockingIntent
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -33,12 +36,12 @@ internal class ProfileSetupViewModel @Inject constructor(
     private val createInitialAccount: CreateInitialAccountUseCase,
     private val getCurrencyUnit: GetCurrencyUnitUseCase,
     private val currencyUnitMapper: CurrencyUnitMapper,
-) : ExpennyViewModel<Action>(), ContainerHost<State, Event> {
+) : ExpennyViewModel<ProfileSetupAction>(), ContainerHost<ProfileSetupState, ProfileSetupEvent> {
 
     private val selectedCurrencyUnit: MutableStateFlow<CurrencyUnit?> = MutableStateFlow(null)
 
-    override val container = container<State, Event>(
-        initialState = State(),
+    override val container = container<ProfileSetupState, ProfileSetupEvent>(
+        initialState = ProfileSetupState(),
         buildSettings = { exceptionHandler = defaultCoroutineExceptionHandler() }
     ) {
         coroutineScope {
@@ -50,26 +53,26 @@ internal class ProfileSetupViewModel @Inject constructor(
 
     private val state get() = container.stateFlow.value
 
-    override fun onAction(action: Action) {
+    override fun onAction(action: ProfileSetupAction) {
         when (action) {
-            is Action.OnSetupCashBalanceCheckboxChange -> handleOnSetupCashBalanceCheckboxChange(action)
-            is Action.OnNameChange -> handleOnNameChange(action)
-            is Action.OnCurrencyUnitSelect -> handleOnCurrencyUnitSelect(action)
-            is Action.OnAccountNameChange -> handleOnAccountNameChange(action)
-            is Action.OnAccountBalanceChange -> handleOnAccountBalanceChange(action)
-            is Action.OnSelectCurrencyUnitClick -> handleOnSelectCurrencyUnitClick()
-            is Action.OnAbortDialogDismiss -> handleOnAbortDialogDismiss()
-            is Action.OnAbortDialogConfirm -> handleOnAbortDialogConfirm()
-            is Action.OnConfirmationDialogConfirm -> handleOnConfirmationDialogConfirm()
-            is Action.OnConfirmationDialogDismiss -> handleOnConfirmationDialogDismiss()
-            is Action.OnBackClick -> handleOnBackClick()
-            is Action.OnCtaClick -> handleOnCtaClick()
+            is ProfileSetupAction.OnSetupCashBalanceCheckboxChange -> handleOnSetupCashBalanceCheckboxChange(action)
+            is ProfileSetupAction.OnNameChange -> handleOnNameChange(action)
+            is ProfileSetupAction.OnCurrencyUnitSelect -> handleOnCurrencyUnitSelect(action)
+            is ProfileSetupAction.OnAccountNameChange -> handleOnAccountNameChange(action)
+            is ProfileSetupAction.OnAccountBalanceChange -> handleOnAccountBalanceChange(action)
+            is ProfileSetupAction.OnSelectCurrencyUnitClick -> handleOnSelectCurrencyUnitClick()
+            is ProfileSetupAction.OnAbortDialogDismiss -> handleOnAbortDialogDismiss()
+            is ProfileSetupAction.OnAbortDialogConfirm -> handleOnAbortDialogConfirm()
+            is ProfileSetupAction.OnConfirmationDialogConfirm -> handleOnConfirmationDialogConfirm()
+            is ProfileSetupAction.OnConfirmationDialogDismiss -> handleOnConfirmationDialogDismiss()
+            is ProfileSetupAction.OnBackClick -> handleOnBackClick()
+            is ProfileSetupAction.OnCtaClick -> handleOnCtaClick()
         }
     }
 
     override fun onCoroutineException(message: ErrorMessage) {
         intent {
-            postSideEffect(Event.ShowMessage(message.text))
+            postSideEffect(ProfileSetupEvent.ShowMessage(message.text))
         }
     }
 
@@ -102,23 +105,23 @@ internal class ProfileSetupViewModel @Inject constructor(
     private fun handleOnConfirmationDialogConfirm() = intent {
         reduce { state.copy(showConfirmationDialog = false) }
         setup()
-        postSideEffect(Event.NavigateToHome)
+        postSideEffect(ProfileSetupEvent.NavigateToHome)
     }
 
     private fun handleOnAbortDialogConfirm() = intent {
         reduce { state.copy(showAbortDialog = false) }
-        postSideEffect(Event.NavigateBack)
+        postSideEffect(ProfileSetupEvent.NavigateBack)
     }
 
     private fun handleOnSelectCurrencyUnitClick() = intent {
-        postSideEffect(Event.NavigateToCurrencyUnitsSelectionList(selectedCurrencyUnit.value?.id))
+        postSideEffect(ProfileSetupEvent.NavigateToCurrencyUnitsSelectionList(selectedCurrencyUnit.value?.id))
     }
 
-    private fun handleOnCurrencyUnitSelect(action: Action.OnCurrencyUnitSelect) = intent {
+    private fun handleOnCurrencyUnitSelect(action: ProfileSetupAction.OnCurrencyUnitSelect) = intent {
         selectedCurrencyUnit.value = getCurrencyUnit(GetCurrencyUnitUseCase.Params(action.id))
     }
 
-    private fun handleOnSetupCashBalanceCheckboxChange(action: Action.OnSetupCashBalanceCheckboxChange) = intent {
+    private fun handleOnSetupCashBalanceCheckboxChange(action: ProfileSetupAction.OnSetupCashBalanceCheckboxChange) = intent {
         reduce {
             state.copy(
                 setupCashBalanceCheckbox = state.setupCashBalanceCheckbox.copy(value = action.isChecked),
@@ -127,7 +130,7 @@ internal class ProfileSetupViewModel @Inject constructor(
         }
     }
 
-    private fun handleOnNameChange(action: Action.OnNameChange) = blockingIntent {
+    private fun handleOnNameChange(action: ProfileSetupAction.OnNameChange) = blockingIntent {
         reduce {
             state.copy(
                 nameInput = state.nameInput.copy(
@@ -138,7 +141,7 @@ internal class ProfileSetupViewModel @Inject constructor(
         }
     }
 
-    private fun handleOnAccountNameChange(action: Action.OnAccountNameChange) = blockingIntent {
+    private fun handleOnAccountNameChange(action: ProfileSetupAction.OnAccountNameChange) = blockingIntent {
         reduce {
             state.copy(
                 accountNameInput = state.accountNameInput.copy(
@@ -149,7 +152,7 @@ internal class ProfileSetupViewModel @Inject constructor(
         }
     }
 
-    private fun handleOnAccountBalanceChange(action: Action.OnAccountBalanceChange) = blockingIntent {
+    private fun handleOnAccountBalanceChange(action: ProfileSetupAction.OnAccountBalanceChange) = blockingIntent {
         reduce {
             state.copy(
                 accountBalanceInput = state.accountBalanceInput.copy(
@@ -163,7 +166,7 @@ internal class ProfileSetupViewModel @Inject constructor(
     private fun handleOnCtaClick() = intent {
         if (state.setupCashBalanceCheckbox.value) {
             setup()
-            postSideEffect(Event.NavigateToHome)
+            postSideEffect(ProfileSetupEvent.NavigateToHome)
         } else {
             reduce {
                 state.copy(showConfirmationDialog = true)
@@ -173,7 +176,7 @@ internal class ProfileSetupViewModel @Inject constructor(
 
     private fun handleOnBackClick() = intent {
         if (state.selectCurrencyInput.value.isEmpty()) {
-            postSideEffect(Event.NavigateBack)
+            postSideEffect(ProfileSetupEvent.NavigateBack)
         } else {
             reduce {
                 state.copy(showAbortDialog = true)

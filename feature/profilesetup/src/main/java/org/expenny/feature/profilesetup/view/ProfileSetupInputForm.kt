@@ -19,13 +19,13 @@ import org.expenny.core.ui.components.ExpennySelectInputField
 import org.expenny.core.ui.data.CheckboxInputUi
 import org.expenny.core.ui.data.InputUi
 import org.expenny.core.ui.data.DecimalInputUi
-import org.expenny.feature.profilesetup.State
+import org.expenny.feature.profilesetup.contract.ProfileSetupState
 import java.math.BigDecimal
 
 @Composable
 internal fun ProfileSetupInputForm(
     modifier: Modifier = Modifier,
-    state: State,
+    state: ProfileSetupState,
     onNameChange: (String) -> Unit,
     onAccountNameChange: (String) -> Unit,
     onAccountBalanceChange: (BigDecimal) -> Unit,

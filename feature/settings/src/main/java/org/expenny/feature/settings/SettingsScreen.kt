@@ -13,7 +13,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import org.expenny.core.ui.base.ExpennySnackbarManager
+import org.expenny.feature.settings.contract.SettingsEvent
 import org.expenny.feature.settings.navigation.SettingsNavigator
+import org.expenny.feature.settings.view.SettingsContent
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
@@ -33,31 +35,31 @@ fun SettingsScreen(
 
     vm.collectSideEffect {
         when (it) {
-            is Event.NavigateBack -> {
+            is SettingsEvent.NavigateBack -> {
                 navigator.navigateBack()
             }
-            is Event.NavigateToCreateProfile -> {
+            is SettingsEvent.NavigateToCreateProfile -> {
                 navigator.navigateToCreateProfileScreen()
             }
-            is Event.NavigateToCategoriesList -> {
+            is SettingsEvent.NavigateToCategoriesList -> {
                 navigator.navigateToCategoriesListScreen()
             }
-            is Event.NavigateToCurrencies -> {
+            is SettingsEvent.NavigateToCurrencies -> {
                 navigator.navigateToCurrenciesListScreen()
             }
-            is Event.NavigateToCreatePasscode -> {
+            is SettingsEvent.NavigateToCreatePasscode -> {
                 navigator.navigateToCreatePasscodeScreen()
             }
-            is Event.NavigateToSystemSecuritySettings -> {
+            is SettingsEvent.NavigateToSystemSecuritySettings -> {
                 activity.startActivity(Intent(Settings.ACTION_SECURITY_SETTINGS))
             }
-            is Event.NavigateToSystemAlarmSettings -> {
+            is SettingsEvent.NavigateToSystemAlarmSettings -> {
                 activity.startActivity(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM))
             }
-            is Event.ShowMessage -> {
+            is SettingsEvent.ShowMessage -> {
                 snackbarManager.showInfo(it.message)
             }
-            is Event.RestartApplication -> {
+            is SettingsEvent.RestartApplication -> {
                 navigator.restartApplication(it.isDataCleanupRequested)
 //                activity.finish()
 //                activity.startActivity(activity.intent)

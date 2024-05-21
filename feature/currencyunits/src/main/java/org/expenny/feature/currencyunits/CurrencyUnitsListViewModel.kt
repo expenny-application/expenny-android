@@ -12,6 +12,9 @@ import org.expenny.core.ui.data.SingleSelectionUi
 import org.expenny.core.ui.data.CurrencyUnitUi
 import org.expenny.core.ui.mapper.CurrencyUnitMapper
 import org.expenny.core.ui.base.ExpennyViewModel
+import org.expenny.feature.currencyunits.contract.CurrencyUnitsListAction
+import org.expenny.feature.currencyunits.contract.CurrencyUnitsListEvent
+import org.expenny.feature.currencyunits.contract.CurrencyUnitsListState
 import org.expenny.feature.currencyunits.navigation.CurrencyUnitsListNavArgs
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.blockingIntent
@@ -29,13 +32,13 @@ class CurrencyUnitsListViewModel @Inject constructor(
     private val getAvailableCurrencyUnits: GetAvailableCurrencyUnitsUseCase,
     private val getCurrencyUnits: GetCurrencyUnitsUseCase,
     private val currencyUnitMapper: CurrencyUnitMapper
-) : ExpennyViewModel<Action>(), ContainerHost<State, Event> {
+) : ExpennyViewModel<CurrencyUnitsListAction>(), ContainerHost<CurrencyUnitsListState, CurrencyUnitsListEvent> {
 
     private val searchQuery = MutableStateFlow("")
     private val includeOnlyAvailable = savedStateHandle.navArgs<CurrencyUnitsListNavArgs>().includeOnlyAvailable
 
-    override val container = container<State, Event>(
-        initialState = State(),
+    override val container = container<CurrencyUnitsListState, CurrencyUnitsListEvent>(
+        initialState = CurrencyUnitsListState(),
         buildSettings = { exceptionHandler = defaultCoroutineExceptionHandler() }
     ) {
         coroutineScope {
@@ -44,15 +47,15 @@ class CurrencyUnitsListViewModel @Inject constructor(
         }
     }
 
-    override fun onAction(action: Action) {
+    override fun onAction(action: CurrencyUnitsListAction) {
         when (action) {
-            is Action.OnSearchQueryChange -> handleOnSearchQueryChange(action)
-            is Action.OnCurrencyUnitSelect -> handleOnCurrencyUnitSelect(action)
-            is Action.OnCloseClick -> handleOnCloseClick()
+            is CurrencyUnitsListAction.OnSearchQueryChange -> handleOnSearchQueryChange(action)
+            is CurrencyUnitsListAction.OnCurrencyUnitSelect -> handleOnCurrencyUnitSelect(action)
+            is CurrencyUnitsListAction.OnCloseClick -> handleOnCloseClick()
         }
     }
 
-    private fun handleOnSearchQueryChange(action: Action.OnSearchQueryChange) {
+    private fun handleOnSearchQueryChange(action: CurrencyUnitsListAction.OnSearchQueryChange) {
         searchQuery.value = action.query
         blockingIntent {
             reduce {
@@ -61,12 +64,12 @@ class CurrencyUnitsListViewModel @Inject constructor(
         }
     }
 
-    private fun handleOnCurrencyUnitSelect(action: Action.OnCurrencyUnitSelect) = intent {
-        postSideEffect(Event.NavigateBackWithResult(LongNavArg(action.id)))
+    private fun handleOnCurrencyUnitSelect(action: CurrencyUnitsListAction.OnCurrencyUnitSelect) = intent {
+        postSideEffect(CurrencyUnitsListEvent.NavigateBackWithResult(LongNavArg(action.id)))
     }
 
     private fun handleOnCloseClick() = intent {
-        postSideEffect(Event.NavigateBack)
+        postSideEffect(CurrencyUnitsListEvent.NavigateBack)
     }
 
     private fun subscribeToCurrencyUnits() = intent {

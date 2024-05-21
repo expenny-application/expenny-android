@@ -14,83 +14,83 @@ import org.expenny.core.ui.extensions.icon
 import org.expenny.core.ui.extensions.label
 import org.expenny.core.ui.components.ExpennyDeleteDialog
 import org.expenny.core.ui.components.ExpennySingleSelectionDialog
-import org.expenny.feature.settings.Action
-import org.expenny.feature.settings.State
+import org.expenny.feature.settings.contract.SettingsAction
+import org.expenny.feature.settings.contract.SettingsState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun SettingsDialog(
-    state: State,
+    state: SettingsState,
     scope: CoroutineScope,
     profileActionsSheetState: SheetState,
-    onDialogAction: (Action.Dialog) -> Unit
+    onDialogAction: (SettingsAction.Dialog) -> Unit
 ) {
     when (state.dialog) {
-        is State.Dialog.ThemesSelectionDialog -> {
+        is SettingsState.Dialog.ThemesSelectionDialog -> {
             ExpennySingleSelectionDialog(
                 title = stringResource(R.string.select_theme_label),
                 data = state.dialog.data,
                 selection = state.dialog.selection,
-                onSelectionChange = { onDialogAction(Action.Dialog.OnThemeSelect(it)) },
-                onDismiss = { onDialogAction(Action.Dialog.OnDialogDismiss) }
+                onSelectionChange = { onDialogAction(SettingsAction.Dialog.OnThemeSelect(it)) },
+                onDismiss = { onDialogAction(SettingsAction.Dialog.OnDialogDismiss) }
             )
         }
-        is State.Dialog.LanguagesSelectionDialog -> {
+        is SettingsState.Dialog.LanguagesSelectionDialog -> {
             ExpennySingleSelectionDialog(
                 title = stringResource(R.string.select_language_label),
                 data = state.dialog.data,
                 selection = state.dialog.selection,
-                onSelectionChange = { onDialogAction(Action.Dialog.OnLanguageSelect(it)) },
-                onDismiss = { onDialogAction(Action.Dialog.OnDialogDismiss) }
+                onSelectionChange = { onDialogAction(SettingsAction.Dialog.OnLanguageSelect(it)) },
+                onDismiss = { onDialogAction(SettingsAction.Dialog.OnDialogDismiss) }
             )
         }
-        is State.Dialog.ReminderTimeDialog -> {
+        is SettingsState.Dialog.ReminderTimeDialog -> {
             ExpennyTimePicker(
                 currentTime = state.reminderTime,
-                onSelect = { onDialogAction(Action.Dialog.OnReminderTimeChange(it)) },
-                onDismiss = { onDialogAction(Action.Dialog.OnDialogDismiss) }
+                onSelect = { onDialogAction(SettingsAction.Dialog.OnReminderTimeChange(it)) },
+                onDismiss = { onDialogAction(SettingsAction.Dialog.OnDialogDismiss) }
             )
         }
-        is State.Dialog.ProfileActionsDialog -> {
+        is SettingsState.Dialog.ProfileActionsDialog -> {
             ProfileActionsDialog(
                 scope = scope,
                 sheetState = profileActionsSheetState,
                 actions = state.profileActions,
-                onActionTypeSelect = { onDialogAction(Action.Dialog.OnProfileActionTypeSelect(it)) },
-                onDismiss = { onDialogAction(Action.Dialog.OnDialogDismiss) }
+                onActionTypeSelect = { onDialogAction(SettingsAction.Dialog.OnProfileActionTypeSelect(it)) },
+                onDismiss = { onDialogAction(SettingsAction.Dialog.OnDialogDismiss) }
             )
         }
-        is State.Dialog.ProfileSelectionDialog -> {
+        is SettingsState.Dialog.ProfileSelectionDialog -> {
             ExpennySingleSelectionDialog(
                 title = stringResource(R.string.switch_profile_label),
                 data = state.dialog.data,
                 selection = state.dialog.selection,
-                onSelectionChange = { onDialogAction(Action.Dialog.OnSwitchProfileClick(it)) },
-                onDismiss = { onDialogAction(Action.Dialog.OnDialogDismiss) }
+                onSelectionChange = { onDialogAction(SettingsAction.Dialog.OnSwitchProfileClick(it)) },
+                onDismiss = { onDialogAction(SettingsAction.Dialog.OnDialogDismiss) }
             )
         }
-        is State.Dialog.DeleteApplicationDataDialog -> {
+        is SettingsState.Dialog.DeleteApplicationDataDialog -> {
             ExpennyDeleteDialog(
                 title = stringResource(R.string.delete_application_data_question_label),
                 body = stringResource(R.string.delete_application_data_paragraph),
-                onConfirm = { onDialogAction(Action.Dialog.OnDeleteApplicationDataDialogConfirm) },
-                onDismiss = { onDialogAction(Action.Dialog.OnDialogDismiss) }
+                onConfirm = { onDialogAction(SettingsAction.Dialog.OnDeleteApplicationDataDialogConfirm) },
+                onDismiss = { onDialogAction(SettingsAction.Dialog.OnDialogDismiss) }
             )
         }
-        is State.Dialog.DeleteProfileDataDialog -> {
+        is SettingsState.Dialog.DeleteProfileDataDialog -> {
             ExpennyDeleteDialog(
                 title = stringResource(R.string.delete_profile_data_question_label),
                 body = stringResource(R.string.delete_paragraph),
-                onConfirm = { onDialogAction(Action.Dialog.OnDeleteProfileDataDialogConfirm) },
-                onDismiss = { onDialogAction(Action.Dialog.OnDialogDismiss) }
+                onConfirm = { onDialogAction(SettingsAction.Dialog.OnDeleteProfileDataDialogConfirm) },
+                onDismiss = { onDialogAction(SettingsAction.Dialog.OnDialogDismiss) }
             )
         }
-        is State.Dialog.DeleteProfileDialog -> {
+        is SettingsState.Dialog.DeleteProfileDialog -> {
             ExpennyDeleteDialog(
                 title = stringResource(R.string.delete_profile_question_label),
                 body = stringResource(R.string.delete_associated_data_paragraph),
-                onConfirm = { onDialogAction(Action.Dialog.OnDeleteProfileDialogConfirm) },
-                onDismiss = { onDialogAction(Action.Dialog.OnDialogDismiss) }
+                onConfirm = { onDialogAction(SettingsAction.Dialog.OnDeleteProfileDialogConfirm) },
+                onDismiss = { onDialogAction(SettingsAction.Dialog.OnDialogDismiss) }
             )
         }
         else -> {}

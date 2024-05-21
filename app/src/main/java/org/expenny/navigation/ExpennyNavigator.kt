@@ -11,21 +11,21 @@ import org.expenny.core.common.types.RecordType
 import org.expenny.core.common.utils.Constants.NULL_ID
 import org.expenny.core.ui.data.navargs.LongNavArg
 import org.expenny.core.ui.data.navargs.RecordsListFilterNavArg
-import org.expenny.feature.accountdetails.destinations.AccountDetailsScreenDestination
-import org.expenny.feature.accountdetails.navigation.AccountDetailsNavigator
-import org.expenny.feature.accountoverview.destinations.AccountOverviewScreenDestination
+import org.expenny.feature.accounts.destinations.AccountDetailsScreenDestination
+import org.expenny.feature.accounts.details.navigation.AccountDetailsNavigator
+import org.expenny.feature.accounts.destinations.AccountOverviewScreenDestination
 import org.expenny.feature.accounts.destinations.AccountsListScreenDestination
 import org.expenny.feature.accounts.destinations.AccountTypeScreenDestination
-import org.expenny.feature.accounts.navigation.AccountTypeNavigator
-import org.expenny.feature.accounts.navigation.AccountsListNavigator
+import org.expenny.feature.accounts.type.navigation.AccountTypeNavigator
+import org.expenny.feature.accounts.list.navigation.AccountsListNavigator
 import org.expenny.feature.categories.destinations.CategoriesListScreenDestination
-import org.expenny.feature.categories.navigation.CategoriesListNavigator
-import org.expenny.feature.categorydetails.destinations.CategoryDetailsScreenDestination
-import org.expenny.feature.categorydetails.navigation.CategoryDetailsNavigator
+import org.expenny.feature.categories.list.navigation.CategoriesListNavigator
+import org.expenny.feature.categories.destinations.CategoryDetailsScreenDestination
+import org.expenny.feature.categories.details.navigation.CategoryDetailsNavigator
 import org.expenny.feature.currencies.destinations.CurrenciesListScreenDestination
-import org.expenny.feature.currencies.navigation.CurrenciesListNavigator
-import org.expenny.feature.currencydetails.destinations.CurrencyDetailsScreenDestination
-import org.expenny.feature.currencydetails.navigation.CurrencyDetailsNavigator
+import org.expenny.feature.currencies.list.navigation.CurrenciesListNavigator
+import org.expenny.feature.currencies.destinations.CurrencyDetailsScreenDestination
+import org.expenny.feature.currencies.details.navigation.CurrencyDetailsNavigator
 import org.expenny.feature.currencyunits.destinations.CurrencyUnitsListScreenDestination
 import org.expenny.feature.dashboard.navigation.DashboardNavigator
 import org.expenny.feature.passcode.destinations.PasscodeScreenDestination
@@ -33,16 +33,15 @@ import org.expenny.feature.passcode.model.PasscodeType
 import org.expenny.feature.passcode.navigation.PasscodeNavigator
 import org.expenny.feature.profilesetup.destinations.ProfileSetupScreenDestination
 import org.expenny.feature.profilesetup.navigation.ProfileSetupNavigator
-import org.expenny.feature.recorddetails.destinations.RecordDetailsScreenDestination
-import org.expenny.feature.recorddetails.navigation.RecordDetailsNavigator
+import org.expenny.feature.records.destinations.RecordDetailsScreenDestination
+import org.expenny.feature.records.details.navigation.RecordDetailsNavigator
 import org.expenny.feature.records.destinations.RecordsListScreenDestination
-import org.expenny.feature.records.navigation.RecordsListNavigator
+import org.expenny.feature.records.list.navigation.RecordsListNavigator
 import org.expenny.feature.settings.navigation.SettingsNavigator
-import org.expenny.feature.splash.navigation.SplashNavigator
 import org.expenny.feature.institution.destinations.InstitutionRequisitionScreenDestination
 import org.expenny.feature.institution.destinations.InstitutionsListScreenDestination
-import org.expenny.feature.institution.navigation.InstitutionRequisitionNavigator
-import org.expenny.feature.institution.navigation.InstitutionsListNavigator
+import org.expenny.feature.institution.requisition.navigation.InstitutionRequisitionNavigator
+import org.expenny.feature.institution.list.navigation.InstitutionsListNavigator
 import org.expenny.feature.welcome.navigation.WelcomeNavigator
 import org.expenny.main.MainActivity
 import org.expenny.main.DrawerTab
@@ -50,8 +49,7 @@ import org.expenny.main.DrawerTab
 class ExpennyNavigator(
     private val navGraph: NavGraphSpec,
     private val navController: NavController,
-) : SplashNavigator,
-    WelcomeNavigator,
+) : WelcomeNavigator,
     ProfileSetupNavigator,
     AccountsListNavigator,
     DashboardNavigator,
@@ -67,14 +65,6 @@ class ExpennyNavigator(
     AccountTypeNavigator,
     InstitutionsListNavigator,
     InstitutionRequisitionNavigator {
-
-    override fun navigateToSetup() {
-        navController.navigate(ExpennyNavGraphs.setup) {
-            popUpTo(ExpennyNavGraphs.root.route) {
-                inclusive = true
-            }
-        }
-    }
 
     override fun navigateToHome() {
         navController.navigate(ExpennyNavGraphs.home) {
