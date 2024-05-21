@@ -27,9 +27,9 @@ import org.expenny.core.ui.mapper.AccountNameMapper
 import org.expenny.core.ui.mapper.AmountMapper
 import org.expenny.core.ui.mapper.ExpensesMapper
 import org.expenny.core.ui.mapper.RecordMapper
-import org.expenny.feature.dashboard.model.Action
-import org.expenny.feature.dashboard.model.Event
-import org.expenny.feature.dashboard.model.State
+import org.expenny.feature.dashboard.contract.DashboardAction
+import org.expenny.feature.dashboard.contract.DashboardEvent
+import org.expenny.feature.dashboard.contract.DashboardState
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
@@ -50,10 +50,10 @@ class DashboardViewModel @Inject constructor(
     private val accountNameMapper: AccountNameMapper,
     private val amountMapper: AmountMapper,
     private val recordMapper: RecordMapper,
-) : ExpennyViewModel<Action>(), ContainerHost<State, Event> {
+) : ExpennyViewModel<DashboardAction>(), ContainerHost<DashboardState, DashboardEvent> {
 
-    override val container = container<State, Event>(
-        initialState = State(),
+    override val container = container<DashboardState, DashboardEvent>(
+        initialState = DashboardState(),
         buildSettings = { exceptionHandler = defaultCoroutineExceptionHandler() }
     ) {
         coroutineScope {
@@ -66,27 +66,27 @@ class DashboardViewModel @Inject constructor(
 
     private val selectedCurrency = MutableStateFlow<Currency?>(null)
     private val selectedAccountIds = MutableStateFlow<List<Long>>(emptyList())
-    private val selectedPeriodType = MutableStateFlow<PeriodType>(State().currentPeriodType)
+    private val selectedPeriodType = MutableStateFlow<PeriodType>(DashboardState().currentPeriodType)
 
-    override fun onAction(action: Action) {
+    override fun onAction(action: DashboardAction) {
         when (action) {
-            is Action.OnAccountSelect -> handleOnAccountSelect(action)
-            is Action.OnAllAccountsSelect -> handleOnAllAccountsSelect()
-            is Action.OnCategoryExpensesSelect -> handleOnCategoryExpensesSelect(action)
-            is Action.OnCategoryExpensesDeselect -> handleOnCategoryExpensesDeselect()
-            is Action.OnExpensesPeriodTypeChange -> handleOnExpensesPeriodTypeChange(action)
-            is Action.OnWidgetClick -> handleOnWidgetClick(action)
-            is Action.OnDisplayCurrencyClick -> handleOnDisplayCurrencyClick()
-            is Action.OnDisplayCurrencySelect -> handleOnDisplayCurrencySelect(action)
-            is Action.OnShowMoreRecordsClick -> handleOnShowMoreRecordsClick()
-            is Action.OnAddRecordClick -> handleOnAddRecordClick()
-            is Action.OnAddRecord -> handleOnAddRecord(action)
-            is Action.OnAddRecordDialogDismiss -> handleOnAddRecordDialogDismiss()
+            is DashboardAction.OnAccountSelect -> handleOnAccountSelect(action)
+            is DashboardAction.OnAllAccountsSelect -> handleOnAllAccountsSelect()
+            is DashboardAction.OnCategoryExpensesSelect -> handleOnCategoryExpensesSelect(action)
+            is DashboardAction.OnCategoryExpensesDeselect -> handleOnCategoryExpensesDeselect()
+            is DashboardAction.OnExpensesPeriodTypeChange -> handleOnExpensesPeriodTypeChange(action)
+            is DashboardAction.OnWidgetClick -> handleOnWidgetClick(action)
+            is DashboardAction.OnDisplayCurrencyClick -> handleOnDisplayCurrencyClick()
+            is DashboardAction.OnDisplayCurrencySelect -> handleOnDisplayCurrencySelect(action)
+            is DashboardAction.OnShowMoreRecordsClick -> handleOnShowMoreRecordsClick()
+            is DashboardAction.OnAddRecordClick -> handleOnAddRecordClick()
+            is DashboardAction.OnAddRecord -> handleOnAddRecord(action)
+            is DashboardAction.OnAddRecordDialogDismiss -> handleOnAddRecordDialogDismiss()
         }
     }
 
-    private fun handleOnAddRecord(action: Action.OnAddRecord) = intent {
-        postSideEffect(Event.NavigateToCreateRecord(action.recordType))
+    private fun handleOnAddRecord(action: DashboardAction.OnAddRecord) = intent {
+        postSideEffect(DashboardEvent.NavigateToCreateRecord(action.recordType))
     }
 
     private fun handleOnAddRecordClick() = intent {
@@ -97,7 +97,7 @@ class DashboardViewModel @Inject constructor(
         reduce { state.copy(showAddRecordDialog = false) }
     }
 
-    private fun handleOnDisplayCurrencySelect(action: Action.OnDisplayCurrencySelect) = intent {
+    private fun handleOnDisplayCurrencySelect(action: DashboardAction.OnDisplayCurrencySelect) = intent {
         handleOnDisplayCurrencySelect(getCurrencyUseCase(GetCurrencyUseCase.Params(action.id)).first()!!)
     }
 
@@ -109,10 +109,10 @@ class DashboardViewModel @Inject constructor(
     }
 
     private fun handleOnDisplayCurrencyClick() = intent {
-        postSideEffect(Event.NavigateToDisplayCurrencySelection(selectedCurrency.value?.id))
+        postSideEffect(DashboardEvent.NavigateToDisplayCurrencySelection(selectedCurrency.value?.id))
     }
 
-    private fun handleOnAccountSelect(action: Action.OnAccountSelect) = intent {
+    private fun handleOnAccountSelect(action: DashboardAction.OnAccountSelect) = intent {
         val currentSelection = if (state.selectAllAccounts) emptyList() else state.selectedAccounts
 
         if (currentSelection.isEmpty()) {
@@ -147,10 +147,10 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
-    private fun handleOnWidgetClick(action: Action.OnWidgetClick) = intent {
+    private fun handleOnWidgetClick(action: DashboardAction.OnWidgetClick) = intent {
         when (action.widget) {
-            DashboardWidgetType.Accounts -> postSideEffect(Event.NavigateToAccounts)
-            DashboardWidgetType.Records -> postSideEffect(Event.NavigateToRecords())
+            DashboardWidgetType.Accounts -> postSideEffect(DashboardEvent.NavigateToAccounts)
+            DashboardWidgetType.Records -> postSideEffect(DashboardEvent.NavigateToRecords())
             else -> {
                 // TODO
             }
@@ -159,10 +159,10 @@ class DashboardViewModel @Inject constructor(
 
     private fun handleOnShowMoreRecordsClick() = intent {
         val filter = RecordsListFilterNavArg(accounts = selectedAccountIds.value)
-        postSideEffect(Event.NavigateToRecords(filter))
+        postSideEffect(DashboardEvent.NavigateToRecords(filter))
     }
 
-    private fun handleOnExpensesPeriodTypeChange(action: Action.OnExpensesPeriodTypeChange) = intent {
+    private fun handleOnExpensesPeriodTypeChange(action: DashboardAction.OnExpensesPeriodTypeChange) = intent {
         selectedPeriodType.value = action.periodType
         reduce {
             state.copy(currentPeriodType = action.periodType)
@@ -175,7 +175,7 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
-    private fun handleOnCategoryExpensesSelect(action: Action.OnCategoryExpensesSelect) = intent {
+    private fun handleOnCategoryExpensesSelect(action: DashboardAction.OnCategoryExpensesSelect) = intent {
         reduce {
             state.copy(
                 expensesData = state.expensesData.copy(

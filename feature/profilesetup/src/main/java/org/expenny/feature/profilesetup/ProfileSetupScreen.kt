@@ -10,6 +10,8 @@ import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.OpenResultRecipient
 import org.expenny.core.ui.base.ExpennySnackbarManager
 import org.expenny.core.ui.data.navargs.LongNavArg
+import org.expenny.feature.profilesetup.contract.ProfileSetupAction
+import org.expenny.feature.profilesetup.contract.ProfileSetupEvent
 import org.expenny.feature.profilesetup.navigation.ProfileSetupNavigator
 import org.expenny.feature.profilesetup.style.ProfileSetupScreenTransitionStyle
 import org.expenny.feature.profilesetup.view.ProfileSetupContent
@@ -28,21 +30,21 @@ fun ProfileSetupScreen(
     val scrollState = rememberScrollState()
 
     BackHandler(!state.showConfirmationDialog && !state.showAbortDialog) {
-        vm.onAction(Action.OnBackClick)
+        vm.onAction(ProfileSetupAction.OnBackClick)
     }
 
     currencyUnitResult.onNavResult { res ->
         if (res is NavResult.Value) {
-            vm.onAction(Action.OnCurrencyUnitSelect(res.value.value))
+            vm.onAction(ProfileSetupAction.OnCurrencyUnitSelect(res.value.value))
         }
     }
 
     vm.collectSideEffect {
         when (it) {
-            is Event.ShowMessage -> snackbarManager.showInfo(it.message)
-            is Event.NavigateToHome -> navigator.navigateToHome()
-            is Event.NavigateToCurrencyUnitsSelectionList -> navigator.navigateToCurrencyUnitSelectionListScreen(it.selectedId)
-            is Event.NavigateBack -> navigator.navigateBack()
+            is ProfileSetupEvent.ShowMessage -> snackbarManager.showInfo(it.message)
+            is ProfileSetupEvent.NavigateToHome -> navigator.navigateToHome()
+            is ProfileSetupEvent.NavigateToCurrencyUnitsSelectionList -> navigator.navigateToCurrencyUnitSelectionListScreen(it.selectedId)
+            is ProfileSetupEvent.NavigateBack -> navigator.navigateBack()
         }
     }
 

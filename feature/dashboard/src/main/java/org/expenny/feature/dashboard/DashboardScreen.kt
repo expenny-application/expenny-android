@@ -11,8 +11,8 @@ import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.OpenResultRecipient
 import org.expenny.core.ui.data.navargs.LongNavArg
 import org.expenny.core.ui.base.ExpennyDrawerManager
-import org.expenny.feature.dashboard.model.Action
-import org.expenny.feature.dashboard.model.Event
+import org.expenny.feature.dashboard.contract.DashboardAction
+import org.expenny.feature.dashboard.contract.DashboardEvent
 import org.expenny.feature.dashboard.navigation.DashboardNavigator
 import org.expenny.feature.dashboard.style.DashboardScreenTransitionStyle
 import org.expenny.feature.dashboard.view.*
@@ -38,22 +38,22 @@ fun DashboardScreen(
 
     currencyResult.onNavResult { res ->
         if (res is NavResult.Value) {
-            vm.onAction(Action.OnDisplayCurrencySelect(res.value.value))
+            vm.onAction(DashboardAction.OnDisplayCurrencySelect(res.value.value))
         }
     }
 
     vm.collectSideEffect {
         when (it) {
-            is Event.NavigateToDisplayCurrencySelection -> {
+            is DashboardEvent.NavigateToDisplayCurrencySelection -> {
                 navigator.navigateToCurrencySelectionListScreen(it.selectedId)
             }
-            is Event.NavigateToAccounts -> {
+            is DashboardEvent.NavigateToAccounts -> {
                 navigator.navigateToAccountsListScreen()
             }
-            is Event.NavigateToRecords -> {
+            is DashboardEvent.NavigateToRecords -> {
                 navigator.navigateToRecordsListScreen(it.filter)
             }
-            is Event.NavigateToCreateRecord -> {
+            is DashboardEvent.NavigateToCreateRecord -> {
                 navigator.navigateToCreateRecordScreen(it.recordType)
             }
         }

@@ -17,21 +17,20 @@ import org.expenny.core.ui.transitions.defaultPopEnterNavigationTransition
 import org.expenny.core.ui.transitions.defaultPopExitNavigationTransition
 import org.expenny.core.ui.data.navargs.LongNavArg
 import org.expenny.core.ui.data.navargs.NavArgResult
-import org.expenny.core.ui.transitions.*
-import org.expenny.feature.accountdetails.AccountDetailsScreen
-import org.expenny.feature.accountdetails.destinations.AccountDetailsScreenDestination
+import org.expenny.feature.accounts.details.AccountDetailsScreen
+import org.expenny.feature.accounts.destinations.AccountDetailsScreenDestination
 import org.expenny.feature.accounts.destinations.AccountsListScreenDestination
 import org.expenny.feature.categories.destinations.CategoriesListScreenDestination
 import org.expenny.feature.currencies.destinations.CurrenciesListScreenDestination
-import org.expenny.feature.currencydetails.CurrencyDetailsScreen
-import org.expenny.feature.currencydetails.destinations.CurrencyDetailsScreenDestination
+import org.expenny.feature.currencies.details.CurrencyDetailsScreen
+import org.expenny.feature.currencies.destinations.CurrencyDetailsScreenDestination
 import org.expenny.feature.currencyunits.destinations.CurrencyUnitsListScreenDestination
 import org.expenny.feature.dashboard.DashboardScreen
 import org.expenny.feature.dashboard.destinations.DashboardScreenDestination
 import org.expenny.feature.profilesetup.ProfileSetupScreen
 import org.expenny.feature.profilesetup.destinations.ProfileSetupScreenDestination
-import org.expenny.feature.recorddetails.RecordDetailsScreen
-import org.expenny.feature.recorddetails.destinations.RecordDetailsScreenDestination
+import org.expenny.feature.records.details.RecordDetailsScreen
+import org.expenny.feature.records.destinations.RecordDetailsScreenDestination
 import org.expenny.main.MainState
 
 @OptIn(

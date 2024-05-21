@@ -23,6 +23,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.work)
     implementation(libs.orbit.core)
     implementation(libs.orbit.compose)
 

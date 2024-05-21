@@ -21,11 +21,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import org.expenny.core.resources.R
-import org.expenny.feature.welcome.Action
+import org.expenny.core.ui.components.ExpennyButton
+import org.expenny.feature.welcome.contract.WelcomeAction
 
 @Composable
 internal fun WelcomeContent(
-    onAction: (Action) -> Unit,
+    onAction: (WelcomeAction) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -67,11 +68,11 @@ internal fun WelcomeContent(
                 style = MaterialTheme.typography.bodyLarge
             )
         }
-        WelcomeCta(
+        ExpennyButton(
             modifier = Modifier.fillMaxWidth(),
-            onClick = {
-                onAction(Action.OnCtaClick)
-            }
-        )
+            onClick = { onAction(WelcomeAction.OnCtaClick) }
+        ) {
+            ButtonLabel(text = stringResource(R.string.get_started_button))
+        }
     }
 }

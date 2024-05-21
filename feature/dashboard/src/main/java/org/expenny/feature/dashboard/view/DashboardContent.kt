@@ -11,20 +11,20 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
 import org.expenny.core.ui.base.ExpennyDrawerManager
-import org.expenny.feature.dashboard.model.Action
-import org.expenny.feature.dashboard.model.State
+import org.expenny.feature.dashboard.contract.DashboardAction
+import org.expenny.feature.dashboard.contract.DashboardState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun DashboardContent(
-    state: State,
+    state: DashboardState,
     drawerState: ExpennyDrawerManager,
     scope: CoroutineScope,
     scrollState: ScrollState,
     addRecordSheetState: SheetState,
     accountsListState: LazyListState,
     widgetsListState: LazyListState,
-    onAction: (Action) -> Unit,
+    onAction: (DashboardAction) -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
@@ -32,8 +32,8 @@ internal fun DashboardContent(
         DashboardAddRecordDialog(
             scope = scope,
             sheetState = addRecordSheetState,
-            onRecordTypeSelect = { onAction(Action.OnAddRecord(it)) },
-            onDismiss = { onAction(Action.OnAddRecordDialogDismiss) }
+            onRecordTypeSelect = { onAction(DashboardAction.OnAddRecord(it)) },
+            onDismiss = { onAction(DashboardAction.OnAddRecordDialogDismiss) }
         )
     }
 
@@ -46,13 +46,13 @@ internal fun DashboardContent(
                 scrollBehavior = scrollBehavior,
                 drawerState = drawerState,
                 displayCurrency = state.displayCurrency,
-                onDisplayCurrencyClick = { onAction(Action.OnDisplayCurrencyClick) }
+                onDisplayCurrencyClick = { onAction(DashboardAction.OnDisplayCurrencyClick) }
             )
         },
         floatingActionButton = {
             DashboardFloatingActionButton(
                 modifier = Modifier.navigationBarsPadding(),
-                onClick = { onAction(Action.OnAddRecordClick) }
+                onClick = { onAction(DashboardAction.OnAddRecordClick) }
             )
         },
         contentWindowInsets = WindowInsets.statusBars,
@@ -79,24 +79,24 @@ internal fun DashboardContent(
                 accounts = state.accounts,
                 selectedAccounts = state.selectedAccounts,
                 balance = state.balanceData,
-                onSelectAll = { onAction(Action.OnAllAccountsSelect) },
-                onSelect = { onAction(Action.OnAccountSelect(it)) },
-                onShowMoreRecordsClick = { onAction(Action.OnShowMoreRecordsClick) }
+                onSelectAll = { onAction(DashboardAction.OnAllAccountsSelect) },
+                onSelect = { onAction(DashboardAction.OnAccountSelect(it)) },
+                onShowMoreRecordsClick = { onAction(DashboardAction.OnShowMoreRecordsClick) }
             )
             DashboardWidgetsSection(
                 modifier = Modifier.fillMaxWidth(),
                 listState = widgetsListState,
                 widgets = state.widgets,
-                onWidgetClick = { onAction(Action.OnWidgetClick(it)) }
+                onWidgetClick = { onAction(DashboardAction.OnWidgetClick(it)) }
             )
             DashboardExpensesSection(
                 modifier = Modifier.fillMaxWidth(),
                 periodTypes = state.periodTypes,
                 expensesData = state.expensesData,
                 currentPeriodType = state.currentPeriodType,
-                onCategorySelect = { onAction(Action.OnCategoryExpensesSelect(it)) },
-                onCategoryDeselect = { onAction(Action.OnCategoryExpensesDeselect) },
-                onTimePeriodChange = { onAction(Action.OnExpensesPeriodTypeChange(it)) }
+                onCategorySelect = { onAction(DashboardAction.OnCategoryExpensesSelect(it)) },
+                onCategoryDeselect = { onAction(DashboardAction.OnCategoryExpensesDeselect) },
+                onTimePeriodChange = { onAction(DashboardAction.OnExpensesPeriodTypeChange(it)) }
             )
         }
     }

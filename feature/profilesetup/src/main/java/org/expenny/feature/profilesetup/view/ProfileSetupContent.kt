@@ -9,31 +9,34 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import org.expenny.core.resources.R
+import org.expenny.core.ui.components.ExpennyButton
 import org.expenny.core.ui.extensions.clearFocusOnTapOutside
-import org.expenny.feature.profilesetup.Action
-import org.expenny.feature.profilesetup.State
+import org.expenny.feature.profilesetup.contract.ProfileSetupAction
+import org.expenny.feature.profilesetup.contract.ProfileSetupState
 
 @Composable
 internal fun ProfileSetupContent(
-    state: State,
+    state: ProfileSetupState,
     scrollState: ScrollState,
-    onAction: (Action) -> Unit
+    onAction: (ProfileSetupAction) -> Unit
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
 
     if (state.showAbortDialog) {
         ProfileSetupAbortDialog(
-            onConfirm = { onAction(Action.OnAbortDialogConfirm) },
-            onDismiss = { onAction(Action.OnAbortDialogDismiss) }
+            onConfirm = { onAction(ProfileSetupAction.OnAbortDialogConfirm) },
+            onDismiss = { onAction(ProfileSetupAction.OnAbortDialogDismiss) }
         )
     }
 
     if (state.showConfirmationDialog) {
         ProfileSetupConfirmationDialog(
-            onConfirm = { onAction(Action.OnConfirmationDialogConfirm) },
-            onDismiss = { onAction(Action.OnConfirmationDialogDismiss) }
+            onConfirm = { onAction(ProfileSetupAction.OnConfirmationDialogConfirm) },
+            onDismiss = { onAction(ProfileSetupAction.OnConfirmationDialogDismiss) }
         )
     }
 
@@ -44,7 +47,7 @@ internal fun ProfileSetupContent(
             .clearFocusOnTapOutside(focusManager),
         topBar = {
             ProfileSetupToolbar(
-                onBackClick = { onAction(Action.OnBackClick) }
+                onBackClick = { onAction(ProfileSetupAction.OnBackClick) }
             )
         },
         containerColor = MaterialTheme.colorScheme.surface,
@@ -63,29 +66,44 @@ internal fun ProfileSetupContent(
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            ProfileSetupCaption(
+            Column(
                 modifier = Modifier
                     .align(Alignment.Start)
-                    .padding(bottom = 16.dp)
-            )
+                    .padding(bottom = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.setup_profile_label),
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = stringResource(R.string.get_started_paragraph),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
             ProfileSetupInputForm(
                 modifier = Modifier.fillMaxSize(),
                 state = state,
-                onNameChange = { onAction(Action.OnNameChange(it)) },
-                onAccountNameChange = { onAction(Action.OnAccountNameChange(it)) },
-                onAccountBalanceChange = { onAction(Action.OnAccountBalanceChange(it)) },
-                onSelectCurrencyClick = { onAction(Action.OnSelectCurrencyUnitClick) },
-                onSetupCashBalanceCheckboxChange = { onAction(Action.OnSetupCashBalanceCheckboxChange(it)) }
+                onNameChange = { onAction(ProfileSetupAction.OnNameChange(it)) },
+                onAccountNameChange = { onAction(ProfileSetupAction.OnAccountNameChange(it)) },
+                onAccountBalanceChange = { onAction(ProfileSetupAction.OnAccountBalanceChange(it)) },
+                onSelectCurrencyClick = { onAction(ProfileSetupAction.OnSelectCurrencyUnitClick) },
+                onSetupCashBalanceCheckboxChange = { onAction(ProfileSetupAction.OnSetupCashBalanceCheckboxChange(it)) }
             )
-            ProfileSetupCta(
+            ExpennyButton(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 24.dp),
-                isEnabled = state.isCtaEnabled,
                 onClick = {
                     keyboardController?.hide()
                     focusManager.clearFocus()
-                    onAction(Action.OnCtaClick)
+                    onAction(ProfileSetupAction.OnCtaClick)
+                },
+                isEnabled = state.isCtaEnabled,
+                label = {
+                    ButtonLabel(text = stringResource(R.string.continue_button))
                 }
             )
         }

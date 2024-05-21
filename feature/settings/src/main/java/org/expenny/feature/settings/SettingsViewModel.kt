@@ -40,6 +40,9 @@ import org.expenny.core.ui.data.ItemUi
 import org.expenny.core.ui.data.SingleSelectionUi
 import org.expenny.core.ui.extensions.labelResId
 import org.expenny.core.ui.mapper.ProfileMapper
+import org.expenny.feature.settings.contract.SettingsAction
+import org.expenny.feature.settings.contract.SettingsEvent
+import org.expenny.feature.settings.contract.SettingsState
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.SimpleSyntax
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -68,14 +71,14 @@ class SettingsViewModel @Inject constructor(
     private val setApplicationTheme: SetApplicationThemeUseCase,
     private val getApplicationTheme: GetApplicationThemeUseCase,
     private val profileMapper: ProfileMapper,
-) : ExpennyViewModel<Action>(), ContainerHost<State, Event> {
+) : ExpennyViewModel<SettingsAction>(), ContainerHost<SettingsState, SettingsEvent> {
 
     private var profiles: List<Profile> = emptyList()
     private val languages: List<ApplicationLanguage> = ApplicationLanguage.values().toList()
     private val themes: List<ApplicationTheme> = ApplicationTheme.values().toList()
 
-    override val container = container<State, Event>(
-        initialState = State(),
+    override val container = container<SettingsState, SettingsEvent>(
+        initialState = SettingsState(),
         buildSettings = { exceptionHandler = defaultCoroutineExceptionHandler() }
     ) {
         coroutineScope {
@@ -90,24 +93,24 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    override fun onAction(action: Action) {
+    override fun onAction(action: SettingsAction) {
         when (action) {
-            is Action.OnSettingsItemTypeClick -> handleOnSettingsItemTypeClick(action)
-            is Action.OnBackClick -> handleOnBackClick()
-            is Action.Dialog.OnDialogDismiss -> handleOnDialogDismiss()
-            is Action.Dialog.OnLanguageSelect -> handleOnLanguageSelect(action)
-            is Action.Dialog.OnThemeSelect -> handleOnThemeSelect(action)
-            is Action.Dialog.OnReminderTimeChange -> handleOnReminderTimeChange(action)
-            is Action.Dialog.OnProfileActionTypeSelect -> handleOnProfileActionTypeSelect(action)
-            is Action.Dialog.OnCreateProfileClick -> handleOnCreateProfileClick()
-            is Action.Dialog.OnSwitchProfileClick -> handleOnSwitchProfileClick(action)
-            is Action.Dialog.OnDeleteApplicationDataDialogConfirm -> handleOnDeleteApplicationDataDialogConfirm()
-            is Action.Dialog.OnDeleteProfileDataDialogConfirm -> handleOnDeleteProfileDataDialogConfirm()
-            is Action.Dialog.OnDeleteProfileDialogConfirm -> handleOnDeleteProfileDialogConfirm()
+            is SettingsAction.OnSettingsItemTypeClick -> handleOnSettingsItemTypeClick(action)
+            is SettingsAction.OnBackClick -> handleOnBackClick()
+            is SettingsAction.Dialog.OnDialogDismiss -> handleOnDialogDismiss()
+            is SettingsAction.Dialog.OnLanguageSelect -> handleOnLanguageSelect(action)
+            is SettingsAction.Dialog.OnThemeSelect -> handleOnThemeSelect(action)
+            is SettingsAction.Dialog.OnReminderTimeChange -> handleOnReminderTimeChange(action)
+            is SettingsAction.Dialog.OnProfileActionTypeSelect -> handleOnProfileActionTypeSelect(action)
+            is SettingsAction.Dialog.OnCreateProfileClick -> handleOnCreateProfileClick()
+            is SettingsAction.Dialog.OnSwitchProfileClick -> handleOnSwitchProfileClick(action)
+            is SettingsAction.Dialog.OnDeleteApplicationDataDialogConfirm -> handleOnDeleteApplicationDataDialogConfirm()
+            is SettingsAction.Dialog.OnDeleteProfileDataDialogConfirm -> handleOnDeleteProfileDataDialogConfirm()
+            is SettingsAction.Dialog.OnDeleteProfileDialogConfirm -> handleOnDeleteProfileDialogConfirm()
         }
     }
 
-    private fun handleOnProfileActionTypeSelect(action: Action.Dialog.OnProfileActionTypeSelect) = intent {
+    private fun handleOnProfileActionTypeSelect(action: SettingsAction.Dialog.OnProfileActionTypeSelect) = intent {
         when (action.type) {
             ProfileActionType.CreateProfile -> {
                 handleOnCreateProfileClick()
@@ -115,7 +118,7 @@ class SettingsViewModel @Inject constructor(
             ProfileActionType.SwitchProfile -> {
                 reduce {
                     state.copy(
-                        dialog = State.Dialog.ProfileSelectionDialog(
+                        dialog = SettingsState.Dialog.ProfileSelectionDialog(
                             data = profiles.mapToItemUi(),
                             selection = SingleSelectionUi(state.profile?.id)
                         )
@@ -123,10 +126,10 @@ class SettingsViewModel @Inject constructor(
                 }
             }
             ProfileActionType.DeleteProfile -> {
-                reduce { state.copy(dialog = State.Dialog.DeleteProfileDialog) }
+                reduce { state.copy(dialog = SettingsState.Dialog.DeleteProfileDialog) }
             }
             ProfileActionType.DeleteProfileData -> {
-                reduce { state.copy(dialog = State.Dialog.DeleteProfileDataDialog) }
+                reduce { state.copy(dialog = SettingsState.Dialog.DeleteProfileDataDialog) }
             }
         }
     }
@@ -139,51 +142,51 @@ class SettingsViewModel @Inject constructor(
         if (nextProfile != null) {
             deleteCurrentProfile()
             setCurrentProfile(SetCurrentProfileUseCase.Params(nextProfile.id))
-            postSideEffect(Event.RestartApplication())
+            postSideEffect(SettingsEvent.RestartApplication())
         } else {
-            postSideEffect(Event.RestartApplication(isDataCleanupRequested = true))
+            postSideEffect(SettingsEvent.RestartApplication(isDataCleanupRequested = true))
         }
     }
 
     private fun handleOnDeleteProfileDataDialogConfirm() = intent {
         deleteCurrentProfileData()
-        postSideEffect(Event.RestartApplication())
+        postSideEffect(SettingsEvent.RestartApplication())
     }
 
     private fun handleOnDeleteApplicationDataDialogConfirm() = intent {
-        postSideEffect(Event.RestartApplication(isDataCleanupRequested = true))
+        postSideEffect(SettingsEvent.RestartApplication(isDataCleanupRequested = true))
     }
 
     private fun handleOnCreateProfileClick() = intent {
         dismissDialog()
-        postSideEffect(Event.NavigateToCreateProfile)
+        postSideEffect(SettingsEvent.NavigateToCreateProfile)
     }
 
-    private fun handleOnSwitchProfileClick(action: Action.Dialog.OnSwitchProfileClick) = intent {
+    private fun handleOnSwitchProfileClick(action: SettingsAction.Dialog.OnSwitchProfileClick) = intent {
         dismissDialog()
         action.selection.value?.let {
             setCurrentProfile(SetCurrentProfileUseCase.Params(it))
-            postSideEffect(Event.RestartApplication())
+            postSideEffect(SettingsEvent.RestartApplication())
         }
     }
 
-    private fun handleOnReminderTimeChange(action: Action.Dialog.OnReminderTimeChange) = intent {
+    private fun handleOnReminderTimeChange(action: SettingsAction.Dialog.OnReminderTimeChange) = intent {
         setReminderTimePreference(action.time)
     }
 
     private fun handleOnBackClick() = intent {
-        postSideEffect(Event.NavigateBack)
+        postSideEffect(SettingsEvent.NavigateBack)
     }
 
-    private fun handleOnSettingsItemTypeClick(action: Action.OnSettingsItemTypeClick) = intent {
+    private fun handleOnSettingsItemTypeClick(action: SettingsAction.OnSettingsItemTypeClick) = intent {
         when (action.type) {
             SettingsItemType.Profile -> {
-                reduce { state.copy(dialog = State.Dialog.ProfileActionsDialog) }
+                reduce { state.copy(dialog = SettingsState.Dialog.ProfileActionsDialog) }
             }
             SettingsItemType.Theme -> {
                 reduce {
                     state.copy(
-                        dialog = State.Dialog.ThemesSelectionDialog(
+                        dialog = SettingsState.Dialog.ThemesSelectionDialog(
                             data = themes.mapToItemUi(),
                             selection = SingleSelectionUi(state.theme)
                         )
@@ -193,7 +196,7 @@ class SettingsViewModel @Inject constructor(
             SettingsItemType.Language -> {
                 reduce {
                     state.copy(
-                        dialog = State.Dialog.LanguagesSelectionDialog(
+                        dialog = SettingsState.Dialog.LanguagesSelectionDialog(
                             data = languages.mapToItemUi(),
                             selection = SingleSelectionUi(state.language)
                         )
@@ -201,14 +204,14 @@ class SettingsViewModel @Inject constructor(
                 }
             }
             SettingsItemType.Currencies -> {
-                postSideEffect(Event.NavigateToCurrencies)
+                postSideEffect(SettingsEvent.NavigateToCurrencies)
             }
             SettingsItemType.Passcode -> {
                 if (state.isUsePasscodeSelected) {
                     deletePasscodePreference()
                     setBiometricPreference(false)
                 } else {
-                    postSideEffect(Event.NavigateToCreatePasscode)
+                    postSideEffect(SettingsEvent.NavigateToCreatePasscode)
                 }
             }
             SettingsItemType.Biometric -> {
@@ -217,7 +220,7 @@ class SettingsViewModel @Inject constructor(
                 } else {
                     val biometricStatus = getBiometricStatus()
                     if (biometricStatus == AvailableButNotEnrolled) {
-                        postSideEffect(Event.NavigateToSystemSecuritySettings)
+                        postSideEffect(SettingsEvent.NavigateToSystemSecuritySettings)
                     } else if (biometricStatus == Ready) {
                         setBiometricPreference(true)
                     }
@@ -227,23 +230,23 @@ class SettingsViewModel @Inject constructor(
                 if (getCanSendAlarms()) {
                     setReminderPreference(!state.isReminderSelected)
                 } else {
-                    postSideEffect(Event.NavigateToSystemAlarmSettings)
+                    postSideEffect(SettingsEvent.NavigateToSystemAlarmSettings)
                 }
             }
             SettingsItemType.ReminderTime -> {
-                reduce { state.copy(dialog = State.Dialog.ReminderTimeDialog) }
+                reduce { state.copy(dialog = SettingsState.Dialog.ReminderTimeDialog) }
             }
             SettingsItemType.Categorization -> {
-                postSideEffect(Event.NavigateToCategoriesList)
+                postSideEffect(SettingsEvent.NavigateToCategoriesList)
             }
             SettingsItemType.DeleteApplicationData -> {
-                reduce { state.copy(dialog = State.Dialog.DeleteApplicationDataDialog) }
+                reduce { state.copy(dialog = SettingsState.Dialog.DeleteApplicationDataDialog) }
             }
             else -> {}
         }
     }
 
-    private fun handleOnLanguageSelect(action: Action.Dialog.OnLanguageSelect) {
+    private fun handleOnLanguageSelect(action: SettingsAction.Dialog.OnLanguageSelect) {
         action.selection.value?.let {
             AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(it.tag))
             intent {
@@ -257,7 +260,7 @@ class SettingsViewModel @Inject constructor(
         dismissDialog()
     }
 
-    private fun handleOnThemeSelect(action: Action.Dialog.OnThemeSelect) = intent {
+    private fun handleOnThemeSelect(action: SettingsAction.Dialog.OnThemeSelect) = intent {
         action.selection.value?.let {
             setApplicationTheme(SetApplicationThemeUseCase.Params(it))
             reduce { state.copy(theme = it) }
@@ -351,7 +354,7 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    private suspend fun SimpleSyntax<State, Event>.dismissDialog() {
+    private suspend fun SimpleSyntax<SettingsState, SettingsEvent>.dismissDialog() {
         reduce { state.copy(dialog = null) }
     }
 

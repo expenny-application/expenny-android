@@ -18,6 +18,7 @@ import org.expenny.core.common.types.PeriodType
 import org.expenny.core.common.types.ProfileActionType
 import org.expenny.core.common.types.RecordActionType
 import org.expenny.core.common.types.RecordType
+import org.expenny.core.common.types.RecordsFilterType
 import org.expenny.core.common.types.SortType
 import org.expenny.core.resources.R
 
@@ -167,4 +168,14 @@ val AccountType.benefits
     @Composable get() = when (this) {
         AccountType.Bank -> stringArrayResource(R.array.bank_account_benefits)
         AccountType.Local -> stringArrayResource(R.array.local_account_benefits)
+    }
+
+val RecordsFilterType.label: String
+    @Composable
+    get() = when (this) {
+        RecordsFilterType.Accounts -> stringResource(R.string.accounts_label)
+        RecordsFilterType.Categories -> stringResource(R.string.categories_label)
+        RecordsFilterType.Labels -> stringResource(R.string.labels_label)
+        RecordsFilterType.Types -> stringResource(R.string.types_label)
+        RecordsFilterType.WithoutCategory -> stringResource(R.string.without_category_label)
     }
