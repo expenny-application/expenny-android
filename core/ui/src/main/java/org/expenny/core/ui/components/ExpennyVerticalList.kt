@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import org.expenny.core.ui.extensions.NavigationBarBottomPadding
 import kotlin.reflect.KProperty1
 
 @Composable
@@ -84,5 +85,3 @@ fun <A, B> ExpennyGroupedVerticalList(
     }
 }
 
-private val NavigationBarBottomPadding
-    @Composable get() = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()

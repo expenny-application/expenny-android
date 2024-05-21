@@ -7,6 +7,10 @@ import android.app.NotificationManager
 import android.content.Context
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.google.firebase.remoteconfig.ktx.remoteConfig
+import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import dagger.hilt.android.HiltAndroidApp
 import org.expenny.core.common.utils.Constants.REMINDER_NOTIFICATION_CHANNEL_ID
 import timber.log.Timber
@@ -41,6 +45,7 @@ class ExpennyApplication : Application(), Configuration.Provider {
             }
         })
 
+        setFirebaseRemoteConfig()
         registerNotificationChannels()
     }
 
@@ -58,5 +63,13 @@ class ExpennyApplication : Application(), Configuration.Provider {
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(reminderChannel)
+    }
+
+    private fun setFirebaseRemoteConfig() {
+        val remoteConfig: FirebaseRemoteConfig = Firebase.remoteConfig
+        val configSettings = remoteConfigSettings {
+            minimumFetchIntervalInSeconds = 3600
+        }
+        remoteConfig.setConfigSettingsAsync(configSettings)
     }
 }

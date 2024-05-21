@@ -1,6 +1,7 @@
 package org.expenny
 
 import com.android.build.api.dsl.CommonExtension
+import com.android.build.api.dsl.DefaultConfig
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
@@ -21,6 +22,9 @@ internal fun Project.configureKotlinAndroid(
 
         defaultConfig {
             minSdk = 26
+
+            addGoCardlessSecretKeyBuildConfigField()
+            addGoCardlessSecretIdBuildConfigField()
         }
 
         compileOptions {
@@ -74,4 +78,18 @@ private fun Project.configureKotlin() {
             )
         }
     }
+}
+
+/**
+ * Load GoCardless Secret Key to BuildConfig
+ */
+private fun DefaultConfig.addGoCardlessSecretKeyBuildConfigField() {
+    addBuildConfigField("GOCARDLESS_SECRET_KEY")
+}
+
+/**
+ * Load GoCardless Secret Id to BuildConfig
+ */
+private fun DefaultConfig.addGoCardlessSecretIdBuildConfigField() {
+    addBuildConfigField("GOCARDLESS_SECRET_ID")
 }

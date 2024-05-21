@@ -61,10 +61,15 @@
     <string name="setup_profile_label">Setup profile</string>
     <string name="select_currency_label">Select currency</string>
     <string name="select_currency_code_label">Select currency code</string>
+    <string name="all_countries_label">All countries</string>
+    <string name="select_institution_country_label">Select institution country</string>
+    <string name="select_institution_label">Select institution</string>
+    <string name="accounts_preview_label">Accounts preview</string>
     <string name="currency_label">Currency</string>
     <string name="currency_code_label">Currency code</string>
     <string name="last_updated_label">Last updated</string>
     <string name="account_name_label">Account name</string>
+    <string name="select_account_type_label">Select account type</string>
     <string name="your_name_label">Your name</string>
     <string name="name_label">Name</string>
     <string name="color_label">Color</string>
@@ -172,6 +177,7 @@
     <string name="interval_type_label">Interval type</string>
     <string name="select_language_label">Select language</string>
     <string name="select_theme_label">Select theme</string>
+    <string name="select_country_label">Select country</string>
     <string name="system_default_label">System default</string>
     <string name="start_balance_label">Start balance</string>
     <string name="confirm_passcode_label">Confirm entered passcode to finish setup</string>
@@ -234,6 +240,10 @@
         <item quantity="one">%d record</item>
         <item quantity="other">%d records</item>
     </plurals>
+    <plurals name="institutions_quantity_label">
+        <item quantity="one">%d institution</item>
+        <item quantity="other">%d institutions</item>
+    </plurals>
 
     <!-- Arrays -->
     <string-array name="period_type">
@@ -256,6 +266,10 @@
         <item>Expense</item>
         <item>Income</item>
     </string-array>
+    <string-array name="account_type">
+        <item>Bank account</item>
+        <item>Local account</item>
+    </string-array>
     <string-array name="default_categories">
         <item>Groceries</item>
         <item>Eateries</item>
@@ -270,6 +284,14 @@
         <item>Transport</item>
         <item>Income</item>
         <item>Other</item>
+    </string-array>c
+    <string-array name="bank_account_benefits">
+        <item>2,500+ institutions in 30+ countries</item>
+        <item>Licensed AISP provider, GDPR compliant, and ISO 27001 certified</item>
+    </string-array>
+    <string-array name="local_account_benefits">
+        <item>No limits</item>
+        <item>Local data only</item>
     </string-array>
 
     <!-- Messages -->
@@ -277,10 +299,13 @@
     <string name="updated_message">Updated successfully!</string>
     <string name="created_message">Created successfully!</string>
     <string name="saved_message">Saved successfully!</string>
+    <string name="requisition_granted_message">Requisition granted successfully!</string>
     <string name="readonly_main_currency_message">Editing of the main currency is not provided</string>
     <string name="welcome_header_message">Welcome to Expenny! ✌️</string>
     <string name="welcome_paragraph_message">Expenny is a finance companion app for easy personal cash flow management and analysis.</string>
     <string name="subscribe_to_rates_updates_message">Subscribe to automatic currency rates updates from European Central Bank</string>
+    <string name="bank_account_message">Securely setup access to your bank account data to better track your finances</string>
+    <string name="local_account_message">Setup and manage in-app account by creating records manually through the application interface</string>
 
     <!--Error messages-->
     <string name="remote_rate_error">Remote exchange rate is missing</string>

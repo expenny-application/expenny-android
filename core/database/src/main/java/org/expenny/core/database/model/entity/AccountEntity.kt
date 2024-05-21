@@ -15,6 +15,7 @@ import java.time.LocalDateTime
 class AccountEntity(
     @PrimaryKey(autoGenerate = true)
     val accountId: Long = 0,
+    // val accountLinkId: Long?,
     val profileId: Long,
     val currencyId: Long,
     val name: String,

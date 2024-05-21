@@ -8,7 +8,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import org.expenny.core.resources.R
@@ -24,7 +23,6 @@ internal fun DashboardAccountsFilter(
     selectedAccounts: List<AccountNameUi>,
     onSelectAll: () -> Unit,
     onSelect: (AccountNameUi) -> Unit,
-    onCreateClick: () -> Unit
 ) {
     Row(
         modifier = modifier,
@@ -60,11 +58,5 @@ internal fun DashboardAccountsFilter(
                 )
             }
         }
-        ExpennyChip(
-            onClick = onCreateClick,
-            label = {
-                ChipIcon(painter = painterResource(R.drawable.ic_add))
-            }
-        )
     }
 }

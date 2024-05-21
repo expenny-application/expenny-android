@@ -20,7 +20,6 @@ internal fun DashboardAccountsSection(
     balance: DashboardBalanceUi,
     onSelect: (AccountNameUi) -> Unit,
     onSelectAll: () -> Unit,
-    onCreate: () -> Unit,
     onShowMoreRecordsClick: () -> Unit,
 ) {
     Column(
@@ -35,7 +34,6 @@ internal fun DashboardAccountsSection(
             selectedAccounts = selectedAccounts,
             onSelectAll = onSelectAll,
             onSelect = onSelect,
-            onCreateClick = onCreate
         )
         DashboardBalanceSection(
             modifier = Modifier.fillMaxWidth(),

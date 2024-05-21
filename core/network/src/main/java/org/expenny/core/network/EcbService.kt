@@ -8,12 +8,12 @@ import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.core.isEmpty
 import io.ktor.utils.io.core.readBytes
 import org.expenny.core.network.dto.EcbRateReferenceDto
-import java.math.RoundingMode
 import java.time.LocalDate
 import javax.inject.Inject
+import javax.inject.Named
 
 class EcbService @Inject constructor(
-    private val ecbClient: HttpClient
+    @Named("ecb") private val ecbClient: HttpClient
 ) {
 
     suspend fun getLatestEurBasedData(vararg quoteUnits: String): List<EcbRateReferenceDto> {

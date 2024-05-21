@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.BasicAlertDialog
@@ -25,12 +26,14 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
@@ -165,6 +168,7 @@ fun ExpennyDeleteDialog(
 fun <T> ExpennySingleSelectionDialog(
     modifier: Modifier = Modifier,
     title: String,
+    showEmptyOption: Boolean = false,
     data: List<ItemUi<T>>,
     selection: SingleSelectionUi<T>,
     onSelectionChange: (SingleSelectionUi<T>) -> Unit,
@@ -184,6 +188,7 @@ fun <T> ExpennySingleSelectionDialog(
         },
         list = {
             DialogList(
+                showEmptyOption = showEmptyOption,
                 data = data,
                 selection = selection,
                 onSelectionChange = {
@@ -225,6 +230,7 @@ fun <T> ExpennyMultiSelectionDialog(
         },
         list = {
             DialogList(
+                showEmptyOption = true,
                 data = data,
                 selection = localSelection,
                 onSelectionChange = {
@@ -298,13 +304,30 @@ class ExpennyDialogScope {
         )
     }
 
+    @Suppress("UNCHECKED_CAST")
     @Composable
-    inline fun <K, I : AbstractItemUi<K>, reified S : SelectionUi<K>> DialogList(
+    inline fun <K, reified S : SelectionUi<K>> DialogList(
         modifier: Modifier = Modifier,
-        data: List<I>,
+        showEmptyOption: Boolean = false,
+        data: List<AbstractItemUi<K>>,
         selection: S,
         crossinline onSelectionChange: (S) -> Unit
     ) {
+        val listState = rememberLazyListState()
+
+        LaunchedEffect(Unit) {
+            when (selection) {
+                is SingleSelectionUi<*> -> selection.value as K?
+                is MultiSelectionUi<*> -> selection.value.firstOrNull() as K?
+                else -> null
+            }?.let { firstSelectedItem ->
+                val index = data.map { it.key }.indexOf(firstSelectedItem)
+                if (index > -1) {
+                    listState.scrollToItem(index)
+                }
+            }
+        }
+
         val selectionType by rememberUpdatedState(selection.type)
         val handleOnSelectionChange: (K) -> Unit = {
             val newSelection = when (selection) {
@@ -314,8 +337,11 @@ class ExpennyDialogScope {
             }
             onSelectionChange(newSelection as S)
         }
-        DialogList(modifier = modifier) {
-            if (selection is MultiSelectionUi<*>) {
+        DialogList(
+            modifier = modifier,
+            state = listState,
+        ) {
+            if (showEmptyOption || selection.isEmpty()) {
                 item {
                     DialogListItem(
                         selectionType = selectionType,
@@ -343,9 +369,9 @@ class ExpennyDialogScope {
     @Composable
     fun DialogList(
         modifier: Modifier = Modifier,
+        state: LazyListState = rememberLazyListState(),
         content: LazyListScope.() -> Unit,
     ) {
-        val lazyListState = rememberLazyListState()
         val configuration = LocalConfiguration.current
         val maxDialogHeightDp = LocalDensity.current.run {
             (configuration.screenHeightDp.dp.toPx() * 0.5).toInt().toDp()
@@ -353,8 +379,8 @@ class ExpennyDialogScope {
         LazyColumn(
             modifier = modifier
                 .heightIn(max = maxDialogHeightDp)
-                .drawVerticalScrollbar(lazyListState),
-            state = lazyListState,
+                .drawVerticalScrollbar(state),
+            state = state,
             content = content
         )
     }

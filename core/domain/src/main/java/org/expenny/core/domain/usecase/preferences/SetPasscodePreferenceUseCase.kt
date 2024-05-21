@@ -1,14 +1,14 @@
 package org.expenny.core.domain.usecase.preferences
 
-import org.expenny.core.domain.repository.LocalRepository
+import org.expenny.core.datastore.ExpennyDataStore
 import javax.inject.Inject
 
 class SetPasscodePreferenceUseCase @Inject constructor(
-    private val localRepository: LocalRepository
+    private val preferences: ExpennyDataStore
 ) {
 
     suspend operator fun invoke(passcode: String) {
         require(passcode.isNotBlank())
-        localRepository.setPasscode(passcode)
+        preferences.setPasscode(passcode)
     }
 }

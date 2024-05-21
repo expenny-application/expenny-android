@@ -12,13 +12,10 @@ class UpdateCurrencyUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke(params: Params) {
-        val quoteRate = params.quoteToBaseRate
-        val baseRate = BigDecimal.ONE.divide(quoteRate, quoteRate.scale(), RoundingMode.HALF_UP)
-
         currencyRepository.updateCurrency(
             CurrencyUpdate(
                 id = params.id,
-                baseToQuoteRate = baseRate,
+                baseToQuoteRate = params.baseToQuoteRate,
                 isSubscribedToRateUpdates = params.isSubscribedToRateUpdates,
             )
         ).also { updateCurrencySyncWorkState() }
@@ -26,7 +23,7 @@ class UpdateCurrencyUseCase @Inject constructor(
 
     data class Params(
         val id: Long,
-        val quoteToBaseRate: BigDecimal,
+        val baseToQuoteRate: BigDecimal,
         val isSubscribedToRateUpdates: Boolean
     )
 }

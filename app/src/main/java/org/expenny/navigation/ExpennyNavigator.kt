@@ -2,9 +2,11 @@ package org.expenny.navigation
 
 import android.content.Intent
 import androidx.navigation.NavController
+import com.ramcosta.composedestinations.dynamic.DynamicDestinationSpec
 import com.ramcosta.composedestinations.dynamic.within
 import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.spec.NavGraphSpec
+import com.ramcosta.composedestinations.utils.navGraph
 import org.expenny.core.common.types.RecordType
 import org.expenny.core.common.utils.Constants.NULL_ID
 import org.expenny.core.ui.data.navargs.LongNavArg
@@ -13,6 +15,8 @@ import org.expenny.feature.accountdetails.destinations.AccountDetailsScreenDesti
 import org.expenny.feature.accountdetails.navigation.AccountDetailsNavigator
 import org.expenny.feature.accountoverview.destinations.AccountOverviewScreenDestination
 import org.expenny.feature.accounts.destinations.AccountsListScreenDestination
+import org.expenny.feature.accounts.destinations.AccountTypeScreenDestination
+import org.expenny.feature.accounts.navigation.AccountTypeNavigator
 import org.expenny.feature.accounts.navigation.AccountsListNavigator
 import org.expenny.feature.categories.destinations.CategoriesListScreenDestination
 import org.expenny.feature.categories.navigation.CategoriesListNavigator
@@ -35,6 +39,10 @@ import org.expenny.feature.records.destinations.RecordsListScreenDestination
 import org.expenny.feature.records.navigation.RecordsListNavigator
 import org.expenny.feature.settings.navigation.SettingsNavigator
 import org.expenny.feature.splash.navigation.SplashNavigator
+import org.expenny.feature.institution.destinations.InstitutionRequisitionScreenDestination
+import org.expenny.feature.institution.destinations.InstitutionsListScreenDestination
+import org.expenny.feature.institution.navigation.InstitutionRequisitionNavigator
+import org.expenny.feature.institution.navigation.InstitutionsListNavigator
 import org.expenny.feature.welcome.navigation.WelcomeNavigator
 import org.expenny.main.MainActivity
 import org.expenny.main.DrawerTab
@@ -55,7 +63,10 @@ class ExpennyNavigator(
     SettingsNavigator,
     CategoriesListNavigator,
     PasscodeNavigator,
-    CategoryDetailsNavigator {
+    CategoryDetailsNavigator,
+    AccountTypeNavigator,
+    InstitutionsListNavigator,
+    InstitutionRequisitionNavigator {
 
     override fun navigateToSetup() {
         navController.navigate(ExpennyNavGraphs.setup) {
@@ -70,6 +81,19 @@ class ExpennyNavigator(
             popUpTo(ExpennyNavGraphs.root.route) {
                 inclusive = true
             }
+        }
+    }
+
+    override fun navigateBackToAccountsListScreen() {
+        val parentNavGraph = navController.currentBackStackEntry?.navGraph()
+        val destination = parentNavGraph?.destinationsByRoute?.mapKeys {
+            (it.value as DynamicDestinationSpec<*>).originalDestination.route
+        }?.get(AccountsListScreenDestination.route)
+
+        if (destination != null) {
+            navController.popBackStack(destination.route, false)
+        } else {
+            navController.popBackStack()
         }
     }
 
@@ -222,6 +246,24 @@ class ExpennyNavigator(
     override fun navigateToEditAccountScreen(accountId: Long) {
         navController.navigate(
             direction = AccountDetailsScreenDestination(accountId = accountId) within navGraph
+        )
+    }
+
+    override fun navigateToAccountTypeScreen() {
+        navController.navigate(
+            direction = AccountTypeScreenDestination() within navGraph
+        )
+    }
+
+    override fun navigateToInstitutionsListScreen() {
+        navController.navigate(
+            direction = InstitutionsListScreenDestination() within navGraph
+        )
+    }
+
+    override fun navigateToInstitutionRequisition(institutionId: String) {
+        navController.navigate(
+            direction = InstitutionRequisitionScreenDestination(institutionId) within navGraph
         )
     }
 

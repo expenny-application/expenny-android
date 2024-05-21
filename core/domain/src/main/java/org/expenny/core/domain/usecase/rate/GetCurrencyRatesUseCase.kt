@@ -3,7 +3,7 @@ package org.expenny.core.domain.usecase.rate
 import kotlinx.coroutines.flow.Flow
 import org.expenny.core.domain.repository.CurrencyRateRepository
 import org.expenny.core.model.currency.CurrencyRate
-import org.expenny.core.model.resource.RemoteResult
+import org.expenny.core.common.utils.RemoteResult
 import java.time.LocalDate
 import javax.inject.Inject
 

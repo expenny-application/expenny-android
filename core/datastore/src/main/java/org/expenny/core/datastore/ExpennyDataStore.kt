@@ -8,32 +8,79 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import org.expenny.core.common.utils.Constants
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 class ExpennyDataStore @Inject constructor(
     private val dataStore: DataStore<Preferences>,
 ) {
-    companion object {
-        val CURRENT_PROFILE_ID_KEY = longPreferencesKey(name = "current_profile_id")
-        val PASSCODE_KEY = stringPreferencesKey(name = "passcode")
-        val REMINDER_TIME_UTC_KEY = stringPreferencesKey(name = "reminder_time_utc")
-        val IS_REMINDER_ENABLED_KEY = booleanPreferencesKey(name = "is_reminder_enabled")
-        val IS_BIOMETRIC_ENROLLED_KEY = booleanPreferencesKey(name = "is_biometric_enrolled")
-        val IS_DARK_MODE_KEY = booleanPreferencesKey(name = "is_dark_mode")
-        val IS_ONBOARDING_PASSED_KEY = booleanPreferencesKey(name = "is_onboarding_passed")
-        val IS_SETUP_PASSED_KEY = booleanPreferencesKey(name = "is_setup_passed")
+    private val currentProfileIdKey = longPreferencesKey("current_profile_id")
+    private val passcodeKey = stringPreferencesKey("passcode")
+    private val reminderTimeUtcKey = stringPreferencesKey("reminder_time_utc")
+    private val isReminderEnabledKey = booleanPreferencesKey("is_reminder_enabled")
+    private val isBiometricEnrolledKey = booleanPreferencesKey("is_biometric_enrolled")
+    private val isDarkThemeKey = booleanPreferencesKey("is_dark_theme")
+    private val isOnboardingPassedKey = booleanPreferencesKey("is_onboarding_passed")
+    private val isSetupPassedKey = booleanPreferencesKey("is_setup_passed")
+    private val goCardlessAccessTokenKey = stringPreferencesKey("gocardless_access_token")
+    private val goCardlessRefreshTokenKey = stringPreferencesKey("gocardless_refresh_token")
+    private val installationIdKey = stringPreferencesKey("installation_id")
+
+    suspend fun setCurrentProfileId(value: Long) = put(currentProfileIdKey, value)
+
+    suspend fun setPasscode(value: String?) {
+        if (value == null) remove(passcodeKey)
+        else put(passcodeKey, value)
     }
 
-    suspend fun <T> put(key: Preferences.Key<T>, value: T) {
-        dataStore.edit {
-            it[key] = value
-        }
+    suspend fun setReminderTimeUtc(value: LocalTime) {
+        val stringValue = value.format(DateTimeFormatter.ofPattern(Constants.DEFAULT_REMINDER_TIME_FORMAT))
+        put(reminderTimeUtcKey, stringValue)
     }
 
-    suspend fun <T> remove(key: Preferences.Key<T>) {
-        dataStore.edit {
-            it.remove(key = key)
-        }
+    suspend fun setIsReminderEnabled(value: Boolean) = put(isReminderEnabledKey, value)
+
+    suspend fun setIsBiometricEnrolled(value: Boolean) = put(isBiometricEnrolledKey, value)
+
+    suspend fun setIsDarkTheme(value: Boolean?) {
+        if (value == null) remove(isDarkThemeKey)
+        else put(isDarkThemeKey, value)
+    }
+
+    suspend fun setIsOnboardingPassed(value: Boolean) = put(isOnboardingPassedKey, value)
+
+    suspend fun setIsSetupPassed(value: Boolean) = put(isSetupPassedKey, value)
+
+    suspend fun setGoCardlessAccessToken(value: String) = put(goCardlessAccessTokenKey, value)
+
+    suspend fun setGoCardlessRefreshToken(value: String) = put(goCardlessRefreshTokenKey, value)
+
+    suspend fun setInstallationId(value: String) = put(installationIdKey, value)
+
+    fun isDarkTheme() = get(isDarkThemeKey)
+
+    fun isSetupPassed() = get(isSetupPassedKey, false)
+
+    fun isOnboardingPassed() = get(isOnboardingPassedKey, false)
+
+    fun isBiometricEnrolled() = get(isBiometricEnrolledKey, false)
+
+    fun isReminderEnabled() = get(isReminderEnabledKey, false)
+
+    fun getGoCardlessAccessToken() = get(goCardlessAccessTokenKey)
+
+    fun getGoCardlessRefreshToken() = get(goCardlessRefreshTokenKey)
+
+    fun getCurrentProfileId() = get(currentProfileIdKey)
+
+    fun getPasscode() = get(passcodeKey)
+
+    fun getInstallationId() = get(installationIdKey)
+
+    fun getReminderTime() = get(reminderTimeUtcKey, Constants.DEFAULT_REMINDER_TIME).map { timeUtc ->
+        LocalTime.parse(timeUtc, DateTimeFormatter.ofPattern(Constants.DEFAULT_REMINDER_TIME_FORMAT))
     }
 
     suspend fun clear() {
@@ -42,7 +89,19 @@ class ExpennyDataStore @Inject constructor(
         }
     }
 
-    fun <T> get(key: Preferences.Key<T>, default: T): Flow<T> = dataStore.data.map { it[key] ?: default }
+    private suspend fun <T> put(key: Preferences.Key<T>, value: T) {
+        dataStore.edit {
+            it[key] = value
+        }
+    }
 
-    fun <T> get(key: Preferences.Key<T>): Flow<T?> = dataStore.data.map { it[key] }
+    private suspend fun <T> remove(key: Preferences.Key<T>) {
+        dataStore.edit {
+            it.remove(key = key)
+        }
+    }
+
+    private fun <T> get(key: Preferences.Key<T>, default: T): Flow<T> = dataStore.data.map { it[key] ?: default }
+
+    private fun <T> get(key: Preferences.Key<T>): Flow<T?> = dataStore.data.map { it[key] }
 }

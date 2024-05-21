@@ -9,7 +9,7 @@ import org.expenny.core.common.models.ErrorMessage
 import org.expenny.core.common.models.StringResource.Companion.fromRes
 import org.expenny.core.domain.usecase.profile.CreateProfileUseCase
 import org.expenny.core.domain.usecase.ValidateInputUseCase
-import org.expenny.core.domain.usecase.account.CreateDefaultAccountUseCase
+import org.expenny.core.domain.usecase.account.CreateInitialAccountUseCase
 import org.expenny.core.domain.usecase.currencyunit.GetCurrencyUnitUseCase
 import org.expenny.core.domain.validators.*
 import org.expenny.core.model.currency.CurrencyUnit
@@ -30,7 +30,7 @@ import javax.inject.Inject
 internal class ProfileSetupViewModel @Inject constructor(
     private val validateInput: ValidateInputUseCase,
     private val createProfile: CreateProfileUseCase,
-    private val createDefaultAccount: CreateDefaultAccountUseCase,
+    private val createInitialAccount: CreateInitialAccountUseCase,
     private val getCurrencyUnit: GetCurrencyUnitUseCase,
     private val currencyUnitMapper: CurrencyUnitMapper,
 ) : ExpennyViewModel<Action>(), ContainerHost<State, Event> {
@@ -81,8 +81,8 @@ internal class ProfileSetupViewModel @Inject constructor(
             )
         )
         if (state.setupCashBalanceCheckbox.value) {
-            createDefaultAccount(
-                CreateDefaultAccountUseCase.Params(
+            createInitialAccount(
+                CreateInitialAccountUseCase.Params(
                     name = state.accountNameInput.value,
                     startBalance = state.accountBalanceInput.value
                 )

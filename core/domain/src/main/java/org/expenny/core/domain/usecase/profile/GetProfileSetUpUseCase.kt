@@ -2,14 +2,14 @@ package org.expenny.core.domain.usecase.profile
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import org.expenny.core.domain.repository.LocalRepository
+import org.expenny.core.datastore.ExpennyDataStore
 import javax.inject.Inject
 
 class GetProfileSetUpUseCase @Inject constructor(
-    private val localRepository: LocalRepository,
+    private val preferences: ExpennyDataStore,
 ) {
 
     operator fun invoke(): Flow<Boolean> {
-        return localRepository.getCurrentProfileId().map { it != null }
+        return preferences.getCurrentProfileId().map { it != null }
     }
 }

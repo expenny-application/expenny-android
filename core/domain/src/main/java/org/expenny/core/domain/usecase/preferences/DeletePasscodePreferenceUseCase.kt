@@ -1,13 +1,13 @@
 package org.expenny.core.domain.usecase.preferences
 
-import org.expenny.core.domain.repository.LocalRepository
+import org.expenny.core.datastore.ExpennyDataStore
 import javax.inject.Inject
 
 class DeletePasscodePreferenceUseCase @Inject constructor(
-    private val localRepository: LocalRepository
+    private val preferences: ExpennyDataStore
 ) {
 
     suspend operator fun invoke() {
-        localRepository.setPasscode(null)
+        preferences.setPasscode(null)
     }
 }

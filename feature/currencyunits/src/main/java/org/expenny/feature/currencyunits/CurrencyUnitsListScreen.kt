@@ -20,7 +20,6 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 )
 @Composable
 fun CurrencyUnitsListScreen(
-    snackbarManager: ExpennySnackbarManager,
     resultNavigator: ResultBackNavigator<LongNavArg>
 ) {
     val vm: CurrencyUnitsListViewModel = hiltViewModel()
@@ -37,15 +36,4 @@ fun CurrencyUnitsListScreen(
         state = state,
         onAction = vm::onAction,
     )
-}
-
-@Preview
-@Composable
-private fun CurrencyUnitsListScreenPreview() {
-    ExpennyTheme {
-        CurrencyUnitsListContent(
-            state = State(),
-            onAction = {},
-        )
-    }
 }

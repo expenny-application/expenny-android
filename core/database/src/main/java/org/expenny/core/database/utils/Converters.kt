@@ -10,7 +10,7 @@ class BigDecimalConverter {
 
     @TypeConverter
     fun stringToBigDecimal(input: String?): BigDecimal {
-        if (input == null || input.isEmpty()) return BigDecimal.ZERO
+        if (input.isNullOrEmpty()) return BigDecimal.ZERO
         return BigDecimal(input)
     }
 
@@ -24,20 +24,16 @@ class LocalDateTimeConverter {
 
     @TypeConverter
     fun longToLocalDateTime(input: Long?): LocalDateTime? {
-        // Converts UTC epoch to JVM type applying current device timezone
+        // Converts utc epoch to local date time
         return input?.let {
-            LocalDateTime.ofInstant(Instant.ofEpochMilli(input), ZoneId.systemDefault())
+            LocalDateTime.ofInstant(Instant.ofEpochMilli(input), ZoneOffset.systemDefault())
         }
     }
 
     @TypeConverter
     fun localDateTimeToLong(input: LocalDateTime?): Long? {
-        // Converts JVM date in UTC epoch
-        return input
-            ?.atZone(ZoneId.systemDefault())
-            ?.withZoneSameInstant(ZoneOffset.UTC)
-            ?.toInstant()
-            ?.toEpochMilli()
+        // Converts local date time to utc epoch
+        return input?.atZone(ZoneId.systemDefault())?.toInstant()?.toEpochMilli()
     }
 }
 
@@ -45,21 +41,16 @@ class LocalDateConverter {
 
     @TypeConverter
     fun longToLocalDate(input: Long?): LocalDate? {
-        // Converts UTC epoch to JVM type applying current device timezone
+        // Converts utc epoch to local date
         return input?.let {
-            LocalDate.ofInstant(Instant.ofEpochMilli(input), ZoneId.systemDefault())
+            LocalDate.ofInstant(Instant.ofEpochMilli(input), ZoneOffset.systemDefault())
         }
     }
 
     @TypeConverter
     fun localDateToLong(input: LocalDate?): Long? {
-        // Converts JVM date in UTC epoch
-        return input
-            ?.atStartOfDay()
-            ?.atZone(ZoneId.systemDefault())
-            ?.withZoneSameInstant(ZoneOffset.UTC)
-            ?.toInstant()
-            ?.toEpochMilli()
+        // Converts local date to utc epoch
+        return input?.atStartOfDay()?.atZone(ZoneId.systemDefault())?.toInstant()?.toEpochMilli()
     }
 }
 

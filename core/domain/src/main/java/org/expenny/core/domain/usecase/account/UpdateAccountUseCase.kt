@@ -1,7 +1,7 @@
 package org.expenny.core.domain.usecase.account
 
 import kotlinx.coroutines.flow.first
-import org.expenny.core.common.types.AccountType
+import org.expenny.core.common.types.LocalAccountType
 import org.expenny.core.domain.repository.AccountRepository
 import org.expenny.core.model.account.AccountUpdate
 import java.math.BigDecimal
@@ -34,7 +34,7 @@ class UpdateAccountUseCase @Inject constructor(
         val id: Long,
         val currencyId: Long,
         val name: String,
-        val type: AccountType,
+        val type: LocalAccountType,
         val description: String,
         val startBalance: BigDecimal,
     )

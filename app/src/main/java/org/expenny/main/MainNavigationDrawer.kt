@@ -3,6 +3,8 @@ package org.expenny.main
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,12 +27,16 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
@@ -112,15 +118,13 @@ private fun NavigationDrawerContent(
     currentOption: NavGraphSpec,
     onTabSelect: (DrawerTab) -> Unit,
 ) {
-    val tabs = remember {
-        listOf(
-            DrawerTab.Dashboard,
-            DrawerTab.Analytics,
-            DrawerTab.Budgets,
-            DrawerTab.Accounts,
-            DrawerTab.Records
-        )
-    }
+    val tabs = listOf(
+        DrawerTab.Dashboard,
+        DrawerTab.Analytics,
+        DrawerTab.Budgets,
+        DrawerTab.Accounts,
+        DrawerTab.Records
+    )
 
     Column(
         modifier = modifier,
@@ -174,44 +178,41 @@ private fun NavigationDrawerOption(
     trailingContent: @Composable () -> Unit = {},
 ) {
     val iconColor by rememberUpdatedState(
-        if (isSelected) MaterialTheme.colorScheme.primary
+        if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer
         else MaterialTheme.colorScheme.onSurfaceVariant
     )
     val labelColor by rememberUpdatedState(
-        if (isSelected) MaterialTheme.colorScheme.primary
+        if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer
         else MaterialTheme.colorScheme.onSurfaceVariant
     )
     val backgroundColor by rememberUpdatedState(
-        if (isSelected) MaterialTheme.colorScheme.primary.copy(0.1f)
+        if (isSelected) MaterialTheme.colorScheme.primaryContainer
         else Color.Transparent
     )
-    Surface(
+    Row(
         modifier = modifier
+            .clip(MaterialTheme.shapes.small)
+            .background(backgroundColor)
             .height(48.dp)
-            .fillMaxWidth(),
-        onClick = onSelect,
-        shape = MaterialTheme.shapes.small,
-        color = backgroundColor,
+            .fillMaxWidth()
+            .clickable { onSelect() }
+            .padding(horizontal = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Icon(
-                painter = icon,
-                tint = iconColor,
-                contentDescription = null
+        Icon(
+            painter = icon,
+            tint = iconColor,
+            contentDescription = null
+        )
+        Box(modifier = Modifier.weight(1f)) {
+            Text(
+                text = label,
+                color = labelColor,
+                style = MaterialTheme.typography.bodyLarge
             )
-            Box(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = label,
-                    color = labelColor,
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            }
-            trailingContent()
         }
+        trailingContent()
     }
 }
 
@@ -230,7 +231,7 @@ internal enum class DrawerTab(
     val route = navGraph.startRoute.route
 
     companion object {
-        val routes = values().map { it.navGraph.route }
-        val startRoutes = values().map { it.navGraph.startRoute.route }
+        val routes = entries.map { it.navGraph.route }
+        val startRoutes = entries.map { it.navGraph.startRoute.route }
     }
 }

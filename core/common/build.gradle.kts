@@ -15,4 +15,5 @@ dependencies {
     implementation(libs.destinations.core)
     implementation(libs.threeten)
     implementation(libs.timber.core)
+    implementation(libs.kotlinx.coroutines.core)
 }

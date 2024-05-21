@@ -9,6 +9,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:common"))
+
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlin.reflect)
     implementation(libs.androidx.datastore.preferences)

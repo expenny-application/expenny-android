@@ -20,4 +20,5 @@ object Constants {
     const val REMINDER_NOTIFICATION_CHANNEL_ID = "reminder_channel_id"
     const val DEFAULT_REMINDER_TIME = "20:00"
     const val PRIMARY_COLOR_ARGB = 0xFF0756CE
+    const val IS_GOCARDLESS_SDK_ENABLED_CONFIG_KEY = "IS_GOCARDLESS_SDK_ENABLED"
 }

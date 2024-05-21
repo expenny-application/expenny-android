@@ -9,10 +9,11 @@ import com.ramcosta.composedestinations.result.ResultBackNavigator
 import org.expenny.core.ui.data.navargs.NavArgResult
 import org.expenny.core.ui.base.ExpennyDrawerManager
 import org.expenny.core.ui.base.ExpennySnackbarManager
-import org.expenny.feature.accounts.model.Event
+import org.expenny.feature.accounts.contract.AccountsListEvent
 import org.expenny.feature.accounts.navigation.AccountsListNavArgs
 import org.expenny.feature.accounts.navigation.AccountsListNavigator
 import org.expenny.feature.accounts.view.AccountsListContent
+import org.expenny.feature.accounts.viewmodel.AccountsListViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
@@ -30,10 +31,11 @@ fun AccountsListScreen(
 
     vm.collectSideEffect {
         when (it) {
-            is Event.NavigateToCreateAccount -> navigator.navigateToCreateAccountScreen()
-            is Event.NavigateToEditAccount -> navigator.navigateToEditAccountScreen(it.id)
-            is Event.NavigateBackWithResult -> resultNavigator.navigateBack(it.result)
-            is Event.NavigateBack -> navigator.navigateBack()
+            is AccountsListEvent.NavigateToAccountType -> navigator.navigateToAccountTypeScreen()
+            is AccountsListEvent.NavigateToCreateAccount -> navigator.navigateToCreateAccountScreen()
+            is AccountsListEvent.NavigateToEditAccount -> navigator.navigateToEditAccountScreen(it.id)
+            is AccountsListEvent.NavigateBackWithResult -> resultNavigator.navigateBack(it.result)
+            is AccountsListEvent.NavigateBack -> navigator.navigateBack()
         }
     }
 

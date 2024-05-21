@@ -1,7 +1,7 @@
 package org.expenny.core.data.mapper
 
 import org.expenny.core.common.extensions.invert
-import org.expenny.core.common.types.AccountType
+import org.expenny.core.common.types.LocalAccountType
 import org.expenny.core.common.types.RecordType
 import org.expenny.core.common.types.TransactionType
 import org.expenny.core.common.utils.Constants.CURRENCY_RATE_SCALE
@@ -27,10 +27,15 @@ import org.expenny.core.model.currency.CurrencyCreate
 import org.expenny.core.model.currency.CurrencyUnit
 import org.expenny.core.model.currency.CurrencyUpdate
 import org.expenny.core.model.file.FileCreate
+import org.expenny.core.model.institution.Institution
+import org.expenny.core.model.institution.InstitutionRequisition
+import org.expenny.core.model.institution.InstitutionRequisitionStatus
 import org.expenny.core.model.profile.Profile
 import org.expenny.core.model.profile.ProfileCreate
 import org.expenny.core.model.record.Record
 import org.expenny.core.model.record.RecordCreate
+import org.expenny.core.network.dto.GoCardlessInstitutionDto
+import org.expenny.core.network.dto.GoCardlessRequisitionDto
 import java.time.LocalDateTime
 
 object DataMapper {
@@ -41,7 +46,7 @@ object DataMapper {
             profile = accountProfile.toModel(),
             name = account.name,
             description = account.description,
-            type = AccountType.valueOf(account.type),
+            type = LocalAccountType.valueOf(account.type),
             currency = accountCurrency.toModel(),
             startBalance = CurrencyAmount(
                 currency = accountCurrency.toModel(),
@@ -261,6 +266,37 @@ object DataMapper {
         return FileEntity(
             profileId = profileId,
             uri = uri
+        )
+    }
+
+    internal fun GoCardlessInstitutionDto.toModel(): Institution {
+        return Institution(
+            id = id,
+            name = name,
+            bic = bic,
+            historyDays = transactionTotalDays.toInt(),
+            logoUrl = logoUrl,
+            countryCodes = countries
+        )
+    }
+
+    internal fun GoCardlessRequisitionDto.toModel(): InstitutionRequisition {
+        return InstitutionRequisition(
+            id = id,
+            status = when (status) {
+                "CR" -> InstitutionRequisitionStatus.Created
+                "GC" -> InstitutionRequisitionStatus.GivingConsent
+                "UA" -> InstitutionRequisitionStatus.UndergoingAuthentication
+                "RJ" -> InstitutionRequisitionStatus.Rejected
+                "SA" -> InstitutionRequisitionStatus.SelectingAccount
+                "GA" -> InstitutionRequisitionStatus.GrantingAccess
+                "LN" -> InstitutionRequisitionStatus.Linked
+                "EX" -> InstitutionRequisitionStatus.Expired
+                else -> null
+            },
+            redirectBaseUrl = redirectUrl,
+            url = url,
+            accounts = accounts
         )
     }
 }

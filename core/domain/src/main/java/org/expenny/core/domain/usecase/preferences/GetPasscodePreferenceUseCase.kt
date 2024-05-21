@@ -1,14 +1,14 @@
 package org.expenny.core.domain.usecase.preferences
 
 import kotlinx.coroutines.flow.Flow
-import org.expenny.core.domain.repository.LocalRepository
+import org.expenny.core.datastore.ExpennyDataStore
 import javax.inject.Inject
 
 class GetPasscodePreferenceUseCase @Inject constructor(
-    private val localRepository: LocalRepository
+    private val preferences: ExpennyDataStore,
 ) {
 
     operator fun invoke(): Flow<String?> {
-        return localRepository.getPasscode()
+        return preferences.getPasscode()
     }
 }

@@ -7,7 +7,6 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
 import org.expenny.core.common.extensions.join
 import org.expenny.core.common.types.ApplicationLanguage
@@ -17,11 +16,13 @@ import org.expenny.core.common.models.StringResource.Companion.fromStr
 import org.expenny.core.common.types.ProfileActionType
 import org.expenny.core.common.types.SettingsItemType
 import org.expenny.core.ui.base.ExpennyViewModel
-import org.expenny.core.domain.repository.LocalRepository
+import org.expenny.core.domain.usecase.preferences.GetApplicationThemeUseCase
+import org.expenny.core.domain.usecase.preferences.SetApplicationThemeUseCase
 import org.expenny.core.domain.usecase.preferences.GetBiometricStatusUseCase
 import org.expenny.core.domain.usecase.preferences.DeletePasscodePreferenceUseCase
 import org.expenny.core.domain.usecase.preferences.GetBiometricPreferenceUseCase
 import org.expenny.core.domain.usecase.preferences.GetCanSendAlarmsUseCase
+import org.expenny.core.domain.usecase.preferences.GetPasscodePreferenceUseCase
 import org.expenny.core.domain.usecase.preferences.GetReminderPreferenceUseCase
 import org.expenny.core.domain.usecase.preferences.GetReminderTimePreferenceUseCase
 import org.expenny.core.domain.usecase.preferences.SetBiometricPreferenceUseCase
@@ -49,7 +50,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val localRepository: LocalRepository,
     private val setCurrentProfile: SetCurrentProfileUseCase,
     private val getCurrentProfile: GetCurrentProfileUseCase,
     private val deleteCurrentProfile: DeleteCurrentProfileUseCase,
@@ -63,7 +63,10 @@ class SettingsViewModel @Inject constructor(
     private val getReminderTimePreference: GetReminderTimePreferenceUseCase,
     private val setReminderPreference: SetReminderPreferenceUseCase,
     private val setReminderTimePreference: SetReminderTimePreferenceUseCase,
+    private val getPasscodePreference: GetPasscodePreferenceUseCase,
     private val getCanSendAlarms: GetCanSendAlarmsUseCase,
+    private val setApplicationTheme: SetApplicationThemeUseCase,
+    private val getApplicationTheme: GetApplicationThemeUseCase,
     private val profileMapper: ProfileMapper,
 ) : ExpennyViewModel<Action>(), ContainerHost<State, Event> {
 
@@ -256,11 +259,7 @@ class SettingsViewModel @Inject constructor(
 
     private fun handleOnThemeSelect(action: Action.Dialog.OnThemeSelect) = intent {
         action.selection.value?.let {
-            when (it) {
-                ApplicationTheme.Dark -> localRepository.setThemeDarkMode(true)
-                ApplicationTheme.Light -> localRepository.setThemeDarkMode(false)
-                ApplicationTheme.SystemDefault -> localRepository.setThemeSystemDefault()
-            }
+            setApplicationTheme(SetApplicationThemeUseCase.Params(it))
             reduce { state.copy(theme = it) }
             dismissDialog()
         }
@@ -288,7 +287,7 @@ class SettingsViewModel @Inject constructor(
     }
 
     private fun subscribeToPasscodePreference() = intent {
-        localRepository.getPasscode()
+        getPasscodePreference()
             .map { it != null }
             .collect { isPasscodeSetUp ->
                 reduce {
@@ -347,16 +346,9 @@ class SettingsViewModel @Inject constructor(
     }
 
     private fun subscribeToThemePreference() = intent {
-        localRepository.isDarkMode()
-            .mapLatest {
-                when (it) {
-                    true -> ApplicationTheme.Dark
-                    false -> ApplicationTheme.Light
-                    null -> ApplicationTheme.SystemDefault
-                }
-            }.collect { applicationTheme ->
-                reduce { state.copy(theme = applicationTheme) }
-            }
+        getApplicationTheme().collect {
+            reduce { state.copy(theme = it) }
+        }
     }
 
     private suspend fun SimpleSyntax<State, Event>.dismissDialog() {

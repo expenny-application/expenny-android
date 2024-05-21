@@ -1,3 +1,5 @@
+import java.lang.System.getenv
+
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     id("expenny.android.application")
@@ -31,9 +33,9 @@ android {
 
         create("release") {
             storeFile = project.file("expenny-release-store.jks")
-            storePassword = System.getenv("SIGNING_STORE_PASSWORD")
-            keyAlias = System.getenv("SIGNING_KEY_ALIAS")
-            keyPassword = System.getenv("SIGNING_KEY_PASSWORD")
+            storePassword = getenv("SIGNING_STORE_PASSWORD")
+            keyAlias = getenv("SIGNING_KEY_ALIAS")
+            keyPassword = getenv("SIGNING_KEY_PASSWORD")
         }
     }
 
@@ -120,6 +122,7 @@ dependencies {
     implementation(project(":feature:settings"))
     implementation(project(":feature:accountoverview"))
     implementation(project(":feature:passcode"))
+    implementation(project(":feature:institution"))
 
     implementation("androidx.constraintlayout:constraintlayout:2.1.3")
 

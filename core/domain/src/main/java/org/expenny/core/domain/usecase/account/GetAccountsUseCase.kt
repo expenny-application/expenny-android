@@ -7,7 +7,7 @@ import org.expenny.core.model.account.Account
 import javax.inject.Inject
 
 class GetAccountsUseCase @Inject constructor(
-    private val accountRepository: AccountRepository,
+    private val accountRepository: AccountRepository
 ) {
 
     operator fun invoke(params: Params = Params()): Flow<List<Account>> {

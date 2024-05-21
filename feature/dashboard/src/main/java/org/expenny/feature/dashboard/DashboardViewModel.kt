@@ -76,7 +76,6 @@ class DashboardViewModel @Inject constructor(
             is Action.OnCategoryExpensesDeselect -> handleOnCategoryExpensesDeselect()
             is Action.OnExpensesPeriodTypeChange -> handleOnExpensesPeriodTypeChange(action)
             is Action.OnWidgetClick -> handleOnWidgetClick(action)
-            is Action.OnCreateAccountClick -> handleOnCreateAccountClick()
             is Action.OnDisplayCurrencyClick -> handleOnDisplayCurrencyClick()
             is Action.OnDisplayCurrencySelect -> handleOnDisplayCurrencySelect(action)
             is Action.OnShowMoreRecordsClick -> handleOnShowMoreRecordsClick()
@@ -146,10 +145,6 @@ class DashboardViewModel @Inject constructor(
                 selectedAccounts = state.accounts.toImmutableList(),
             )
         }
-    }
-
-    private fun handleOnCreateAccountClick() = intent {
-        postSideEffect(Event.NavigateToCreateAccount)
     }
 
     private fun handleOnWidgetClick(action: Action.OnWidgetClick) = intent {

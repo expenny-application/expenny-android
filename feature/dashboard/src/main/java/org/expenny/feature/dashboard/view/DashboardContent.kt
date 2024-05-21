@@ -81,7 +81,6 @@ internal fun DashboardContent(
                 balance = state.balanceData,
                 onSelectAll = { onAction(Action.OnAllAccountsSelect) },
                 onSelect = { onAction(Action.OnAccountSelect(it)) },
-                onCreate = { onAction(Action.OnCreateAccountClick) },
                 onShowMoreRecordsClick = { onAction(Action.OnShowMoreRecordsClick) }
             )
             DashboardWidgetsSection(

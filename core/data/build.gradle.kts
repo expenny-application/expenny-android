@@ -18,6 +18,9 @@ dependencies {
     implementation(project(":core:database"))
     implementation(project(":core:datastore"))
 
+    // Workaround for https://github.com/firebase/firebase-android-sdk/issues/5467
+    implementation("com.google.guava:guava:31.1-android")
+
     implementation(libs.androidx.biometric)
     implementation(libs.androidx.core.ktx)
     implementation(libs.threeten)

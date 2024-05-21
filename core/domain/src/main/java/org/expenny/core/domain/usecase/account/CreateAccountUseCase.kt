@@ -1,7 +1,7 @@
 package org.expenny.core.domain.usecase.account
 
 import kotlinx.coroutines.flow.first
-import org.expenny.core.common.types.AccountType
+import org.expenny.core.common.types.LocalAccountType
 import org.expenny.core.domain.usecase.profile.GetCurrentProfileUseCase
 import org.expenny.core.domain.repository.AccountRepository
 import org.expenny.core.model.account.AccountCreate
@@ -25,8 +25,7 @@ class CreateAccountUseCase @Inject constructor(
                     type = type,
                     description = description,
                     startBalance = startBalance,
-                    // the same as start balance because it is new
-                    totalBalance = startBalance
+                    totalBalance = startBalance // the same as start balance because it is new
                 )
             }
         )
@@ -35,7 +34,7 @@ class CreateAccountUseCase @Inject constructor(
     data class Params(
         val currencyId: Long,
         val name: String,
-        val type: AccountType,
+        val type: LocalAccountType,
         val description: String,
         val startBalance: BigDecimal
     )

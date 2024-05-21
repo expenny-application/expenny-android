@@ -5,6 +5,7 @@ import com.ramcosta.composedestinations.spec.DestinationSpec
 import com.ramcosta.composedestinations.spec.NavGraphSpec
 import org.expenny.feature.accountdetails.destinations.AccountDetailsScreenDestination
 import org.expenny.feature.accountoverview.destinations.AccountOverviewScreenDestination
+import org.expenny.feature.accounts.destinations.AccountTypeScreenDestination
 import org.expenny.feature.accounts.destinations.AccountsListScreenDestination
 import org.expenny.feature.analytics.destinations.AnalyticsScreenDestination
 import org.expenny.feature.categories.destinations.CategoriesListScreenDestination
@@ -18,6 +19,8 @@ import org.expenny.feature.profilesetup.destinations.ProfileSetupScreenDestinati
 import org.expenny.feature.recorddetails.destinations.RecordDetailsScreenDestination
 import org.expenny.feature.records.destinations.RecordsListScreenDestination
 import org.expenny.feature.settings.destinations.SettingsScreenDestination
+import org.expenny.feature.institution.destinations.InstitutionRequisitionScreenDestination
+import org.expenny.feature.institution.destinations.InstitutionsListScreenDestination
 import org.expenny.feature.welcome.destinations.WelcomeScreenDestination
 
 object ExpennyNavGraphs {
@@ -34,11 +37,14 @@ object ExpennyNavGraphs {
             CurrencyDetailsScreenDestination,
             AccountsListScreenDestination,
             AccountDetailsScreenDestination,
+            AccountTypeScreenDestination,
             AccountOverviewScreenDestination,
             RecordsListScreenDestination,
             RecordDetailsScreenDestination,
             CategoriesListScreenDestination,
             CategoryDetailsScreenDestination,
+            InstitutionsListScreenDestination,
+            InstitutionRequisitionScreenDestination
         ).routedIn(this).associateBy { it.route }
     }
 
@@ -60,9 +66,12 @@ object ExpennyNavGraphs {
         override val destinationsByRoute = listOf<DestinationSpec<*>>(
             AccountsListScreenDestination,
             AccountDetailsScreenDestination,
+            AccountTypeScreenDestination,
             CurrencyUnitsListScreenDestination,
             CurrenciesListScreenDestination,
             CurrencyDetailsScreenDestination,
+            InstitutionsListScreenDestination,
+            InstitutionRequisitionScreenDestination
         ).routedIn(this).associateBy { it.route }
     }
 

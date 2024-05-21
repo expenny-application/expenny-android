@@ -34,13 +34,11 @@ sealed interface Action {
     object OnAllAccountsSelect : Action
     object OnCategoryExpensesDeselect : Action
     object OnDisplayCurrencyClick : Action
-    object OnCreateAccountClick : Action
 }
 
 sealed interface Event {
     class NavigateToDisplayCurrencySelection(val selectedId: Long?) : Event
     class NavigateToRecords(val filter: RecordsListFilterNavArg? = null) : Event
     class NavigateToCreateRecord(val recordType: RecordType) : Event
-    object NavigateToCreateAccount : Event
     object NavigateToAccounts : Event
 }
