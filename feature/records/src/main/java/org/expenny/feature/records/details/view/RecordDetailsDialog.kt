@@ -4,33 +4,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import org.expenny.core.resources.R
-import org.expenny.core.ui.components.ExpennyDatePicker
-import org.expenny.core.ui.components.ExpennyTimePicker
+import org.expenny.core.ui.components.ExpennyDateTimePicker
 import org.expenny.core.ui.components.ExpennyDialog
 import org.expenny.feature.records.details.contract.RecordDetailsAction
 import org.expenny.feature.records.details.contract.RecordDetailsState
-import java.time.LocalDate
-import java.time.LocalTime
+import java.time.LocalDateTime
 
 @Composable
 internal fun RecordDetailsDialog(
     dialog: RecordDetailsState.Dialog?,
-    datePickerDate: LocalDate?,
-    timePickerDate: LocalTime?,
+    dateTimePickerValue: LocalDateTime?,
     onAction: (RecordDetailsAction.Dialog) -> Unit
 ) {
     when (dialog) {
-        is RecordDetailsState.Dialog.DatePickerDialog -> {
-            ExpennyDatePicker(
-                currentDate = datePickerDate,
-                onSelect = { onAction(RecordDetailsAction.Dialog.OnDateChange(it)) },
-                onDismiss = { onAction(RecordDetailsAction.Dialog.OnDialogDismiss) }
-            )
-        }
-        is RecordDetailsState.Dialog.TimePickerDialog -> {
-            ExpennyTimePicker(
-                currentTime = timePickerDate,
-                onSelect = { onAction(RecordDetailsAction.Dialog.OnTimeChange(it)) },
+        is RecordDetailsState.Dialog.DateTimePickerDialog -> {
+            ExpennyDateTimePicker(
+                currentDateTime = dateTimePickerValue,
+                onSelect = { onAction(RecordDetailsAction.Dialog.OnDateTimeChange(it)) },
                 onDismiss = { onAction(RecordDetailsAction.Dialog.OnDialogDismiss) }
             )
         }

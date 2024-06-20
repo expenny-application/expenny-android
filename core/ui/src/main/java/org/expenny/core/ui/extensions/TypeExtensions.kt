@@ -119,7 +119,6 @@ val SortType.label: String
 val RecordActionType.label: String
     @Composable get() = when (this) {
         RecordActionType.Select -> stringResource(R.string.select_label)
-        RecordActionType.Clone -> stringResource(R.string.clone_label)
         RecordActionType.Edit -> stringResource(R.string.edit_label)
         RecordActionType.Delete -> stringResource(R.string.delete_label)
     }
@@ -127,7 +126,6 @@ val RecordActionType.label: String
 val RecordActionType.icon: Painter
     @Composable get() = when (this) {
         RecordActionType.Select -> painterResource(R.drawable.ic_check)
-        RecordActionType.Clone -> painterResource(R.drawable.ic_copy)
         RecordActionType.Edit -> painterResource(R.drawable.ic_edit)
         RecordActionType.Delete -> painterResource(R.drawable.ic_delete)
     }

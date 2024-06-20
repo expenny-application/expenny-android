@@ -1,6 +1,7 @@
 package org.expenny.core.common.extensions
 
 
+import org.expenny.core.common.utils.Constants
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -11,7 +12,7 @@ fun BigDecimal.asRawString() = toString().filter { it.isDigit() }.let {
     if (it.length > 1) it.trimStart('0') else it
 }
 
-fun BigDecimal.setScaleNoRounding(scale: Int): BigDecimal {
+fun BigDecimal.setScaleRoundingDown(scale: Int): BigDecimal {
     return setScale(scale, RoundingMode.DOWN)
 }
 
@@ -43,6 +44,24 @@ fun BigDecimal.invert(
         BigDecimal.ONE.divide(this, scale, roundingMode)
     } catch (e: ArithmeticException) {
         return BigDecimal.ZERO.setScale(scale)
+    }
+}
+
+fun BigDecimal.convertBy(rate: BigDecimal): BigDecimal {
+    if (rate == BigDecimal.ONE) return this
+
+    return try {
+        this.multiply(rate).setScale(scale(), RoundingMode.HALF_UP)
+    } catch (e: Exception) {
+        this
+    }
+}
+
+fun BigDecimal.conversionRateOf(amount: BigDecimal): BigDecimal {
+    return try {
+        divide(amount, Constants.CURRENCY_RATE_SCALE, RoundingMode.HALF_UP)
+    } catch (e: ArithmeticException) {
+        return BigDecimal.ZERO.setScale(Constants.CURRENCY_RATE_SCALE)
     }
 }
 

@@ -21,6 +21,7 @@ import org.expenny.feature.records.destinations.RecordsListScreenDestination
 import org.expenny.feature.settings.destinations.SettingsScreenDestination
 import org.expenny.feature.institution.destinations.InstitutionRequisitionScreenDestination
 import org.expenny.feature.institution.destinations.InstitutionsListScreenDestination
+import org.expenny.feature.records.destinations.RecordLabelsListScreenDestination
 import org.expenny.feature.welcome.destinations.WelcomeScreenDestination
 
 object ExpennyNavGraphs {
@@ -41,6 +42,7 @@ object ExpennyNavGraphs {
             AccountOverviewScreenDestination,
             RecordsListScreenDestination,
             RecordDetailsScreenDestination,
+            RecordLabelsListScreenDestination,
             CategoriesListScreenDestination,
             CategoryDetailsScreenDestination,
             InstitutionsListScreenDestination,
@@ -120,6 +122,7 @@ object ExpennyNavGraphs {
         override val destinationsByRoute = listOf<DestinationSpec<*>>(
             RecordsListScreenDestination,
             RecordDetailsScreenDestination,
+            RecordLabelsListScreenDestination,
             AccountsListScreenDestination,
             AccountDetailsScreenDestination,
             CurrencyUnitsListScreenDestination,

@@ -10,47 +10,48 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.DpSize
-import androidx.compose.ui.unit.dp
-import com.commandiron.wheel_picker_compose.WheelTimePicker
-import com.commandiron.wheel_picker_compose.core.TimeFormat
+import com.commandiron.wheel_picker_compose.WheelDateTimePicker
 import com.commandiron.wheel_picker_compose.core.WheelPickerDefaults
 import org.expenny.core.resources.R
 import org.expenny.core.ui.foundation.ExpennyTheme
-import java.time.LocalTime
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Composable
-fun ExpennyTimePicker(
-    currentTime: LocalTime?,
-    minTime: LocalTime = LocalTime.MIN,
-    maxTime: LocalTime = LocalTime.MAX,
-    onSelect: (LocalTime) -> Unit,
+fun ExpennyDateTimePicker(
+    modifier: Modifier = Modifier,
+    currentDateTime: LocalDateTime?,
+    yearsRange: IntRange? = IntRange(1970, LocalDate.now().year),
+    minDateTime: LocalDateTime = LocalDateTime.MIN,
+    maxDateTime: LocalDateTime = LocalDateTime.MAX,
+    onSelect: (LocalDateTime) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    var localTime by rememberSaveable { mutableStateOf(currentTime ?: LocalTime.now()) }
+    var localDateTime by rememberSaveable {
+        mutableStateOf(currentDateTime ?: LocalDateTime.now())
+    }
 
     ExpennyDialog(
-        modifier = Modifier.wrapContentWidth(),
+        modifier = modifier.wrapContentWidth(),
         onDismissRequest = onDismiss,
         title = {
-            DialogTitle(text = stringResource(R.string.select_time_label))
+            DialogTitle(text = stringResource(R.string.select_datetime_label))
         },
         body = {
-            WheelTimePicker(
-                startTime = localTime,
-                minTime = minTime,
-                maxTime = maxTime,
-                size = DpSize(256.dp, 128.dp),
-                timeFormat = TimeFormat.HOUR_24,
-                textStyle = MaterialTheme.typography.bodyLarge,
+            WheelDateTimePicker(
+                startDateTime = localDateTime,
+                minDateTime = minDateTime,
+                maxDateTime = maxDateTime,
+                yearsRange = yearsRange,
                 textColor = MaterialTheme.colorScheme.onSurface,
+                textStyle = MaterialTheme.typography.bodyLarge,
                 selectorProperties = WheelPickerDefaults.selectorProperties(
                     shape = MaterialTheme.shapes.extraSmall,
                     color = MaterialTheme.colorScheme.primaryContainer,
-                    border = null
+                    border = null,
                 ),
-                onSnappedTime = {
-                    localTime = it
+                onSnappedDateTime = {
+                    localDateTime = it
                 }
             )
         },
@@ -58,7 +59,7 @@ fun ExpennyTimePicker(
             DialogButton(
                 label = stringResource(R.string.select_button),
                 onClick = {
-                    onSelect(localTime)
+                    onSelect(localDateTime)
                     onDismiss()
                 }
             )
@@ -74,10 +75,10 @@ fun ExpennyTimePicker(
 
 @Preview
 @Composable
-private fun ExpennyDatePickerPreview() {
+private fun ExpennyDateTimePickerPreview() {
     ExpennyTheme {
-        ExpennyTimePicker(
-            currentTime = LocalTime.now(),
+        ExpennyDateTimePicker(
+            currentDateTime = LocalDateTime.now(),
             onSelect = {},
             onDismiss = {}
         )

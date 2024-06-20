@@ -3,21 +3,18 @@ package org.expenny.feature.records.details
 import androidx.lifecycle.SavedStateHandle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
-import org.expenny.core.common.extensions.setScaleNoRounding
-import org.expenny.core.common.extensions.toDateString
-import org.expenny.core.common.extensions.toLocalDate
-import org.expenny.core.common.extensions.toLocalTime
-import org.expenny.core.common.extensions.toTimeString
+import org.expenny.core.common.extensions.conversionRateOf
+import org.expenny.core.common.extensions.convertBy
+import org.expenny.core.common.extensions.setScaleRoundingDown
+import org.expenny.core.common.extensions.toDateTimeString
+import org.expenny.core.common.extensions.toLocalDateTime
+import org.expenny.core.common.models.ErrorMessage
+import org.expenny.core.common.models.StringResource.Companion.fromRes
 import org.expenny.core.common.types.RecordType
 import org.expenny.core.common.utils.Constants.NULL_ID
-import org.expenny.core.common.models.ErrorMessage
 import org.expenny.core.common.utils.ExternalFilesDirectoryHandler
-import org.expenny.core.common.models.StringResource.Companion.fromRes
-import org.expenny.core.ui.base.ExpennyViewModel
 import org.expenny.core.domain.usecase.ValidateInputUseCase
 import org.expenny.core.domain.usecase.account.GetAccountUseCase
 import org.expenny.core.domain.usecase.account.GetLastUsedAccountUseCase
@@ -25,19 +22,19 @@ import org.expenny.core.domain.usecase.category.GetCategoryUseCase
 import org.expenny.core.domain.usecase.category.GetMostUsedCategoryUseCase
 import org.expenny.core.domain.usecase.record.CreateRecordUseCase
 import org.expenny.core.domain.usecase.record.DeleteRecordUseCase
-import org.expenny.core.domain.usecase.record.GetRecordLabelsUseCase
 import org.expenny.core.domain.usecase.record.GetRecordUseCase
 import org.expenny.core.domain.usecase.record.UpdateRecordUseCase
 import org.expenny.core.domain.validators.AlphanumericValidator
 import org.expenny.core.domain.validators.RequiredBigDecimalValidator
 import org.expenny.core.domain.validators.RequiredStringValidator
+import org.expenny.core.domain.validators.ValidationResult
 import org.expenny.core.model.account.Account
 import org.expenny.core.model.category.Category
-import org.expenny.core.model.currency.CurrencyAmount
 import org.expenny.core.model.record.Record
 import org.expenny.core.resources.R
+import org.expenny.core.ui.base.ExpennyViewModel
 import org.expenny.core.ui.data.navargs.LongNavArg
-import org.expenny.core.ui.mapper.AccountNameMapper
+import org.expenny.core.ui.data.navargs.StringArrayNavArg
 import org.expenny.feature.records.details.contract.RecordDetailsAction
 import org.expenny.feature.records.details.contract.RecordDetailsEvent
 import org.expenny.feature.records.details.contract.RecordDetailsState
@@ -49,12 +46,10 @@ import org.orbitmvi.orbit.syntax.simple.blockingIntent
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
-import org.orbitmvi.orbit.syntax.simple.repeatOnSubscription
 import org.orbitmvi.orbit.viewmodel.container
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import javax.inject.Inject
-
 
 @HiltViewModel
 class RecordDetailsViewModel @Inject constructor(
@@ -63,26 +58,21 @@ class RecordDetailsViewModel @Inject constructor(
     private val createRecord: CreateRecordUseCase,
     private val updateRecord: UpdateRecordUseCase,
     private val deleteRecord: DeleteRecordUseCase,
-    private val getLabels: GetRecordLabelsUseCase,
     private val getRecord: GetRecordUseCase,
     private val getAccount: GetAccountUseCase,
     private val getCategory: GetCategoryUseCase,
     private val getLastCreatedAccount: GetLastUsedAccountUseCase,
     private val getLastUsedCategory: GetMostUsedCategoryUseCase,
-    private val accountNameMapper: AccountNameMapper,
     private val filesDirectoryHandler: ExternalFilesDirectoryHandler,
 ) : ExpennyViewModel<RecordDetailsAction>(), ContainerHost<RecordDetailsState, RecordDetailsEvent> {
 
-    private var maxReceipts = 3
+    private val maxReceiptsCount = 3
     private val accountSelectionResultCode = 1
     private val transferAccountSelectionResultCode = 2
-    private var isTransferResetConfirmed: Boolean = false
-    private var transferResetTargetType: RecordType? = null
-    private val currentRecord = MutableStateFlow<Record?>(null)
-    private val selectedCategory = MutableStateFlow<Category?>(null)
-    private val selectedAccount = MutableStateFlow<Account?>(null)
-    private val selectedTransferAccount = MutableStateFlow<Account?>(null)
-    private var labelsAcrossAllRecords = emptyList<String>()
+    private var selectedCategory: Category? = null
+    private var selectedAccount: Account? = null
+    private var selectedTransferAccount: Account? = null
+    private var currentRecord: Record? = null
 
     override val container = container<RecordDetailsState, RecordDetailsEvent>(
         initialState = RecordDetailsState(),
@@ -90,10 +80,6 @@ class RecordDetailsViewModel @Inject constructor(
     ) {
         coroutineScope {
             setInitialData()
-            launch { subscribeToSelectedCategory() }
-            launch { subscribeToSelectedAccount() }
-            launch { subscribeToSelectedTransferAccount() }
-            launch { getLabelsAcrossAllRecords() }
         }
     }
 
@@ -103,20 +89,19 @@ class RecordDetailsViewModel @Inject constructor(
         when (action) {
             is RecordDetailsAction.OnTypeChange -> handleOnTypeChange(action)
             is RecordDetailsAction.OnAmountChange -> handleOnAmountChange(action)
-            is RecordDetailsAction.OnTransferAmountChange -> handleOnTransferAmountChange(action)
+            is RecordDetailsAction.OnConversionRateChange -> handleOnConversionRateChange(action)
             is RecordDetailsAction.OnDescriptionChange -> handleOnDescriptionChange(action)
-            is RecordDetailsAction.OnLabelChange -> handleOnLabelChange(action)
             is RecordDetailsAction.OnAdditionsSectionVisibilityChange -> handleOnAdditionsSectionVisibilityChange(action)
             is RecordDetailsAction.OnCategorySelect -> handleOnCategorySelect(action)
             is RecordDetailsAction.OnAccountSelect -> handleOnAccountSelect(action)
-            is RecordDetailsAction.OnLabelAdd -> handleOnLabelAdd(action)
             is RecordDetailsAction.OnLabelRemove -> handleOnLabelRemove(action)
+            is RecordDetailsAction.OnSelectLabelsClick -> handleOnSelectLabelsClick()
             is RecordDetailsAction.OnSelectCategoryClick -> handleOnSelectCategoryClick()
             is RecordDetailsAction.OnSelectAccountClick -> handleOnSelectAccountClick()
             is RecordDetailsAction.OnSelectTransferAccountClick -> handleOnSelectTransferAccountClick()
-            is RecordDetailsAction.OnSelectDateClick -> handleOnSelectDateClick()
-            is RecordDetailsAction.OnSelectTimeClick -> handleOnSelectTimeClick()
+            is RecordDetailsAction.OnSelectDateTimeClick -> handleOnSelectDateTimeClick()
             is RecordDetailsAction.OnAddReceiptClick -> handleOnAddReceiptClick()
+            is RecordDetailsAction.OnLabelSelect -> handleOnLabelSelect(action)
             is RecordDetailsAction.OnReceiptSelect -> handleOnReceiptSelect(action)
             is RecordDetailsAction.OnReceiptCapture -> handleOnReceiptCapture(action)
             is RecordDetailsAction.OnDeleteReceiptClick -> handleOnDeleteReceiptClick(action)
@@ -125,8 +110,7 @@ class RecordDetailsViewModel @Inject constructor(
             is RecordDetailsAction.OnBackClick -> handleOnBackClick()
             is RecordDetailsAction.OnSaveClick -> handleOnSaveClick()
             is RecordDetailsAction.OnDeleteClick -> handleOnDeleteClick()
-            is RecordDetailsAction.Dialog.OnDateChange -> handleOnDateChange(action)
-            is RecordDetailsAction.Dialog.OnTimeChange -> handleOnTimeChange(action)
+            is RecordDetailsAction.Dialog.OnDateTimeChange -> handleOnDateTimeChange(action)
             is RecordDetailsAction.Dialog.OnReceiptSourceDialogCameraSelect -> handleOnReceiptSourceDialogCameraSelect()
             is RecordDetailsAction.Dialog.OnReceiptSourceDialogGallerySelect -> handleOnReceiptSourceDialogGallerySelect()
             is RecordDetailsAction.Dialog.OnDeleteRecordDialogConfirm -> handleOnDeleteRecordDialogConfirm()
@@ -135,63 +119,20 @@ class RecordDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun getTransferAmount(): BigDecimal {
-        return CurrencyAmount(
-            currency = selectedAccount.value!!.currency,
-            amountValue = state.amountInput.value
-        ).convertTo(selectedTransferAccount.value!!.currency).value
-    }
-
-    private fun getSelectedDate(): LocalDateTime? {
-        val date = state.dateInput.value.toLocalDate()
-        val time = state.timeInput.value.toLocalTime()
-        return date?.atTime(time)
-    }
-
-    private fun getTransferAccountSelection() = LongNavArg(
-        value = selectedTransferAccount.value?.id ?: NULL_ID,
-        resultCode = transferAccountSelectionResultCode
-    )
-
-    private fun getAccountSelection() = LongNavArg(
-        value = selectedAccount.value?.id ?: NULL_ID,
-        resultCode = accountSelectionResultCode
-    )
-
-    private fun handleOnLabelChange(action: RecordDetailsAction.OnLabelChange) = blockingIntent {
-        val suggestedLabel = labelsAcrossAllRecords
-            .sortedBy { it.length }
-            .firstOrNull { it.startsWith(action.label) }
-
-        reduce {
-            state.copy(
-                labelsInput = state.labelsInput.copy(
-                    value = action.label,
-                    suggestion = suggestedLabel,
-                    error = validateAlphanumericInput(action.label).errorRes
-                )
-            )
+    override fun onCoroutineException(message: ErrorMessage) {
+        intent {
+            postSideEffect(RecordDetailsEvent.ShowMessage(message.text))
         }
     }
 
-    private fun handleOnLabelAdd(action: RecordDetailsAction.OnLabelAdd) = blockingIntent {
-        reduce {
-            state.copy(
-                labelsInput = state.labelsInput.copy(
-                    labels = state.labelsInput.labels + action.label
-                )
-            )
-        }
+    private fun handleOnBackClick() = intent {
+        postSideEffect(RecordDetailsEvent.NavigateBack)
     }
 
     private fun handleOnLabelRemove(action: RecordDetailsAction.OnLabelRemove) = intent {
         reduce {
             state.copy(
-                labelsInput = state.labelsInput.copy(
-                    labels = state.labelsInput.labels.filterIndexed { i, _ ->
-                        action.index != i
-                    }
-                )
+                labels = state.labels - action.label
             )
         }
     }
@@ -208,50 +149,32 @@ class RecordDetailsViewModel @Inject constructor(
     }
 
     private fun handleOnCategorySelect(action: RecordDetailsAction.OnCategorySelect) = intent {
-        selectedCategory.value = getCategory(GetCategoryUseCase.Params(action.selection.value))!!
+        getCategory(GetCategoryUseCase.Params(action.selection.value))!!.also { category ->
+            setCategory(category)
+        }
     }
 
     private fun handleOnAccountSelect(action: RecordDetailsAction.OnAccountSelect) = intent {
         val account = getAccount(GetAccountUseCase.Params(action.selection.value)).first()!!
 
         when (action.selection.resultCode) {
-            accountSelectionResultCode -> selectedAccount.value = account
-            transferAccountSelectionResultCode -> selectedTransferAccount.value = account
+            accountSelectionResultCode -> setAccount(account)
+            transferAccountSelectionResultCode -> setTransferAccount(account)
         }
 
-        if (state.selectedType == RecordType.Transfer) {
-            val currency = selectedAccount.value?.currency
-            val transferCurrency = selectedTransferAccount.value?.currency
+        if (selectedAccountAndTransferAccountCurrenciesNotEqual() && state.selectedType == RecordType.Transfer) {
+            val conversionRate = getAccountAndTransferAccountCurrenciesConversionRate()
+            val convertedAmount = convertCurrentAmountByRate(conversionRate)
+            val convertedAmountCurrency = selectedTransferAccount?.currency?.unit?.code
 
-            if (selectedAccount.value?.id == selectedTransferAccount.value?.id) {
-                resetSelectedTransferAccount()
-            }
-
-            if (currency?.id != null && transferCurrency?.id != null && currency.id != transferCurrency.id) {
-                reduce {
-                    state.copy(
-                        dialog = RecordDetailsState.Dialog.ConversionDialog,
-                        showTransferAmountInput = true,
-                        transferAmountCurrency = transferCurrency.unit.code,
-                        transferAmountInput = state.transferAmountInput.copy(
-                            value = getTransferAmount()
-                        )
-                    )
-                }
-            } else {
-                hideAndResetTransferAmountInput()
-            }
+            showAndUpdateConversionData(
+                conversionRate = conversionRate,
+                convertedAmount = convertedAmount,
+                convertedAmountCurrency = convertedAmountCurrency
+            )
+        } else {
+            hideAndClearConversionData()
         }
-    }
-
-    override fun onCoroutineException(message: ErrorMessage) {
-        intent {
-            postSideEffect(RecordDetailsEvent.ShowMessage(message.text))
-        }
-    }
-
-    private fun handleOnBackClick() = intent {
-        postSideEffect(RecordDetailsEvent.NavigateBack)
     }
 
     private fun handleOnAmountChange(action: RecordDetailsAction.OnAmountChange) = blockingIntent {
@@ -263,21 +186,31 @@ class RecordDetailsViewModel @Inject constructor(
                 )
             )
         }
+        if (state.convertedAmount != null) {
+            reduce {
+                state.copy(convertedAmount = action.amount.convertBy(state.conversionRateInput.value))
+            }
+        }
     }
 
-    private fun handleOnTransferAmountChange(action: RecordDetailsAction.OnTransferAmountChange) = blockingIntent {
+    private fun handleOnConversionRateChange(action: RecordDetailsAction.OnConversionRateChange) = blockingIntent {
         reduce {
             state.copy(
-                transferAmountInput = state.transferAmountInput.copy(
-                    value = action.amount,
-                    error = validateRequiredInput(action.amount).errorRes
-                )
+                conversionRateInput = state.conversionRateInput.copy(
+                    value = action.rate,
+                    error = validateRequiredInput(action.rate).errorRes
+                ),
+                convertedAmount = state.amountInput.value.convertBy(action.rate),
             )
         }
     }
 
+    private fun handleOnSelectLabelsClick() = intent {
+        postSideEffect(RecordDetailsEvent.NavigateToLabelsSelectionList(StringArrayNavArg(state.labels.toTypedArray())))
+    }
+
     private fun handleOnSelectCategoryClick() = intent {
-        val selection = LongNavArg(selectedCategory.value?.id ?: NULL_ID)
+        val selection = LongNavArg(selectedCategory?.id ?: NULL_ID)
         postSideEffect(RecordDetailsEvent.NavigateToCategorySelectionList(selection))
     }
 
@@ -288,19 +221,13 @@ class RecordDetailsViewModel @Inject constructor(
 
     private fun handleOnSelectTransferAccountClick() = intent {
         val selection = getTransferAccountSelection()
-        val excludeIds = selectedAccount.value?.id?.let { longArrayOf(it) }
+        val excludeIds = selectedAccount?.id?.let { longArrayOf(it) }
         postSideEffect(RecordDetailsEvent.NavigateToAccountSelectionList(selection, excludeIds))
     }
 
-    private fun handleOnDateChange(action: RecordDetailsAction.Dialog.OnDateChange) = intent {
+    private fun handleOnDateTimeChange(action: RecordDetailsAction.Dialog.OnDateTimeChange) = intent {
         reduce {
-            state.copy(dateInput = state.dateInput.copy(value = action.date.toDateString()))
-        }
-    }
-
-    private fun handleOnTimeChange(action: RecordDetailsAction.Dialog.OnTimeChange) = intent {
-        reduce {
-            state.copy(timeInput = state.timeInput.copy(value = action.time.toTimeString()))
+            state.copy(dateTimeInput = state.dateTimeInput.copy(value = action.datetime.toDateTimeString()))
         }
     }
 
@@ -317,12 +244,18 @@ class RecordDetailsViewModel @Inject constructor(
     }
 
     private fun handleOnAddReceiptClick() = intent {
-        if (state.receipts.size < maxReceipts) {
+        if (state.receipts.size < maxReceiptsCount) {
             reduce {
                 state.copy(dialog = RecordDetailsState.Dialog.ReceiptSourceDialog)
             }
         } else {
-            postSideEffect(RecordDetailsEvent.ShowMessage(fromRes(R.string.max_photos_amount_error, maxReceipts)))
+            postSideEffect(RecordDetailsEvent.ShowMessage(fromRes(R.string.max_photos_amount_error, maxReceiptsCount)))
+        }
+    }
+
+    private fun handleOnLabelSelect(action: RecordDetailsAction.OnLabelSelect) = intent {
+        reduce {
+            state.copy(labels = action.selection.values.toList())
         }
     }
 
@@ -358,37 +291,54 @@ class RecordDetailsViewModel @Inject constructor(
     }
 
     private fun handleOnTypeChange(action: RecordDetailsAction.OnTypeChange) = intent {
-        if (action.type != state.selectedType) {
-            if (state.selectedType == RecordType.Transfer && !isTransferResetConfirmed && selectedTransferAccount.value != null) {
-                transferResetTargetType = action.type
-                reduce {
-                    state.copy(dialog = RecordDetailsState.Dialog.ResetTransferDialog)
-                }
-            } else {
-                val isNewTypeTransfer = action.type == RecordType.Transfer
-                reduce {
-                    state.copy(
-                        selectedType = action.type,
-                        showTransferAmountInput = false,
-                        showTransferDisclaimerButton = isNewTypeTransfer,
-                        showTransferAccountInput = isNewTypeTransfer,
-                        showCategoryInput = !isNewTypeTransfer,
-                    )
-                }
+        setRecordType(action.type)
+    }
 
-                resetTransferResetTargetType()
-                resetTransferResetConfirmation()
-                resetSelectedTransferAccount()
-                hideAndResetTransferAmountInput()
-            }
+    private fun selectedAccountAndTransferAccountCurrenciesNotEqual(): Boolean {
+        val currency = selectedAccount?.currency
+        val transferCurrency = selectedTransferAccount?.currency
+
+        return currency?.id != null && transferCurrency?.id != null && currency.id != transferCurrency.id
+    }
+
+    private fun getAccountAndTransferAccountCurrenciesConversionRate(): BigDecimal {
+        val currency = selectedAccount?.currency
+        val transferCurrency = selectedTransferAccount?.currency
+
+        return if (transferCurrency != null && currency != null) {
+            transferCurrency.baseToQuoteRate.conversionRateOf(currency.baseToQuoteRate)
+        } else BigDecimal.ONE
+    }
+
+    private fun convertCurrentAmountByRate(rate: BigDecimal): BigDecimal {
+        return state.amountInput.value.convertBy(rate)
+    }
+
+    private fun showAndUpdateConversionData(
+        conversionRate: BigDecimal,
+        convertedAmount: BigDecimal,
+        convertedAmountCurrency: String?,
+    ) = intent {
+        reduce {
+            state.copy(
+                showConversionRateInput = true,
+                convertedAmount = convertedAmount,
+                convertedAmountCurrency = convertedAmountCurrency,
+                conversionRateInput = state.conversionRateInput.copy(
+                    value = conversionRate,
+                    error = validateRequiredInput(conversionRate).errorRes
+                )
+            )
         }
     }
 
-    private fun hideAndResetTransferAmountInput() = intent {
+    private fun hideAndClearConversionData() = intent {
         reduce {
             state.copy(
-                showTransferAmountInput = false,
-                transferAmountInput = state.transferAmountInput.copy(
+                showConversionRateInput = false,
+                convertedAmount = null,
+                convertedAmountCurrency = null,
+                conversionRateInput = state.conversionRateInput.copy(
                     value = BigDecimal.ZERO,
                     error = null
                 )
@@ -397,42 +347,42 @@ class RecordDetailsViewModel @Inject constructor(
     }
 
     private fun handleOnSaveClick() {
-        if (validateFields()) {
+        if (validateInputs()) {
             intent {
                 val transferAmount = when (state.selectedType) {
-                    RecordType.Transfer -> getTransferAmount()
+                    RecordType.Transfer -> state.convertedAmount
                     else -> null
                 }
 
-                if (currentRecord.value == null) {
+                if (currentRecord == null) {
                     createRecord(
                         CreateRecordUseCase.Params(
                             type = state.selectedType,
-                            accountId = selectedAccount.value!!.id,
-                            transferAccountId = selectedTransferAccount.value?.id,
-                            categoryId = selectedCategory.value?.id,
+                            accountId = selectedAccount!!.id,
+                            transferAccountId = selectedTransferAccount?.id,
+                            categoryId = selectedCategory?.id,
                             receiptsUris = state.receipts,
                             description = state.descriptionInput.value,
-                            labels = state.labelsInput.labels,
+                            labels = state.labels,
                             amount = state.amountInput.value,
                             transferAmount = transferAmount,
-                            date = getSelectedDate() ?: LocalDateTime.now()
+                            date = state.dateTimeInput.value.toLocalDateTime() ?: LocalDateTime.now()
                         )
                     )
                 } else {
                     updateRecord(
                         UpdateRecordUseCase.Params(
-                            id = currentRecord.value!!.id,
+                            id = currentRecord!!.id,
                             type = state.selectedType,
-                            accountId = selectedAccount.value!!.id,
-                            transferAccountId = selectedTransferAccount.value?.id,
-                            categoryId = selectedCategory.value?.id,
+                            accountId = selectedAccount!!.id,
+                            transferAccountId = selectedTransferAccount?.id,
+                            categoryId = selectedCategory?.id,
                             receiptsUris = state.receipts,
                             description = state.descriptionInput.value,
-                            labels = state.labelsInput.labels,
+                            labels = state.labels,
                             amount = state.amountInput.value,
                             transferAmount = transferAmount,
-                            date = getSelectedDate() ?: LocalDateTime.now()
+                            date = state.dateTimeInput.value.toLocalDateTime() ?: LocalDateTime.now()
                         )
                     )
                 }
@@ -442,12 +392,8 @@ class RecordDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun handleOnSelectDateClick() = intent {
-        reduce { state.copy(dialog = RecordDetailsState.Dialog.DatePickerDialog) }
-    }
-
-    private fun handleOnSelectTimeClick() = intent {
-        reduce { state.copy(dialog = RecordDetailsState.Dialog.TimePickerDialog) }
+    private fun handleOnSelectDateTimeClick() = intent {
+        reduce { state.copy(dialog = RecordDetailsState.Dialog.DateTimePickerDialog) }
     }
 
     private fun handleOnDeleteClick() = intent {
@@ -456,35 +402,17 @@ class RecordDetailsViewModel @Inject constructor(
 
     private fun handleOnDeleteRecordDialogConfirm() = intent {
         dismissDialog()
-        deleteRecord(currentRecord.value!!.id)
+        deleteRecord(currentRecord!!.id)
         postSideEffect(RecordDetailsEvent.ShowMessage(fromRes(R.string.deleted_message)))
         postSideEffect(RecordDetailsEvent.NavigateBack)
     }
 
     private fun handleOnResetTransferDialogConfirm() = intent {
-        dismissDialog()
-        isTransferResetConfirmed = true
-        handleOnTypeChange(RecordDetailsAction.OnTypeChange(transferResetTargetType!!))
+
     }
 
     private fun handleOnDialogDismiss() = intent {
         dismissDialog()
-    }
-
-    private fun Record.Transfer.showTransferAmountInput(): Boolean {
-        return account != transferAccount && account.currency.id != transferAccount.currency.id
-    }
-
-    private fun resetTransferResetTargetType() {
-        transferResetTargetType = null
-    }
-
-    private fun resetTransferResetConfirmation() {
-        isTransferResetConfirmed = false
-    }
-
-    private fun resetSelectedTransferAccount() {
-        selectedTransferAccount.value = null
     }
 
     private fun validateAlphanumericInput(value: String) = validateInput(
@@ -499,107 +427,44 @@ class RecordDetailsViewModel @Inject constructor(
         value, listOf(RequiredStringValidator())
     )
 
-    private fun validateFields(): Boolean {
-        val amountValidationResult = validateRequiredInput(state.amountInput.value)
-        val accountValidationResult = validateRequiredInput(state.accountInput.value)
+    private fun validateInputs(): Boolean {
+        var categoryInputResult: ValidationResult? = null
+        var transferAccountInputResult: ValidationResult? = null
+        var conversionRateInputResult: ValidationResult? = null
+        val amountInputResult: ValidationResult = validateRequiredInput(state.amountInput.value)
+        val accountInputResult: ValidationResult = validateRequiredInput(state.accountInput.value)
+
+        if (!state.hideCategoryInput) {
+            categoryInputResult = validateRequiredInput(state.categoryInput.value)
+        }
+
+        if (state.showTransferAccountInput) {
+            transferAccountInputResult = validateRequiredInput(state.transferAccountInput.value)
+        }
+
+        if (state.showConversionRateInput) {
+            conversionRateInputResult = validateRequiredInput(state.conversionRateInput.value)
+        }
 
         intent {
             reduce {
                 state.copy(
-                    amountInput = state.amountInput.copy(error = amountValidationResult.errorRes),
-                    accountInput = state.accountInput.copy(error = accountValidationResult.errorRes),
+                    amountInput = state.amountInput.copy(error = amountInputResult.errorRes),
+                    accountInput = state.accountInput.copy(error = accountInputResult.errorRes),
+                    transferAccountInput = state.transferAccountInput.copy(error = transferAccountInputResult?.errorRes),
+                    categoryInput = state.categoryInput.copy(error = categoryInputResult?.errorRes),
+                    conversionRateInput = state.conversionRateInput.copy(error = conversionRateInputResult?.errorRes),
                 )
             }
         }
 
-        val fieldsValidationResults = mutableListOf(amountValidationResult, accountValidationResult)
-
-        if (state.selectedType == RecordType.Transfer) {
-            intent {
-                val transferAccountValidationResult = validateRequiredInput(state.transferAccountInput.value)
-                fieldsValidationResults.add(transferAccountValidationResult)
-
-                reduce {
-                    state.copy(
-                        transferAccountInput = state.transferAccountInput.copy(error = transferAccountValidationResult.errorRes)
-                    )
-                }
-
-                if (state.showTransferAmountInput) {
-                    val transferAmountValidationResult = validateRequiredInput(state.transferAmountInput.value)
-                    fieldsValidationResults.add(transferAmountValidationResult)
-
-                    reduce {
-                        state.copy(
-                            transferAmountInput = state.transferAmountInput.copy(error = transferAmountValidationResult.errorRes)
-                        )
-                    }
-                }
-            }
-        } else {
-            val categoryValidationResult = validateRequiredInput(state.categoryInput.value)
-            fieldsValidationResults.add(categoryValidationResult)
-
-            intent {
-                reduce {
-                    state.copy(
-                        categoryInput = state.categoryInput.copy(error = categoryValidationResult.errorRes)
-                    )
-                }
-            }
-        }
-
-        return fieldsValidationResults.all { it.isValid }
-    }
-
-    private suspend fun getLabelsAcrossAllRecords() {
-        labelsAcrossAllRecords = getLabels().first()
-    }
-
-    private fun subscribeToSelectedTransferAccount() = intent {
-        repeatOnSubscription {
-            selectedTransferAccount.collect {
-                val value = it?.let { accountNameMapper(it).displayName }.orEmpty()
-                val error = if (value.isNotBlank()) validateRequiredInput(value).errorRes else null
-
-                reduce {
-                    state.copy(transferAccountInput = state.transferAccountInput.copy(value, error))
-                }
-            }
-        }
-    }
-
-    private fun subscribeToSelectedCategory() = intent {
-        repeatOnSubscription {
-            selectedCategory.collect {
-                val value = it?.name.orEmpty()
-                val error = if (value.isNotBlank()) validateRequiredInput(value).errorRes else null
-
-                reduce {
-                    state.copy(categoryInput = state.categoryInput.copy(value, error))
-                }
-            }
-        }
-    }
-
-    private fun subscribeToSelectedAccount() = intent {
-        repeatOnSubscription {
-            selectedAccount.filterNotNull().collect {
-                reduce {
-                    // TODO move to one place
-                    state.copy(
-                        amountCurrency = it.currency.unit.code,
-                        accountInput = state.accountInput.copy(
-                            value = accountNameMapper(it).displayName
-                        ),
-                        amountInput = state.amountInput.copy(
-                            value = state.amountInput.value.setScaleNoRounding(it.currency.unit.scale),
-                            isEnabled = true,
-                        )
-                    )
-                }
-            }
-        }
+        return listOf(
+            amountInputResult,
+            accountInputResult,
+            categoryInputResult,
+            transferAccountInputResult,
+            conversionRateInputResult
+        ).all { it?.isValid ?: true }
     }
 
     private fun setInitialData() {
@@ -609,95 +474,166 @@ class RecordDetailsViewModel @Inject constructor(
                     val record = getRecord(GetRecordUseCase.Params(args.recordId)).first()
 
                     if (record != null) {
-                        setInitialRecordData(record, args.isClone)
-
-                        when (record) {
-                            is Record.Transfer -> setInitialTransferData(record)
-                            is Record.Transaction -> setInitialTransactionData(record)
-                        }
+                        setInitialStateData(record)
                     } else {
                         postSideEffect(RecordDetailsEvent.ShowMessage(fromRes(R.string.invalid_argument_error)))
                         postSideEffect(RecordDetailsEvent.NavigateBack)
                     }
                 } else {
-                    val recordType = args.recordType ?: RecordType.Expense
+                    getLastCreatedAccount()?.also {
+                        setAccount(it)
+                    }
 
-                    selectedAccount.value = getLastCreatedAccount()
-
-                    if (recordType != RecordType.Transfer) {
-                        selectedCategory.value = getLastUsedCategory()
-                        reduce {
-                            state.copy(showCategoryInput = true)
+                    if (args.recordType != RecordType.Transfer) {
+                        getLastUsedCategory()?.also {
+                            setCategory(it)
                         }
                     }
 
-                    handleOnTypeChange(RecordDetailsAction.OnTypeChange(recordType))
+                    setRecordType(args.recordType)
 
+                    delay(200)
                     postSideEffect(RecordDetailsEvent.RequestAmountInputFocus)
                 }
             }
         }
     }
 
-    private fun setInitialRecordData(record: Record, isClone: Boolean) = intent {
-        selectedAccount.value = record.account
+    private fun setInitialStateData(record: Record) = intent {
+        currentRecord = record
+        selectedAccount = record.account
+        selectedTransferAccount = (record as? Record.Transfer)?.transferAccount
+        selectedCategory = (record as? Record.Transaction)?.category
 
-        if (!isClone) {
-            currentRecord.value = record
+        val showTransferDisclaimerButton = record is Record.Transfer
+        val showTransferAccountInput = record is Record.Transfer
+        val hideCategoryInput = record is Record.Transfer
+
+        if (record is Record.Transfer) {
+            setTransferAccount(record.transferAccount)
+        }
+
+        if (record is Record.Transaction && record.category != null) {
+            setCategory(record.category!!)
         }
 
         reduce {
             state.copy(
-                showDeleteButton = !isClone,
-                toolbarTitle = when {
-                    isClone -> fromRes(R.string.add_record_label)
-                    else -> fromRes(R.string.edit_record_label)
-                },
+                showDeleteButton = true,
+                showTransferAccountInput = showTransferAccountInput,
+                showTransferDisclaimerButton = showTransferDisclaimerButton,
+                hideCategoryInput = hideCategoryInput,
+                toolbarTitle = fromRes(R.string.edit_record_label),
                 selectedType = record.recordType,
                 receipts = record.attachments,
-                labelsInput = state.labelsInput.copy(labels = record.labels),
-                amountInput = state.amountInput.copy(value = record.amount.value),
-                dateInput = state.dateInput.copy(value = record.date.toDateString()),
-                timeInput = state.timeInput.copy(value = record.date.toTimeString()),
+                labels = record.labels,
+                amountInput = state.amountInput.copy(value = record.amount.value, isEnabled = true),
+                dateTimeInput = state.dateTimeInput.copy(value = record.date.toDateTimeString()),
                 descriptionInput = state.descriptionInput.copy(value = record.description),
+                accountInput = state.accountInput.copy(value = record.account.displayName),
+            )
+        }
+
+        if (selectedAccountAndTransferAccountCurrenciesNotEqual() && record is Record.Transfer) {
+            val conversionRate = record.transferAmount.value.conversionRateOf(record.amount.value)
+            val convertedAmount = record.transferAmount.value
+            val convertedAmountCurrency = record.transferAccount.currency.unit.code
+
+            showAndUpdateConversionData(
+                conversionRate = conversionRate,
+                convertedAmount = convertedAmount,
+                convertedAmountCurrency = convertedAmountCurrency
             )
         }
     }
 
-    private fun setInitialTransactionData(record: Record.Transaction) = intent {
-        selectedCategory.value = record.category
+    private suspend fun SimpleSyntax<RecordDetailsState, *>.setRecordType(type: RecordType) {
+        if (type != state.selectedType) {
+            val isTransferType = type == RecordType.Transfer
 
-        reduce {
-            state.copy(showCategoryInput = true)
-        }
-    }
-
-    private fun setInitialTransferData(record: Record.Transfer) = intent {
-        selectedTransferAccount.value = record.transferAccount
-
-        val showTransferAmountInput = record.showTransferAmountInput()
-
-        reduce {
-            state.copy(
-                showTransferDisclaimerButton = true,
-                showTransferAccountInput = true
-            )
-        }
-
-        if (showTransferAmountInput) {
             reduce {
                 state.copy(
-                    showTransferAmountInput = true,
-                    transferAmountCurrency = record.transferAccount.currency.unit.code,
-                    transferAmountInput = state.transferAmountInput.copy(
-                        value = record.transferAmount.value
-                    )
+                    selectedType = type,
+                    showTransferDisclaimerButton = isTransferType,
+                    showTransferAccountInput = isTransferType,
+                    hideCategoryInput = isTransferType,
                 )
+            }
+            if (!isTransferType) {
+                clearTransferAccount()
+                hideAndClearConversionData()
             }
         }
     }
 
-    private suspend fun SimpleSyntax<RecordDetailsState, RecordDetailsEvent>.dismissDialog() {
+    private suspend fun SimpleSyntax<RecordDetailsState, *>.setCategory(category: Category) {
+        selectedCategory = category
+        reduce {
+            state.copy(
+                categoryInput = state.categoryInput.copy(
+                    value = category.name,
+                    error = validateRequiredInput(category.name).errorRes
+                )
+            )
+        }
+    }
+
+    private suspend fun SimpleSyntax<RecordDetailsState, *>.setAccount(account: Account) {
+        selectedAccount = account
+
+        if (account.id == selectedTransferAccount?.id) {
+            clearTransferAccount()
+        }
+
+        reduce {
+            state.copy(
+                amountCurrency = account.currency.unit.code,
+                amountInput = state.amountInput.copy(
+                    value = state.amountInput.value.setScaleRoundingDown(account.currency.unit.scale)
+                ),
+                accountInput = state.accountInput.copy(
+                    value = account.displayName,
+                    error = validateRequiredInput(account.displayName).errorRes
+                )
+            )
+        }
+    }
+
+    private suspend fun SimpleSyntax<RecordDetailsState, *>.setTransferAccount(account: Account) {
+        selectedTransferAccount = account
+        reduce {
+            state.copy(
+                transferAccountInput = state.transferAccountInput.copy(
+                    value = account.displayName,
+                    error = validateRequiredInput(account.displayName).errorRes
+                )
+            )
+        }
+    }
+
+    private suspend fun SimpleSyntax<RecordDetailsState, *>.clearTransferAccount() {
+        selectedTransferAccount = null
+        reduce {
+            state.copy(
+                transferAccountInput = state.transferAccountInput.copy(
+                    value = "",
+                    error = null
+                )
+            )
+        }
+    }
+
+    private suspend fun SimpleSyntax<RecordDetailsState, *>.dismissDialog() {
         reduce { state.copy(dialog = null) }
     }
+
+    private fun getTransferAccountSelection() = LongNavArg(
+        value = selectedTransferAccount?.id ?: NULL_ID,
+        resultCode = transferAccountSelectionResultCode
+    )
+
+    private fun getAccountSelection() = LongNavArg(
+        value = selectedAccount?.id ?: NULL_ID,
+        resultCode = accountSelectionResultCode
+    )
 }

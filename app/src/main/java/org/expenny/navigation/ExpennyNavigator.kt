@@ -11,6 +11,7 @@ import org.expenny.core.common.types.RecordType
 import org.expenny.core.common.utils.Constants.NULL_ID
 import org.expenny.core.ui.data.navargs.LongNavArg
 import org.expenny.core.ui.data.navargs.RecordsListFilterNavArg
+import org.expenny.core.ui.data.navargs.StringArrayNavArg
 import org.expenny.feature.accounts.destinations.AccountDetailsScreenDestination
 import org.expenny.feature.accounts.details.navigation.AccountDetailsNavigator
 import org.expenny.feature.accounts.destinations.AccountOverviewScreenDestination
@@ -34,6 +35,7 @@ import org.expenny.feature.passcode.navigation.PasscodeNavigator
 import org.expenny.feature.profilesetup.destinations.ProfileSetupScreenDestination
 import org.expenny.feature.profilesetup.navigation.ProfileSetupNavigator
 import org.expenny.feature.records.destinations.RecordDetailsScreenDestination
+import org.expenny.feature.records.destinations.RecordLabelsListScreenDestination
 import org.expenny.feature.records.details.navigation.RecordDetailsNavigator
 import org.expenny.feature.records.destinations.RecordsListScreenDestination
 import org.expenny.feature.records.list.navigation.RecordsListNavigator
@@ -139,12 +141,6 @@ class ExpennyNavigator(
         )
     }
 
-    override fun navigateToCloneRecordScreen(recordId: Long) {
-        navController.navigate(
-            direction = RecordDetailsScreenDestination(recordId = recordId, isClone = true) within navGraph
-        )
-    }
-
     override fun navigateToCreateRecordScreen() {
         navController.navigate(RecordDetailsScreenDestination() within navGraph)
     }
@@ -155,6 +151,12 @@ class ExpennyNavigator(
                 selection = selection,
                 excludeIds = excludeIds
             ) within navGraph
+        )
+    }
+
+    override fun navigateToRecordLabelsListScreen(selection: StringArrayNavArg) {
+        navController.navigate(
+            direction = RecordLabelsListScreenDestination(selection = selection) within navGraph
         )
     }
 

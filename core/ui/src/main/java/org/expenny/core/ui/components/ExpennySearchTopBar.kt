@@ -31,13 +31,14 @@ fun ExpennySearchTopBar(
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior? = null,
     searchQuery: String,
+    isSearchShown: Boolean = false,
     onQueryChange: (String) -> Unit,
     title: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
     navigationIcon: @Composable () -> Unit = {},
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
-    var showSearch by rememberSaveable { mutableStateOf(false) }
+    var showSearch by rememberSaveable(isSearchShown) { mutableStateOf(isSearchShown) }
 
     if (showSearch) {
         val searchFocusRequester = remember { FocusRequester() }
@@ -147,25 +148,27 @@ private fun SearchAppBarField(
             },
         ),
         decorationBox = @Composable { innerTextField ->
-            TextFieldDefaults.TextFieldDecorationBox(
+            TextFieldDefaults.DecorationBox(
                 value = query,
                 innerTextField = innerTextField,
                 enabled = true,
                 singleLine = true,
-                isError = false,
-                leadingIcon = null,
                 visualTransformation = VisualTransformation.None,
                 interactionSource = remember { MutableInteractionSource() },
+                isError = false,
                 placeholder = {
                     Text(
                         text = stringResource(R.string.search_label),
                         style = MaterialTheme.typography.bodyLarge,
                     )
                 },
+                leadingIcon = null,
                 trailingIcon = {
                     if (query.isNotEmpty()) {
                         Icon(
-                            modifier = Modifier.noRippleClickable { onQueryChange("") },
+                            modifier = Modifier.noRippleClickable {
+                                onQueryChange("")
+                            },
                             painter = painterResource(R.drawable.ic_close),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             contentDescription = null,
@@ -186,10 +189,10 @@ private fun SearchAppBarField(
                     unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
                     errorTextColor = MaterialTheme.colorScheme.onSurface,
                     disabledTextColor = MaterialTheme.colorScheme.onSurface,
-                    disabledPlaceholderColor = MaterialTheme.colorScheme.outlineVariant,
-                    errorPlaceholderColor = MaterialTheme.colorScheme.outlineVariant,
-                    focusedPlaceholderColor = MaterialTheme.colorScheme.outlineVariant,
-                    unfocusedPlaceholderColor = MaterialTheme.colorScheme.outlineVariant,
+                    disabledPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    errorPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
                 ),
                 contentPadding = PaddingValues(horizontal = 16.dp),
                 container = {},

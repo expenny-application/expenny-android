@@ -7,10 +7,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import org.expenny.core.common.extensions.setScaleNoRounding
+import org.expenny.core.common.extensions.setScaleRoundingDown
 import org.expenny.core.common.models.ErrorMessage
 import org.expenny.core.common.models.StringResource.Companion.fromRes
-import org.expenny.core.ui.base.*
 import org.expenny.core.domain.usecase.ValidateInputUseCase
 import org.expenny.core.domain.usecase.account.*
 import org.expenny.core.domain.usecase.currency.GetCurrencyUseCase
@@ -234,7 +233,7 @@ class AccountDetailsViewModel @Inject constructor(
                             value = currencyMapper(it).preview
                         ),
                         startBalanceInput = state.startBalanceInput.copy(
-                            value = state.startBalanceInput.value.setScaleNoRounding(it.unit.scale)
+                            value = state.startBalanceInput.value.setScaleRoundingDown(it.unit.scale)
                         )
                     )
                 }

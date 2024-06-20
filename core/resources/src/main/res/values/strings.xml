@@ -61,6 +61,7 @@
     <string name="setup_profile_label">Setup profile</string>
     <string name="select_currency_label">Select currency</string>
     <string name="select_currency_code_label">Select currency code</string>
+    <string name="select_labels_label">Select labels</string>
     <string name="all_countries_label">All countries</string>
     <string name="select_institution_country_label">Select institution country</string>
     <string name="select_institution_label">Select institution</string>
@@ -150,15 +151,18 @@
     <string name="currency_rates_label">Currency rates</string>
     <string name="main_label">Main</string>
     <string name="rates_label">Rates</string>
+    <string name="amount_to_receive_label">Amount to receive: %1$s</string>
     <string name="amount_label">Amount</string>
-    <string name="final_amount_label">Final amount</string>
+    <string name="conversion_rate_label">Conversion rate</string>
     <string name="account_label">Account</string>
     <string name="transfer_account_label">Transfer account</string>
     <string name="payee_payer_label">Payee/payer</string>
     <string name="receipts_label">Receipts</string>
     <string name="category_label">Category</string>
+    <string name="datetime_label">Datetime</string>
     <string name="date_label">Date</string>
     <string name="time_label">Time</string>
+    <string name="select_datetime_label">Select datetime</string>
     <string name="select_date_label">Select date</string>
     <string name="select_time_label">Select time</string>
     <string name="select_category_label">Select category</string>
@@ -205,6 +209,7 @@
     <string name="transfer_disclaimer_paragraph">Transfers are not taken into account in statistics and are treated as operations with local wallets</string>
 
     <!-- Buttons -->
+    <string name="add_button">Add</string>
     <string name="save_button">Save</string>
     <string name="clear_button">Clear</string>
     <string name="reset_all_button">Reset all</string>
@@ -232,10 +237,6 @@
     <string name="close_button">Close</string>
 
     <!-- Quantity -->
-    <plurals name="select_account_quantity_label">
-        <item quantity="one">Select account</item>
-        <item quantity="other">Select accounts</item>
-    </plurals>
     <plurals name="records_quantity_label">
         <item quantity="one">%d record</item>
         <item quantity="other">%d records</item>
@@ -312,7 +313,7 @@
     <string name="internal_error">Oops! Something went wrong</string>
     <string name="invalid_argument_error">Invalid argument</string>
     <string name="init_error">Initialization error</string>
-    <string name="network_connection_error">Network connection error</string>
+    <string name="network_connection_error">Network connection problem</string>
     <string name="duplicate_data_error">Duplicate data error</string>
     <string name="database_error">Internal database error</string>
     <string name="data_not_exists_error">Data does not exist</string>
@@ -323,6 +324,7 @@
     <string name="alphanumeric_error">Should not contain special characters</string>
     <string name="value_constraints_error">Value doesn\'t meet the constraints</string>
     <string name="max_photos_amount_error">Maximum number of photos is %1$d</string>
+    <string name="max_labels_amount_error">Maximum number of labels is %1$d</string>
     <string name="required_field_error">Field is required</string>
     <string name="required_field_length_error">Required field length: [%1$d, %2$d]</string>
     <string name="required_field_min_length_error">Required min length is %1$d</string>

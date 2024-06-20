@@ -23,3 +23,7 @@ fun <T> List<T>.addOrRemoveIfExist(item: T): MutableList<T> {
         if (contains(item)) remove(item) else add(item)
     }
 }
+
+fun Collection<String>.containsIgnoreCase(s: String): Boolean {
+    return any { it.equals(s, true) }
+}

@@ -80,7 +80,6 @@ sealed interface RecordsListAction {
 sealed interface RecordsListEvent {
     class ShowMessage(val message: StringResource) : RecordsListEvent
     class NavigateToEditRecord(val id: Long) : RecordsListEvent
-    class NavigateToCloneRecord(val id: Long) : RecordsListEvent
     data object NavigateToCreateRecord : RecordsListEvent
     data object NavigateBack : RecordsListEvent
 }

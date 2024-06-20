@@ -17,6 +17,7 @@ import org.expenny.core.ui.transitions.defaultPopEnterNavigationTransition
 import org.expenny.core.ui.transitions.defaultPopExitNavigationTransition
 import org.expenny.core.ui.data.navargs.LongNavArg
 import org.expenny.core.ui.data.navargs.NavArgResult
+import org.expenny.core.ui.data.navargs.StringArrayNavArg
 import org.expenny.feature.accounts.details.AccountDetailsScreen
 import org.expenny.feature.accounts.destinations.AccountDetailsScreenDestination
 import org.expenny.feature.accounts.destinations.AccountsListScreenDestination
@@ -31,6 +32,7 @@ import org.expenny.feature.profilesetup.ProfileSetupScreen
 import org.expenny.feature.profilesetup.destinations.ProfileSetupScreenDestination
 import org.expenny.feature.records.details.RecordDetailsScreen
 import org.expenny.feature.records.destinations.RecordDetailsScreenDestination
+import org.expenny.feature.records.destinations.RecordLabelsListScreenDestination
 import org.expenny.main.MainState
 
 @OptIn(
@@ -97,6 +99,7 @@ internal fun ExpennyNavigation(
             RecordDetailsScreen(
                 snackbarManager = mainState.snackbarManager,
                 navigator = currentNavigator(),
+                labelResult = resultRecipient<RecordLabelsListScreenDestination, StringArrayNavArg>(),
                 accountResult = resultRecipient<AccountsListScreenDestination, NavArgResult>(),
                 categoryResult = resultRecipient<CategoriesListScreenDestination, LongNavArg>()
             )

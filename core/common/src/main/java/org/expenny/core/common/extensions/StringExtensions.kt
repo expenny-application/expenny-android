@@ -3,6 +3,7 @@ package org.expenny.core.common.extensions
 import org.expenny.core.common.utils.Constants
 import java.math.BigDecimal
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
@@ -38,6 +39,14 @@ val Int.asColorHex: String
 
 fun String.join(vararg parts: String): String {
     return listOf(this, *parts).joinToString(separator = " • ")
+}
+
+fun String.toLocalDateTime(): LocalDateTime? {
+    return try {
+        LocalDateTime.parse(this, DateTimeFormatter.ofPattern(Constants.DEFAULT_DATETIME_FORMAT))
+    } catch (e: DateTimeParseException) {
+        null
+    }
 }
 
 fun String.toLocalDate(): LocalDate? {

@@ -1,7 +1,15 @@
 package org.expenny.feature.records.details.view
 
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -17,8 +25,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import org.expenny.core.common.extensions.toLocalDate
-import org.expenny.core.common.extensions.toLocalTime
+import org.expenny.core.common.extensions.toLocalDateTime
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennyFab
 import org.expenny.core.ui.extensions.asRawString
@@ -41,8 +48,7 @@ internal fun RecordDetailsContent(
 
     RecordDetailsDialog(
         dialog = state.dialog,
-        datePickerDate = state.dateInput.value.toLocalDate(),
-        timePickerDate = state.timeInput.value.toLocalTime(),
+        dateTimePickerValue = state.dateTimeInput.value.toLocalDateTime(),
         onAction = onAction
     )
 
@@ -102,26 +108,24 @@ internal fun RecordDetailsContent(
                     amountInputFocusRequester = amountInputFocusRequester,
                     onTypeChange = { onAction(RecordDetailsAction.OnTypeChange(it)) },
                     onAmountChange = { onAction(RecordDetailsAction.OnAmountChange(it)) },
-                    onTransferAmountChange = { onAction(RecordDetailsAction.OnTransferAmountChange(it)) },
+                    onConversionRateChange = { onAction(RecordDetailsAction.OnConversionRateChange(it)) },
                     onSelectAccountClick = { onAction(RecordDetailsAction.OnSelectAccountClick) },
                     onSelectTransferAccountClick = { onAction(RecordDetailsAction.OnSelectTransferAccountClick) },
                     onSelectCategoryClick = { onAction(RecordDetailsAction.OnSelectCategoryClick) },
-                    onSelectDateClick = { onAction(RecordDetailsAction.OnSelectDateClick) },
-                    onSelectTimeClick = { onAction(RecordDetailsAction.OnSelectTimeClick) }
+                    onSelectDateTimeClick = { onAction(RecordDetailsAction.OnSelectDateTimeClick) },
                 )
                 RecordDetailsAdditionsSection(
                     modifier = Modifier.fillMaxWidth(),
-                    labelsInputFieldState = state.labelsInput,
+                    labels = state.labels,
                     descriptionState = state.descriptionInput,
                     showSection = state.showAdditionsSection,
                     receipts = state.receipts,
-                    onAddLabel = { onAction(RecordDetailsAction.OnLabelAdd(it)) },
-                    onRemoveLabelAtIndex = { onAction(RecordDetailsAction.OnLabelRemove(it)) },
                     onAddReceiptClick = { onAction(RecordDetailsAction.OnAddReceiptClick) },
                     onViewReceiptClick = { onAction(RecordDetailsAction.OnViewReceiptClick(it)) },
                     onDeleteReceiptClick = { onAction(RecordDetailsAction.OnDeleteReceiptClick(it)) },
                     onDescriptionChange = { onAction(RecordDetailsAction.OnDescriptionChange(it)) },
-                    onLabelChange = { onAction(RecordDetailsAction.OnLabelChange(it)) },
+                    onSelectLabelClick = { onAction(RecordDetailsAction.OnSelectLabelsClick) },
+                    onLabelRemove = { onAction(RecordDetailsAction.OnLabelRemove(it)) },
                     onVisibilityChange = { onAction(RecordDetailsAction.OnAdditionsSectionVisibilityChange(it)) },
                 )
             }
