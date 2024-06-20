@@ -22,6 +22,7 @@ import com.ramcosta.composedestinations.result.OpenResultRecipient
 import org.expenny.core.ui.base.ExpennySnackbarManager
 import org.expenny.core.ui.data.navargs.LongNavArg
 import org.expenny.core.ui.data.navargs.NavArgResult
+import org.expenny.core.ui.data.navargs.StringArrayNavArg
 import org.expenny.core.ui.utils.ManagedTakePhotoResultLauncher
 import org.expenny.core.ui.utils.TakePhoto
 import org.expenny.core.ui.utils.rememberLauncherForTakePhotoResult
@@ -38,6 +39,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 fun RecordDetailsScreen(
     snackbarManager: ExpennySnackbarManager,
     navigator: RecordDetailsNavigator,
+    labelResult: OpenResultRecipient<StringArrayNavArg>,
     accountResult: OpenResultRecipient<NavArgResult>,
     categoryResult: OpenResultRecipient<LongNavArg>,
 ) {
@@ -54,6 +56,12 @@ fun RecordDetailsScreen(
     val takePhotoLauncher = rememberCameraLauncher(
         onSuccess = { vm.onAction(RecordDetailsAction.OnReceiptCapture(it)) }
     )
+
+    labelResult.onNavResult { res ->
+        if (res is NavResult.Value) {
+            vm.onAction(RecordDetailsAction.OnLabelSelect(res.value))
+        }
+    }
 
     accountResult.onNavResult { res ->
         if (res is NavResult.Value) {
@@ -90,6 +98,9 @@ fun RecordDetailsScreen(
             }
             is RecordDetailsEvent.NavigateToAccountSelectionList -> {
                 navigator.navigateToAccountSelectionListScreen(it.selection, it.excludeIds)
+            }
+            is RecordDetailsEvent.NavigateToLabelsSelectionList -> {
+                navigator.navigateToRecordLabelsListScreen(it.selection)
             }
             is RecordDetailsEvent.RequestAmountInputFocus -> {
                 amountInputFocusRequester.requestFocus()

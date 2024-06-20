@@ -62,6 +62,7 @@ import java.math.BigDecimal
 fun ExpennyMonetaryInputField(
     modifier: Modifier = Modifier,
     state: DecimalInputUi,
+    description: String? = null,
     label: String,
     currency: String,
     onValueChange: (BigDecimal) -> Unit,
@@ -75,6 +76,7 @@ fun ExpennyMonetaryInputField(
         label = label,
         value = formatToInput(state.value),
         error = state.error?.asRawString(),
+        description = description?.let { AnnotatedString(it) },
         isRequired = state.isRequired,
         isEnabled = state.isEnabled,
         onValueChange = {
@@ -173,12 +175,13 @@ fun ExpennyInputField(
     label: String,
     value: String,
     error: String? = null,
+    description: AnnotatedString? = null,
     placeholder: String? = null,
-    maxLines: Int = 1,
     isRequired: Boolean = false,
     isReadonly: Boolean = false,
     isEnabled: Boolean = true,
     isSingleLine: Boolean = true,
+    maxLines: Int = 1,
     leadingContent: @Composable (() -> Unit)? = null,
     trailingContent: @Composable (() -> Unit)? = null,
     onValueChange: (String) -> Unit,
@@ -187,30 +190,19 @@ fun ExpennyInputField(
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 ) {
-    val isError = error != null
-    val isFocusable = !isReadonly && isEnabled
+    val isError by rememberUpdatedState(error != null)
+    val isFocusable by rememberUpdatedState(!isReadonly && isEnabled)
     var isFocusedDirty by rememberSaveable { mutableStateOf(false) }
-
-    val disabledContentColor =
-        if (isEnabled) MaterialTheme.colorScheme.onSurface
-        else MaterialTheme.colorScheme.onSurfaceVariant.copy(0.5f)
-
-    val errorContainerColor by animateInputFieldContainerAsState(interactionSource)
-    val textSelectionColors = TextSelectionColors(
-        handleColor = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
-        backgroundColor = (if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary).copy(0.5f)
-    )
-    val borderStroke by animateInputFieldBorderAsState(
-        isEnabled = isEnabled,
-        isError = isError,
-        interactionSource = interactionSource
-    )
+    val disabledContentColor by rememberExpennyInputDisabledContentColor(isEnabled)
+    val textSelectionColors by rememberExpennyInputTextSelectionColors(isError)
+    val errorContainerColor by animateExpennyInputContainerAsState(interactionSource)
+    val borderStroke by animateExpennyInputBorderAsState(isEnabled, isError, interactionSource)
 
     CompositionLocalProvider(LocalTextSelectionColors provides textSelectionColors) {
         Column(modifier = modifier) {
             TextField(
                 modifier = Modifier
-                    .height(ExpennyInputFieldHeight)
+                    .height(56.dp)
                     .fillMaxWidth()
                     .border(
                         border = borderStroke,
@@ -243,14 +235,14 @@ fun ExpennyInputField(
                     val text = placeholder.takeIf { it != null && value.isBlank() && !isFocusable }
                         ?: label
 
-                    InputFieldLabel(
+                    ExpennyInputLabel(
                         text = text,
                         required = isRequired
                     )
                 },
                 placeholder = {
                     if (placeholder != null) {
-                        InputFieldLabel(
+                        ExpennyInputLabel(
                             text = placeholder,
                             required = isRequired
                         )
@@ -264,38 +256,9 @@ fun ExpennyInputField(
                 ),
                 keyboardActions = keyboardActions,
                 visualTransformation = visualTransformation,
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.surface,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceInput,
-                    disabledContainerColor = MaterialTheme.colorScheme.surfaceInput,
+                colors = expennyInputDefaultColors.copy(
                     errorContainerColor = errorContainerColor,
-                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
-                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-                    errorTextColor = MaterialTheme.colorScheme.onSurface,
-                    focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    errorPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    cursorColor = MaterialTheme.colorScheme.primary,
-                    errorLabelColor = MaterialTheme.colorScheme.error,
-                    errorCursorColor = MaterialTheme.colorScheme.error,
-                    errorSupportingTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    errorIndicatorColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    focusedSupportingTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    focusedLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    focusedTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    focusedLabelColor = MaterialTheme.colorScheme.primary,
-                    unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    unfocusedSupportingTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    unfocusedTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    unfocusedLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    disabledSupportingTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     disabledPlaceholderColor = disabledContentColor,
-                    disabledLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    disabledTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     disabledTextColor = disabledContentColor,
                 )
             )
@@ -306,6 +269,12 @@ fun ExpennyInputField(
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error,
                     )
+                } else if (description != null) {
+                    Text(
+                        text = description,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
                 }
             }
         }
@@ -313,7 +282,7 @@ fun ExpennyInputField(
 }
 
 @Composable
-private fun InputFieldLabel(text: String, required: Boolean) {
+private fun ExpennyInputLabel(text: String, required: Boolean) {
     val formattedText = if (required) {
         buildAnnotatedString {
             append(text)
@@ -332,7 +301,7 @@ private fun InputFieldLabel(text: String, required: Boolean) {
 }
 
 @Composable
-fun animateInputFieldContainerAsState(
+fun animateExpennyInputContainerAsState(
     interactionSource: InteractionSource,
 ): State<Color> {
     val isFocused by interactionSource.collectIsFocusedAsState()
@@ -350,7 +319,7 @@ fun animateInputFieldContainerAsState(
 }
 
 @Composable
-fun animateInputFieldBorderAsState(
+fun animateExpennyInputBorderAsState(
     isEnabled: Boolean,
     isError: Boolean,
     interactionSource: InteractionSource
@@ -381,4 +350,50 @@ fun animateInputFieldBorderAsState(
     )
 }
 
-val ExpennyInputFieldHeight = 56.dp
+@Composable
+private fun rememberExpennyInputDisabledContentColor(isEnabled: Boolean) = rememberUpdatedState(
+    if (isEnabled) MaterialTheme.colorScheme.onSurface
+    else MaterialTheme.colorScheme.onSurfaceVariant.copy(0.5f)
+)
+
+@Composable
+private fun rememberExpennyInputTextSelectionColors(isError: Boolean) = rememberUpdatedState(
+    TextSelectionColors(
+        handleColor = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
+        backgroundColor = (if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary).copy(0.4f)
+    )
+)
+
+private val expennyInputDefaultColors
+    @Composable
+    get() = TextFieldDefaults.colors(
+        focusedContainerColor = MaterialTheme.colorScheme.surface,
+        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceInput,
+        disabledContainerColor = MaterialTheme.colorScheme.surfaceInput,
+        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+        unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+        errorTextColor = MaterialTheme.colorScheme.onSurface,
+        focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        errorPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        cursorColor = MaterialTheme.colorScheme.primary,
+        errorLabelColor = MaterialTheme.colorScheme.error,
+        errorCursorColor = MaterialTheme.colorScheme.error,
+        errorSupportingTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        errorIndicatorColor = Color.Transparent,
+        focusedIndicatorColor = Color.Transparent,
+        focusedSupportingTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        focusedLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        focusedTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        focusedLabelColor = MaterialTheme.colorScheme.primary,
+        unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        unfocusedSupportingTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        unfocusedTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        unfocusedLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        unfocusedIndicatorColor = Color.Transparent,
+        disabledIndicatorColor = Color.Transparent,
+        disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        disabledSupportingTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        disabledLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        disabledTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+    )

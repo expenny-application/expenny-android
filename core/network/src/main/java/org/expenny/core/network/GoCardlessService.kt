@@ -42,7 +42,7 @@ class GoCardlessService @Inject constructor(
         return goCardlessClient.post("requisitions/") {
             setBody(
                 mapOf(
-                    "redirect" to "app://expenny",
+                    "redirect" to "https://www.expenny.org",
                     "institution_id" to institutionId
                 )
             )

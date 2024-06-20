@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -14,18 +15,22 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableList
+import org.expenny.core.common.extensions.toCurrencyAmountString
 import org.expenny.core.common.types.RecordType
 import org.expenny.core.resources.R
+import org.expenny.core.ui.components.ExpennyInputField
+import org.expenny.core.ui.components.ExpennyMonetaryInputField
 import org.expenny.core.ui.components.ExpennySegmentedTabRow
-import org.expenny.core.ui.data.InputUi
+import org.expenny.core.ui.components.ExpennySelectInputField
 import org.expenny.core.ui.data.DecimalInputUi
+import org.expenny.core.ui.data.InputUi
 import org.expenny.core.ui.extensions.asRawString
 import org.expenny.core.ui.extensions.label
-import org.expenny.core.ui.components.ExpennyMonetaryInputField
-import org.expenny.core.ui.components.ExpennySelectInputField
 import org.expenny.core.ui.foundation.surfaceInput
+import org.expenny.core.ui.transformations.ExpennyDecimalVisualTransformation
 import org.expenny.feature.records.details.contract.RecordDetailsState
 import java.math.BigDecimal
 
@@ -36,77 +41,75 @@ internal fun RecordDetailsMainSection(
     amountInputFocusRequester: FocusRequester,
     onTypeChange: (RecordType) -> Unit,
     onAmountChange: (BigDecimal) -> Unit,
-    onTransferAmountChange: (BigDecimal) -> Unit,
+    onConversionRateChange: (BigDecimal) -> Unit,
     onSelectAccountClick: () -> Unit,
     onSelectTransferAccountClick: () -> Unit,
     onSelectCategoryClick: () -> Unit,
-    onSelectDateClick: () -> Unit,
-    onSelectTimeClick: () -> Unit,
+    onSelectDateTimeClick: () -> Unit,
 ) {
     Column(
         modifier = modifier.animateContentSize(),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        RecordTypeTabRow(
-            modifier = Modifier.fillMaxWidth(),
-            types = state.types,
-            selectedType = state.selectedType,
-            onChange = onTypeChange
-        )
+        if (!state.types.isNullOrEmpty()) {
+            RecordTypesTabRow(
+                modifier = Modifier.fillMaxWidth(),
+                types = state.types,
+                selectedType = state.selectedType,
+                onChange = onTypeChange
+            )
+        }
         AmountInputField(
             modifier = Modifier
                 .fillMaxWidth()
                 .focusRequester(amountInputFocusRequester),
             state = state.amountInput,
-            currency = state.amountCurrency,
-            onValueChange = onAmountChange
+            convertedAmount = state.convertedAmount,
+            convertedAmountCurrency = state.convertedAmountCurrency,
+            currency = state.amountCurrency.orEmpty(),
+            onValueChange = onAmountChange,
         )
-        if (state.showTransferAmountInput) {
-            TransferAmountInputField(
+        if (state.showConversionRateInput) {
+            ConversionRateInputField(
                 modifier = Modifier.fillMaxWidth(),
-                state = state.transferAmountInput,
-                currency = state.transferAmountCurrency,
-                onValueChange = onTransferAmountChange
+                state = state.conversionRateInput,
+                onValueChange = onConversionRateChange
             )
         }
-        SelectAccountInputField(
-            state = state.accountInput,
-            onClick = onSelectAccountClick
-        )
-        if (state.showTransferAccountInput) {
-            SelectTransferAccountInputField(
-                state = state.transferAccountInput,
-                onClick = onSelectTransferAccountClick
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.Top,
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            SelectAccountInputField(
+                modifier = Modifier.weight(1f),
+                state = state.accountInput,
+                onClick = onSelectAccountClick
             )
+            if (state.showTransferAccountInput) {
+                SelectTransferAccountInputField(
+                    modifier = Modifier.weight(1f),
+                    state = state.transferAccountInput,
+                    onClick = onSelectTransferAccountClick
+                )
+            }
         }
-        if (state.showCategoryInput) {
+        if (!state.hideCategoryInput) {
             SelectCategoryInputField(
                 state = state.categoryInput,
                 onClick = onSelectCategoryClick
             )
         }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            SelectDateInputField(
-                modifier = Modifier.weight(1f),
-                state = state.dateInput,
-                onClick = onSelectDateClick
-            )
-            SelectTimeInputField(
-                modifier = Modifier.weight(1f),
-                state = state.timeInput,
-                onClick = onSelectTimeClick
-            )
-        }
+        SelectDateTimeInputField(
+            state = state.dateTimeInput,
+            onClick = onSelectDateTimeClick
+        )
     }
 }
 
 @Composable
-private fun RecordTypeTabRow(
+private fun RecordTypesTabRow(
     modifier: Modifier = Modifier,
     types: ImmutableList<RecordType>,
     selectedType: RecordType,
@@ -128,11 +131,26 @@ private fun RecordTypeTabRow(
 private fun AmountInputField(
     modifier: Modifier = Modifier,
     state: DecimalInputUi,
+    convertedAmount: BigDecimal?,
+    convertedAmountCurrency: String?,
     currency: String,
-    onValueChange: (BigDecimal) -> Unit
+    onValueChange: (BigDecimal) -> Unit,
 ) {
+    val description = buildString {
+        convertedAmount?.let {
+            append(convertedAmount.toCurrencyAmountString())
+            convertedAmountCurrency?.let {
+                append(" ")
+                append(convertedAmountCurrency)
+            }
+        }
+    }.takeIf { it.isNotBlank() }?.let {
+        stringResource(R.string.amount_to_receive_label, it)
+    }
+
     ExpennyMonetaryInputField(
         modifier = modifier.fillMaxWidth(),
+        description = description,
         label = stringResource(R.string.amount_label),
         state = state,
         currency = currency,
@@ -142,19 +160,26 @@ private fun AmountInputField(
 }
 
 @Composable
-private fun TransferAmountInputField(
+private fun ConversionRateInputField(
     modifier: Modifier = Modifier,
     state: DecimalInputUi,
-    currency: String,
-    onValueChange: (BigDecimal) -> Unit
+    onValueChange: (BigDecimal) -> Unit,
 ) {
-    ExpennyMonetaryInputField(
+    ExpennyInputField(
         modifier = modifier.fillMaxWidth(),
-        label = stringResource(R.string.final_amount_label),
-        state = state,
-        currency = currency,
-        onValueChange = onValueChange,
-        imeAction = ImeAction.Next,
+        label = stringResource(R.string.conversion_rate_label),
+        value = ExpennyDecimalVisualTransformation.formatToInput(state.value),
+        error = state.error?.asRawString(),
+        isRequired = state.isRequired,
+        isEnabled = state.isEnabled,
+        onValueChange = {
+            onValueChange(ExpennyDecimalVisualTransformation.formatToOutput(it, state.value.scale()))
+        },
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.NumberPassword,
+            imeAction = ImeAction.Next
+        ),
+        visualTransformation = ExpennyDecimalVisualTransformation(state.value.scale())
     )
 }
 
@@ -219,7 +244,7 @@ private fun SelectTransferAccountInputField(
 }
 
 @Composable
-private fun SelectDateInputField(
+private fun SelectDateTimeInputField(
     modifier: Modifier = Modifier,
     state: InputUi,
     onClick: () -> Unit
@@ -232,27 +257,7 @@ private fun SelectDateInputField(
             isEnabled = isEnabled,
             error = error?.asRawString(),
             label = stringResource(R.string.date_label),
-            placeholder = stringResource(R.string.select_date_label),
-            onClick = onClick
-        )
-    }
-}
-
-@Composable
-private fun SelectTimeInputField(
-    modifier: Modifier = Modifier,
-    state: InputUi,
-    onClick: () -> Unit
-) {
-    with(state) {
-        ExpennySelectInputField(
-            modifier = modifier,
-            isRequired = isRequired,
-            value = value,
-            isEnabled = isEnabled,
-            error = error?.asRawString(),
-            label = stringResource(R.string.time_label),
-            placeholder = stringResource(R.string.select_time_label),
+            placeholder = stringResource(R.string.select_datetime_label),
             onClick = onClick
         )
     }

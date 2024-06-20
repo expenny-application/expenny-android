@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import org.expenny.core.resources.R
+import org.expenny.core.ui.extensions.noRippleClickable
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -138,9 +139,12 @@ class ExpennyChipScope {
     fun ChipIcon(
         modifier: Modifier = Modifier,
         painter: Painter,
+        onClick: () -> Unit = {}
     ) {
         Icon(
-            modifier = modifier.size(16.dp),
+            modifier = modifier
+                .size(16.dp)
+                .noRippleClickable { onClick() },
             painter = painter,
             contentDescription = stringResource(R.string.icon_a11y)
         )

@@ -6,6 +6,7 @@ object Constants {
     const val NULL_ID = -1L
     const val DEFAULT_RESULT_CODE = 0
     const val DEFAULT_REMINDER_TIME_FORMAT = "HH:mm"
+    const val DEFAULT_DATETIME_FORMAT = "d MMM yyyy, HH:mm:ss"
     const val DEFAULT_DATE_FORMAT = "d MMM, yyyy"
     const val DEFAULT_TIME_FORMAT = "HH:mm:ss"
     const val DEFAULT_MONTH_FORMAT = "LLLL yyyy"

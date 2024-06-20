@@ -3,29 +3,34 @@ package org.expenny.main
 import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.rememberDrawerState
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.navigation.*
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import org.expenny.core.ui.base.ExpennySnackbarManager
-import org.expenny.core.ui.components.ExpennySnackbar
 import com.ramcosta.composedestinations.spec.NavGraphSpec
 import com.ramcosta.composedestinations.spec.Route
-import com.ramcosta.composedestinations.utils.currentDestinationAsState
-import com.ramcosta.composedestinations.utils.currentDestinationFlow
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.map
-import org.expenny.navigation.*
-import org.expenny.navigation.ExpennyNavigation
 import org.expenny.core.ui.base.ExpennyDrawerManager
+import org.expenny.core.ui.base.ExpennySnackbarManager
+import org.expenny.core.ui.components.ExpennySnackbar
+import org.expenny.navigation.ExpennyNavigation
+import org.expenny.navigation.currentTabAsState
+import org.expenny.navigation.navigateFirstTab
+import org.expenny.navigation.navigateTab
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalAnimationApi::class)

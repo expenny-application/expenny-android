@@ -23,6 +23,7 @@ import org.expenny.core.ui.data.ItemUi
 import org.expenny.core.ui.data.SingleSelectionUi
 import org.expenny.core.ui.mapper.CountryMapper
 import org.expenny.core.ui.mapper.InstitutionMapper
+import org.expenny.feature.institution.BuildConfig
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.blockingIntent
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -97,7 +98,11 @@ class InstitutionsListViewModel @Inject constructor(
     }
 
     private fun handleOnInstitutionSelect(action: InstitutionsListAction.OnInstitutionSelect) = intent {
-        postSideEffect(NavigateToInstitutionRequisition(action.institutionId))
+        if (BuildConfig.DEBUG) {
+            postSideEffect(NavigateToInstitutionRequisition("SANDBOXFINANCE_SFIN0000"))
+        } else {
+            postSideEffect(NavigateToInstitutionRequisition(action.institutionId))
+        }
     }
 
     private fun handleOnSearchQueryChange(action: InstitutionsListAction.OnSearchQueryChange) {

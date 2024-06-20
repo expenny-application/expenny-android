@@ -40,9 +40,6 @@ fun RecordsListScreen(
             is RecordsListEvent.NavigateToEditRecord -> {
                 navigator.navigateToEditRecordScreen(it.id)
             }
-            is RecordsListEvent.NavigateToCloneRecord -> {
-                navigator.navigateToCloneRecordScreen(it.id)
-            }
             is RecordsListEvent.ShowMessage -> {
                 snackbarManager.showInfo(it.message)
             }

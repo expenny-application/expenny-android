@@ -67,8 +67,8 @@ class RecordsListViewModel @Inject constructor(
     private var accounts: List<Account> = emptyList()
     private var categories: List<Category> = emptyList()
     private var labels: List<String> = emptyList()
-    private val recordTypes: List<RecordType> = RecordType.values().toList()
-    private val intervalTypes: List<IntervalType> = IntervalType.values().toList()
+    private val recordTypes: List<RecordType> = RecordType.entries
+    private val intervalTypes: List<IntervalType> = IntervalType.entries
 
     private var selectedRecordId: Long? = null
 
@@ -206,22 +206,18 @@ class RecordsListViewModel @Inject constructor(
                 }
                 RecordActionType.Edit -> {
                     postSideEffect(RecordsListEvent.NavigateToEditRecord(selectedRecordId!!))
-                    resetSelectedRecordId()
-                }
-                RecordActionType.Clone -> {
-                    postSideEffect(RecordsListEvent.NavigateToCloneRecord(selectedRecordId!!))
-                    resetSelectedRecordId()
+                    resetSelectedRecord()
                 }
                 RecordActionType.Select -> {
                     reduce { state.copy(isSelectionMode = true) }
                     handleOnRecordClick(RecordsListAction.OnRecordClick(selectedRecordId!!))
-                    resetSelectedRecordId()
+                    resetSelectedRecord()
                 }
             }
         }
     }
 
-    private fun resetSelectedRecordId() {
+    private fun resetSelectedRecord() {
         selectedRecordId = null
     }
 
@@ -288,7 +284,7 @@ class RecordsListViewModel @Inject constructor(
             handleOnExitSelectionModeClick()
         } else {
             deleteRecord(selectedRecordId!!)
-            resetSelectedRecordId()
+            resetSelectedRecord()
         }
         postSideEffect(RecordsListEvent.ShowMessage(fromRes(R.string.deleted_message)))
     }

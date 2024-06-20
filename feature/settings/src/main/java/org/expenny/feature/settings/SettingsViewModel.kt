@@ -74,8 +74,8 @@ class SettingsViewModel @Inject constructor(
 ) : ExpennyViewModel<SettingsAction>(), ContainerHost<SettingsState, SettingsEvent> {
 
     private var profiles: List<Profile> = emptyList()
-    private val languages: List<ApplicationLanguage> = ApplicationLanguage.values().toList()
-    private val themes: List<ApplicationTheme> = ApplicationTheme.values().toList()
+    private val languages: List<ApplicationLanguage> = ApplicationLanguage.entries
+    private val themes: List<ApplicationTheme> = ApplicationTheme.entries
 
     override val container = container<SettingsState, SettingsEvent>(
         initialState = SettingsState(),

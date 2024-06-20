@@ -133,13 +133,11 @@ class AccountsListViewModel @Inject constructor(
 
                 reduce {
                     state.copy(
-                        toolbarTitle = when (args.selection) {
-                            is LongArrayNavArg -> fromPluralRes(R.plurals.select_account_quantity_label, 2)
-                            is LongNavArg -> fromPluralRes(R.plurals.select_account_quantity_label, 1)
-                        },
+                        toolbarTitle = fromRes(R.string.select_account_label),
                         selection = when (args.selection) {
                             is LongArrayNavArg -> MultiSelectionUi(args.selection.values.toList())
                             is LongNavArg -> SingleSelectionUi(args.selection.value)
+                            else -> null
                         }
                     )
                 }

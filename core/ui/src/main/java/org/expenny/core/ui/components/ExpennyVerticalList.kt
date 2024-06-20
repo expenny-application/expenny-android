@@ -23,12 +23,7 @@ fun <B> ExpennyVerticalList(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         state = state,
-        contentPadding = PaddingValues(
-            top = 16.dp,
-            start = 16.dp,
-            end = 16.dp,
-            bottom = 16.dp + NavigationBarBottomPadding
-        )
+        contentPadding = ExpennyVerticalListPaddingValues
     ) {
         headerItem?.let {
             item {
@@ -37,7 +32,7 @@ fun <B> ExpennyVerticalList(
         }
         items(
             items = list,
-            key = listItemKey?.let { { listItemKey.get(it) } }
+            key = listItemKey?.let { { listItemKey.get(it) } } ?: { it.toString() }
         ) {
             listItem(it)
         }
@@ -63,12 +58,7 @@ fun <A, B> ExpennyGroupedVerticalList(
         modifier = modifier.fillMaxSize(),
         state = state,
         verticalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(
-            top = 16.dp,
-            start = 16.dp,
-            end = 16.dp,
-            bottom = 16.dp + NavigationBarBottomPadding
-        )
+        contentPadding = ExpennyVerticalListPaddingValues
     ) {
         groupedList.forEach { (header, list) ->
             stickyHeader(key = header) {
@@ -85,3 +75,10 @@ fun <A, B> ExpennyGroupedVerticalList(
     }
 }
 
+val ExpennyVerticalListPaddingValues
+    @Composable get() = PaddingValues(
+        top = 16.dp,
+        start = 16.dp,
+        end = 16.dp,
+        bottom = 16.dp + NavigationBarBottomPadding
+    )
