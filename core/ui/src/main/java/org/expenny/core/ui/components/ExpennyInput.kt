@@ -8,10 +8,10 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.InteractionSource
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -19,7 +19,6 @@ import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -49,46 +48,181 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import org.expenny.core.resources.R
-import org.expenny.core.ui.data.DecimalInputUi
-import org.expenny.core.ui.extensions.asRawString
+import org.expenny.core.ui.base.ExpennyLoremIpsum
+import org.expenny.core.ui.base.ExpennyPreview
 import org.expenny.core.ui.extensions.noRippleClickable
+import org.expenny.core.ui.foundation.ExpennyThemePreview
+import org.expenny.core.ui.foundation.transparent
 import org.expenny.core.ui.transformations.ExpennyDecimalVisualTransformation
 import org.expenny.core.ui.transformations.ExpennyDecimalVisualTransformation.Companion.formatToInput
 import org.expenny.core.ui.transformations.ExpennyDecimalVisualTransformation.Companion.formatToOutput
-import org.expenny.core.ui.foundation.surfaceInput
 import java.math.BigDecimal
+
+@Composable
+fun ExpennyInputField(
+    modifier: Modifier = Modifier,
+    label: String,
+    value: String,
+    error: String? = null,
+    description: String? = null,
+    placeholder: String? = null,
+    isRequired: Boolean = false,
+    isReadonly: Boolean = false,
+    isEnabled: Boolean = true,
+    isSingleLine: Boolean = true,
+    leadingContent: @Composable (() -> Unit)? = null,
+    trailingContent: @Composable (() -> Unit)? = null,
+    onValueChange: (String) -> Unit,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isFocused by interactionSource.collectIsFocusedAsState()
+    val isError by rememberUpdatedState(error != null)
+    val isFocusable by rememberUpdatedState(!isReadonly && isEnabled)
+    var isFocusedDirty by rememberSaveable { mutableStateOf(false) }
+    val textSelectionColors by rememberTextSelectionColors(isError)
+    val disabledPlaceholderColor by rememberDisabledPlaceholderColor(isEnabled)
+    val disabledLabelColor by rememberDisabledLabelColor(isEnabled)
+    val disabledTextColor by rememberDisabledTextColor(isEnabled)
+    val errorContainerColor by rememberErrorContainerColorAsState(isFocused)
+    val border by animateBorderAsState(isEnabled, isError, isFocused)
+    val maxLines by rememberUpdatedState(if (isSingleLine) 1 else 5)
+
+    CompositionLocalProvider(LocalTextSelectionColors provides textSelectionColors) {
+        Column(modifier = modifier) {
+            TextField(
+                modifier = Modifier
+                    .then(
+                        if (isSingleLine) Modifier.height(56.dp)
+                        else Modifier.heightIn(min = 56.dp)
+                    )
+                    .fillMaxWidth()
+                    .border(
+                        border = border,
+                        shape = MaterialTheme.shapes.small,
+                    )
+                    .onFocusChanged {
+                        // Expose onValueChange to trigger validation on field focus lost
+                        if (it.isFocused) {
+                            isFocusedDirty = true
+                        } else {
+                            if (isFocusedDirty) {
+                                onValueChange(value)
+                            }
+                            isFocusedDirty = false
+                        }
+                    },
+                shape = MaterialTheme.shapes.small,
+                textStyle = MaterialTheme.typography.bodyLarge,
+                isError = isError,
+                enabled = isFocusable,
+                value = value,
+                maxLines = maxLines,
+                singleLine = isSingleLine,
+                onValueChange = {
+                    onValueChange(it)
+                },
+                label = {
+                    InputLabel(
+                        text = label,
+                        isRequired = isRequired,
+                        isEnabled = isEnabled
+                    )
+                },
+                placeholder = placeholder?.let {
+                    {
+                        InputLabel(
+                            text = placeholder,
+                            isRequired = isRequired,
+                            isEnabled = isEnabled
+                        )
+                    }
+                },
+                leadingIcon = leadingContent,
+                trailingIcon = trailingContent,
+                interactionSource = interactionSource,
+                keyboardActions = keyboardActions,
+                visualTransformation = visualTransformation,
+                keyboardOptions = keyboardOptions.copy(
+                    capitalization = KeyboardCapitalization.Sentences
+                ),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    errorTextColor = MaterialTheme.colorScheme.onSurface,
+                    focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    errorPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    cursorColor = MaterialTheme.colorScheme.primary,
+                    errorContainerColor = errorContainerColor,
+                    errorLabelColor = MaterialTheme.colorScheme.error,
+                    errorCursorColor = MaterialTheme.colorScheme.error,
+                    errorSupportingTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    errorIndicatorColor = MaterialTheme.colorScheme.transparent,
+                    focusedIndicatorColor = MaterialTheme.colorScheme.transparent,
+                    focusedSupportingTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    focusedLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    focusedTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    unfocusedSupportingTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    unfocusedTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    unfocusedLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    unfocusedIndicatorColor = MaterialTheme.colorScheme.transparent,
+                    disabledIndicatorColor = MaterialTheme.colorScheme.transparent,
+                    disabledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    disabledSupportingTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    disabledLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    disabledTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    disabledLabelColor = disabledLabelColor,
+                    disabledPlaceholderColor = disabledPlaceholderColor,
+                    disabledTextColor = disabledTextColor,
+                )
+            )
+            InputDescription(description = description)
+            InputError(error = error)
+        }
+    }
+}
+
 
 @Composable
 fun ExpennyMonetaryInputField(
     modifier: Modifier = Modifier,
-    state: DecimalInputUi,
-    description: String? = null,
     label: String,
+    value: BigDecimal,
     currency: String,
+    error: String? = null,
+    description: String? = null,
+    isRequired: Boolean = false,
+    isEnabled: Boolean = true,
     onValueChange: (BigDecimal) -> Unit,
     onCurrencyClick: () -> Unit = {},
-    imeAction: ImeAction = ImeAction.Done,
+    leadingContent: @Composable (() -> Unit)? = null,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 ) {
     ExpennyInputField(
         modifier = modifier,
         label = label,
-        value = formatToInput(state.value),
-        error = state.error?.asRawString(),
-        description = description?.let { AnnotatedString(it) },
-        isRequired = state.isRequired,
-        isEnabled = state.isEnabled,
+        value = formatToInput(value),
+        error = error,
+        description = description,
+        isRequired = isRequired,
+        isEnabled = isEnabled,
         onValueChange = {
-            onValueChange(formatToOutput(it, state.value.scale()))
+            onValueChange(formatToOutput(it, value.scale()))
         },
-        interactionSource = interactionSource,
         keyboardActions = keyboardActions,
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.NumberPassword,
-            imeAction = imeAction
+            imeAction = ImeAction.Done
         ),
-        visualTransformation = ExpennyDecimalVisualTransformation(state.value.scale()),
+        visualTransformation = ExpennyDecimalVisualTransformation(value.scale()),
+        leadingContent = leadingContent,
         trailingContent = {
             Text(
                 modifier = Modifier.noRippleClickable { onCurrencyClick() },
@@ -106,25 +240,34 @@ fun ExpennyReadonlyInputField(
     label: String,
     value: String,
     error: String? = null,
+    description: String? = null,
     placeholder: String? = null,
     isRequired: Boolean = false,
     isEnabled: Boolean = true,
+    isSingleLine: Boolean = true,
+    leadingContent: @Composable (() -> Unit)? = null,
     trailingContent: @Composable (() -> Unit)? = null,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
 ) {
     ExpennyInputField(
         modifier = modifier,
         label = label,
         placeholder = placeholder,
+        description = description,
         value = value,
         error = error,
         isReadonly = true,
+        isSingleLine = isSingleLine,
         isEnabled = isEnabled,
         isRequired = isRequired,
         onValueChange = {},
         trailingContent = trailingContent,
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Text
-        )
+        leadingContent = leadingContent,
+        visualTransformation = visualTransformation,
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions
     )
 }
 
@@ -134,24 +277,33 @@ fun ExpennySelectInputField(
     label: String,
     value: String,
     error: String? = null,
+    description: String? = null,
     placeholder: String? = null,
     isRequired: Boolean = false,
     isEnabled: Boolean = true,
+    isSingleLine: Boolean = true,
     onClick: () -> Unit,
     onValueChange: (String) -> Unit = {},
+    leadingContent: @Composable (() -> Unit)? = null,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
 ) {
     ExpennyInputField(
         modifier = modifier.noRippleClickable {
             if (isEnabled) onClick()
         },
-        label = label,
+        label = if (value.isBlank() && placeholder != null) placeholder else label,
         placeholder = placeholder,
+        description = description,
         value = value,
         error = error,
         isReadonly = true,
         isEnabled = isEnabled,
         isRequired = isRequired,
+        isSingleLine = isSingleLine,
         onValueChange = onValueChange,
+        leadingContent = leadingContent,
         trailingContent = {
             IconButton(
                 onClick = onClick,
@@ -163,130 +315,66 @@ fun ExpennySelectInputField(
                 )
             }
         },
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Text
-        )
+        visualTransformation = visualTransformation,
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
     )
 }
 
 @Composable
-fun ExpennyInputField(
+private fun InputError(
     modifier: Modifier = Modifier,
-    label: String,
-    value: String,
-    error: String? = null,
-    description: AnnotatedString? = null,
-    placeholder: String? = null,
-    isRequired: Boolean = false,
-    isReadonly: Boolean = false,
-    isEnabled: Boolean = true,
-    isSingleLine: Boolean = true,
-    maxLines: Int = 1,
-    leadingContent: @Composable (() -> Unit)? = null,
-    trailingContent: @Composable (() -> Unit)? = null,
-    onValueChange: (String) -> Unit,
-    visualTransformation: VisualTransformation = VisualTransformation.None,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    keyboardActions: KeyboardActions = KeyboardActions.Default,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
+    error: String?,
 ) {
-    val isError by rememberUpdatedState(error != null)
-    val isFocusable by rememberUpdatedState(!isReadonly && isEnabled)
-    var isFocusedDirty by rememberSaveable { mutableStateOf(false) }
-    val disabledContentColor by rememberExpennyInputDisabledContentColor(isEnabled)
-    val textSelectionColors by rememberExpennyInputTextSelectionColors(isError)
-    val errorContainerColor by animateExpennyInputContainerAsState(interactionSource)
-    val borderStroke by animateExpennyInputBorderAsState(isEnabled, isError, interactionSource)
-
-    CompositionLocalProvider(LocalTextSelectionColors provides textSelectionColors) {
-        Column(modifier = modifier) {
-            TextField(
-                modifier = Modifier
-                    .height(56.dp)
-                    .fillMaxWidth()
-                    .border(
-                        border = borderStroke,
-                        shape = MaterialTheme.shapes.small,
-                    )
-                    .onFocusChanged {
-                        // Expose onValueChange to trigger validation on field focus lost
-                        if (it.isFocused) {
-                            isFocusedDirty = true
-                        } else {
-                            if (isFocusedDirty) {
-                                onValueChange(value)
-                            }
-                            isFocusedDirty = false
-                        }
-                    },
-                shape = MaterialTheme.shapes.small,
-                textStyle = LocalTextStyle.current,
-                isError = isError,
-                enabled = isFocusable,
-                value = value,
-                maxLines = maxLines,
-                singleLine = isSingleLine,
-                onValueChange = {
-                    onValueChange(it)
-                },
-                label = {
-                    // if the field is not enabled by default, there is no way to show placeholder
-                    // other then replace label with placeholder value while field is empty
-                    val text = placeholder.takeIf { it != null && value.isBlank() && !isFocusable }
-                        ?: label
-
-                    ExpennyInputLabel(
-                        text = text,
-                        required = isRequired
-                    )
-                },
-                placeholder = {
-                    if (placeholder != null) {
-                        ExpennyInputLabel(
-                            text = placeholder,
-                            required = isRequired
-                        )
-                    }
-                },
-                leadingIcon = leadingContent,
-                trailingIcon = trailingContent,
-                interactionSource = interactionSource,
-                keyboardOptions = keyboardOptions.copy(
-                    capitalization = KeyboardCapitalization.Sentences
-                ),
-                keyboardActions = keyboardActions,
-                visualTransformation = visualTransformation,
-                colors = expennyInputDefaultColors.copy(
-                    errorContainerColor = errorContainerColor,
-                    disabledPlaceholderColor = disabledContentColor,
-                    disabledTextColor = disabledContentColor,
-                )
-            )
-            Box(modifier = Modifier.padding(horizontal = 16.dp)) {
-                if (isError) {
-                    Text(
-                        text = error!!,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.error,
-                    )
-                } else if (description != null) {
-                    Text(
-                        text = description,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-            }
-        }
+    error?.let {
+        Text(
+            modifier = modifier.padding(
+                top = 4.dp,
+                start = 16.dp,
+                end = 16.dp
+            ),
+            text = error,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.error,
+            maxLines = 3
+        )
     }
 }
 
 @Composable
-private fun ExpennyInputLabel(text: String, required: Boolean) {
-    val formattedText = if (required) {
+private fun InputDescription(
+    modifier: Modifier = Modifier,
+    description: String?,
+) {
+    description?.let {
+        Text(
+            modifier = modifier.padding(
+                top = 4.dp,
+                start = 16.dp,
+                end = 16.dp
+            ),
+            text = description,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
+@Composable
+private fun InputLabel(
+    modifier: Modifier = Modifier,
+    text: String,
+    isRequired: Boolean,
+    isEnabled: Boolean
+) {
+    val formattedText = if (isRequired) {
         buildAnnotatedString {
             append(text)
-            withStyle(SpanStyle(MaterialTheme.colorScheme.error)) {
+            withStyle(
+                SpanStyle(
+                    MaterialTheme.colorScheme.error.copy(if (isEnabled) 1f else 0.38f)
+                )
+            ) {
                 append(" *")
             }
         }
@@ -294,6 +382,7 @@ private fun ExpennyInputLabel(text: String, required: Boolean) {
         AnnotatedString(text)
     }
     Text(
+        modifier = modifier,
         text = formattedText,
         overflow = TextOverflow.Ellipsis,
         maxLines = 1,
@@ -301,99 +390,117 @@ private fun ExpennyInputLabel(text: String, required: Boolean) {
 }
 
 @Composable
-fun animateExpennyInputContainerAsState(
-    interactionSource: InteractionSource,
+private fun rememberErrorContainerColorAsState(
+    isFocused: Boolean,
 ): State<Color> {
-    val isFocused by interactionSource.collectIsFocusedAsState()
-    val backgroundColor =
+    return rememberUpdatedState(
         if (isFocused) MaterialTheme.colorScheme.surface
-        else MaterialTheme.colorScheme.surfaceInput
-
-    val animatedBackground = animateColorAsState(
-        targetValue = backgroundColor,
-        animationSpec = tween(durationMillis = 150),
-        label = "AnimateBackground"
+        else MaterialTheme.colorScheme.surfaceContainer
     )
-
-    return rememberUpdatedState(animatedBackground.value)
 }
 
 @Composable
-fun animateExpennyInputBorderAsState(
+private fun animateBorderAsState(
     isEnabled: Boolean,
     isError: Boolean,
-    interactionSource: InteractionSource
+    isFocused: Boolean
 ): State<BorderStroke> {
-    val focusedBorderThickness = 2.dp
-    val unfocusedBorderThickness = if (isError) 1.dp else 0.dp
-    val isFocused by interactionSource.collectIsFocusedAsState()
-    val strokeColor = rememberUpdatedState(
+    val focusedBorderWidth = 2.dp
+    val unfocusedBorderWidth = if (isError) 1.dp else 0.dp
+    val borderColor = rememberUpdatedState(
         when {
-            !isEnabled -> Color.Transparent
             isError -> MaterialTheme.colorScheme.error
             isFocused -> MaterialTheme.colorScheme.primary
-            else -> Color.Transparent
+            else -> MaterialTheme.colorScheme.transparent
         }
     )
-    val targetThickness = if (isFocused) focusedBorderThickness else unfocusedBorderThickness
-    val animatedThickness = if (isEnabled) {
+    val targetWidth = if (isFocused) focusedBorderWidth else unfocusedBorderWidth
+    val animatedWidth = if (isEnabled) {
         animateDpAsState(
-            targetValue = targetThickness,
+            targetValue = targetWidth,
             animationSpec = tween(durationMillis = 150),
-            label = "AnimateThickness"
+            label = "AnimateBorderWidth"
         )
     } else {
-        rememberUpdatedState(unfocusedBorderThickness)
+        rememberUpdatedState(unfocusedBorderWidth)
     }
     return rememberUpdatedState(
-        BorderStroke(animatedThickness.value, SolidColor(strokeColor.value))
+        BorderStroke(animatedWidth.value, SolidColor(borderColor.value))
     )
 }
 
 @Composable
-private fun rememberExpennyInputDisabledContentColor(isEnabled: Boolean) = rememberUpdatedState(
-    if (isEnabled) MaterialTheme.colorScheme.onSurface
-    else MaterialTheme.colorScheme.onSurfaceVariant.copy(0.5f)
+private fun rememberDisabledPlaceholderColor(isEnabled: Boolean) = rememberUpdatedState(
+    if (isEnabled) MaterialTheme.colorScheme.onSurfaceVariant
+    else MaterialTheme.colorScheme.onSurfaceVariant.copy(0.38f)
 )
 
 @Composable
-private fun rememberExpennyInputTextSelectionColors(isError: Boolean) = rememberUpdatedState(
+private fun rememberDisabledLabelColor(isEnabled: Boolean) = rememberUpdatedState(
+    if (isEnabled) MaterialTheme.colorScheme.onSurfaceVariant
+    else MaterialTheme.colorScheme.onSurfaceVariant.copy(0.38f)
+)
+
+@Composable
+private fun rememberDisabledTextColor(isEnabled: Boolean) = rememberUpdatedState(
+    if (isEnabled) MaterialTheme.colorScheme.onSurface
+    else MaterialTheme.colorScheme.onSurface.copy(0.38f)
+)
+
+@Composable
+private fun rememberTextSelectionColors(isError: Boolean) = rememberUpdatedState(
     TextSelectionColors(
         handleColor = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
-        backgroundColor = (if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary).copy(0.4f)
+        backgroundColor = (if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary).copy(0.38f)
     )
 )
 
-private val expennyInputDefaultColors
-    @Composable
-    get() = TextFieldDefaults.colors(
-        focusedContainerColor = MaterialTheme.colorScheme.surface,
-        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceInput,
-        disabledContainerColor = MaterialTheme.colorScheme.surfaceInput,
-        focusedTextColor = MaterialTheme.colorScheme.onSurface,
-        unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-        errorTextColor = MaterialTheme.colorScheme.onSurface,
-        focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
-        unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
-        errorPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
-        cursorColor = MaterialTheme.colorScheme.primary,
-        errorLabelColor = MaterialTheme.colorScheme.error,
-        errorCursorColor = MaterialTheme.colorScheme.error,
-        errorSupportingTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-        errorIndicatorColor = Color.Transparent,
-        focusedIndicatorColor = Color.Transparent,
-        focusedSupportingTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-        focusedLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-        focusedTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-        focusedLabelColor = MaterialTheme.colorScheme.primary,
-        unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-        unfocusedSupportingTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-        unfocusedTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-        unfocusedLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-        unfocusedIndicatorColor = Color.Transparent,
-        disabledIndicatorColor = Color.Transparent,
-        disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-        disabledSupportingTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-        disabledLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-        disabledTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-    )
+@ExpennyPreview
+@Composable
+private fun ExpennyInputPreview() {
+    ExpennyThemePreview {
+        ExpennyInputField(
+            isRequired = true,
+            label = "Preview label",
+            value = "Preview value",
+            placeholder = "Preview placeholder",
+            onValueChange = {}
+        )
+        ExpennyInputField(
+            label = "Preview label",
+            value = "Preview value",
+            error = "Preview error",
+            onValueChange = {}
+        )
+        ExpennyInputField(
+            label = "Preview label",
+            value = "Preview value",
+            description = "Preview description",
+            onValueChange = {}
+        )
+        ExpennySelectInputField(
+            label = "Preview label",
+            value = "Preview value",
+            onClick = {},
+            onValueChange = {}
+        )
+        ExpennyMonetaryInputField(
+            label = "Preview label",
+            value = BigDecimal.ZERO.setScale(2),
+            currency = "PLN",
+            onValueChange = {}
+        )
+        ExpennyInputField(
+            isEnabled = false,
+            label = "Preview label",
+            value = "Preview value",
+            onValueChange = {}
+        )
+        ExpennyInputField(
+            isSingleLine = false,
+            label = "Preview label",
+            value = ExpennyLoremIpsum(30).text,
+            onValueChange = {}
+        )
+    }
+}

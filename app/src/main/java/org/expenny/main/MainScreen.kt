@@ -5,25 +5,21 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.ramcosta.composedestinations.spec.NavGraphSpec
 import com.ramcosta.composedestinations.spec.Route
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
 import org.expenny.core.ui.base.ExpennyDrawerManager
 import org.expenny.core.ui.base.ExpennySnackbarManager
 import org.expenny.core.ui.components.ExpennySnackbar
@@ -71,7 +67,7 @@ internal fun MainScreen(startRoute: Route) {
         }
     ) {
         Scaffold(
-            containerColor = Color.Transparent,
+            containerColor = MaterialTheme.colorScheme.surface,
             snackbarHost = {
                 ExpennySnackbar(hostState = state.snackbarHostState)
             },
@@ -81,23 +77,6 @@ internal fun MainScreen(startRoute: Route) {
                 startRoute = startRoute
             )
         }
-    }
-}
-
-@Composable
-private fun PressAgainToExitBackHandler(currentDestination: String?) {
-    var isIdle by remember { mutableStateOf(true) }
-    val context = LocalContext.current
-
-    LaunchedEffect(key1 = isIdle) {
-        if (!isIdle) {
-            delay(2000)
-            isIdle = true
-        }
-    }
-
-    BackHandler(isIdle) {
-        isIdle = false
     }
 }
 

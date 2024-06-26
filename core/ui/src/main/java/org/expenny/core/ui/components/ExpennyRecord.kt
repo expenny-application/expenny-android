@@ -5,10 +5,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -67,7 +67,7 @@ private fun RecordContent(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.Top,
     ) {
-        ExpennyIconBox(
+        ExpennyIconContainer(
             icon = painterResource(iconResId),
             color = iconColor,
             background = MaterialTheme.colorScheme.surface
@@ -82,18 +82,20 @@ private fun RecordContent(
                 verticalAlignment = Alignment.Top
             ) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Title(title)
-                    Subtitle(subtitle)
+                    RecordTitle(title)
+                    RecordSubtitle(subtitle)
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 Column(horizontalAlignment = Alignment.End) {
-                    Amount(amount)
-                    TransferAmount(transferAmount)
+                    RecordTitle(amount)
+                    RecordSubtitle(transferAmount)
                 }
             }
-            Description(description)
-            Labels(
-                modifier = Modifier.fillMaxWidth(),
+            RecordDescription(description)
+            RecordLabels(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp),
                 attachmentsCount = attachmentsCount,
                 labels = labels,
             )
@@ -102,9 +104,9 @@ private fun RecordContent(
 }
 
 @Composable
-private fun Title(title: String) {
+private fun RecordTitle(text: String) {
     Text(
-        text = title,
+        text = text,
         style = MaterialTheme.typography.titleMedium,
         color = MaterialTheme.colorScheme.onSurface,
         overflow = TextOverflow.Ellipsis,
@@ -113,43 +115,23 @@ private fun Title(title: String) {
 }
 
 @Composable
-private fun Subtitle(subtitle: String) {
-    Text(
-        text = subtitle,
-        style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        overflow = TextOverflow.Ellipsis,
-        maxLines = 1,
-    )
-}
-
-@Composable
-private fun Amount(amount: String) {
-    Text(
-        text = amount,
-        style = MaterialTheme.typography.titleMedium,
-        color = MaterialTheme.colorScheme.onSurface,
-        maxLines = 1
-    )
-}
-
-@Composable
-private fun TransferAmount(transferAmount: String?) {
-    if (transferAmount != null) {
+private fun RecordSubtitle(text: String?) {
+    text?.let {
         Text(
-            text = transferAmount,
+            text = text,
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            maxLines = 1
+            overflow = TextOverflow.Ellipsis,
+            maxLines = 1,
         )
     }
 }
 
 @Composable
-private fun Description(description: String) {
-    if (description.isNotBlank()) {
+private fun RecordDescription(text: String) {
+    if (text.isNotBlank()) {
         Text(
-            text = description,
+            text = text,
             fontStyle = FontStyle.Italic,
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -160,7 +142,7 @@ private fun Description(description: String) {
 }
 
 @Composable
-private fun Labels(
+private fun RecordLabels(
     modifier: Modifier = Modifier,
     attachmentsCount: Int,
     labels: List<String>,
@@ -173,22 +155,21 @@ private fun Labels(
             if (attachmentsCount > 0) {
                 item {
                     ExpennyLabel(
-                        leadingIcon = {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_camera),
-                                contentDescription = null
+                        leadingContent = {
+                            LabelIcon(
+                                painter = painterResource(R.drawable.ic_camera)
                             )
                         },
-                        label = {
-                            Text(text = attachmentsCount.toString())
+                        content = {
+                            LabelText(text = attachmentsCount.toString())
                         }
                     )
                 }
             }
             items(items = labels) {
                 ExpennyLabel(
-                    label = {
-                        Text(text = it)
+                    content = {
+                        LabelText(text = it)
                     }
                 )
             }

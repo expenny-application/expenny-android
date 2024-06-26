@@ -38,8 +38,8 @@ internal fun DashboardAccountsFilter(
                 ExpennyChip(
                     isSelected = selectAll,
                     onClick = onSelectAll,
-                    label = {
-                        ChipLabel(text = stringResource(R.string.all_accounts_label))
+                    content = {
+                        ChipText(text = stringResource(R.string.all_accounts_label))
                     }
                 )
             }
@@ -52,8 +52,8 @@ internal fun DashboardAccountsFilter(
                     onClick = {
                         onSelect(account)
                     },
-                    label = {
-                        ChipLabel(text = account.displayName)
+                    content = {
+                        ChipText(text = account.displayName)
                     }
                 )
             }

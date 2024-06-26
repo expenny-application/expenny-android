@@ -27,17 +27,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -45,6 +40,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.spec.NavGraphSpec
 import org.expenny.core.resources.R
+import org.expenny.core.ui.foundation.transparent
 import org.expenny.navigation.ExpennyNavGraphs
 
 @Composable
@@ -187,7 +183,7 @@ private fun NavigationDrawerOption(
     )
     val backgroundColor by rememberUpdatedState(
         if (isSelected) MaterialTheme.colorScheme.primaryContainer
-        else Color.Transparent
+        else MaterialTheme.colorScheme.transparent
     )
     Row(
         modifier = modifier

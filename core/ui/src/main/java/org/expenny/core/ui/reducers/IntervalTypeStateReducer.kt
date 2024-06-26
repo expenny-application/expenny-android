@@ -56,8 +56,5 @@ class IntervalTypeStateReducer(
         val dateRange: LocalDateRange
             get() = intervalType.atOffset(offset)
                 ?: throw IllegalArgumentException("Offset is out of range")
-
-        val dateRangeString: String
-            get() = dateRange.toDateRangeString()
     }
 }

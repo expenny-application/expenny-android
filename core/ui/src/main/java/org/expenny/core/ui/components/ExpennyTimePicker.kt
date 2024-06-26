@@ -16,7 +16,7 @@ import com.commandiron.wheel_picker_compose.WheelTimePicker
 import com.commandiron.wheel_picker_compose.core.TimeFormat
 import com.commandiron.wheel_picker_compose.core.WheelPickerDefaults
 import org.expenny.core.resources.R
-import org.expenny.core.ui.foundation.ExpennyTheme
+import org.expenny.core.ui.foundation.ExpennyThemePreview
 import java.time.LocalTime
 
 @Composable
@@ -45,7 +45,7 @@ fun ExpennyTimePicker(
                 textStyle = MaterialTheme.typography.bodyLarge,
                 textColor = MaterialTheme.colorScheme.onSurface,
                 selectorProperties = WheelPickerDefaults.selectorProperties(
-                    shape = MaterialTheme.shapes.extraSmall,
+                    shape = MaterialTheme.shapes.small,
                     color = MaterialTheme.colorScheme.primaryContainer,
                     border = null
                 ),
@@ -74,8 +74,8 @@ fun ExpennyTimePicker(
 
 @Preview
 @Composable
-private fun ExpennyDatePickerPreview() {
-    ExpennyTheme {
+private fun ExpennyTimePickerPreview() {
+    ExpennyThemePreview {
         ExpennyTimePicker(
             currentTime = LocalTime.now(),
             onSelect = {},

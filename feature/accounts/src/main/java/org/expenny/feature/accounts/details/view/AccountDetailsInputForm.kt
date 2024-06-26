@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import org.expenny.core.common.types.LocalAccountType
@@ -59,8 +58,10 @@ internal fun AccountDetailsInputForm(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        AccountDetailsTypeSelectionCarousel(
-            modifier = Modifier.padding(bottom = 8.dp),
+        AccountDetailsTypes(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp),
             listState = typesListState,
             types = state.types,
             selection = state.selectedType,
@@ -172,9 +173,11 @@ private fun StartBalanceInputField(
     ExpennyMonetaryInputField(
         modifier = modifier.fillMaxWidth(),
         label = stringResource(R.string.start_balance_label),
-        state = state,
         currency = currency,
+        value = state.value,
+        error = state.error?.asRawString(),
+        isEnabled = state.isEnabled,
+        isRequired = state.isRequired,
         onValueChange = onValueChange,
-        imeAction = ImeAction.Next,
     )
 }

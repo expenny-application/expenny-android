@@ -14,13 +14,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import org.expenny.core.resources.R
+import org.expenny.core.ui.components.ExpennyCard
 import org.expenny.core.ui.components.ExpennySelectionButton
+import org.expenny.core.ui.components.ExpennyVerticalList
+import org.expenny.core.ui.data.CurrencyUi
 import org.expenny.core.ui.data.SelectionType
 import org.expenny.core.ui.data.SingleSelectionUi
-import org.expenny.core.ui.data.CurrencyUi
 import org.expenny.core.ui.extensions.type
-import org.expenny.core.ui.components.ExpennyCard
-import org.expenny.core.ui.components.ExpennyVerticalList
 
 @Composable
 internal fun CurrenciesList(

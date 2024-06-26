@@ -1,6 +1,13 @@
 package org.expenny.feature.categories.list.view
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -13,7 +20,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import org.expenny.core.ui.components.ExpennyCard
-import org.expenny.core.ui.components.ExpennyIconBox
+import org.expenny.core.ui.components.ExpennyIconContainer
 import org.expenny.core.ui.components.ExpennySelectionButton
 import org.expenny.core.ui.components.ExpennyVerticalList
 import org.expenny.core.ui.data.CategoryUi
@@ -99,7 +106,7 @@ private fun CategoryItem(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            ExpennyIconBox(
+            ExpennyIconContainer(
                 icon = painterResource(category.icon.iconResId),
                 color = category.icon.color,
                 background = MaterialTheme.colorScheme.surface

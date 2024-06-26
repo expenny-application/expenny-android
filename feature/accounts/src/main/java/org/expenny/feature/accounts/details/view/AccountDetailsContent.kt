@@ -1,7 +1,12 @@
 package org.expenny.feature.accounts.details.view
 
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -69,7 +74,7 @@ internal fun AccountDetailsContent(
                     FabIcon(painter = painterResource(R.drawable.ic_check))
                 },
                 label = {
-                    FabLabel(text = stringResource(R.string.save_button))
+                    FabText(text = stringResource(R.string.save_button))
                 }
             )
         },

@@ -45,20 +45,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import org.expenny.core.common.extensions.addOrRemoveIfExist
 import org.expenny.core.resources.R
-import org.expenny.core.ui.data.AbstractItemUi
-import org.expenny.core.ui.data.ItemUi
-import org.expenny.core.ui.data.MultiSelectionUi
-import org.expenny.core.ui.data.SelectionUi
-import org.expenny.core.ui.data.SelectionType
-import org.expenny.core.ui.data.SingleSelectionUi
-import org.expenny.core.ui.extensions.drawVerticalScrollbar
-import org.expenny.core.ui.extensions.empty
-import org.expenny.core.ui.extensions.isEmpty
-import org.expenny.core.ui.extensions.type
-import org.expenny.core.ui.foundation.ExpennyPreviewTheme
 import org.expenny.core.ui.base.ExpennyLoremIpsum
 import org.expenny.core.ui.base.ExpennyPreview
 import org.expenny.core.ui.base.StringListPreviewParameterProvider
+import org.expenny.core.ui.data.AbstractItemUi
+import org.expenny.core.ui.data.ItemUi
+import org.expenny.core.ui.data.MultiSelectionUi
+import org.expenny.core.ui.data.SelectionType
+import org.expenny.core.ui.data.SelectionUi
+import org.expenny.core.ui.data.SingleSelectionUi
+import org.expenny.core.ui.extensions.empty
+import org.expenny.core.ui.extensions.isEmpty
+import org.expenny.core.ui.extensions.type
+import org.expenny.core.ui.foundation.ExpennyThemePreview
+import org.expenny.core.ui.foundation.transparent
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -83,6 +83,7 @@ fun ExpennyDialog(
         Surface(
             shape = MaterialTheme.shapes.medium,
             color = MaterialTheme.colorScheme.surfaceContainer,
+            contentColor = MaterialTheme.colorScheme.onSurface
         ) {
             Column(
                 modifier = Modifier.padding(PaddingValues(all = 24.dp)),
@@ -269,8 +270,10 @@ class ExpennyDialogScope {
             enabled = isEnabled,
             onClick = onClick,
             colors = ButtonDefaults.textButtonColors().copy(
+                containerColor = MaterialTheme.colorScheme.transparent,
                 contentColor = MaterialTheme.colorScheme.primary,
-                disabledContentColor = MaterialTheme.colorScheme.primary.copy(0.38f)
+                disabledContentColor = MaterialTheme.colorScheme.primary.copy(0.38f),
+                disabledContainerColor = MaterialTheme.colorScheme.transparent
             )
         ) {
             Text(text = label)
@@ -376,9 +379,7 @@ class ExpennyDialogScope {
             (configuration.screenHeightDp.dp.toPx() * 0.5).toInt().toDp()
         }
         LazyColumn(
-            modifier = modifier
-                .heightIn(max = maxDialogHeightDp)
-                .drawVerticalScrollbar(state),
+            modifier = modifier.heightIn(max = maxDialogHeightDp),
             state = state,
             content = content
         )
@@ -418,8 +419,8 @@ class ExpennyDialogScope {
 
 @ExpennyPreview
 @Composable
-private fun DialogPreview() {
-    ExpennyPreviewTheme {
+private fun ExpennyDialogPreview() {
+    ExpennyThemePreview {
         ExpennyDialog(
             onDismissRequest = {},
             title = {
@@ -446,10 +447,10 @@ private fun DialogPreview() {
 
 @ExpennyPreview
 @Composable
-private fun SingleSelectionDialogPreview(
+private fun ExpennySingleSelectionDialogPreview(
     @PreviewParameter(StringListPreviewParameterProvider::class) list: List<String>,
 ) {
-    ExpennyPreviewTheme {
+    ExpennyThemePreview {
         val data by rememberUpdatedState(list.mapIndexed { i, s -> ItemUi(i, s) })
         var selection by remember { mutableStateOf(SingleSelectionUi(0)) }
 
@@ -467,10 +468,10 @@ private fun SingleSelectionDialogPreview(
 
 @ExpennyPreview
 @Composable
-private fun MultiSelectionDialogPreview(
+private fun ExpennyMultiSelectionDialogPreview(
     @PreviewParameter(StringListPreviewParameterProvider::class) list: List<String>,
 ) {
-    ExpennyPreviewTheme {
+    ExpennyThemePreview {
         val data by rememberUpdatedState(list.mapIndexed { i, s -> ItemUi(i, s) })
         var selection by remember { mutableStateOf(MultiSelectionUi(emptyList<Int>())) }
 

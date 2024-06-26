@@ -15,7 +15,7 @@ fun ExpennySelectionButton(
         SelectionType.Single -> {
             ExpennyRadioButton(
                 modifier = modifier,
-                isChecked = isSelected,
+                isSelected = isSelected,
                 onClick = {
                     onClick(true)
                 }

@@ -1,15 +1,12 @@
 package org.expenny.feature.dashboard.view
 
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.unit.dp
 import org.expenny.core.resources.R
 import org.expenny.core.ui.base.ExpennyDrawerManager
+import org.expenny.core.ui.components.ExpennyToolbar
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -20,22 +17,18 @@ internal fun DashboardToolbar(
     displayCurrency: String? = null,
     onDisplayCurrencyClick: () -> Unit
 ) {
-    TopAppBar(
+    ExpennyToolbar(
         scrollBehavior = scrollBehavior,
         title = {
-            Text(text = stringResource(R.string.dashboard_label))
+            ToolbarTitle(text = stringResource(R.string.dashboard_label))
         },
         navigationIcon = {
             drawerState.NavigationDrawerIcon()
         },
         actions = {
             displayCurrency?.let {
-                ClickableText(
-                    modifier = Modifier.padding(end = 16.dp),
-                    text = AnnotatedString(displayCurrency),
-                    style = MaterialTheme.typography.titleSmall.copy(
-                        MaterialTheme.colorScheme.primary
-                    ),
+                ToolbarLabel(
+                    text = displayCurrency,
                     onClick = {
                         onDisplayCurrencyClick()
                     }

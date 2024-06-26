@@ -134,8 +134,8 @@ private fun RecordActionsSheet(
         onDismiss = onDismiss,
         sheetState = actionsSheetState,
         actions = {
-            RecordActionType.values().forEach { action ->
-                Action(
+            RecordActionType.entries.forEach { action ->
+                BottomSheetAction(
                     icon = action.icon,
                     text = action.label,
                     onClick = {

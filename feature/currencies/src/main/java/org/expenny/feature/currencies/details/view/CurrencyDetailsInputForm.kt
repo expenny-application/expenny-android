@@ -21,7 +21,7 @@ import org.expenny.core.ui.components.ExpennySection
 import org.expenny.core.ui.data.InputUi
 import org.expenny.core.ui.data.DecimalInputUi
 import org.expenny.core.ui.extensions.asRawString
-import org.expenny.core.ui.components.ExpennyCheckboxInput
+import org.expenny.core.ui.components.ExpennyCheckboxGroup
 import org.expenny.core.ui.components.ExpennyMonetaryInputField
 import org.expenny.core.ui.components.ExpennyReadonlyInputField
 import org.expenny.core.ui.components.ExpennySelectInputField
@@ -87,11 +87,11 @@ internal fun CurrencyDetailsInputForm(
                                 isUpdatable = isUpdatable,
                                 onUpdateClick = onUpdateClick
                             )
-                            ExpennyCheckboxInput(
+                            ExpennyCheckboxGroup(
                                 isChecked = isSubscribedToUpdates,
                                 onClick = onSubscribeToUpdatesCheckboxChange,
                                 caption = {
-                                    Caption(text = stringResource(R.string.subscribe_to_rates_updates_message))
+                                    CheckboxGroupCaption(text = stringResource(R.string.subscribe_to_rates_updates_message))
                                 }
                             )
                         }
@@ -165,9 +165,11 @@ private fun RateInputField(
     ExpennyMonetaryInputField(
         modifier = modifier.fillMaxWidth(),
         label = label,
-        state = state,
+        value = state.value,
+        error = state.error?.asRawString(),
+        isEnabled = state.isEnabled,
+        isRequired = state.isRequired,
         currency = currency,
-        onValueChange = onValueChange,
-        imeAction = ImeAction.Next,
+        onValueChange = onValueChange
     )
 }

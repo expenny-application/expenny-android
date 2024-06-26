@@ -14,7 +14,6 @@ import org.expenny.core.ui.data.navargs.RecordsListFilterNavArg
 import org.expenny.core.ui.data.navargs.StringArrayNavArg
 import org.expenny.feature.accounts.destinations.AccountDetailsScreenDestination
 import org.expenny.feature.accounts.details.navigation.AccountDetailsNavigator
-import org.expenny.feature.accounts.destinations.AccountOverviewScreenDestination
 import org.expenny.feature.accounts.destinations.AccountsListScreenDestination
 import org.expenny.feature.accounts.destinations.AccountTypeScreenDestination
 import org.expenny.feature.accounts.type.navigation.AccountTypeNavigator
@@ -226,12 +225,6 @@ class ExpennyNavigator(
     override fun navigateToCreateAccountScreen() {
         navController.navigate(
             direction = AccountDetailsScreenDestination() within navGraph
-        )
-    }
-
-    override fun navigateToOverviewAccountScreen(accountId: Long) {
-        navController.navigate(
-            direction = AccountOverviewScreenDestination(accountId = accountId) within navGraph
         )
     }
 

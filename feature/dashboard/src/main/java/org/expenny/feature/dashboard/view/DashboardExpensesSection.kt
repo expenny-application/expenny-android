@@ -36,11 +36,11 @@ import kotlinx.collections.immutable.ImmutableList
 import org.expenny.core.common.types.PeriodType
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennyDonutChart
-import org.expenny.core.ui.components.ExpennySegmentedTabRow
 import org.expenny.core.ui.data.AmountUi
 import org.expenny.core.ui.data.ExpensesUi
 import org.expenny.core.ui.extensions.label
 import org.expenny.core.ui.components.ExpennyCard
+import org.expenny.core.ui.components.ExpennySegmentedCardTabs
 import org.expenny.feature.dashboard.model.DashboardExpensesUi
 
 
@@ -117,7 +117,7 @@ private fun DashboardExpensesHeading(
         }
     }
 
-    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+    Column {
         AnimatedContent(
             targetState = expensesSubtitle,
             transitionSpec = { fadeIn() togetherWith fadeOut() },
@@ -161,8 +161,8 @@ private fun DashboardExpensesTimePeriodFilter(
     currentPeriodType: PeriodType,
     onChange: (PeriodType) -> Unit
 ) {
-    ExpennySegmentedTabRow(
-        modifier = modifier.height(40.dp),
+    ExpennySegmentedCardTabs(
+        modifier = modifier,
         tabs = periodTypes.map { it.label },
         selectedTabIndex = periodTypes.indexOf(currentPeriodType),
         onTabSelect = {

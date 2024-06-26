@@ -14,7 +14,7 @@ import org.expenny.core.ui.extensions.label
 import org.expenny.core.ui.components.ExpennyChip
 
 @Composable
-internal fun AccountDetailsTypeSelectionCarousel(
+internal fun AccountDetailsTypes(
     modifier: Modifier = Modifier,
     listState: LazyListState,
     types: List<LocalAccountType>,
@@ -33,10 +33,10 @@ internal fun AccountDetailsTypeSelectionCarousel(
                 onClick = {
                     onTypeSelect(type)
                 },
-                label = {
-                    ChipLabel(text = type.label)
+                content = {
+                    ChipText(text = type.label)
                 },
-                leadingIcon = {
+                leadingContent = {
                     ChipIcon(painter = type.icon)
                 }
             )

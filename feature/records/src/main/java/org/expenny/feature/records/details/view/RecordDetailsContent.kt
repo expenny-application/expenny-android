@@ -81,7 +81,7 @@ internal fun RecordDetailsContent(
                     FabIcon(painter = painterResource(R.drawable.ic_check))
                 },
                 label = {
-                    FabLabel(text = stringResource(R.string.save_button))
+                    FabText(text = stringResource(R.string.save_button))
                 }
             )
         },

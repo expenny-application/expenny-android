@@ -1,12 +1,14 @@
 package org.expenny.feature.records.list.view
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import org.expenny.core.resources.R
 import org.expenny.core.ui.base.ExpennyDrawerManager
+import org.expenny.core.ui.components.ExpennyToolbar
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -26,10 +28,10 @@ internal fun RecordsListToolbar(
         onCloseSelectionMode()
     }
 
-    TopAppBar(
+    ExpennyToolbar(
         scrollBehavior = scrollBehavior,
         title = {
-            Text(
+            ToolbarTitle(
                 text = if (isSelectionMode) {
                     stringResource(R.string.selected_label, selectionCount)
                 } else {
@@ -39,42 +41,32 @@ internal fun RecordsListToolbar(
         },
         actions = {
             if (isSelectionMode) {
-                IconButton(onClick = onSelectAllClick) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_check),
-                        contentDescription = null
-                    )
-                }
-                IconButton(onClick = onDeleteClick) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_delete),
-                        contentDescription = null
-                    )
-                }
+                ToolbarIcon(
+                    painter = painterResource(R.drawable.ic_check),
+                    onClick = onSelectAllClick
+                )
+                ToolbarIcon(
+                    painter = painterResource(R.drawable.ic_delete),
+                    onClick = onDeleteClick
+                )
             } else {
-                IconButton(onClick = onAddClick) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_add),
-                        contentDescription = null
-                    )
-                }
+                ToolbarIcon(
+                    painter = painterResource(R.drawable.ic_add),
+                    onClick = onAddClick
+                )
             }
         },
         navigationIcon = {
             if (drawerState.isDrawerTabAsState && !isSelectionMode) {
                 drawerState.NavigationDrawerIcon()
             } else {
-                IconButton(
+                ToolbarIcon(
+                    painter = painterResource(R.drawable.ic_back),
                     onClick = {
                         if (isSelectionMode) onCloseSelectionMode()
                         else onBackClick()
                     }
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_back),
-                        contentDescription = null
-                    )
-                }
+                )
             }
         }
     )

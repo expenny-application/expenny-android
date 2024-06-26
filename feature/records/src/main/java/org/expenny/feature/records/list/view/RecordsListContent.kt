@@ -2,14 +2,31 @@ package org.expenny.feature.records.list.view
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetState
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -17,15 +34,15 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
-import org.expenny.core.ui.components.ExpennyDateRangeFilterButton
-import org.expenny.core.ui.extensions.isScrollingUp
 import org.expenny.core.ui.base.ExpennyDrawerManager
 import org.expenny.core.ui.components.ExpennyCard
+import org.expenny.core.ui.components.ExpennyDateRangeFilter
 import org.expenny.core.ui.components.ExpennyRecord
 import org.expenny.core.ui.components.ExpennySelectionButton
 import org.expenny.core.ui.data.MultiSelectionUi
 import org.expenny.core.ui.data.RecordUi
 import org.expenny.core.ui.data.SelectionType
+import org.expenny.core.ui.extensions.isScrollingUp
 import org.expenny.feature.records.list.contract.RecordsListAction
 import org.expenny.feature.records.list.contract.RecordsListState
 
@@ -66,11 +83,11 @@ internal fun RecordsListContent(
             )
         },
         floatingActionButton = {
-            ExpennyDateRangeFilterButton(
+            ExpennyDateRangeFilter(
                 modifier = Modifier.navigationBarsPadding(),
                 isVisible = lazyListState.isScrollingUp() && !state.isSelectionMode,
-                currentDateRange = state.intervalState.dateRangeString,
-                onSelectDateRecurrenceClick = { onAction(RecordsListAction.OnSelectIntervalTypeClick) },
+                currentDateRange = state.intervalState.dateRange,
+                onClick = { onAction(RecordsListAction.OnSelectIntervalTypeClick) },
                 onPreviousDateRangeClick = { onAction(RecordsListAction.OnPreviousIntervalClick) },
                 onNextDateRangeClick = { onAction(RecordsListAction.OnNextIntervalClick) }
             )

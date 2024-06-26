@@ -1,19 +1,16 @@
 package org.expenny.feature.settings.view
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -27,30 +24,17 @@ import androidx.compose.ui.unit.dp
 import org.expenny.core.common.types.ApplicationLanguage
 import org.expenny.core.common.types.ApplicationTheme
 import org.expenny.core.resources.R
-import org.expenny.core.ui.components.ExpennySection
-import org.expenny.core.ui.extensions.label
 import org.expenny.core.ui.components.ExpennyCard
-
-@Composable
-internal fun SettingsSensitiveSection(
-    modifier: Modifier = Modifier,
-    onClearAllDataClick: () -> Unit,
-) {
-    Box(modifier = modifier.fillMaxWidth()) {
-        SectionActionItem(
-            title = stringResource(R.string.delete_application_data_label),
-            icon = painterResource(R.drawable.ic_delete),
-            isSensitive = true,
-            onClick = onClearAllDataClick
-        )
-    }
-}
+import org.expenny.core.ui.components.ExpennySection
+import org.expenny.core.ui.components.ExpennySwitch
+import org.expenny.core.ui.extensions.label
 
 @Composable
 internal fun SettingsMoreSection(
     modifier: Modifier = Modifier,
     onAboutClick: () -> Unit,
     onRateApplicationClick: () -> Unit,
+    onClearAllDataClick: () -> Unit,
 ) {
     SettingsSection(
         modifier = modifier.fillMaxWidth(),
@@ -61,10 +45,16 @@ internal fun SettingsMoreSection(
             icon = painterResource(R.drawable.ic_smile),
             onClick = onAboutClick
         )
-        SectionActionItem(
+        SectionItem(
             title = stringResource(R.string.rate_application_label),
             icon = painterResource(R.drawable.ic_rate),
             onClick = onRateApplicationClick
+        )
+        SectionActionItem(
+            title = stringResource(R.string.delete_application_data_label),
+            icon = painterResource(R.drawable.ic_delete),
+            isSensitive = true,
+            onClick = onClearAllDataClick
         )
     }
 }
@@ -77,6 +67,7 @@ internal fun SettingsSecuritySection(
     isBiometricEnabled: Boolean,
     onSetPasscodeClick: () -> Unit,
     onUseBiometricClick: () -> Unit,
+    onBackupClick: () -> Unit,
 ) {
     SettingsSection(
         modifier = modifier.fillMaxWidth(),
@@ -94,6 +85,11 @@ internal fun SettingsSecuritySection(
             title = stringResource(R.string.use_bioemtric_label),
             icon = painterResource(R.drawable.ic_biometric),
             onClick = onUseBiometricClick
+        )
+        SectionItem(
+            title = stringResource(R.string.backup_label),
+            icon = painterResource(R.drawable.ic_storage),
+            onClick = onBackupClick
         )
     }
 }
@@ -114,7 +110,6 @@ internal fun SettingsNotificationsSection(
         SectionSwitchItem(
             title = stringResource(R.string.reminder_label),
             icon = painterResource(R.drawable.ic_bell),
-            description = stringResource(R.string.reminder_notification_description_label),
             isSelected = isReminderSelected,
             onClick = onReminderClick
         )
@@ -129,41 +124,16 @@ internal fun SettingsNotificationsSection(
 }
 
 @Composable
-internal fun SettingsDataSection(
-    modifier: Modifier = Modifier,
-    onBackupClick: () -> Unit,
-    onImportsExportsClick: () -> Unit,
-) {
-    SettingsSection(
-        modifier = modifier.fillMaxWidth(),
-        title = stringResource(R.string.data_label)
-    ) {
-        SectionItem(
-            title = stringResource(R.string.backup_label),
-            icon = painterResource(R.drawable.ic_storage),
-            onClick = onBackupClick
-        )
-        SectionItem(
-            title = stringResource(R.string.import_and_export_label),
-            icon = painterResource(R.drawable.ic_import_export),
-            onClick = onImportsExportsClick
-        )
-    }
-}
-
-@Composable
-internal fun SettingsGeneralSection(
+internal fun SettingsPreferencesSection(
     modifier: Modifier = Modifier,
     language: ApplicationLanguage?,
     theme: ApplicationTheme?,
     onLanguageClick: () -> Unit,
     onThemeClick: () -> Unit,
-    onCategorizationClick: () -> Unit,
-    onCurrenciesClick: () -> Unit,
 ) {
     SettingsSection(
         modifier = modifier.fillMaxWidth(),
-        title = stringResource(R.string.general_label)
+        title = stringResource(R.string.preferences_label)
     ) {
         SectionSelectionItem(
             title = stringResource(R.string.language_label),
@@ -177,33 +147,37 @@ internal fun SettingsGeneralSection(
             value = theme?.label.orEmpty(),
             onClick = onThemeClick
         )
-        SectionItem(
-            title = stringResource(R.string.categorizations_label),
-            icon = painterResource(R.drawable.ic_category),
-            onClick = onCategorizationClick
-        )
+    }
+}
+
+@Composable
+internal fun SettingsGeneralSection(
+    modifier: Modifier = Modifier,
+    profileName: String?,
+    onProfileClick: () -> Unit,
+    onCategorizationClick: () -> Unit,
+    onCurrenciesClick: () -> Unit,
+) {
+    SettingsSection(
+        modifier = modifier.fillMaxWidth(),
+        title = stringResource(R.string.general_label)
+    ) {
+        profileName?.let {
+            SectionSelectionItem(
+                title = profileName,
+                icon = painterResource(R.drawable.ic_profile),
+                onClick = onProfileClick
+            )
+        }
         SectionItem(
             title = stringResource(R.string.currencies_label),
             icon = painterResource(R.drawable.ic_currency),
             onClick = onCurrenciesClick
         )
-    }
-}
-
-@Composable
-internal fun SettingsProfileSection(
-    modifier: Modifier = Modifier,
-    profileName: String,
-    onProfileClick: () -> Unit,
-) {
-    SettingsSection(
-        modifier = modifier.fillMaxWidth(),
-        title = stringResource(R.string.profile_label)
-    ) {
-        SectionSelectionItem(
-            title = profileName,
-            icon = painterResource(R.drawable.ic_profile),
-            onClick = onProfileClick
+        SectionItem(
+            title = stringResource(R.string.categorizations_label),
+            icon = painterResource(R.drawable.ic_category),
+            onClick = onCategorizationClick
         )
     }
 }
@@ -217,30 +191,19 @@ private fun SectionActionItem(
     isSensitive: Boolean = false,
     onClick: () -> Unit
 ) {
-    val labelColor =
-        if (isSensitive) MaterialTheme.colorScheme.error
-        else MaterialTheme.colorScheme.onSurface
-
-    val iconColor =
-        if (isSensitive) MaterialTheme.colorScheme.error
-        else MaterialTheme.colorScheme.onSurfaceVariant
-
     SectionItem(
         modifier = modifier,
         isEnabled = isEnabled,
+        isSensitive = isSensitive,
         onClick = onClick,
         leadingContent = {
             Icon(
                 painter = icon,
-                tint = iconColor,
                 contentDescription = null
             )
         },
         title = {
-            Text(
-                text = title,
-                color = labelColor,
-            )
+            Text(text = title)
         }
     )
 }
@@ -282,7 +245,6 @@ private fun SectionSelectionItem(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SectionSwitchItem(
     modifier: Modifier = Modifier,
@@ -312,13 +274,11 @@ private fun SectionSwitchItem(
             }
         },
         trailingContent = {
-            CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
-                Switch(
-                    enabled = isEnabled,
-                    checked = isSelected,
-                    onCheckedChange = { onClick() }
-                )
-            }
+            ExpennySwitch(
+                isEnabled = isEnabled,
+                isSelected = isSelected,
+                onClick = { onClick() }
+            )
         }
     )
 }
@@ -352,18 +312,24 @@ private fun SectionItem(
 @Composable
 private fun SectionItem(
     modifier: Modifier = Modifier,
+    isSensitive: Boolean = false,
     isEnabled: Boolean = true,
-    leadingContent: @Composable () -> Unit,
     title: @Composable () -> Unit,
     description: (@Composable () -> Unit)? = null,
+    leadingContent: @Composable () -> Unit,
     trailingContent: (@Composable () -> Unit)? = null,
     onClick: () -> Unit
 ) {
-    val primaryContentColor =
-        MaterialTheme.colorScheme.onSurface.copy(alpha = if (isEnabled) 1f else 0.38f)
-
-    val secondaryContentColor =
-        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = if (isEnabled) 1f else 0.38f)
+    val primaryContentColor = when {
+        isEnabled && !isSensitive -> MaterialTheme.colorScheme.onSurface
+        isEnabled && isSensitive -> MaterialTheme.colorScheme.error
+        else -> MaterialTheme.colorScheme.onSurface.copy(0.38f)
+    }
+    val secondaryContentColor = when {
+        isEnabled && !isSensitive -> MaterialTheme.colorScheme.onSurfaceVariant
+        isEnabled && isSensitive -> MaterialTheme.colorScheme.error
+        else -> MaterialTheme.colorScheme.onSurfaceVariant.copy(0.38f)
+    }
 
     ExpennyCard(
         modifier = modifier.fillMaxWidth(),

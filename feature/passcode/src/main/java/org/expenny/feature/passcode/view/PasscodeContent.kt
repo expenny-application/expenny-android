@@ -74,7 +74,7 @@ internal fun PasscodeContent(
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    PasscodeFieldsRow(
+                    PasscodeInputsRow(
                         passcodeType = state.passcodeType,
                         passcodeValidationResult = state.passcodeValidationResult,
                         passcodeMaxLength = state.passcodeMaxLength,

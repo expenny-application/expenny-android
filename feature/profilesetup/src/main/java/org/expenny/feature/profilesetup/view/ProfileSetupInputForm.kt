@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 import org.expenny.core.ui.extensions.asRawString
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennyExpandableContent
-import org.expenny.core.ui.components.ExpennyCheckboxInput
+import org.expenny.core.ui.components.ExpennyCheckboxGroup
 import org.expenny.core.ui.components.ExpennyInputField
 import org.expenny.core.ui.components.ExpennyMonetaryInputField
 import org.expenny.core.ui.components.ExpennySelectInputField
@@ -87,14 +87,14 @@ private fun SetupCashBalanceCheckbox(
     onValueChange: (Boolean) -> Unit
 ) {
     with(state) {
-        ExpennyCheckboxInput(
+        ExpennyCheckboxGroup(
             modifier = modifier,
             error = error?.asRawString(),
             isChecked = value,
             isRequired = isRequired,
             onClick = onValueChange,
             caption = {
-                Caption(text = stringResource(R.string.set_cash_balance_paragraph))
+                CheckboxGroupCaption(text = stringResource(R.string.set_cash_balance_paragraph))
             }
         )
     }
@@ -171,9 +171,11 @@ private fun AccountBalanceInputField(
     ExpennyMonetaryInputField(
         modifier = modifier.fillMaxWidth(),
         label = stringResource(R.string.balance_label),
-        state = state,
         currency = currency,
+        value = state.value,
+        error = state.error?.asRawString(),
+        isEnabled = state.isEnabled,
+        isRequired = state.isRequired,
         onValueChange = onValueChange,
-        imeAction = ImeAction.Next,
     )
 }

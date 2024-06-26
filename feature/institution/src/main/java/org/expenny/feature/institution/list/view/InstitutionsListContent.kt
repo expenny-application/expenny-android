@@ -33,7 +33,7 @@ import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennyAsyncImage
 import org.expenny.core.ui.components.ExpennyCard
 import org.expenny.core.ui.components.ExpennyLoadingContainer
-import org.expenny.core.ui.components.ExpennySearchTopBar
+import org.expenny.core.ui.components.ExpennySearchToolbar
 import org.expenny.core.ui.components.ExpennySingleSelectionDialog
 import org.expenny.core.ui.components.ExpennyVerticalList
 import org.expenny.core.ui.data.InstitutionUi
@@ -65,7 +65,7 @@ internal fun InstitutionsListContent(
             .imePadding()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            ExpennySearchTopBar(
+            ExpennySearchToolbar(
                 scrollBehavior = scrollBehavior,
                 title = {
                     Text(text = stringResource(R.string.select_institution_label))
@@ -156,6 +156,7 @@ private fun InstitutionsListHeader(
         )
         Row(
             modifier = Modifier.clickable(onClick = onSelectCountryClick),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
                 text = country ?: stringResource(R.string.all_countries_label),

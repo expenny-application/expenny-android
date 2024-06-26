@@ -4,7 +4,6 @@ import com.ramcosta.composedestinations.dynamic.routedIn
 import com.ramcosta.composedestinations.spec.DestinationSpec
 import com.ramcosta.composedestinations.spec.NavGraphSpec
 import org.expenny.feature.accounts.destinations.AccountDetailsScreenDestination
-import org.expenny.feature.accounts.destinations.AccountOverviewScreenDestination
 import org.expenny.feature.accounts.destinations.AccountTypeScreenDestination
 import org.expenny.feature.accounts.destinations.AccountsListScreenDestination
 import org.expenny.feature.analytics.destinations.AnalyticsScreenDestination
@@ -39,7 +38,6 @@ object ExpennyNavGraphs {
             AccountsListScreenDestination,
             AccountDetailsScreenDestination,
             AccountTypeScreenDestination,
-            AccountOverviewScreenDestination,
             RecordsListScreenDestination,
             RecordDetailsScreenDestination,
             RecordLabelsListScreenDestination,

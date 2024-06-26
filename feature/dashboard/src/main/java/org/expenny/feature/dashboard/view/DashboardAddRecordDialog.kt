@@ -26,8 +26,8 @@ internal fun DashboardAddRecordDialog(
         sheetState = sheetState,
         onDismiss = onDismiss,
         actions = {
-            RecordType.values().forEach { recordType ->
-                Action(
+            RecordType.entries.forEach { recordType ->
+                BottomSheetAction(
                     icon = recordType.icon,
                     text = when (recordType) {
                         RecordType.Expense -> stringResource(R.string.add_expense_label)

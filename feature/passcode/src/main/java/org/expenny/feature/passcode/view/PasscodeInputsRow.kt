@@ -3,6 +3,7 @@ package org.expenny.feature.passcode.view
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -22,29 +23,38 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import org.expenny.core.ui.foundation.surfaceInput
-import org.expenny.feature.passcode.model.PasscodeValidationResult
+import org.expenny.core.ui.foundation.transparent
 import org.expenny.feature.passcode.model.PasscodeType
+import org.expenny.feature.passcode.model.PasscodeValidationResult
 
 @Composable
-internal fun PasscodeFieldsRow(
+internal fun PasscodeInputsRow(
     modifier: Modifier = Modifier,
     passcodeType: PasscodeType,
     passcodeValidationResult: PasscodeValidationResult?,
     passcodeMaxLength: Int,
     passcodeLength: Int,
 ) {
-    val fieldBoxBorderColor = when (passcodeValidationResult) {
-        PasscodeValidationResult.Invalid -> MaterialTheme.colorScheme.error
-        PasscodeValidationResult.Valid -> when (passcodeType) {
-            PasscodeType.Create -> Color.Transparent
-            else -> MaterialTheme.colorScheme.primary
-        }
-        else -> Color.Transparent
+    val inputBoxBorder = when {
+        passcodeValidationResult == PasscodeValidationResult.Invalid ->
+            BorderStroke(
+                color = MaterialTheme.colorScheme.error,
+                width = 2.dp
+            )
+        passcodeValidationResult == PasscodeValidationResult.Valid
+                && passcodeType != PasscodeType.Create ->
+            BorderStroke(
+                color = MaterialTheme.colorScheme.primary,
+                width = 2.dp
+            )
+        else -> BorderStroke(
+            color = MaterialTheme.colorScheme.outlineVariant,
+            width = 1.dp
+        )
     }
+
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -54,8 +64,8 @@ internal fun PasscodeFieldsRow(
             val isFilled by remember(passcodeLength, fieldPos) {
                 mutableStateOf(passcodeLength >= fieldPos)
             }
-            FieldBox(
-                borderColor = fieldBoxBorderColor,
+            InputBox(
+                border = inputBoxBorder,
                 isFilled = isFilled,
             )
         }
@@ -63,12 +73,11 @@ internal fun PasscodeFieldsRow(
 }
 
 @Composable
-private fun FieldBox(
+private fun InputBox(
     modifier: Modifier = Modifier,
-    borderColor: Color,
+    border: BorderStroke,
     isFilled: Boolean,
 ) {
-    val shape = MaterialTheme.shapes.small
     Box(
         modifier = modifier.wrapContentSize(),
         contentAlignment = Alignment.Center
@@ -76,22 +85,21 @@ private fun FieldBox(
         Box(
             modifier = Modifier
                 .size(height = 56.dp, width = 48.dp)
-                .clip(shape)
-                .background(MaterialTheme.colorScheme.surfaceInput)
+                .clip(MaterialTheme.shapes.small)
+                .background(MaterialTheme.colorScheme.transparent)
                 .border(
-                    width = 1.dp,
-                    color = borderColor,
-                    shape = shape
+                    border = border,
+                    shape = MaterialTheme.shapes.small
                 )
         )
         if (isFilled) {
-            FieldBoxDot()
+            InputBoxDot()
         }
     }
 }
 
 @Composable
-private fun FieldBoxDot(
+private fun InputBoxDot(
     modifier: Modifier = Modifier
 ) {
     val scaleAnimation = remember { Animatable(0f) }

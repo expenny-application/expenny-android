@@ -3,23 +3,16 @@ package org.expenny.core.ui.components
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
-import android.net.http.SslError
 import android.os.Bundle
-import android.webkit.SslErrorHandler
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.FrameLayout
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,10 +26,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.viewinterop.AndroidView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -148,24 +139,18 @@ fun ExpennyWebViewTopBar(
     title: String?,
     onClose: () -> Unit
 ) {
-    TopAppBar(
+    ExpennyToolbar(
         modifier = modifier,
         title = {
             title?.let {
-                Text(
-                    text = it,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1
-                )
+                ToolbarTitle(text = title)
             }
         },
         navigationIcon = {
-            IconButton(onClick = onClose) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_close),
-                    contentDescription = null
-                )
-            }
+            ToolbarIcon(
+                painter = painterResource(R.drawable.ic_close),
+                onClick = onClose
+            )
         }
     )
 }

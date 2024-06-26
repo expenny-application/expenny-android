@@ -28,13 +28,13 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import org.expenny.core.resources.R
+import org.expenny.core.ui.components.ExpennyChip
+import org.expenny.core.ui.components.ExpennyFab
 import org.expenny.core.ui.components.ExpennyVerticalListPaddingValues
 import org.expenny.core.ui.extensions.noRippleClickable
 import org.expenny.feature.records.labels.contract.RecordLabelsListAction
 import org.expenny.feature.records.labels.contract.RecordLabelsListState
-import org.expenny.core.resources.R
-import org.expenny.core.ui.components.ExpennyChip
-import org.expenny.core.ui.components.ExpennyFab
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,7 +65,7 @@ internal fun RecordLabelsListContent(
                     FabIcon(painter = painterResource(R.drawable.ic_check))
                 },
                 label = {
-                    FabLabel(text = stringResource(R.string.confirm_button))
+                    FabText(text = stringResource(R.string.confirm_button))
                 }
             )
         },
@@ -111,8 +111,8 @@ private fun RecordLabelsList(
                         CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
                             ExpennyChip(
                                 onClick = {},
-                                label = {
-                                    ChipLabel(text = selectedLabel)
+                                content = {
+                                    ChipText(text = selectedLabel)
                                 },
                                 trailingIcon = {
                                     ChipIcon(

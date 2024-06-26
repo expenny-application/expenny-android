@@ -1,10 +1,22 @@
 package org.expenny.feature.dashboard.view
 
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.with
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -13,10 +25,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.expenny.core.resources.R
+import org.expenny.core.ui.components.ExpennyCard
 import org.expenny.core.ui.components.ExpennyRecord
 import org.expenny.core.ui.data.AmountUi
 import org.expenny.core.ui.data.RecordUi
-import org.expenny.core.ui.components.ExpennyCard
 import org.expenny.feature.dashboard.model.DashboardBalanceUi
 
 @Composable
@@ -48,8 +60,7 @@ private fun DashboardBalanceHeading(
     balance: AmountUi?
 ) {
     Column(
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(4.dp)
+        modifier = modifier.fillMaxWidth()
     ) {
         Text(
             text = stringResource(R.string.total_balance_label),

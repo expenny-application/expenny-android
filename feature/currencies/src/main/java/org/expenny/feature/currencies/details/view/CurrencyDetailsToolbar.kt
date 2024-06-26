@@ -1,9 +1,11 @@
 package org.expenny.feature.currencies.details.view
 
-import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import org.expenny.core.resources.R
+import org.expenny.core.ui.components.ExpennyToolbar
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -17,36 +19,30 @@ internal fun CurrencyDetailsToolbar(
     onInfoClick: () -> Unit,
     onDeleteClick: () -> Unit
 ) {
-    TopAppBar(
+    ExpennyToolbar(
         scrollBehavior = scrollBehavior,
         actions = {
             if (showInfoButton) {
-                IconButton(onClick = onInfoClick) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_info),
-                        contentDescription = null
-                    )
-                }
+                ToolbarIcon(
+                    painter = painterResource(R.drawable.ic_info),
+                    onClick = onInfoClick
+                )
             }
             if (showDeleteButton) {
-                IconButton(onClick = onDeleteClick) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_delete),
-                        contentDescription = null
-                    )
-                }
-            }
-        },
-        navigationIcon = {
-            IconButton(onClick = onBackClick) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_back),
-                    contentDescription = null
+                ToolbarIcon(
+                    painter = painterResource(R.drawable.ic_delete),
+                    onClick = onDeleteClick
                 )
             }
         },
+        navigationIcon = {
+            ToolbarIcon(
+                painter = painterResource(R.drawable.ic_back),
+                onClick = onBackClick
+            )
+        },
         title = {
-            Text(text = title)
+            ToolbarTitle(text = title)
         }
     )
 }
