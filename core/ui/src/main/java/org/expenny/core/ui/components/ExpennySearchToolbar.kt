@@ -3,18 +3,31 @@ package org.expenny.core.ui.components
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SearchBarDefaults
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -24,18 +37,19 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import org.expenny.core.resources.R
 import org.expenny.core.ui.extensions.noRippleClickable
+import org.expenny.core.ui.foundation.transparent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExpennySearchTopBar(
+fun ExpennySearchToolbar(
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior? = null,
     searchQuery: String,
     isSearchShown: Boolean = false,
     onQueryChange: (String) -> Unit,
-    title: @Composable () -> Unit = {},
-    actions: @Composable RowScope.() -> Unit = {},
-    navigationIcon: @Composable () -> Unit = {},
+    title: @Composable ExpennyToolbarScope.() -> Unit = {},
+    actions: @Composable ExpennyToolbarScope.() -> Unit = {},
+    navigationIcon: @Composable ExpennyToolbarScope.() -> Unit = {},
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     var showSearch by rememberSaveable(isSearchShown) { mutableStateOf(isSearchShown) }
@@ -56,24 +70,11 @@ fun ExpennySearchTopBar(
             onQueryChange("")
         }
 
-        TopAppBar(
+        ExpennyToolbar(
             modifier = modifier,
             scrollBehavior = scrollBehavior,
-            navigationIcon = {
-                IconButton(
-                    onClick = {
-                        showSearch = false
-                        onQueryChange("")
-                    }
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_back),
-                        contentDescription = null
-                    )
-                }
-            },
             title = {
-                SearchAppBarField(
+                SearchToolbarInput(
                     query = searchQuery,
                     focusRequester = searchFocusRequester,
                     onQueryChange = onQueryChange,
@@ -81,34 +82,39 @@ fun ExpennySearchTopBar(
                         keyboardController?.show()
                     }
                 )
+            },
+            navigationIcon = {
+                ToolbarIcon(
+                    painter = painterResource(R.drawable.ic_back),
+                    onClick = {
+                        showSearch = false
+                        onQueryChange("")
+                    }
+                )
             }
         )
     } else {
-        TopAppBar(
+        ExpennyToolbar(
             modifier = modifier,
             scrollBehavior = scrollBehavior,
+            title = title,
             navigationIcon = navigationIcon,
             actions = {
-                IconButton(
+                ToolbarIcon(
+                    painter = painterResource(R.drawable.ic_search),
                     onClick = {
                         showSearch = true
                     }
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_search),
-                        contentDescription = null
-                    )
-                }
-                actions()
-            },
-            title = title
+                )
+                actions(this)
+            }
         )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun SearchAppBarField(
+private fun SearchToolbarInput(
     modifier: Modifier = Modifier,
     query: String,
     focusRequester: FocusRequester,
@@ -119,7 +125,7 @@ private fun SearchAppBarField(
         modifier = modifier
             .fillMaxWidth()
             .background(
-                color = Color.Transparent,
+                color = MaterialTheme.colorScheme.transparent,
             )
             .defaultMinSize(
                 minWidth = TextFieldDefaults.MinWidth,
@@ -177,13 +183,13 @@ private fun SearchAppBarField(
                 },
                 shape = SearchBarDefaults.inputFieldShape,
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent,
-                    errorContainerColor = Color.Transparent,
-                    disabledContainerColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
+                    focusedContainerColor = MaterialTheme.colorScheme.transparent,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.transparent,
+                    errorContainerColor = MaterialTheme.colorScheme.transparent,
+                    disabledContainerColor = MaterialTheme.colorScheme.transparent,
+                    focusedIndicatorColor = MaterialTheme.colorScheme.transparent,
+                    disabledIndicatorColor = MaterialTheme.colorScheme.transparent,
+                    unfocusedIndicatorColor = MaterialTheme.colorScheme.transparent,
                     cursorColor = MaterialTheme.colorScheme.primary,
                     focusedTextColor = MaterialTheme.colorScheme.onSurface,
                     unfocusedTextColor = MaterialTheme.colorScheme.onSurface,

@@ -111,7 +111,7 @@ private fun ProfileActionsDialog(
         onDismiss = onDismiss,
         actions = {
             actions.forEach { actionType ->
-                Action(
+                BottomSheetAction(
                     icon = actionType.icon,
                     text = actionType.label,
                     isSensitive = when (actionType) {

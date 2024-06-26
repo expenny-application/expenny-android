@@ -52,7 +52,8 @@ fun ExpennyBottomSheet(
         dragHandle = { BottomSheetDefaults.DragHandle() },
         onDismissRequest = onDismiss,
         windowInsets = WindowInsets(0),
-        containerColor = MaterialTheme.colorScheme.surfaceContainer
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        contentColor = MaterialTheme.colorScheme.onSurface
     ) {
         Column(modifier = Modifier.padding(contentPadding)) {
             actions(scope)
@@ -64,7 +65,7 @@ fun ExpennyBottomSheet(
 class ExpennyBottomSheetScope {
 
     @Composable
-    fun Action(
+    fun BottomSheetAction(
         modifier: Modifier = Modifier,
         isSensitive: Boolean = false,
         icon: Painter,
@@ -72,7 +73,8 @@ class ExpennyBottomSheetScope {
         onClick: () -> Unit,
     ) {
         val contentColor by rememberUpdatedState(
-            if (isSensitive) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
+            if (isSensitive) MaterialTheme.colorScheme.error
+            else MaterialTheme.colorScheme.onSurface
         )
         Row(
             modifier = modifier

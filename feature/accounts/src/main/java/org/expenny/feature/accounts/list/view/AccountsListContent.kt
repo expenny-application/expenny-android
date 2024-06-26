@@ -27,8 +27,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import org.expenny.core.resources.R
-import org.expenny.core.ui.extensions.asRawString
-import org.expenny.core.ui.extensions.isScrollingUp
 import org.expenny.core.ui.base.ExpennyDrawerManager
 import org.expenny.core.ui.components.ExpennyCard
 import org.expenny.core.ui.components.ExpennyFab
@@ -38,6 +36,8 @@ import org.expenny.core.ui.data.AccountUi
 import org.expenny.core.ui.data.AmountUi
 import org.expenny.core.ui.data.SelectionType
 import org.expenny.core.ui.data.SelectionUi
+import org.expenny.core.ui.extensions.asRawString
+import org.expenny.core.ui.extensions.isScrollingUp
 import org.expenny.core.ui.extensions.type
 import org.expenny.feature.accounts.list.contract.AccountsListAction
 import org.expenny.feature.accounts.list.contract.AccountsListState
@@ -101,7 +101,7 @@ private fun AccountsListConfirmSelectionButton(
             FabIcon(painter = painterResource(R.drawable.ic_check))
         },
         label = {
-            FabLabel(text = stringResource(R.string.confirm_button))
+            FabText(text = stringResource(R.string.confirm_button))
         }
     )
 }

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,13 +22,12 @@ import org.expenny.core.common.types.RecordType
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennyInputField
 import org.expenny.core.ui.components.ExpennyMonetaryInputField
-import org.expenny.core.ui.components.ExpennySegmentedTabRow
+import org.expenny.core.ui.components.ExpennySegmentedSurfaceTabs
 import org.expenny.core.ui.components.ExpennySelectInputField
 import org.expenny.core.ui.data.DecimalInputUi
 import org.expenny.core.ui.data.InputUi
 import org.expenny.core.ui.extensions.asRawString
 import org.expenny.core.ui.extensions.label
-import org.expenny.core.ui.foundation.surfaceInput
 import org.expenny.core.ui.transformations.ExpennyDecimalVisualTransformation
 import org.expenny.feature.records.details.contract.RecordDetailsState
 import java.math.BigDecimal
@@ -115,11 +113,9 @@ private fun RecordTypesTabRow(
     selectedType: RecordType,
     onChange: (RecordType) -> Unit
 ) {
-    ExpennySegmentedTabRow(
-        modifier = modifier.height(48.dp),
+    ExpennySegmentedSurfaceTabs(
+        modifier = modifier,
         tabs = types.map { it.label },
-        textStyle = MaterialTheme.typography.bodyLarge,
-        containerColor = MaterialTheme.colorScheme.surfaceInput,
         selectedTabIndex = types.indexOf(selectedType),
         onTabSelect = {
             onChange(types[it])
@@ -152,10 +148,12 @@ private fun AmountInputField(
         modifier = modifier.fillMaxWidth(),
         description = description,
         label = stringResource(R.string.amount_label),
-        state = state,
         currency = currency,
-        onValueChange = onValueChange,
-        imeAction = ImeAction.Next,
+        value = state.value,
+        error = state.error?.asRawString(),
+        isEnabled = state.isEnabled,
+        isRequired = state.isRequired,
+        onValueChange = onValueChange
     )
 }
 

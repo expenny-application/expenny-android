@@ -69,7 +69,7 @@ internal fun AccountTypeContent(
         ) {
             Column(
                 modifier = Modifier.verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(24.dp)
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 state.accountTypes.forEach {
                     AccountTypeCard(
@@ -85,8 +85,8 @@ internal fun AccountTypeContent(
                     .padding(top = 24.dp),
                 onClick = { onAction(AccountTypeAction.OnCtaButtonClick) },
                 isEnabled = state.isCtaButtonEnabled,
-                label = {
-                    ButtonLabel(text = stringResource(R.string.confirm_button))
+                content = {
+                    ButtonText(text = stringResource(R.string.confirm_button))
                 }
             )
         }
@@ -119,7 +119,7 @@ private fun AccountTypeCard(
                     color = MaterialTheme.colorScheme.onSurface,
                 )
                 ExpennyRadioButton(
-                    isChecked = isSelected,
+                    isSelected = isSelected,
                     onClick = onClick
                 )
             }

@@ -50,7 +50,7 @@ internal fun WelcomeContent(
                 modifier = Modifier
                     .size(44.dp)
                     .clip(MaterialTheme.shapes.small)
-                    .background(Color(0xFF0756CE)),
+                    .background(Color(0xFF0856CE)),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
@@ -70,9 +70,10 @@ internal fun WelcomeContent(
         }
         ExpennyButton(
             modifier = Modifier.fillMaxWidth(),
-            onClick = { onAction(WelcomeAction.OnCtaClick) }
-        ) {
-            ButtonLabel(text = stringResource(R.string.get_started_button))
-        }
+            onClick = { onAction(WelcomeAction.OnCtaClick) },
+            content = {
+                ButtonText(text = stringResource(R.string.get_started_button))
+            }
+        )
     }
 }

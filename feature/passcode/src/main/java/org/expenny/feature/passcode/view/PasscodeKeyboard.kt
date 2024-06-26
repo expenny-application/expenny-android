@@ -21,11 +21,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.expenny.core.resources.R
-import org.expenny.core.ui.foundation.ExpennyTheme
 
 @Composable
 internal fun PasscodeKeyboard(
@@ -144,9 +141,7 @@ private fun DigitButton(
         content = {
             Text(
                 text = digit.toString(),
-                style = MaterialTheme.typography.headlineSmall.copy(
-                    fontWeight = FontWeight.Medium
-                )
+                style = MaterialTheme.typography.titleLarge
             )
         }
     )
@@ -178,26 +173,6 @@ private fun KeyboardButton(
             contentAlignment = Alignment.Center
         ) {
             content()
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun PasscodeKeyboardPreview() {
-    ExpennyTheme {
-        Box(
-            modifier = Modifier.padding(24.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            PasscodeKeyboard(
-                modifier = Modifier.wrapContentSize(),
-                isBackspaceEnabled = true,
-                isBiometricEnabled = true,
-                onDigitClick = {},
-                onBackspaceClick = {},
-                onFingerprintClick = {}
-            )
         }
     }
 }

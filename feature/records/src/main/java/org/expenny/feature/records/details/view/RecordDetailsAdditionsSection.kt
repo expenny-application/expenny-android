@@ -74,7 +74,7 @@ internal fun RecordDetailsAdditionsSection(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun LabelsRow(
     modifier: Modifier = Modifier,
@@ -90,8 +90,8 @@ private fun LabelsRow(
         labels.forEach { label ->
             ExpennyChip(
                 onClick = {},
-                label = {
-                    ChipLabel(text = label)
+                content = {
+                    ChipText(text = label)
                 },
                 trailingIcon = {
                     ChipIcon(
@@ -105,8 +105,8 @@ private fun LabelsRow(
         }
         ExpennyChip(
             onClick = onSelectLabelClick,
-            label = {
-                ChipLabel(text = stringResource(R.string.select_labels_label))
+            content = {
+                ChipText(text = stringResource(R.string.select_labels_label))
             },
             trailingIcon = {
                 ChipIcon(painter = painterResource(R.drawable.ic_add))
@@ -154,6 +154,7 @@ private fun DescriptionInputField(
         ExpennyInputField(
             modifier = modifier,
             isRequired = isRequired,
+            isSingleLine = false,
             value = value,
             error = error?.asRawString(),
             label = stringResource(R.string.description_label),

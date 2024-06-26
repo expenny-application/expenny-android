@@ -22,7 +22,7 @@ fun ExpennyLogo(
         modifier = modifier
             .size(44.dp)
             .clip(MaterialTheme.shapes.small)
-            .background(Color(0xFF0756CE)),
+            .background(Color(0xFF0856CE)),
         contentAlignment = Alignment.Center
     ) {
         Icon(

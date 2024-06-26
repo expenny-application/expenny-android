@@ -7,13 +7,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetState
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -24,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
 import org.expenny.core.common.types.SettingsItemType
 import org.expenny.core.resources.R
+import org.expenny.core.ui.components.ExpennyToolbar
 import org.expenny.feature.settings.contract.SettingsAction
 import org.expenny.feature.settings.contract.SettingsState
 
@@ -50,21 +47,16 @@ internal fun SettingsContent(
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            TopAppBar(
+            ExpennyToolbar(
                 scrollBehavior = scrollBehavior,
                 navigationIcon = {
-                    IconButton(
+                    ToolbarIcon(
+                        painter = painterResource(R.drawable.ic_back),
                         onClick = { onAction(SettingsAction.OnBackClick) }
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_back),
-                            tint = MaterialTheme.colorScheme.onSurface,
-                            contentDescription = null
-                        )
-                    }
+                    )
                 },
                 title = {
-                    Text(text = stringResource(R.string.settings_label))
+                    ToolbarTitle(text = stringResource(R.string.settings_label))
                 }
             )
         },
@@ -92,23 +84,17 @@ internal fun SettingsList(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(32.dp),
     ) {
-        state.profile?.let {
-            SettingsProfileSection(
-                profileName = it.displayName,
-                onProfileClick = { onSettingsItemTypeClick(SettingsItemType.Profile) }
-            )
-        }
         SettingsGeneralSection(
+            profileName = state.profile?.displayName,
+            onProfileClick = { onSettingsItemTypeClick(SettingsItemType.Profile) },
+            onCategorizationClick = { onSettingsItemTypeClick(SettingsItemType.Categorization) },
+            onCurrenciesClick = { onSettingsItemTypeClick(SettingsItemType.Currencies) },
+        )
+        SettingsPreferencesSection(
             language = state.language,
             theme = state.theme,
             onLanguageClick = { onSettingsItemTypeClick(SettingsItemType.Language) },
             onThemeClick = { onSettingsItemTypeClick(SettingsItemType.Theme) },
-            onCategorizationClick = { onSettingsItemTypeClick(SettingsItemType.Categorization) },
-            onCurrenciesClick = { onSettingsItemTypeClick(SettingsItemType.Currencies) },
-        )
-        SettingsDataSection(
-            onBackupClick = { onSettingsItemTypeClick(SettingsItemType.Backup) },
-            onImportsExportsClick = { onSettingsItemTypeClick(SettingsItemType.ImportsExports) },
         )
         SettingsNotificationsSection(
             isReminderSelected = state.isReminderSelected,
@@ -122,13 +108,12 @@ internal fun SettingsList(
             isUseBiometricSelected = state.isUseBiometricSelected,
             isBiometricEnabled = state.isBiometricEnabled,
             onSetPasscodeClick = { onSettingsItemTypeClick(SettingsItemType.Passcode) },
-            onUseBiometricClick = { onSettingsItemTypeClick(SettingsItemType.Biometric) }
+            onUseBiometricClick = { onSettingsItemTypeClick(SettingsItemType.Biometric) },
+            onBackupClick = { onSettingsItemTypeClick(SettingsItemType.Backup) },
         )
         SettingsMoreSection(
             onAboutClick = { onSettingsItemTypeClick(SettingsItemType.About) },
-            onRateApplicationClick = { onSettingsItemTypeClick(SettingsItemType.RateApplication) }
-        )
-        SettingsSensitiveSection(
+            onRateApplicationClick = { onSettingsItemTypeClick(SettingsItemType.RateApplication) },
             onClearAllDataClick = { onSettingsItemTypeClick(SettingsItemType.DeleteApplicationData) },
         )
     }

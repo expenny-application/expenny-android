@@ -1,9 +1,11 @@
 package org.expenny.feature.categories.list.view
 
-import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import org.expenny.core.resources.R
+import org.expenny.core.ui.components.ExpennyToolbar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -13,27 +15,22 @@ internal fun CategoriesListToolbar(
     onAddClick: () -> Unit,
     onBackClick: () -> Unit
 ) {
-    TopAppBar(
+    ExpennyToolbar(
+        scrollBehavior = scrollBehavior,
         actions = {
-            IconButton(onClick = onAddClick) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_add),
-                    contentDescription = null
-                )
-            }
+            ToolbarIcon(
+                onClick = onAddClick,
+                painter = painterResource(R.drawable.ic_add)
+            )
         },
         navigationIcon = {
-            IconButton(onClick = onBackClick) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_back),
-                    tint = MaterialTheme.colorScheme.onSurface,
-                    contentDescription = null
-                )
-            }
+            ToolbarIcon(
+                onClick = onBackClick,
+                painter = painterResource(R.drawable.ic_back)
+            )
         },
-        scrollBehavior = scrollBehavior,
         title = {
-            Text(text = title)
+            ToolbarTitle(text = title)
         }
     )
 }

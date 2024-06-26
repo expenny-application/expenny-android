@@ -13,7 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.commandiron.wheel_picker_compose.WheelDatePicker
 import com.commandiron.wheel_picker_compose.core.WheelPickerDefaults
 import org.expenny.core.resources.R
-import org.expenny.core.ui.foundation.ExpennyTheme
+import org.expenny.core.ui.foundation.ExpennyThemePreview
 import java.time.LocalDate
 
 
@@ -44,8 +44,8 @@ fun ExpennyDatePicker(
                 textColor = MaterialTheme.colorScheme.onSurface,
                 textStyle = MaterialTheme.typography.bodyLarge,
                 selectorProperties = WheelPickerDefaults.selectorProperties(
-                    shape = MaterialTheme.shapes.extraSmall,
-                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+                    shape = MaterialTheme.shapes.small,
+                    color = MaterialTheme.colorScheme.primaryContainer,
                     border = null,
                 ),
                 onSnappedDate = {
@@ -74,7 +74,7 @@ fun ExpennyDatePicker(
 @Preview
 @Composable
 private fun ExpennyDatePickerPreview() {
-    ExpennyTheme {
+    ExpennyThemePreview {
         ExpennyDatePicker(
             currentDate = LocalDate.now(),
             onSelect = {},

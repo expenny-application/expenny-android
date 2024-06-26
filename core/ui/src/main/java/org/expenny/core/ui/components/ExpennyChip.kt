@@ -1,55 +1,71 @@
 package org.expenny.core.ui.components
 
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import org.expenny.core.resources.R
+import org.expenny.core.ui.base.BooleanPreviewParameterProvider
+import org.expenny.core.ui.base.ExpennyLoremIpsum
+import org.expenny.core.ui.base.ExpennyPreview
 import org.expenny.core.ui.extensions.noRippleClickable
+import org.expenny.core.ui.foundation.ExpennyThemePreview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExpennyChip(
     modifier: Modifier = Modifier,
-    isSelected: Boolean,
     onClick: () -> Unit,
-    label: @Composable ExpennyChipScope.() -> Unit,
-    leadingIcon: @Composable (ExpennyChipScope.() -> Unit)? = null,
-    trailingIcon: @Composable (ExpennyChipScope.() -> Unit)? = null,
+    isSelected: Boolean,
+    isEnabled: Boolean = true,
+    count: Int? = null,
+    content: @Composable ExpennyChipScope.() -> Unit,
+    leadingContent: @Composable (ExpennyChipScope.() -> Unit)? = null,
+    trailingContent: @Composable (ExpennyChipScope.() -> Unit)? = null,
 ) {
-    val scope = remember { ExpennyChipScope() }
-    val containerColor = MaterialTheme.colorScheme.surfaceContainer
-    val contentColor = MaterialTheme.colorScheme.onSurfaceVariant
-    val selectedContainerColor = MaterialTheme.colorScheme.primaryContainer
-    val selectedContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-    val chipContainerColor by animateColorAsState(
-        targetValue = if (isSelected) selectedContainerColor else containerColor,
-        label = "ContainerColor"
-    )
-    val chipContentColor by animateColorAsState(
-        targetValue = if (isSelected) selectedContentColor else contentColor,
-        label = "ContentColor"
-    )
+    val scope = remember(count) { ExpennyChipScope(count) }
+    val containerColor by animateContainerColorAsState(isSelected)
+    val contentColor by animateContentColorAsState(isSelected, isEnabled)
     val horizontalPadding by rememberUpdatedState(
-        if (leadingIcon == null && trailingIcon == null) 8.dp else 12.dp
+        if (leadingContent == null && trailingContent == null) 8.dp else 12.dp
     )
 
     CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
         Surface(
             modifier = modifier.height(32.dp),
+            border = null,
+            selected = isSelected,
+            enabled = isEnabled,
             shape = MaterialTheme.shapes.small,
-            color = chipContainerColor,
-            onClick = onClick,
+            shadowElevation = 0.dp,
+            tonalElevation = 0.dp,
+            color = containerColor,
+            contentColor = contentColor,
+            onClick = onClick
         ) {
             Row(
                 modifier = Modifier
@@ -61,11 +77,9 @@ fun ExpennyChip(
                     alignment = Alignment.CenterHorizontally
                 )
             ) {
-                CompositionLocalProvider(LocalContentColor provides chipContentColor) {
-                    leadingIcon?.invoke(scope)
-                    label(scope)
-                    trailingIcon?.invoke(scope)
-                }
+                leadingContent?.invoke(scope)
+                content(scope)
+                trailingContent?.invoke(scope)
             }
         }
     }
@@ -75,62 +89,33 @@ fun ExpennyChip(
 fun ExpennyChip(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
-    label: @Composable ExpennyChipScope.() -> Unit,
+    isEnabled: Boolean = true,
+    content: @Composable ExpennyChipScope.() -> Unit,
     leadingIcon: @Composable (ExpennyChipScope.() -> Unit)? = null,
     trailingIcon: @Composable (ExpennyChipScope.() -> Unit)? = null,
 ) {
     ExpennyChip(
         modifier = modifier,
         isSelected = false,
+        isEnabled = isEnabled,
         onClick = onClick,
-        label = label,
-        leadingIcon = leadingIcon,
-        trailingIcon = trailingIcon
-    )
-}
-
-@Composable
-fun ExpennyChip(
-    modifier: Modifier = Modifier,
-    isSelected: Boolean,
-    count: Int,
-    onClick: () -> Unit,
-    label: @Composable ExpennyChipScope.() -> Unit,
-    trailingIcon: @Composable (ExpennyChipScope.() -> Unit)? = null,
-) {
-    val leadingIcon: @Composable (ExpennyChipScope.() -> Unit)? =
-        count.takeIf { it > 0 }?.let {
-            {
-                Badge(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.primaryContainer
-                ) {
-                    Text(text = count.toString())
-                }
-            }
-        }
-
-    ExpennyChip(
-        modifier = modifier,
-        isSelected = isSelected,
-        onClick = onClick,
-        label = label,
-        leadingIcon = leadingIcon,
-        trailingIcon = trailingIcon
+        content = content,
+        leadingContent = leadingIcon,
+        trailingContent = trailingIcon
     )
 }
 
 @Stable
-class ExpennyChipScope {
+class ExpennyChipScope(private val labelCount: Int?) {
 
     @Composable
-    fun ChipLabel(
+    fun ChipText(
         modifier: Modifier = Modifier,
         text: String
     ) {
         Text(
             modifier = modifier,
-            text = text,
+            text = if (labelCount != null && labelCount > 0) "$labelCount • $text" else text,
             style = MaterialTheme.typography.bodyMedium
         )
     }
@@ -139,14 +124,79 @@ class ExpennyChipScope {
     fun ChipIcon(
         modifier: Modifier = Modifier,
         painter: Painter,
-        onClick: () -> Unit = {}
+        onClick: (() -> Unit)? = null
     ) {
         Icon(
             modifier = modifier
                 .size(16.dp)
-                .noRippleClickable { onClick() },
+                .then(
+                    if (onClick != null) Modifier.noRippleClickable { onClick() }
+                    else Modifier
+                ),
             painter = painter,
             contentDescription = stringResource(R.string.icon_a11y)
+        )
+    }
+}
+
+@Composable
+private fun animateContainerColorAsState(isSelected: Boolean): State<Color> {
+    val containerColor =
+        if (isSelected) MaterialTheme.colorScheme.primaryContainer
+        else MaterialTheme.colorScheme.surfaceContainer
+
+    return animateColorAsState(
+        targetValue = containerColor,
+        label = "AnimateContainerColor"
+    )
+}
+
+
+@Composable
+private fun animateContentColorAsState(isSelected: Boolean, isEnabled: Boolean): State<Color> {
+    val contentColor =
+        if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer
+        else MaterialTheme.colorScheme.onSurfaceVariant
+
+    return animateColorAsState(
+        targetValue = contentColor.copy(if (isEnabled) 1f else 0.38f),
+        label = "AnimateContentColor"
+    )
+}
+
+@ExpennyPreview
+@Composable
+private fun ExpennyChipPreview(
+    @PreviewParameter(BooleanPreviewParameterProvider::class) isEnabled: Boolean
+) {
+    ExpennyThemePreview {
+        ExpennyChip(
+            isSelected = false,
+            isEnabled = isEnabled,
+            onClick = {},
+            content = {
+                ChipText(text = ExpennyLoremIpsum(2).text)
+            },
+            leadingContent = {
+                ChipIcon(painter = painterResource(R.drawable.ic_image_placeholder))
+            },
+            trailingContent = {
+                ChipIcon(painter = painterResource(R.drawable.ic_close))
+            }
+        )
+        ExpennyChip(
+            isSelected = true,
+            isEnabled = isEnabled,
+            onClick = {},
+            content = {
+                ChipText(text = ExpennyLoremIpsum(2).text)
+            },
+            leadingContent = {
+                ChipIcon(painter = painterResource(R.drawable.ic_image_placeholder))
+            },
+            trailingContent = {
+                ChipIcon(painter = painterResource(R.drawable.ic_close))
+            }
         )
     }
 }

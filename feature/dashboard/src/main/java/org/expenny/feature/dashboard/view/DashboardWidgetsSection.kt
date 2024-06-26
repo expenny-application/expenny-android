@@ -1,25 +1,29 @@
 package org.expenny.feature.dashboard.view
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableList
 import org.expenny.core.common.types.DashboardWidgetType
-import org.expenny.core.ui.components.ExpennyIconBox
+import org.expenny.core.ui.components.ExpennyCard
+import org.expenny.core.ui.components.ExpennyIconContainer
 import org.expenny.core.ui.extensions.icon
 import org.expenny.core.ui.extensions.label
-import org.expenny.core.ui.components.ExpennyCard
 
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun DashboardWidgetsSection(
     modifier: Modifier = Modifier,
@@ -69,7 +73,7 @@ private fun DashboardWidgetCard(
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            ExpennyIconBox(
+            ExpennyIconContainer(
                 icon = widget.icon,
                 color = MaterialTheme.colorScheme.onSecondaryContainer,
                 background = MaterialTheme.colorScheme.secondaryContainer

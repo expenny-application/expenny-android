@@ -5,12 +5,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.magnifier
 import androidx.compose.material3.LocalAbsoluteTonalElevation
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
-import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -24,19 +26,55 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import org.expenny.core.ui.extensions.noRippleClickable
 
-
 @Composable
-fun ExpennySegmentedTabRow(
+fun ExpennySegmentedCardTabs(
     modifier: Modifier = Modifier,
     tabs: List<String>,
-    textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
-    containerColor: Color = MaterialTheme.colorScheme.surface,
     selectedTabIndex: Int = 0,
+    onTabSelect: (index: Int) -> Unit
+) {
+    Tabs(
+        modifier = Modifier
+            .height(36.dp)
+            .then(modifier),
+        containerColor = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        tabs = tabs,
+        selectedTabIndex = selectedTabIndex,
+        onTabSelect = onTabSelect,
+    )
+}
+
+@Composable
+fun ExpennySegmentedSurfaceTabs(
+    modifier: Modifier = Modifier,
+    tabs: List<String>,
+    selectedTabIndex: Int = 0,
+    onTabSelect: (index: Int) -> Unit
+) {
+    Tabs(
+        modifier = Modifier
+            .height(44.dp)
+            .then(modifier),
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        tabs = tabs,
+        selectedTabIndex = selectedTabIndex,
+        onTabSelect = onTabSelect,
+    )
+}
+
+@Composable
+private fun Tabs(
+    modifier: Modifier = Modifier,
+    containerColor: Color,
+    contentColor: Color,
+    tabs: List<String>,
+    selectedTabIndex: Int,
     onTabSelect: (index: Int) -> Unit
 ) {
     val localDensity = LocalDensity.current
@@ -51,7 +89,7 @@ fun ExpennySegmentedTabRow(
                 },
             selectedTabIndex = selectedTabIndex,
             containerColor = containerColor,
-            contentColor = contentColorFor(containerColor),
+            contentColor = contentColor,
             indicator = { tabPositions ->
                 TabIndicator(
                     modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex])
@@ -63,7 +101,6 @@ fun ExpennySegmentedTabRow(
                 Tab(
                     modifier = Modifier.height(heightDp),
                     text = tab,
-                    textStyle = textStyle,
                     selected = selectedTabIndex == index,
                     onClick = {
                         onTabSelect(index)
@@ -98,7 +135,6 @@ private fun TabIndicator(
 private fun Tab(
     modifier: Modifier = Modifier,
     text: String,
-    textStyle: TextStyle,
     selected: Boolean,
     onClick: () -> Unit
 ) {
@@ -115,7 +151,7 @@ private fun Tab(
     ) {
         Text(
             modifier = Modifier.zIndex(1f),
-            style = textStyle,
+            style = MaterialTheme.typography.bodyMedium,
             color = color,
             text = text
         )

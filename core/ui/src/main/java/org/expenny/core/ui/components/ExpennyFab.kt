@@ -24,28 +24,38 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import org.expenny.core.resources.R
+import org.expenny.core.ui.base.BooleanPreviewParameterProvider
+import org.expenny.core.ui.base.ExpennyPreview
+import org.expenny.core.ui.foundation.ExpennyThemePreview
+
 
 @Composable
 fun ExpennyFab(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     isEnabled: Boolean = true,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable ExpennyFabScope.() -> Unit
 ) {
     val scope = remember { ExpennyFabScope() }
+    val contentColor by rememberUpdatedState(
+        MaterialTheme.colorScheme.onPrimary.copy(if (isEnabled) 1f else 0.38f)
+    )
 
     Surface(
         modifier = modifier.semantics {
@@ -54,9 +64,10 @@ fun ExpennyFab(
         enabled = isEnabled,
         shape = MaterialTheme.shapes.small,
         color = MaterialTheme.colorScheme.primary,
-        contentColor = MaterialTheme.colorScheme.onPrimary,
-        interactionSource = interactionSource,
+        contentColor = contentColor,
+        interactionSource = remember { MutableInteractionSource() },
         shadowElevation = 3.dp,
+        tonalElevation = 0.dp,
         onClick = onClick,
     ) {
         Row(
@@ -81,24 +92,26 @@ fun ExpennyFab(
     onClick: () -> Unit,
     isExpanded: Boolean = true,
     isEnabled: Boolean = true,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     icon: @Composable ExpennyFabScope.() -> Unit,
     label: @Composable ExpennyFabScope.() -> Unit
 ) {
     val minWidth by animateDpAsState(
         targetValue = if (isExpanded) 56.dp.times(0.85f) else 56.dp,
-        label = "MinWidthAnimation"
+        label = "AnimateMinWidth"
     )
     val minHeight by animateDpAsState(
         targetValue = if (isExpanded) 56.dp.times(0.85f) else 56.dp,
-        label = "MinHeightAnimation"
+        label = "AnimateMinHeight"
     )
     val iconSize by animateDpAsState(
         targetValue = if (isExpanded) 24.dp.times(0.85f) else 24.dp,
-        label = "IconSizeAnimation"
+        label = "AnimateIconSize"
     )
     val horizontalArrangement by rememberUpdatedState(
         if (isExpanded) Arrangement.Start else Arrangement.Center
+    )
+    val contentColor by rememberUpdatedState(
+        MaterialTheme.colorScheme.onPrimary.copy(if (isEnabled) 1f else 0.38f)
     )
 
     val scope = remember(iconSize) { ExpennyFabScope(iconSize) }
@@ -110,9 +123,10 @@ fun ExpennyFab(
         enabled = isEnabled,
         shape = MaterialTheme.shapes.small,
         color = MaterialTheme.colorScheme.primary,
-        contentColor = MaterialTheme.colorScheme.onPrimary,
-        interactionSource = interactionSource,
+        contentColor = contentColor,
+        interactionSource = remember { MutableInteractionSource() },
         shadowElevation = 3.dp,
+        tonalElevation = 0.dp,
         onClick = onClick,
     ) {
         Row(
@@ -157,7 +171,7 @@ class ExpennyFabScope(private val iconSize: Dp = 24.dp) {
     }
 
     @Composable
-    fun FabLabel(
+    fun FabText(
         modifier: Modifier = Modifier,
         text: String
     ) {
@@ -178,3 +192,25 @@ private val expandAnimation = fadeIn(tween(100, 0, easingLinearCubicBezier)) +
 
 private val collapseAnimation = fadeOut(tween(100, 0, easingLinearCubicBezier)) +
         shrinkHorizontally(tween(200, 0, easingEmphasizedCubicBezier), Alignment.Start)
+
+@ExpennyPreview
+@Composable
+private fun ExpennyFabPreview(
+    @PreviewParameter(BooleanPreviewParameterProvider::class) isEnabled: Boolean
+) {
+    ExpennyThemePreview {
+        var isExpanded by remember { mutableStateOf(true) }
+
+        ExpennyFab(
+            onClick = { isExpanded = !isExpanded },
+            isEnabled = isEnabled,
+            isExpanded = isExpanded,
+            icon = {
+                FabIcon(painter = painterResource(R.drawable.ic_image_placeholder))
+            },
+            label = {
+                FabText(text = "Preview")
+            }
+        )
+    }
+}

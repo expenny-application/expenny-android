@@ -1,7 +1,12 @@
 package org.expenny.feature.currencies.details.view
 
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -81,7 +86,7 @@ internal fun CurrencyDetailsContent(
                     FabIcon(painter = painterResource(R.drawable.ic_check))
                 },
                 label = {
-                    FabLabel(text = stringResource(R.string.save_button))
+                    FabText(text = stringResource(R.string.save_button))
                 }
             )
         },

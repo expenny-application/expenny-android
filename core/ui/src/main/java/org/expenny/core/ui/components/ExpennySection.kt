@@ -33,7 +33,7 @@ fun ExpennySection(
     val expandIconAngle by animateFloatAsState(
         targetValue = if (isExpanded) 180f else 0f,
         animationSpec = tween(durationMillis = 150, easing = FastOutSlowInEasing),
-        label = "ExpandIconAngle"
+        label = "AnimateExpandIconAngle"
     )
 
     Column(
@@ -75,12 +75,10 @@ fun ExpennySection(
 ) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Box(
-            modifier = modifier
-                .fillMaxWidth()
-                .height(32.dp),
+            modifier = modifier.fillMaxWidth(),
         ) {
             Text(
                 text = title,

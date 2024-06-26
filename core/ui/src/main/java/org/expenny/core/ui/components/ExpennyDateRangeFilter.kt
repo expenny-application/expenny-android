@@ -20,15 +20,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import org.expenny.core.common.extensions.toDateRangeString
 import org.expenny.core.resources.R
+import org.expenny.core.ui.base.ExpennyPreview
+import org.expenny.core.ui.foundation.ExpennyThemePreview
+import org.threeten.extra.LocalDateRange
+import java.time.LocalDate
 
 @Composable
-fun ExpennyDateRangeFilterButton(
+fun ExpennyDateRangeFilter(
     modifier: Modifier = Modifier,
+    currentDateRange: LocalDateRange,
     isVisible: Boolean = true,
-    currentDateRange: String,
-    onSelectDateRecurrenceClick: () -> Unit,
+    onClick: () -> Unit,
     onNextDateRangeClick: () -> Unit,
     onPreviousDateRangeClick: () -> Unit,
 ) {
@@ -38,16 +46,19 @@ fun ExpennyDateRangeFilterButton(
         exit = exitAnimation,
         content = {
             Surface(
-                modifier = modifier,
-                onClick = onSelectDateRecurrenceClick,
+                modifier = modifier.semantics {
+                    role = Role.Button
+                },
+                onClick = onClick,
                 shape = MaterialTheme.shapes.small,
                 color = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
+                tonalElevation = 0.dp,
                 shadowElevation = 3.dp,
             ) {
                 Row(
                     modifier = Modifier
-                        .sizeIn(minHeight = 48.dp)
+                        .sizeIn(minHeight = 56.dp)
                         .height(IntrinsicSize.Min),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -59,7 +70,7 @@ fun ExpennyDateRangeFilterButton(
                         )
                     }
                     Text(
-                        text = currentDateRange,
+                        text = currentDateRange.toDateRangeString(),
                         style = MaterialTheme.typography.titleSmall
                     )
                     IconButton(onClick = onNextDateRangeClick) {
@@ -87,3 +98,20 @@ private val exitAnimation = fadeOut(
     animationSpec = tween(400),
     targetOffsetY = { it }
 )
+
+@ExpennyPreview
+@Composable
+private fun ExpennyDateRangeFilterPreview() {
+    ExpennyThemePreview {
+        ExpennyDateRangeFilter(
+            currentDateRange = LocalDateRange.of(
+                LocalDate.of(2024, 6, 24),
+                LocalDate.of(2024, 7, 1),
+            ),
+            isVisible = true,
+            onClick = {},
+            onNextDateRangeClick = {},
+            onPreviousDateRangeClick = {}
+        )
+    }
+}
