@@ -6,10 +6,9 @@ import java.math.BigDecimal
 data class PeriodicBudgetUi(
     val id: Long,
     val leftAmount: AmountUi,
-    val currentValue: BigDecimal,
+    val spentValue: BigDecimal,
     val limitValue: BigDecimal,
     val progressValue: Float,
-    val favorabilityPercentage: Int,
     val categories: List<CategoryUi>,
     val intervalType: IntervalType,
 )

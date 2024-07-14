@@ -3,9 +3,9 @@ package org.expenny.feature.budgets.overview
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
@@ -13,17 +13,15 @@ import kotlinx.coroutines.launch
 import org.expenny.core.common.types.BudgetType
 import org.expenny.core.common.types.IntervalType
 import org.expenny.core.domain.usecase.account.GetAccountsUseCase
-import org.expenny.core.domain.usecase.budget.CreateBudgetUseCase
-import org.expenny.core.domain.usecase.budget.GetBudgetsUseCase
 import org.expenny.core.domain.usecase.budget.GetChronologicalBudgetsUseCase
 import org.expenny.core.domain.usecase.budgetgroup.GetPeriodicBudgetGroupUseCase
 import org.expenny.core.domain.usecase.currency.GetCurrencyUseCase
 import org.expenny.core.domain.usecase.currency.GetMainCurrencyUseCase
 import org.expenny.core.model.currency.Currency
 import org.expenny.core.ui.base.ExpennyViewModel
-import org.expenny.core.ui.mapper.AccountNameMapper
+import org.expenny.core.ui.data.ItemUi
 import org.expenny.core.ui.mapper.BudgetGroupMapper
-import org.expenny.core.ui.mapper.CategoryMapper
+import org.expenny.core.ui.reducers.AccountsFilterStateReducer
 import org.expenny.core.ui.reducers.IntervalTypeStateReducer
 import org.expenny.feature.budgets.navArgs
 import org.expenny.feature.budgets.overview.contract.BudgetOverviewAction
@@ -35,6 +33,7 @@ import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
@@ -45,10 +44,7 @@ class BudgetOverviewViewModel @Inject constructor(
     private val getMainCurrency: GetMainCurrencyUseCase,
     private val getCurrency: GetCurrencyUseCase,
     private val getAccounts: GetAccountsUseCase,
-    private val accountNameMapper: AccountNameMapper,
     private val budgetGroupMapper: BudgetGroupMapper,
-    private val createBudget: CreateBudgetUseCase,
-    private val categoryMapper: CategoryMapper
 ) : ExpennyViewModel<BudgetOverviewAction>(), ContainerHost<BudgetOverviewState, BudgetOverviewEvent> {
 
     private val budgetType: BudgetType = savedStateHandle.navArgs<BudgetOverviewNavArgs>().budgetType
@@ -56,7 +52,8 @@ class BudgetOverviewViewModel @Inject constructor(
     private val periodicBudgetIntervalType: IntervalType? = savedStateHandle.navArgs<BudgetOverviewNavArgs>().intervalType
 
     private val intervalTypeReducer = IntervalTypeStateReducer(viewModelScope)
-    private val selectedAccountIds = MutableStateFlow<List<Long>>(emptyList())
+    private val accountsFilterReducer = AccountsFilterStateReducer(viewModelScope)
+
     private val selectedCurrency = MutableStateFlow<Currency?>(null)
 
     override val container = container<BudgetOverviewState, BudgetOverviewEvent>(
@@ -70,7 +67,8 @@ class BudgetOverviewViewModel @Inject constructor(
             launch { subscribeToBudget() }
             launch { subscribeToDefaultDisplayCurrency() }
             launch { subscribeToAccounts() }
-            launch { subscribeToIntervalReducer() }
+            launch { subscribeToIntervalTypeReducer() }
+            launch { subscribeToAccountsFilterReducer() }
             launch { subscribeToDateRangeBounds() }
         }
     }
@@ -81,7 +79,7 @@ class BudgetOverviewViewModel @Inject constructor(
             is BudgetOverviewAction.OnDisplayCurrencySelect -> handleOnDisplayCurrencySelect(action)
             is BudgetOverviewAction.OnDisplayCurrencyClick -> handleOnDisplayCurrencyClick()
             is BudgetOverviewAction.OnAllAccountsSelect -> handleOnAllAccountsSelect()
-            is BudgetOverviewAction.OnAccountSelect -> {}
+            is BudgetOverviewAction.OnAccountSelect -> handleOnAccountSelect(action)
             is BudgetOverviewAction.OnNextIntervalClick -> handleOnNextIntervalClick()
             is BudgetOverviewAction.OnPreviousIntervalClick -> handleOnPreviousIntervalClick()
             is BudgetOverviewAction.OnBackClick -> handleOnBackClick()
@@ -91,29 +89,33 @@ class BudgetOverviewViewModel @Inject constructor(
     }
 
     private fun handleOnBudgetLimitClick(action: BudgetOverviewAction.OnBudgetLimitClick) = intent {
-        val excludeCategoriesIds = state.overview.budgets.map { it.category.id }.toLongArray()
-        val event = BudgetOverviewEvent.NavigateToBudgetLimitDetails(
-            budgetId = action.budgetId,
-            budgetGroupId = budgetGroupId,
-            budgetType = budgetType,
-            startDate = intervalTypeReducer.state.dateRange.start,
-            endDate = intervalTypeReducer.state.dateRange.endInclusive,
-            excludeCategoriesIds = excludeCategoriesIds
-        )
-        postSideEffect(event)
+        if (!state.isReadonly) {
+            val excludeCategoriesIds = state.overview.budgets.map { it.category.id }.toLongArray()
+            val event = BudgetOverviewEvent.NavigateToBudgetLimitDetails(
+                budgetId = action.budgetId,
+                budgetGroupId = budgetGroupId,
+                budgetType = budgetType,
+                startDate = intervalTypeReducer.state.dateRange.start,
+                endDate = intervalTypeReducer.state.dateRange.endInclusive,
+                excludeCategoriesIds = excludeCategoriesIds
+            )
+            postSideEffect(event)
+        }
     }
 
     private fun handleOnAddBudgetLimitClick() = intent {
-        val excludeCategoriesIds = state.overview.budgets.map { it.category.id }.toLongArray()
-        val event = BudgetOverviewEvent.NavigateToBudgetLimitDetails(
-            budgetId = null,
-            budgetGroupId = budgetGroupId,
-            budgetType = budgetType,
-            startDate = intervalTypeReducer.state.dateRange.start,
-            endDate = intervalTypeReducer.state.dateRange.endInclusive,
-            excludeCategoriesIds = excludeCategoriesIds
-        )
-        postSideEffect(event)
+        if (!state.isReadonly) {
+            val excludeCategoriesIds = state.overview.budgets.map { it.category.id }.toLongArray()
+            val event = BudgetOverviewEvent.NavigateToBudgetLimitDetails(
+                budgetId = null,
+                budgetGroupId = budgetGroupId,
+                budgetType = budgetType,
+                startDate = intervalTypeReducer.state.dateRange.start,
+                endDate = intervalTypeReducer.state.dateRange.endInclusive,
+                excludeCategoriesIds = excludeCategoriesIds
+            )
+            postSideEffect(event)
+        }
     }
 
     private fun handleOnNextIntervalClick() {
@@ -145,14 +147,12 @@ class BudgetOverviewViewModel @Inject constructor(
         }
     }
 
-    private fun handleOnAllAccountsSelect() = intent {
-        selectedAccountIds.value = state.accounts.map { it.id }
-        reduce {
-            state.copy(
-                selectAllAccounts = true,
-                selectedAccounts = state.accounts.toImmutableList(),
-            )
-        }
+    private fun handleOnAllAccountsSelect() {
+        accountsFilterReducer.onAllSelect()
+    }
+
+    private fun handleOnAccountSelect(action: BudgetOverviewAction.OnAccountSelect) {
+        accountsFilterReducer.onSelect(action.id)
     }
 
     private fun subscribeToDefaultDisplayCurrency() = intent {
@@ -162,26 +162,46 @@ class BudgetOverviewViewModel @Inject constructor(
     }
 
     private fun subscribeToAccounts() = intent {
-        getAccounts().collect {
-            reduce { state.copy(accounts = accountNameMapper(it)) }
-            handleOnAllAccountsSelect()
+        getAccounts().collect { accounts ->
+            accountsFilterReducer.onAccountsChange(
+                accounts.map { ItemUi(key = it.id, label = it.displayName) }
+            )
         }
     }
 
     private fun subscribeToBudget() = intent {
-        intervalTypeReducer.stateFlow
-            .flatMapLatest { getPeriodicBudget(budgetGroupId, it.dateRange) }
-            .filterNotNull()
-            .collect {
-                reduce {
-                    state.copy(overview = budgetGroupMapper(it))
-                }
+        combine(
+            intervalTypeReducer.stateFlow,
+            accountsFilterReducer.stateFlow
+        ) { intervalTypeState, accountsFilterState ->
+            intervalTypeState to accountsFilterState
+        }.flatMapLatest { (intervalTypeState, accountsFilterState) ->
+            getPeriodicBudget(
+                budgetGroupId = budgetGroupId,
+                dateRange = intervalTypeState.dateRange,
+                accountIds = accountsFilterState.selectedAccountIds
+            )
+        }.filterNotNull().collect {
+            reduce {
+                state.copy(overview = budgetGroupMapper(it))
+            }
         }
     }
 
-    private fun subscribeToIntervalReducer() = intent {
+    private fun subscribeToIntervalTypeReducer() = intent {
         intervalTypeReducer.container.stateFlow.collect {
-            reduce { state.copy(intervalState = it) }
+            reduce {
+                state.copy(
+                    intervalTypeState = it,
+                    isReadonly = it.dateRange.endInclusive < LocalDate.now()
+                )
+            }
+        }
+    }
+
+    private fun subscribeToAccountsFilterReducer() = intent {
+        accountsFilterReducer.container.stateFlow.collect {
+            reduce { state.copy(accountsFilterState = it) }
         }
     }
 
@@ -189,10 +209,9 @@ class BudgetOverviewViewModel @Inject constructor(
         getChronologicalBudgets(budgetGroupId).collect {
             val dateRangeLowerBound = it.firstOrNull()?.startDate ?: intervalTypeReducer.state.dateRange.start
             val dateRangeUpperBound = intervalTypeReducer.getNextInterval().endInclusive
+            val bounds = dateRangeLowerBound.rangeTo(dateRangeUpperBound)
 
-            reduce {
-                state.copy(dateRangeFilterBounds = dateRangeLowerBound.rangeTo(dateRangeUpperBound))
-            }
+            intervalTypeReducer.onBoundsChange(bounds)
         }
     }
 }

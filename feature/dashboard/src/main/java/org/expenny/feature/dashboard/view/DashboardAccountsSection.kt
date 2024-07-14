@@ -7,18 +7,19 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import org.expenny.core.ui.components.ExpennyAccountsFilter
 import org.expenny.core.ui.data.AccountNameUi
+import org.expenny.core.ui.reducers.AccountsFilterStateReducer
+import org.expenny.feature.dashboard.contract.DashboardAction
 import org.expenny.feature.dashboard.model.DashboardBalanceUi
 
 @Composable
 internal fun DashboardAccountsSection(
     modifier: Modifier = Modifier,
     accountsListState: LazyListState,
-    selectAll: Boolean,
-    selectedAccounts: List<AccountNameUi>,
-    accounts: List<AccountNameUi>,
+    accountsFilterState: AccountsFilterStateReducer.State,
     balance: DashboardBalanceUi,
-    onSelect: (AccountNameUi) -> Unit,
+    onSelect: (Long) -> Unit,
     onSelectAll: () -> Unit,
     onShowMoreRecordsClick: () -> Unit,
 ) {
@@ -26,14 +27,12 @@ internal fun DashboardAccountsSection(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        DashboardAccountsFilter(
+        ExpennyAccountsFilter(
             modifier = Modifier.fillMaxWidth(),
             listState = accountsListState,
-            selectAll = selectAll,
-            accounts = accounts,
-            selectedAccounts = selectedAccounts,
-            onSelectAll = onSelectAll,
+            state = accountsFilterState,
             onSelect = onSelect,
+            onSelectAll = onSelectAll
         )
         DashboardBalanceSection(
             modifier = Modifier.fillMaxWidth(),

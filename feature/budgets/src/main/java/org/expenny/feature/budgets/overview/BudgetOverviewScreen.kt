@@ -21,7 +21,8 @@ fun BudgetOverviewScreen(
 ) {
     val vm: BudgetOverviewViewModel = hiltViewModel()
     val state by vm.collectAsState()
-    val lazyListState = rememberLazyListState()
+    val listState = rememberLazyListState()
+    val accountsFilterListState = rememberLazyListState()
 
     vm.collectSideEffect {
         when (it) {
@@ -45,7 +46,8 @@ fun BudgetOverviewScreen(
 
     BudgetOverviewContent(
         state = state,
-        lazyListState = lazyListState,
+        accountsFilterListState = accountsFilterListState,
+        listState = listState,
         onAction = vm::onAction
     )
 }

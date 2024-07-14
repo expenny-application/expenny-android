@@ -31,7 +31,28 @@ import org.expenny.core.common.extensions.toDateRangeString
 import org.expenny.core.resources.R
 import org.expenny.core.ui.base.ExpennyPreview
 import org.expenny.core.ui.foundation.ExpennyThemePreview
+import org.expenny.core.ui.reducers.IntervalTypeStateReducer
 import java.time.LocalDate
+
+@Composable
+fun ExpennyDateRangeFilter(
+    modifier: Modifier = Modifier,
+    state: IntervalTypeStateReducer.State,
+    isVisible: Boolean = true,
+    onClick: () -> Unit  = {},
+    onNextDateRangeClick: () -> Unit,
+    onPreviousDateRangeClick: () -> Unit,
+) {
+    ExpennyDateRangeFilter(
+        modifier = modifier,
+        dateRange = state.dateRange,
+        bounds = state.bounds,
+        isVisible = isVisible,
+        onClick = onClick,
+        onNextDateRangeClick = onNextDateRangeClick,
+        onPreviousDateRangeClick = onPreviousDateRangeClick,
+    )
+}
 
 @Composable
 fun ExpennyDateRangeFilter(

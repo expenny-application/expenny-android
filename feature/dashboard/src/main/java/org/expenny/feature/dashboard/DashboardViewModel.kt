@@ -1,7 +1,7 @@
 package org.expenny.feature.dashboard
 
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -22,11 +22,13 @@ import org.expenny.core.domain.usecase.currency.GetMainCurrencyUseCase
 import org.expenny.core.domain.usecase.record.GetRecordsUseCase
 import org.expenny.core.model.currency.Currency
 import org.expenny.core.model.record.Record
+import org.expenny.core.ui.data.ItemUi
 import org.expenny.core.ui.data.navargs.RecordsListFilterNavArg
 import org.expenny.core.ui.mapper.AccountNameMapper
 import org.expenny.core.ui.mapper.AmountMapper
 import org.expenny.core.ui.mapper.ExpensesMapper
 import org.expenny.core.ui.mapper.RecordMapper
+import org.expenny.core.ui.reducers.AccountsFilterStateReducer
 import org.expenny.feature.dashboard.contract.DashboardAction
 import org.expenny.feature.dashboard.contract.DashboardEvent
 import org.expenny.feature.dashboard.contract.DashboardState
@@ -62,11 +64,13 @@ DashboardViewModel @Inject constructor(
             launch { subscribeToAccounts() }
             launch { subscribeToBalance() }
             launch { subscribeToExpenses() }
+            launch { subscribeToAccountsFilterReducer() }
         }
     }
 
+    private val accountsFilterReducer = AccountsFilterStateReducer(viewModelScope)
+
     private val selectedCurrency = MutableStateFlow<Currency?>(null)
-    private val selectedAccountIds = MutableStateFlow<List<Long>>(emptyList())
     private val selectedPeriodType = MutableStateFlow<PeriodType>(DashboardState().currentPeriodType)
 
     override fun onAction(action: DashboardAction) {
@@ -113,39 +117,12 @@ DashboardViewModel @Inject constructor(
         postSideEffect(DashboardEvent.NavigateToDisplayCurrencySelection(selectedCurrency.value?.id))
     }
 
-    private fun handleOnAccountSelect(action: DashboardAction.OnAccountSelect) = intent {
-        val currentSelection = if (state.selectAllAccounts) emptyList() else state.selectedAccounts
-
-        if (currentSelection.isEmpty()) {
-            reduce {
-                state.copy(selectAllAccounts = false)
-            }
-        }
-
-        val newSelection = if (currentSelection.contains(action.account)) {
-            currentSelection - action.account
-        } else {
-            currentSelection + action.account
-        }
-
-        if (newSelection.isEmpty()) {
-            handleOnAllAccountsSelect()
-        } else {
-            selectedAccountIds.value = newSelection.map { it.id }
-            reduce {
-                state.copy(selectedAccounts = newSelection.toImmutableList())
-            }
-        }
+    private fun handleOnAccountSelect(action: DashboardAction.OnAccountSelect) {
+        accountsFilterReducer.onSelect(action.id)
     }
 
-    private fun handleOnAllAccountsSelect() = intent {
-        selectedAccountIds.value = state.accounts.map { it.id }
-        reduce {
-            state.copy(
-                selectAllAccounts = true,
-                selectedAccounts = state.accounts.toImmutableList(),
-            )
-        }
+    private fun handleOnAllAccountsSelect() {
+        accountsFilterReducer.onAllSelect()
     }
 
     private fun handleOnWidgetClick(action: DashboardAction.OnWidgetClick) = intent {
@@ -160,7 +137,7 @@ DashboardViewModel @Inject constructor(
     }
 
     private fun handleOnShowMoreRecordsClick() = intent {
-        val filter = RecordsListFilterNavArg(accounts = selectedAccountIds.value)
+        val filter = RecordsListFilterNavArg(accounts = accountsFilterReducer.state.selectedAccountIds)
         postSideEffect(DashboardEvent.NavigateToRecords(filter))
     }
 
@@ -194,19 +171,20 @@ DashboardViewModel @Inject constructor(
     }
 
     private fun subscribeToAccounts() = intent {
-        getAccounts().collect {
-            reduce { state.copy(accounts = accountNameMapper(it)) }
-            handleOnAllAccountsSelect()
+        getAccounts().collect { accounts ->
+            accountsFilterReducer.onAccountsChange(
+                accounts.map { ItemUi(key = it.id, label = it.displayName) }
+            )
         }
     }
 
     private fun subscribeToBalance() = intent {
         repeatOnSubscription {
             combine(
-                selectedAccountIds,
+                accountsFilterReducer.stateFlow,
                 selectedCurrency.filterNotNull()
-            ) { accountIds, currency ->
-                Pair(accountIds, currency)
+            ) { accountsFilterState, currency ->
+                Pair(accountsFilterState.selectedAccountIds, currency)
             }.flatMapLatest { (accountIds, currency)->
                 combine(
                     getAccounts(GetAccountsUseCase.Params(accountIds)),
@@ -230,14 +208,20 @@ DashboardViewModel @Inject constructor(
         }
     }
 
+    private fun subscribeToAccountsFilterReducer() = intent {
+        accountsFilterReducer.container.stateFlow.collect {
+            reduce { state.copy(accountsFilterState = it) }
+        }
+    }
+
     private fun subscribeToExpenses() = intent {
         repeatOnSubscription {
             combine(
-                selectedAccountIds,
+                accountsFilterReducer.stateFlow,
                 selectedPeriodType,
                 selectedCurrency.filterNotNull()
-            ) { accountIds, periodType, currency ->
-                Triple(accountIds, periodType, currency)
+            ) { accountsFilterState, periodType, currency ->
+                Triple(accountsFilterState.selectedAccountIds, periodType, currency)
             }.flatMapLatest { (accountIds, periodType, currency) ->
                 getCategoriesStatements(
                     accountIds = accountIds,

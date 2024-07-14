@@ -18,10 +18,9 @@ class PeriodicBudgetMapper @Inject constructor(
             PeriodicBudgetUi(
                 id = id,
                 leftAmount = leftAmount,
-                currentValue = totalSpentValue,
+                spentValue = totalSpentValue,
                 limitValue = totalLimitValue,
                 progressValue = totalProgressPercentage.toFloat().div(100f),
-                favorabilityPercentage = averageFavorability.toInt(),
                 intervalType = intervalType,
                 categories = categories,
             )

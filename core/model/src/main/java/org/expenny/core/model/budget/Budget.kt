@@ -28,7 +28,4 @@ data class Budget(
             val left = limitValue - spentValue
             return (if (left < BigDecimal.ZERO) BigDecimal.ZERO else left).setScale(spentValue.scale())
         }
-
-    // TODO
-    val favorability: BigDecimal = BigDecimal.ZERO.setScale(1)
 }

@@ -15,7 +15,7 @@ class BudgetGroupMapper @Inject constructor(
         return with(model) {
             BudgetGroupUi(
                 leftAmount = amountMapper(CurrencyAmount(model.totalLeftValue, model.currency)),
-                currentValue = totalSpentValue,
+                spentValue = totalSpentValue,
                 limitValue = totalLimitValue,
                 progressValue = totalProgressPercentage.toFloat().div(100f),
                 budgets = model.budgets.map {

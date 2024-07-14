@@ -21,6 +21,7 @@ import org.expenny.core.domain.usecase.category.GetCategoriesUseCase
 import org.expenny.core.domain.usecase.category.GetCategoryUseCase
 import org.expenny.core.domain.usecase.currency.GetCurrencyUseCase
 import org.expenny.core.domain.validators.BigDecimalConstraintsValidator
+import org.expenny.core.domain.validators.RequiredBigDecimalValidator
 import org.expenny.core.domain.validators.RequiredStringValidator
 import org.expenny.core.model.category.Category
 import org.expenny.core.resources.R
@@ -209,55 +210,67 @@ class BudgetLimitDetailsViewModel @Inject constructor(
     )
 
     private fun validateLimit(value: BigDecimal) = validateInput(
-        value.toPlainString(), listOf(BigDecimalConstraintsValidator(min = BigDecimal.ZERO))
+        value.toPlainString(),
+        listOf(RequiredBigDecimalValidator(), BigDecimalConstraintsValidator(min = BigDecimal.ZERO))
     )
 
-    private fun setupInitialState() = intent {
+    private fun setupInitialState() {
         savedStateHandle.navArgs<BudgetLimitDetailsNavArgs>().also { args ->
-            val currency = getBudgetGroupCurrency(args.budgetGroupId).first()!!
-
             if (args.budgetId != null) {
-                val budget = getBudget(args.budgetId).first()!!
-
-                budgetId = budget.id
-                selectedCategory = budget.category
-
-                reduce {
-                    state.copy(
-                        toolbarTitle = StringResource.fromRes(R.string.edit_budget_limit_label),
-                        showDeleteButton = true,
-                        currency = currency.unit.code,
-                        categoryInput = state.categoryInput.copy(
-                            value = budget.category.name
-                        ),
-                        limitInput = state.limitInput.copy(
-                            value = budget.limitValue.setScale(currency.unit.scale)
-                        ),
-                        showEnablePeriodicLimitCheckbox = args.budgetType == BudgetType.Periodic,
-                        enablePeriodicLimitCheckboxInput = state.enablePeriodicLimitCheckboxInput.copy(
-                            value = budget.endDate == null
-                        )
-                    )
-                }
+                setEditBudgetLimitState(args)
             } else {
-                val suggestedCategory = getSuggestedCategory()
-                reduce {
-                    state.copy(
-                        toolbarTitle = StringResource.fromRes(R.string.add_budget_limit_label),
-                        currency = currency.unit.code,
-                        categoryInput = state.categoryInput.copy(
-                            value = suggestedCategory?.name ?: "",
-                            isEnabled = suggestedCategory == null
-                        ),
-                        limitInput = state.limitInput.copy(
-                            value = state.limitInput.value.setScale(currency.unit.scale),
-                        ),
-                        showEnablePeriodicLimitCheckbox = args.budgetType == BudgetType.Periodic,
-                    )
-                }
+                setAddBudgetLimitState(args)
             }
-            postSideEffect(BudgetLimitDetailsEvent.RequestLimitInputFocus)
         }
+    }
+
+    private fun setAddBudgetLimitState(args: BudgetLimitDetailsNavArgs) = intent {
+        val currency = getBudgetGroupCurrency(args.budgetGroupId).first()!!
+        val suggestedCategory = getSuggestedCategory()
+
+        reduce {
+            state.copy(
+                toolbarTitle = StringResource.fromRes(R.string.add_budget_limit_label),
+                currency = currency.unit.code,
+                categoryInput = state.categoryInput.copy(
+                    value = suggestedCategory?.name ?: "",
+                    isEnabled = suggestedCategory == null
+                ),
+                limitInput = state.limitInput.copy(
+                    value = state.limitInput.value.setScale(currency.unit.scale),
+                ),
+                showEnablePeriodicLimitCheckbox = args.budgetType == BudgetType.Periodic,
+            )
+        }
+        postSideEffect(BudgetLimitDetailsEvent.RequestLimitInputFocus)
+    }
+
+    private fun setEditBudgetLimitState(args: BudgetLimitDetailsNavArgs) = intent {
+        val currency = getBudgetGroupCurrency(args.budgetGroupId).first()!!
+        val budget = getBudget(args.budgetId!!).first()!!
+
+        budgetId = budget.id
+        selectedCategory = budget.category
+
+        reduce {
+            state.copy(
+                toolbarTitle = StringResource.fromRes(R.string.edit_budget_limit_label),
+                showDeleteButton = true,
+                currency = currency.unit.code,
+                categoryInput = state.categoryInput.copy(
+                    value = budget.category.name,
+                    isEnabled = false
+                ),
+                limitInput = state.limitInput.copy(
+                    value = budget.limitValue.setScale(currency.unit.scale)
+                ),
+                showEnablePeriodicLimitCheckbox = args.budgetType == BudgetType.Periodic,
+                enablePeriodicLimitCheckboxInput = state.enablePeriodicLimitCheckboxInput.copy(
+                    value = budget.endDate == null
+                )
+            )
+        }
+        postSideEffect(BudgetLimitDetailsEvent.RequestLimitInputFocus)
     }
 
     private suspend fun getSuggestedCategory(): Category? {

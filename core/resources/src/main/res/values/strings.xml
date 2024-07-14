@@ -213,6 +213,7 @@
     <string name="delete_record_paragraph">Confirmation will affect the account balance change</string>
     <string name="delete_paragraph">Confirmation will result in permanent deletion of the data</string>
     <string name="set_cash_balance_paragraph">I want to setup my current cash balance</string>
+    <string name="readonly_budget_overview_paragraph">This budget overview is readonly</string>
     <string name="enable_periodic_budget_limit_paragraph">Automatically apply for all future periodic budget plans for this period</string>
     <string name="image_source_paragraph">Please choose a way to add an image</string>
     <string name="amount_conversion_paragraph">The currencies of the selected accounts differ, therefore automatic conversion is applied to the final amount using preset currency rate. You can change it whenever you want</string>

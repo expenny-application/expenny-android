@@ -16,14 +16,15 @@ class GetPeriodicBudgetGroupUseCase @Inject constructor(
 
     operator fun invoke(
         budgetGroupId: Long,
-        dateRange: ClosedRange<LocalDate>
+        dateRange: ClosedRange<LocalDate>,
+        accountIds: List<Long> = emptyList(),
     ): Flow<BudgetGroup.Periodic?> {
         return budgetGroupRepository.getBudgetGroups().map { budgetGroups ->
             budgetGroups
                 .filterIsInstance<BudgetGroup.Periodic>()
                 .firstOrNull { it.id == budgetGroupId }
                 ?.let { budgetGroup ->
-                    val budgets = getBudgets(budgetGroup.id, dateRange).first()
+                    val budgets = getBudgets(budgetGroup.id, dateRange, accountIds).first()
 
                     BudgetGroup.Periodic(
                         id = budgetGroup.id,

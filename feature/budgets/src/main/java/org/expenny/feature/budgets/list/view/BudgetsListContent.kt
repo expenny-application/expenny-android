@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import org.expenny.core.common.types.BudgetType
@@ -37,7 +39,6 @@ import org.expenny.core.resources.R
 import org.expenny.core.ui.base.ExpennyDrawerManager
 import org.expenny.core.ui.components.ExpennyCard
 import org.expenny.core.ui.components.ExpennyLabel
-import org.expenny.core.ui.components.ExpennySection
 import org.expenny.core.ui.components.ExpennySegmentedSurfaceTabs
 import org.expenny.core.ui.data.PeriodicBudgetUi
 import org.expenny.core.ui.extensions.label
@@ -101,28 +102,27 @@ internal fun BudgetsListContent(
                 BudgetType.Periodic -> {
                     items(
                         items = state.periodicBudgets,
-                        key = { it.id },
-                        contentType = { it }
+                        key = { it.id }
                     ) {
-                        ExpennySection(
-                            title = it.intervalType.label,
-                            isExpanded = true,
-                            onClick = {}
-                        ) {
-                            BudgetItem(
-                                data = it,
-                                onClick = { onAction(BudgetsListAction.OnPeriodicBudgetClick(it.id, it.intervalType)) }
-                            )
-                        }
+                        BudgetItem(
+                            data = it,
+                            onClick = { onAction(BudgetsListAction.OnPeriodicBudgetClick(it.id, it.intervalType)) },
+                        )
                     }
                     items(
-                        items = state.availableBudgetIntervalType
+                        items = state.availableBudgetIntervalTypes
                     ) {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(32.dp)
-                                .clickable { onAction(BudgetsListAction.OnPeriodicBudgetCreateClick(it)) },
+                                .clickable {
+                                    onAction(
+                                        BudgetsListAction.OnPeriodicBudgetCreateClick(
+                                            it
+                                        )
+                                    )
+                                },
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
@@ -151,7 +151,7 @@ internal fun BudgetsListContent(
 private fun BudgetItem(
     modifier: Modifier = Modifier,
     data: PeriodicBudgetUi,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     ExpennyCard(
         modifier = modifier,
@@ -182,7 +182,9 @@ private fun BudgetItem(
                     containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
                     contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     content = {
-                        LabelText(text = "${data.favorabilityPercentage}%")
+                        LabelText(
+                            text = stringArrayResource(R.array.budget_period_type)[data.intervalType.ordinal]
+                        )
                     }
                 )
             }
@@ -204,7 +206,7 @@ private fun BudgetItem(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = data.currentValue.toString(),
+                        text = data.spentValue.toString(),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         style = MaterialTheme.typography.bodySmall
                     )
@@ -225,9 +227,6 @@ private fun BudgetItem(
                 ) {
                     data.categories.forEach {
                         ExpennyLabel(
-                            leadingContent = {
-                                LabelIcon(painter = painterResource(it.icon.iconResId))
-                            },
                             content = {
                                 LabelText(text = it.name)
                             }

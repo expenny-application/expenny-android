@@ -18,7 +18,7 @@ enum class IntervalType {
     internal open val boundsStartDate: LocalDate by lazy { bounds.start }
     internal open val boundsEndDate: LocalDate by lazy { bounds.endInclusive }
 
-    internal val bounds: ClosedRange<LocalDate> by lazy {
+    val bounds: ClosedRange<LocalDate> by lazy {
         val startDate = LocalDate.now().minusYears(5).with(firstDayOfYear())
         val endDate = LocalDate.now().plusYears(5).with(lastDayOfYear())
         startDate.rangeTo(endDate)

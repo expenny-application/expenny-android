@@ -1,4 +1,4 @@
-package org.expenny.feature.dashboard.view
+package org.expenny.core.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -11,18 +11,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import org.expenny.core.resources.R
-import org.expenny.core.ui.data.AccountNameUi
-import org.expenny.core.ui.components.ExpennyChip
+import org.expenny.core.ui.reducers.AccountsFilterStateReducer
 
 @Composable
-internal fun DashboardAccountsFilter(
+fun ExpennyAccountsFilter(
     modifier: Modifier = Modifier,
     listState: LazyListState,
-    selectAll: Boolean,
-    accounts: List<AccountNameUi>,
-    selectedAccounts: List<AccountNameUi>,
+    state: AccountsFilterStateReducer.State,
     onSelectAll: () -> Unit,
-    onSelect: (AccountNameUi) -> Unit,
+    onSelect: (Long) -> Unit,
 ) {
     Row(
         modifier = modifier,
@@ -36,7 +33,7 @@ internal fun DashboardAccountsFilter(
         ) {
             item {
                 ExpennyChip(
-                    isSelected = selectAll,
+                    isSelected = state.selectAll,
                     onClick = onSelectAll,
                     content = {
                         ChipText(text = stringResource(R.string.all_accounts_label))
@@ -44,16 +41,16 @@ internal fun DashboardAccountsFilter(
                 )
             }
             items(
-                items = accounts,
-                key = { it.id }
+                items = state.accounts,
+                key = { it.key }
             ) { account ->
                 ExpennyChip(
-                    isSelected = selectedAccounts.contains(account) && !selectAll,
+                    isSelected = state.selection.contains(account.key) && !state.selectAll,
                     onClick = {
-                        onSelect(account)
+                        onSelect(account.key)
                     },
                     content = {
-                        ChipText(text = account.displayName)
+                        ChipText(text = account.label)
                     }
                 )
             }

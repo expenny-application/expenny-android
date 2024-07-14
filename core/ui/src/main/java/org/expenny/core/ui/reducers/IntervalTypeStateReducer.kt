@@ -35,6 +35,12 @@ class IntervalTypeStateReducer(
         }
     }
 
+    fun onBoundsChange(bounds: ClosedRange<LocalDate>) {
+        intent {
+            reduce { state.copy(bounds = bounds) }
+        }
+    }
+
     private fun updateIntervalType(intervalType: IntervalType) {
         intent {
             reduce {
@@ -51,6 +57,7 @@ class IntervalTypeStateReducer(
 
     data class State(
         val intervalType: IntervalType = IntervalType.Month,
+        val bounds: ClosedRange<LocalDate> = intervalType.bounds,
         val offset: Int = 0,
     ) : ContainerStateReducer.State {
 

@@ -6,6 +6,7 @@ import org.expenny.core.common.types.IntervalType
 import org.expenny.core.resources.R
 import org.expenny.core.ui.data.AccountNameUi
 import org.expenny.core.ui.data.BudgetGroupUi
+import org.expenny.core.ui.reducers.AccountsFilterStateReducer
 import org.expenny.core.ui.reducers.IntervalTypeStateReducer
 import java.time.LocalDate
 
@@ -14,13 +15,14 @@ data class BudgetOverviewState(
     val selectAllAccounts: Boolean = true,
     val accounts: List<AccountNameUi> = emptyList(),
     val displayCurrency: String? = null,
+    val isReadonly: Boolean = false,
     val overview: BudgetGroupUi = BudgetGroupUi(),
-    val intervalState: IntervalTypeStateReducer.State = IntervalTypeStateReducer.State(),
-    val dateRangeFilterBounds: ClosedRange<LocalDate>? = null
+    val intervalTypeState: IntervalTypeStateReducer.State = IntervalTypeStateReducer.State(),
+    val accountsFilterState: AccountsFilterStateReducer.State = AccountsFilterStateReducer.State(),
 ) {
 
     val toolbarTitle: StringResource
-        get() = when (intervalState.intervalType) {
+        get() = when (intervalTypeState.intervalType) {
             IntervalType.Day -> StringResource.fromArrayRes(R.array.budget_period_type, 0)
             IntervalType.Week -> StringResource.fromArrayRes(R.array.budget_period_type, 1)
             IntervalType.Month -> StringResource.fromArrayRes(R.array.budget_period_type, 2)
@@ -32,7 +34,7 @@ data class BudgetOverviewState(
 
 sealed interface BudgetOverviewAction {
     class OnDisplayCurrencySelect(val id: Long) : BudgetOverviewAction
-    class OnAccountSelect(val account: AccountNameUi) : BudgetOverviewAction
+    class OnAccountSelect(val id: Long) : BudgetOverviewAction
     class OnBudgetLimitClick(val budgetId: Long) : BudgetOverviewAction
     data object OnAllAccountsSelect : BudgetOverviewAction
     data object OnDisplayCurrencyClick : BudgetOverviewAction

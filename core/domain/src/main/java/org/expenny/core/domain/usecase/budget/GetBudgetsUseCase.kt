@@ -21,13 +21,14 @@ class GetBudgetsUseCase @Inject constructor(
 
     operator fun invoke(
         budgetGroupId: Long,
-        dateRange: ClosedRange<LocalDate>
+        dateRange: ClosedRange<LocalDate>,
+        accountIds: List<Long> = emptyList(),
     ): Flow<List<Budget>> {
         return budgetGroupRepository.getBudgetGroups().map { budgetGroups ->
             val budgetGroup = budgetGroups.firstByIdOrNull(budgetGroupId)
 
             if (budgetGroup != null) {
-                val categoriesStatements = getCategoriesStatements(dateRange, budgetGroup.currency)
+                val categoriesStatements = getCategoriesStatements(accountIds, dateRange, budgetGroup.currency)
                 val getSpentValue: (Long) -> BigDecimal? = { categoryId ->
                     categoriesStatements.firstOrNull { it.category?.id == categoryId }?.amount?.value
                 }
@@ -58,8 +59,12 @@ class GetBudgetsUseCase @Inject constructor(
                 return@map budget.copy(spentValue = spentValue)
             }.sortedByDescending { it.progressPercentage }
 
-    private suspend fun getCategoriesStatements(dateRange: ClosedRange<LocalDate>, currency: Currency) =
-        getCategoriesStatements(
+    private suspend fun getCategoriesStatements(
+        accountIds: List<Long>,
+        dateRange: ClosedRange<LocalDate>,
+        currency: Currency
+    ) = getCategoriesStatements(
+            accountIds = accountIds,
             dateTimeRange = dateRange.toDateTimeRange(),
             transactionType = TransactionType.Outgoing
         ).first().map {

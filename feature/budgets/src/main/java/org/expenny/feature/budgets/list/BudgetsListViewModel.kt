@@ -41,6 +41,7 @@ class BudgetsListViewModel @Inject constructor(
             is BudgetsListAction.OnPeriodicBudgetClick -> handleOnBudgetClick(action)
             is BudgetsListAction.OnOnetimeBudgetCreateClick -> handleOnOnetimeBudgetCreateClick()
             is BudgetsListAction.OnPeriodicBudgetCreateClick -> handleOnPeriodicBudgetCreateClick(action)
+            is BudgetsListAction.OnPeriodicBudgetDeleteClick -> {}
             is BudgetsListAction.OnBudgetTypeChange -> handleOnBudgetTypeChange(action)
             is BudgetsListAction.OnBackClick -> handleOnBackClick()
         }

@@ -16,7 +16,7 @@ data class BudgetsListState(
     private val budgetIntervalTypes: List<IntervalType> =
         listOf(IntervalType.Week, IntervalType.Month, IntervalType.Quarter, IntervalType.Year)
 
-    val availableBudgetIntervalType: List<IntervalType>
+    val availableBudgetIntervalTypes: List<IntervalType>
         get() = budgetIntervalTypes.filter { budgetIntervalType ->
             !periodicBudgets.map { it.intervalType }.contains(budgetIntervalType)
         }
@@ -24,6 +24,7 @@ data class BudgetsListState(
 
 sealed interface BudgetsListAction {
     class OnPeriodicBudgetClick(val id: Long, val type: IntervalType) : BudgetsListAction
+    class OnPeriodicBudgetDeleteClick(val id: Long) : BudgetsListAction
     class OnPeriodicBudgetCreateClick(val type: IntervalType) : BudgetsListAction
     class OnBudgetTypeChange(val type: BudgetType) : BudgetsListAction
     data object OnOnetimeBudgetCreateClick : BudgetsListAction
