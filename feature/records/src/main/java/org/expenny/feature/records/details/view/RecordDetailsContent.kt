@@ -96,39 +96,34 @@ internal fun RecordDetailsContent(
                 .padding(16.dp)
                 .navigationBarsPadding()
                 .floatingActionButtonPadding(),
-            verticalArrangement = Arrangement.SpaceBetween,
+            verticalArrangement = Arrangement.spacedBy(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Column(
+            RecordDetailsMainSection(
+                state = state,
+                amountInputFocusRequester = amountInputFocusRequester,
+                onTypeChange = { onAction(RecordDetailsAction.OnTypeChange(it)) },
+                onAmountChange = { onAction(RecordDetailsAction.OnAmountChange(it)) },
+                onConversionRateChange = { onAction(RecordDetailsAction.OnConversionRateChange(it)) },
+                onSelectAccountClick = { onAction(RecordDetailsAction.OnSelectAccountClick) },
+                onSelectTransferAccountClick = { onAction(RecordDetailsAction.OnSelectTransferAccountClick) },
+                onSelectCategoryClick = { onAction(RecordDetailsAction.OnSelectCategoryClick) },
+                onSelectDateTimeClick = { onAction(RecordDetailsAction.OnSelectDateTimeClick) },
+            )
+            RecordDetailsAdditionsSection(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(24.dp)
-            ) {
-                RecordDetailsMainSection(
-                    state = state,
-                    amountInputFocusRequester = amountInputFocusRequester,
-                    onTypeChange = { onAction(RecordDetailsAction.OnTypeChange(it)) },
-                    onAmountChange = { onAction(RecordDetailsAction.OnAmountChange(it)) },
-                    onConversionRateChange = { onAction(RecordDetailsAction.OnConversionRateChange(it)) },
-                    onSelectAccountClick = { onAction(RecordDetailsAction.OnSelectAccountClick) },
-                    onSelectTransferAccountClick = { onAction(RecordDetailsAction.OnSelectTransferAccountClick) },
-                    onSelectCategoryClick = { onAction(RecordDetailsAction.OnSelectCategoryClick) },
-                    onSelectDateTimeClick = { onAction(RecordDetailsAction.OnSelectDateTimeClick) },
-                )
-                RecordDetailsAdditionsSection(
-                    modifier = Modifier.fillMaxWidth(),
-                    labels = state.labels,
-                    descriptionState = state.descriptionInput,
-                    showSection = state.showAdditionsSection,
-                    receipts = state.receipts,
-                    onAddReceiptClick = { onAction(RecordDetailsAction.OnAddReceiptClick) },
-                    onViewReceiptClick = { onAction(RecordDetailsAction.OnViewReceiptClick(it)) },
-                    onDeleteReceiptClick = { onAction(RecordDetailsAction.OnDeleteReceiptClick(it)) },
-                    onDescriptionChange = { onAction(RecordDetailsAction.OnDescriptionChange(it)) },
-                    onSelectLabelClick = { onAction(RecordDetailsAction.OnSelectLabelsClick) },
-                    onLabelRemove = { onAction(RecordDetailsAction.OnLabelRemove(it)) },
-                    onVisibilityChange = { onAction(RecordDetailsAction.OnAdditionsSectionVisibilityChange(it)) },
-                )
-            }
+                labels = state.labels,
+                descriptionState = state.descriptionInput,
+                showSection = state.showAdditionsSection,
+                receipts = state.receipts,
+                onAddReceiptClick = { onAction(RecordDetailsAction.OnAddReceiptClick) },
+                onViewReceiptClick = { onAction(RecordDetailsAction.OnViewReceiptClick(it)) },
+                onDeleteReceiptClick = { onAction(RecordDetailsAction.OnDeleteReceiptClick(it)) },
+                onDescriptionChange = { onAction(RecordDetailsAction.OnDescriptionChange(it)) },
+                onSelectLabelClick = { onAction(RecordDetailsAction.OnSelectLabelsClick) },
+                onLabelRemove = { onAction(RecordDetailsAction.OnLabelRemove(it)) },
+                onVisibilityChange = { onAction(RecordDetailsAction.OnAdditionsSectionVisibilityChange(it)) },
+            )
         }
     }
 }

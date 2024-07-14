@@ -5,6 +5,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import java.math.BigDecimal
 import java.time.LocalDateTime
+import java.time.OffsetDateTime
 
 @Entity(
     tableName = "account",
@@ -23,7 +24,7 @@ class AccountEntity(
     val description: String,
     val startBalance: BigDecimal,
     val totalBalance: BigDecimal,
-    val createdAt: LocalDateTime,
+    val createdAt: OffsetDateTime,
 ) {
 
     class Update(

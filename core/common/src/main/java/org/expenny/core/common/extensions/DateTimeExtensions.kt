@@ -17,34 +17,3 @@ fun LocalDateTime.toDateString(): String = format(DateTimeFormatter.ofPattern(Co
 fun LocalDateTime.toTimeString(): String = format(DateTimeFormatter.ofPattern(Constants.DEFAULT_TIME_FORMAT))
 
 fun LocalDateTime.toDateTimeString(): String = format(DateTimeFormatter.ofPattern(Constants.DEFAULT_DATETIME_FORMAT))
-
-fun LocalDate.toQuarterRange(): LocalDateRange {
-    return LocalDateRange.ofClosed(
-        YearQuarter.of(year, get(IsoFields.QUARTER_OF_YEAR)).atDay(1),
-        YearQuarter.of(year, get(IsoFields.QUARTER_OF_YEAR)).atEndOfQuarter(),
-    )
-}
-
-fun LocalDate.toYearRange(): LocalDateRange {
-    return LocalDateRange.ofClosed(
-        with(TemporalAdjusters.firstDayOfYear()), with(TemporalAdjusters.lastDayOfYear())
-    )
-}
-
-fun LocalDate.toMonthRange(): LocalDateRange {
-    return LocalDateRange.ofClosed(
-        with(TemporalAdjusters.firstDayOfMonth()), with(TemporalAdjusters.lastDayOfMonth())
-    )
-}
-
-fun LocalDate.toWeekRange(): LocalDateRange {
-    return LocalDateRange.ofClosed(
-        with(DayOfWeek.MONDAY), with(DayOfWeek.SUNDAY)
-    )
-}
-
-fun LocalDate.toDayRange(): LocalDateRange {
-    return LocalDate.now().let {
-        LocalDateRange.ofClosed(it, it)
-    }
-}

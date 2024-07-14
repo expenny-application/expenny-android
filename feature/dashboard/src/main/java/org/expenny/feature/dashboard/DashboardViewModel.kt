@@ -16,7 +16,7 @@ import org.expenny.core.common.types.TransactionType
 import org.expenny.core.ui.base.ExpennyViewModel
 import org.expenny.core.domain.usecase.GetCurrencyAmountSumUseCase
 import org.expenny.core.domain.usecase.account.GetAccountsUseCase
-import org.expenny.core.domain.usecase.category.GetCategoryStatementsUseCase
+import org.expenny.core.domain.usecase.category.GetCategoriesStatementsUseCase
 import org.expenny.core.domain.usecase.currency.GetCurrencyUseCase
 import org.expenny.core.domain.usecase.currency.GetMainCurrencyUseCase
 import org.expenny.core.domain.usecase.record.GetRecordsUseCase
@@ -39,13 +39,14 @@ import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
 
 @HiltViewModel
-class DashboardViewModel @Inject constructor(
-    private val getCategoryStatements: GetCategoryStatementsUseCase,
+class
+DashboardViewModel @Inject constructor(
+    private val getCategoriesStatements: GetCategoriesStatementsUseCase,
     private val getCurrencyAmountSum: GetCurrencyAmountSumUseCase,
     private val getRecords: GetRecordsUseCase,
     private val getAccounts: GetAccountsUseCase,
     private val getMainCurrency: GetMainCurrencyUseCase,
-    private val getCurrencyUseCase: GetCurrencyUseCase,
+    private val getCurrency: GetCurrencyUseCase,
     private val expensesMapper: ExpensesMapper,
     private val accountNameMapper: AccountNameMapper,
     private val amountMapper: AmountMapper,
@@ -98,7 +99,7 @@ class DashboardViewModel @Inject constructor(
     }
 
     private fun handleOnDisplayCurrencySelect(action: DashboardAction.OnDisplayCurrencySelect) = intent {
-        handleOnDisplayCurrencySelect(getCurrencyUseCase(GetCurrencyUseCase.Params(action.id)).first()!!)
+        handleOnDisplayCurrencySelect(getCurrency(GetCurrencyUseCase.Params(action.id)).first()!!)
     }
 
     private fun handleOnDisplayCurrencySelect(currency: Currency) = intent {
@@ -151,6 +152,7 @@ class DashboardViewModel @Inject constructor(
         when (action.widget) {
             DashboardWidgetType.Accounts -> postSideEffect(DashboardEvent.NavigateToAccounts)
             DashboardWidgetType.Records -> postSideEffect(DashboardEvent.NavigateToRecords())
+            DashboardWidgetType.Budgets -> postSideEffect(DashboardEvent.NavigateToBudgets)
             else -> {
                 // TODO
             }
@@ -237,12 +239,10 @@ class DashboardViewModel @Inject constructor(
             ) { accountIds, periodType, currency ->
                 Triple(accountIds, periodType, currency)
             }.flatMapLatest { (accountIds, periodType, currency) ->
-                getCategoryStatements(
-                    GetCategoryStatementsUseCase.Params(
-                        accountIds = accountIds,
-                        dateTimeRange = periodType.dateTimeRange(),
-                        transactionType = TransactionType.Outgoing
-                    )
+                getCategoriesStatements(
+                    accountIds = accountIds,
+                    dateTimeRange = periodType.dateTimeRange(),
+                    transactionType = TransactionType.Outgoing
                 ).map { statements ->
                     val convertedStatements = statements.map {
                         val amount = it.amount.convertTo(currency).abs()

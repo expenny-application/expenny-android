@@ -7,6 +7,9 @@ import org.expenny.feature.accounts.destinations.AccountDetailsScreenDestination
 import org.expenny.feature.accounts.destinations.AccountTypeScreenDestination
 import org.expenny.feature.accounts.destinations.AccountsListScreenDestination
 import org.expenny.feature.analytics.destinations.AnalyticsScreenDestination
+import org.expenny.feature.budgets.destinations.BudgetLimitDetailsScreenDestination
+import org.expenny.feature.budgets.destinations.BudgetOverviewScreenDestination
+import org.expenny.feature.budgets.destinations.BudgetsListScreenDestination
 import org.expenny.feature.categories.destinations.CategoriesListScreenDestination
 import org.expenny.feature.categories.destinations.CategoryDetailsScreenDestination
 import org.expenny.feature.currencies.destinations.CurrenciesListScreenDestination
@@ -44,17 +47,22 @@ object ExpennyNavGraphs {
             CategoriesListScreenDestination,
             CategoryDetailsScreenDestination,
             InstitutionsListScreenDestination,
-            InstitutionRequisitionScreenDestination
+            InstitutionRequisitionScreenDestination,
+            BudgetsListScreenDestination,
+            BudgetOverviewScreenDestination,
+            BudgetLimitDetailsScreenDestination,
         ).routedIn(this).associateBy { it.route }
     }
 
     val budgets = object: NavGraphSpec {
         override val route = "budgets"
 
-        override val startRoute = AnalyticsScreenDestination routedIn this
+        override val startRoute = BudgetsListScreenDestination routedIn this
 
         override val destinationsByRoute = listOf<DestinationSpec<*>>(
-
+            BudgetsListScreenDestination,
+            BudgetOverviewScreenDestination,
+            BudgetLimitDetailsScreenDestination
         ).routedIn(this).associateBy { it.route }
     }
 
@@ -72,26 +80,6 @@ object ExpennyNavGraphs {
             CurrencyDetailsScreenDestination,
             InstitutionsListScreenDestination,
             InstitutionRequisitionScreenDestination
-        ).routedIn(this).associateBy { it.route }
-    }
-
-    val debts = object: NavGraphSpec {
-        override val route = "debts"
-
-        override val startRoute = AnalyticsScreenDestination routedIn this
-
-        override val destinationsByRoute = listOf<DestinationSpec<*>>(
-
-        ).routedIn(this).associateBy { it.route }
-    }
-
-    val rates = object: NavGraphSpec {
-        override val route = "rates"
-
-        override val startRoute = AnalyticsScreenDestination routedIn this
-
-        override val destinationsByRoute = listOf<DestinationSpec<*>>(
-
         ).routedIn(this).associateBy { it.route }
     }
 
@@ -152,7 +140,9 @@ object ExpennyNavGraphs {
             dashboard,
             records,
             accounts,
-            settings
+            settings,
+            analytics,
+            budgets
         )
     }
 
@@ -199,11 +189,9 @@ object ExpennyNavGraphs {
         auth,
         dashboard,
         analytics,
-        records,
         budgets,
+        records,
         accounts,
-        debts,
         settings,
-        rates
     )
 }

@@ -16,7 +16,7 @@ interface CategoryDao {
 
     @Transaction
     @Query("SELECT * FROM category WHERE category.categoryId = :id")
-    suspend fun selectById(id: Long): CategoryEmbedded?
+    fun selectById(id: Long): Flow<CategoryEmbedded?>
 
     @Transaction
     @Query("SELECT * FROM category")

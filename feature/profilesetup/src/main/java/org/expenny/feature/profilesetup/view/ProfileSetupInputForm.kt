@@ -42,13 +42,11 @@ internal fun ProfileSetupInputForm(
             state = state.nameInput,
             onValueChange = onNameChange
         )
-
         SelectCurrencyInputField(
             modifier = Modifier.fillMaxWidth(),
             state = state.selectCurrencyInput,
             onClick = onSelectCurrencyClick
         )
-
         ExpennyExpandableContent(
             isExpanded = state.showSetupCashBalanceInputs,
             content = {

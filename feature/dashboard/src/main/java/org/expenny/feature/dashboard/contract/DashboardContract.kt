@@ -43,4 +43,5 @@ sealed interface DashboardEvent {
     class NavigateToRecords(val filter: RecordsListFilterNavArg? = null) : DashboardEvent
     class NavigateToCreateRecord(val recordType: RecordType) : DashboardEvent
     object NavigateToAccounts : DashboardEvent
+    object NavigateToBudgets : DashboardEvent
 }

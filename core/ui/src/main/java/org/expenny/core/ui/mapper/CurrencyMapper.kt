@@ -1,7 +1,7 @@
 package org.expenny.core.ui.mapper
 
 import org.expenny.core.common.extensions.join
-import org.expenny.core.common.extensions.toCurrencyAmountString
+import org.expenny.core.common.extensions.toMonetaryString
 import org.expenny.core.model.currency.Currency
 import org.expenny.core.ui.data.AmountUi
 import org.expenny.core.ui.data.CurrencyUi
@@ -19,7 +19,7 @@ class CurrencyMapper @Inject constructor() {
                 preview = unit.code.join(unit.name),
                 rate = AmountUi(
                     value = quoteToBaseRate,
-                    displayValue = "${quoteToBaseRate.toCurrencyAmountString()} ${profile.currencyUnit.code}",
+                    displayValue = "${quoteToBaseRate.toMonetaryString()} ${profile.currencyUnit.code}",
                 )
             )
         }

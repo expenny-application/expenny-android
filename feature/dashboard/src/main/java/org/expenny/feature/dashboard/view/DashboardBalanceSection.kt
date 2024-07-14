@@ -68,7 +68,7 @@ private fun DashboardBalanceHeading(
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         AnimatedContent(
-            targetState = balance?.displayValue ?: stringResource(R.string.na_label),
+            targetState = balance?.displayValue ?: stringResource(R.string.not_assigned_label),
             transitionSpec = { fadeIn() with fadeOut() },
             label = "DashboardBalanceHeading"
         ) {

@@ -117,6 +117,7 @@ dependencies {
     implementation(project(":feature:settings"))
     implementation(project(":feature:passcode"))
     implementation(project(":feature:institution"))
+    implementation(project(":feature:budgets"))
 
     implementation("androidx.constraintlayout:constraintlayout:2.1.3")
 

@@ -4,6 +4,7 @@ import androidx.room.withTransaction
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.map
 import org.expenny.core.common.extensions.mapFlatten
 import org.expenny.core.data.mapper.DataMapper.toEntity
 import org.expenny.core.data.mapper.DataMapper.toModel
@@ -31,8 +32,8 @@ class CategoryRepositoryImpl @Inject constructor(
         }.mapFlatten { toModel() }
     }
 
-    override suspend fun getCategory(id: Long): Category? {
-        return categoryDao.selectById(id)?.toModel()
+    override fun getCategory(id: Long): Flow<Category?> {
+        return categoryDao.selectById(id).map { it?.toModel() }
     }
 
     override suspend fun deleteCategory(id: Long) {

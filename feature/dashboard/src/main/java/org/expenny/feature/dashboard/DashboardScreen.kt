@@ -50,6 +50,9 @@ fun DashboardScreen(
             is DashboardEvent.NavigateToAccounts -> {
                 navigator.navigateToAccountsListScreen()
             }
+            is DashboardEvent.NavigateToBudgets -> {
+                navigator.navigateToBudgetsListScreen()
+            }
             is DashboardEvent.NavigateToRecords -> {
                 navigator.navigateToRecordsListScreen(it.filter)
             }

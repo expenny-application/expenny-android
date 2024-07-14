@@ -9,7 +9,7 @@ interface CategoryRepository {
 
     fun getCategories(): Flow<List<Category>>
 
-    suspend fun getCategory(id: Long): Category?
+    fun getCategory(id: Long): Flow<Category?>
 
     suspend fun deleteCategory(id: Long)
 

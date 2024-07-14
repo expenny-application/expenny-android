@@ -1,15 +1,22 @@
 package org.expenny.core.data.mapper
 
 import org.expenny.core.common.extensions.invert
+import org.expenny.core.common.extensions.toLocalDateTimeSystemDefault
+import org.expenny.core.common.extensions.toOffsetDateTimeSystemDefault
+import org.expenny.core.common.types.IntervalType
 import org.expenny.core.common.types.LocalAccountType
 import org.expenny.core.common.types.RecordType
 import org.expenny.core.common.types.TransactionType
 import org.expenny.core.common.utils.Constants.CURRENCY_RATE_SCALE
 import org.expenny.core.database.model.embedded.AccountEmbedded
+import org.expenny.core.database.model.embedded.BudgetGroupEmbedded
+import org.expenny.core.database.model.embedded.BudgetEmbedded
 import org.expenny.core.database.model.embedded.CategoryEmbedded
 import org.expenny.core.database.model.embedded.RecordEmbedded
 import org.expenny.core.database.model.embedded.SettlementCurrencyEmbedded
 import org.expenny.core.database.model.entity.AccountEntity
+import org.expenny.core.database.model.entity.BudgetGroupEntity
+import org.expenny.core.database.model.entity.BudgetEntity
 import org.expenny.core.database.model.entity.CategoryEntity
 import org.expenny.core.database.model.entity.FileEntity
 import org.expenny.core.database.model.entity.ProfileEntity
@@ -18,6 +25,11 @@ import org.expenny.core.database.model.entity.SettlementCurrencyEntity
 import org.expenny.core.model.account.Account
 import org.expenny.core.model.account.AccountCreate
 import org.expenny.core.model.account.AccountUpdate
+import org.expenny.core.model.budgetgroup.BudgetGroup
+import org.expenny.core.model.budgetgroup.BudgetGroupCreate
+import org.expenny.core.model.budget.Budget
+import org.expenny.core.model.budget.BudgetCreate
+import org.expenny.core.model.budget.BudgetUpdate
 import org.expenny.core.model.category.Category
 import org.expenny.core.model.category.CategoryCreate
 import org.expenny.core.model.category.CategoryUpdate
@@ -36,7 +48,7 @@ import org.expenny.core.model.record.Record
 import org.expenny.core.model.record.RecordCreate
 import org.expenny.core.network.dto.GoCardlessInstitutionDto
 import org.expenny.core.network.dto.GoCardlessRequisitionDto
-import java.time.LocalDateTime
+import java.time.OffsetDateTime
 
 object DataMapper {
 
@@ -56,7 +68,7 @@ object DataMapper {
                 currency = accountCurrency.toModel(),
                 amountValue = account.totalBalance
             ),
-            createdAt = account.createdAt
+            createdAt = account.createdAt.toLocalDateTimeSystemDefault()
         )
     }
 
@@ -66,6 +78,38 @@ object DataMapper {
             name = name,
             currencyUnit = java.util.Currency.getInstance(currencyCode).toModel()
         )
+    }
+
+    internal fun BudgetEmbedded.toModel(): Budget {
+        return Budget(
+            id = budget.budgetId,
+            profile = profile.toModel(),
+            category = category.toModel(),
+            limitValue = budget.limitValue,
+            startDate = budget.startDate,
+            endDate = budget.endDate,
+        )
+    }
+
+    internal fun BudgetGroupEmbedded.toModel(): BudgetGroup {
+        return if (group.intervalType != null) {
+            BudgetGroup.Periodic(
+                id = group.budgetGroupId,
+                profile = profile.toModel(),
+                currency = currency.toModel(),
+                intervalType = IntervalType.valueOf(group.intervalType!!),
+                budgets = budgets.map { it.toModel() }
+            )
+        } else {
+            BudgetGroup.Onetime(
+                id = group.budgetGroupId,
+                profile = profile.toModel(),
+                currency = currency.toModel(),
+                name = group.name!!,
+                dateRange = group.dateRange!!,
+                budgets = budgets.map { it.toModel() }
+            )
+        }
     }
 
     internal fun SettlementCurrencyEmbedded.toModel(): Currency {
@@ -82,7 +126,7 @@ object DataMapper {
             quoteToBaseRate = quoteToBaseRate,
             isMain = currencyProfile.currencyCode == currency.code,
             isSubscribedToUpdates = currency.isSubscribedToRateUpdates,
-            updatedAt = currency.updatedAt
+            updatedAt = currency.updatedAt.toLocalDateTimeSystemDefault()
         )
     }
 
@@ -116,7 +160,7 @@ object DataMapper {
                     labels = record.labels,
                     attachments = attachments.map { it.file.uri },
                     description = record.description,
-                    date = record.date,
+                    date = record.date.toLocalDateTimeSystemDefault(),
                     type = TransactionType.Outgoing,
                     amount = CurrencyAmount(
                         currency = account.accountCurrency.toModel(),
@@ -133,7 +177,7 @@ object DataMapper {
                     labels = record.labels,
                     attachments = attachments.map { it.file.uri },
                     description = record.description,
-                    date = record.date,
+                    date = record.date.toLocalDateTimeSystemDefault(),
                     type = TransactionType.Incoming,
                     amount = CurrencyAmount(
                         currency = account.accountCurrency.toModel(),
@@ -150,7 +194,7 @@ object DataMapper {
                     labels = record.labels,
                     attachments = attachments.map { it.file.uri },
                     description = record.description,
-                    date = record.date,
+                    date = record.date.toLocalDateTimeSystemDefault(),
                     amount = CurrencyAmount(
                         currency = account.accountCurrency.toModel(),
                         amountValue = record.amount
@@ -193,6 +237,34 @@ object DataMapper {
         )
     }
 
+    internal fun BudgetCreate.toEntity(): BudgetEntity {
+        return BudgetEntity(
+            profileId = profileId,
+            categoryId = categoryId,
+            limitValue = limitValue,
+            startDate = startDate,
+            endDate = endDate,
+        )
+    }
+
+    internal fun BudgetUpdate.toEntity(): BudgetEntity.Update {
+        return BudgetEntity.Update(
+            budgetId = id,
+            limitValue = limitValue,
+            endDate = endDate,
+        )
+    }
+
+    internal fun BudgetGroupCreate.toEntity(): BudgetGroupEntity {
+        return BudgetGroupEntity(
+            profileId = profileId,
+            currencyId = currencyId,
+            name = name,
+            intervalType = intervalType?.name,
+            dateRange = dateRange
+        )
+    }
+
     internal fun AccountCreate.toEntity(): AccountEntity {
         return AccountEntity(
             profileId = profileId,
@@ -202,7 +274,7 @@ object DataMapper {
             description = description,
             startBalance = startBalance,
             totalBalance = totalBalance,
-            createdAt = LocalDateTime.now(),
+            createdAt = OffsetDateTime.now(),
         )
     }
 
@@ -224,7 +296,7 @@ object DataMapper {
                     amount = amount,
                     description = description,
                     labels = labels,
-                    date = date,
+                    date = date.toOffsetDateTimeSystemDefault(),
                 )
             }
             is RecordCreate.Transfer -> {
@@ -235,7 +307,7 @@ object DataMapper {
                     amount = amount,
                     description = description,
                     labels = labels,
-                    date = date,
+                    date = date.toOffsetDateTimeSystemDefault(),
                     transferAccountId = transferAccountId,
                     transferAmount = transferAmount,
                 )
@@ -249,7 +321,7 @@ object DataMapper {
             code = code,
             baseToQuoteRate = baseToQuoteRate,
             isSubscribedToRateUpdates = isSubscribedToRateUpdates,
-            updatedAt = LocalDateTime.now()
+            updatedAt = OffsetDateTime.now()
         )
     }
 

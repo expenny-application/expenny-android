@@ -105,7 +105,7 @@ private fun DashboardExpensesHeading(
         }
     }
     val expensesTitle = buildAnnotatedString {
-        append(expensesAmount?.displayValue ?: stringResource(R.string.na_label))
+        append(expensesAmount?.displayValue ?: stringResource(R.string.not_assigned_label))
         expensesPercentage?.let {
             withStyle(
                 MaterialTheme.typography.bodyMedium
@@ -271,7 +271,7 @@ private fun DashboardExpensesChartLegendItem(entry: ExpensesUi?) {
                 .background(entry?.color ?: MaterialTheme.colorScheme.outlineVariant)
         )
         Text(
-            text = entry?.label ?: stringResource(R.string.na_label),
+            text = entry?.label ?: stringResource(R.string.not_assigned_label),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )

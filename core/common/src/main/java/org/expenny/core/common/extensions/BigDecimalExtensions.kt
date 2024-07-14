@@ -16,7 +16,7 @@ fun BigDecimal.setScaleRoundingDown(scale: Int): BigDecimal {
     return setScale(scale, RoundingMode.DOWN)
 }
 
-fun BigDecimal.toCurrencyAmountString(): String {
+fun BigDecimal.toMonetaryString(): String {
     val formatter = NumberFormat.getCurrencyInstance(Locale.getDefault())
     val decimalFormatSymbols = (formatter as DecimalFormat).decimalFormatSymbols
 

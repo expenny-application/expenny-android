@@ -73,7 +73,7 @@
     <string name="show_more_label">Показать больше</string>
     <string name="more_label">Больше</string>
     <string name="edit_label">Редактировать</string>
-    <string name="na_label">N/A</string>
+    <string name="not_assigned_label">N/A</string>
     <string name="no_fees_label">Без комиссий</string>
     <string name="no_description_label">Без описания</string>
     <string name="accounts_label">Счета</string>

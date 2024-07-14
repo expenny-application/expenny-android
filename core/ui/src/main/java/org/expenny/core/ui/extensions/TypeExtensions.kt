@@ -9,11 +9,12 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import org.expenny.core.common.types.AccountTrendType
 import org.expenny.core.common.types.AccountType
-import org.expenny.core.common.types.LocalAccountType
 import org.expenny.core.common.types.ApplicationLanguage
 import org.expenny.core.common.types.ApplicationTheme
+import org.expenny.core.common.types.BudgetType
 import org.expenny.core.common.types.DashboardWidgetType
 import org.expenny.core.common.types.IntervalType
+import org.expenny.core.common.types.LocalAccountType
 import org.expenny.core.common.types.PeriodType
 import org.expenny.core.common.types.ProfileActionType
 import org.expenny.core.common.types.RecordActionType
@@ -105,6 +106,15 @@ val RecordType.labelResId: Int
     }
 
 val RecordType.label: String
+    @Composable get() = stringResource(labelResId)
+
+val BudgetType.labelResId: Int
+    @StringRes get() = when (this) {
+        BudgetType.Periodic -> R.string.periodic_label
+        BudgetType.Onetime -> R.string.onetime_label
+    }
+
+val BudgetType.label: String
     @Composable get() = stringResource(labelResId)
 
 val SortType.label: String

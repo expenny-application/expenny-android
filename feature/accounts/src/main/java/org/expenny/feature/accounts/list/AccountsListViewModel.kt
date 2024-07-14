@@ -43,7 +43,7 @@ class AccountsListViewModel @Inject constructor(
 ) : ExpennyViewModel<AccountsListAction>(), ContainerHost<AccountsListState, AccountsListEvent> {
 
     private var selectionResultCode: Int = 0
-    private var excludeIds: LongArray = LongArray(0)
+    private var excludeIds: LongArray = savedStateHandle.navArgs<AccountsListNavArgs>().excludeIds ?: longArrayOf()
 
     override val container = container<AccountsListState, AccountsListEvent>(
         initialState = AccountsListState(),
@@ -126,8 +126,6 @@ class AccountsListViewModel @Inject constructor(
 
     private fun setupInitialState() = intent {
         savedStateHandle.navArgs<AccountsListNavArgs>().also { args ->
-            excludeIds = args.excludeIds ?: longArrayOf()
-
             if (args.selection != null) {
                 selectionResultCode = args.selection.resultCode
 

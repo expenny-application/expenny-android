@@ -31,6 +31,8 @@ class CategoriesListViewModel @Inject constructor(
     private val categoryMapper: CategoryMapper
 ) : ExpennyViewModel<CategoriesListAction>(), ContainerHost<CategoriesListState, CategoriesListEvent> {
 
+    private var excludeIds: LongArray = savedStateHandle.navArgs<CategoriesListNavArgs>().excludeIds ?: longArrayOf()
+
     override val container = container<CategoriesListState, CategoriesListEvent>(
         initialState = CategoriesListState(),
         buildSettings = { exceptionHandler = defaultCoroutineExceptionHandler() }
@@ -67,9 +69,10 @@ class CategoriesListViewModel @Inject constructor(
 
     private fun subscribeToCategories() = intent {
         repeatOnSubscription {
-            getCategories().collect {
+            getCategories().collect { categories ->
+                val filteredCategories = categories.filter { it.id !in excludeIds }
                 reduce {
-                    state.copy(categories = categoryMapper(it))
+                    state.copy(categories = categoryMapper(filteredCategories))
                 }
             }
         }

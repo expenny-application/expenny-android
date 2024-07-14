@@ -86,7 +86,7 @@ internal fun RecordsListContent(
             ExpennyDateRangeFilter(
                 modifier = Modifier.navigationBarsPadding(),
                 isVisible = lazyListState.isScrollingUp() && !state.isSelectionMode,
-                currentDateRange = state.intervalState.dateRange,
+                dateRange = state.intervalState.dateRange,
                 onClick = { onAction(RecordsListAction.OnSelectIntervalTypeClick) },
                 onPreviousDateRangeClick = { onAction(RecordsListAction.OnPreviousIntervalClick) },
                 onNextDateRangeClick = { onAction(RecordsListAction.OnNextIntervalClick) }
