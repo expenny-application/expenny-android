@@ -19,18 +19,7 @@ data class BudgetOverviewState(
     val overview: BudgetGroupUi = BudgetGroupUi(),
     val intervalTypeState: IntervalTypeStateReducer.State = IntervalTypeStateReducer.State(),
     val accountsFilterState: AccountsFilterStateReducer.State = AccountsFilterStateReducer.State(),
-) {
-
-    val toolbarTitle: StringResource
-        get() = when (intervalTypeState.intervalType) {
-            IntervalType.Day -> StringResource.fromArrayRes(R.array.budget_period_type, 0)
-            IntervalType.Week -> StringResource.fromArrayRes(R.array.budget_period_type, 1)
-            IntervalType.Month -> StringResource.fromArrayRes(R.array.budget_period_type, 2)
-            IntervalType.Quarter -> StringResource.fromArrayRes(R.array.budget_period_type, 3)
-            IntervalType.Year -> StringResource.fromArrayRes(R.array.budget_period_type, 4)
-            else -> StringResource.empty()
-        }
-}
+)
 
 sealed interface BudgetOverviewAction {
     class OnDisplayCurrencySelect(val id: Long) : BudgetOverviewAction

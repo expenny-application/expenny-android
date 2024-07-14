@@ -17,7 +17,7 @@ import org.expenny.core.common.types.IntervalType
 import org.expenny.core.common.types.LocalAccountType
 import org.expenny.core.common.types.PeriodType
 import org.expenny.core.common.types.ProfileActionType
-import org.expenny.core.common.types.RecordActionType
+import org.expenny.core.common.types.ItemActionType
 import org.expenny.core.common.types.RecordType
 import org.expenny.core.common.types.RecordsFilterType
 import org.expenny.core.common.types.SortType
@@ -126,18 +126,22 @@ val SortType.label: String
         }
     )
 
-val RecordActionType.label: String
+val ItemActionType.label: String
     @Composable get() = when (this) {
-        RecordActionType.Select -> stringResource(R.string.select_label)
-        RecordActionType.Edit -> stringResource(R.string.edit_label)
-        RecordActionType.Delete -> stringResource(R.string.delete_label)
+        ItemActionType.Select -> stringResource(R.string.select_label)
+        ItemActionType.Edit -> stringResource(R.string.edit_label)
+        ItemActionType.Delete -> stringResource(R.string.delete_label)
+        ItemActionType.Share -> stringResource(R.string.share_label)
+        ItemActionType.View -> stringResource(R.string.view_label)
     }
 
-val RecordActionType.icon: Painter
+val ItemActionType.icon: Painter
     @Composable get() = when (this) {
-        RecordActionType.Select -> painterResource(R.drawable.ic_check)
-        RecordActionType.Edit -> painterResource(R.drawable.ic_edit)
-        RecordActionType.Delete -> painterResource(R.drawable.ic_delete)
+        ItemActionType.Select -> painterResource(R.drawable.ic_check)
+        ItemActionType.Edit -> painterResource(R.drawable.ic_edit)
+        ItemActionType.Delete -> painterResource(R.drawable.ic_delete)
+        ItemActionType.Share -> painterResource(R.drawable.ic_share)
+        ItemActionType.View -> painterResource(R.drawable.ic_view)
     }
 
 val ProfileActionType.icon

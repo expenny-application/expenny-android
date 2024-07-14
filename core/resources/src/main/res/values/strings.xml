@@ -55,6 +55,7 @@
     <string name="select_label">Select</string>
     <string name="selected_label">%1$d Selected</string>
     <string name="clone_label">Clone</string>
+    <string name="view_label">View</string>
     <string name="share_label">Share</string>
     <string name="delete_label">Delete</string>
     <string name="sort_by_label">Sort by</string>
@@ -95,6 +96,7 @@
     <string name="delete_category_question_label">Delete category?</string>
     <string name="delete_receipt_question_label">Delete receipt?</string>
     <string name="delete_currency_question_label">Delete currency?</string>
+    <string name="delete_budget_question_label">Delete budget?</string>
     <string name="delete_budget_limit_question_label">Delete budget limit?</string>
     <string name="amount_conversion_label">Amount conversion</string>
     <string name="transfers_label">Transfers</string>
@@ -160,6 +162,7 @@
     <string name="main_label">Main</string>
     <string name="rates_label">Rates</string>
     <string name="amount_to_receive_label">Amount to receive: %1$s</string>
+    <string name="periodic_budget_label">%1$s budget</string>
     <string name="spent_label">%1$s spent</string>
     <string name="left_label">%1$s left</string>
     <string name="amount_label">Amount</string>

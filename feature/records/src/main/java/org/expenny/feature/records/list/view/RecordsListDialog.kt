@@ -7,14 +7,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import org.expenny.core.common.types.RecordActionType
+import org.expenny.core.common.types.ItemActionType
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennyBottomSheet
-import org.expenny.core.ui.extensions.icon
-import org.expenny.core.ui.extensions.label
+import org.expenny.core.ui.components.ExpennyDialog
 import org.expenny.core.ui.components.ExpennyMultiSelectionDialog
 import org.expenny.core.ui.components.ExpennySingleSelectionDialog
-import org.expenny.core.ui.components.ExpennyDialog
+import org.expenny.core.ui.extensions.icon
+import org.expenny.core.ui.extensions.label
 import org.expenny.feature.records.list.contract.RecordsListAction
 import org.expenny.feature.records.list.contract.RecordsListState
 
@@ -31,6 +31,7 @@ internal fun RecordsDialog(
             RecordActionsSheet(
                 scope = scope,
                 actionsSheetState = recordActionsDialogState,
+                actions = dialog.actions,
                 onActionSelect = { onDialogAction(RecordsListAction.Dialog.OnRecordActionSelect(it)) },
                 onDismiss = { onDialogAction(RecordsListAction.Dialog.OnDialogDismiss) }
             )
@@ -126,7 +127,8 @@ private fun RecordActionsSheet(
     modifier: Modifier = Modifier,
     scope: CoroutineScope,
     actionsSheetState: SheetState,
-    onActionSelect: (RecordActionType) -> Unit,
+    actions: List<ItemActionType>,
+    onActionSelect: (ItemActionType) -> Unit,
     onDismiss: () -> Unit
 ) {
     ExpennyBottomSheet(
@@ -134,7 +136,7 @@ private fun RecordActionsSheet(
         onDismiss = onDismiss,
         sheetState = actionsSheetState,
         actions = {
-            RecordActionType.entries.forEach { action ->
+            actions.forEach { action ->
                 BottomSheetAction(
                     icon = action.icon,
                     text = action.label,
@@ -148,4 +150,3 @@ private fun RecordActionsSheet(
         }
     )
 }
-

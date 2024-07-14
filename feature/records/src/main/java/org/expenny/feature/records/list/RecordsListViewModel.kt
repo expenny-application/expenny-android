@@ -13,7 +13,7 @@ import org.expenny.core.common.models.StringResource.Companion.fromArrayRes
 import org.expenny.core.common.types.RecordType
 import org.expenny.core.common.models.StringResource.Companion.fromRes
 import org.expenny.core.common.types.IntervalType
-import org.expenny.core.common.types.RecordActionType
+import org.expenny.core.common.types.ItemActionType
 import org.expenny.core.common.types.RecordsFilterType
 import org.expenny.core.ui.base.ExpennyViewModel
 import org.expenny.core.domain.usecase.GetCurrencyAmountSumUseCase
@@ -192,7 +192,7 @@ class RecordsListViewModel @Inject constructor(
     private fun handleOnRecordLongClick(action: RecordsListAction.OnRecordLongClick) = intent {
         reduce {
             selectedRecordId = action.id
-            state.copy(dialog = RecordsListState.Dialog.RecordActionsDialog)
+            state.copy(dialog = RecordsListState.Dialog.RecordActionsDialog())
         }
     }
 
@@ -201,18 +201,19 @@ class RecordsListViewModel @Inject constructor(
 
         intent {
             when (action.action) {
-                RecordActionType.Delete -> {
+                ItemActionType.Delete -> {
                     reduce { state.copy(dialog = RecordsListState.Dialog.DeleteRecordDialog) }
                 }
-                RecordActionType.Edit -> {
+                ItemActionType.Edit -> {
                     postSideEffect(RecordsListEvent.NavigateToEditRecord(selectedRecordId!!))
                     resetSelectedRecord()
                 }
-                RecordActionType.Select -> {
+                ItemActionType.Select -> {
                     reduce { state.copy(isSelectionMode = true) }
                     handleOnRecordClick(RecordsListAction.OnRecordClick(selectedRecordId!!))
                     resetSelectedRecord()
                 }
+                else -> {}
             }
         }
     }

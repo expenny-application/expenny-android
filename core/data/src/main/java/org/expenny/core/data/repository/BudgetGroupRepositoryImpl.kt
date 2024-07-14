@@ -4,6 +4,7 @@ import androidx.room.withTransaction
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import org.expenny.core.common.extensions.mapFlatten
 import org.expenny.core.data.mapper.DataMapper.toEntity
@@ -20,8 +21,9 @@ class BudgetGroupRepositoryImpl @Inject constructor(
     private val database: ExpennyDatabase,
     private val preferences: ExpennyDataStore
 ): BudgetGroupRepository {
+    private val budgetDao = database.budgetDao()
     private val budgetGroupDao = database.budgetGroupDao()
-    private val budgetGroupLimitDao = database.budgetGroupBudgetDao()
+    private val budgetGroupBudgetDao = database.budgetGroupBudgetDao()
 
     override fun getBudgetGroups(): Flow<List<BudgetGroup>> {
         return combine(
@@ -46,7 +48,10 @@ class BudgetGroupRepositoryImpl @Inject constructor(
 
     override suspend fun deleteBudgetGroup(id: Long) {
         database.withTransaction {
-            budgetGroupLimitDao.deleteByBudgetGroupId(id)
+            budgetGroupBudgetDao.selectAllByBudgetGroupId(id).first().map { it.budgetId }.let { budgetIds ->
+                budgetDao.deleteByIds(*budgetIds.toLongArray())
+            }
+            budgetGroupBudgetDao.deleteByBudgetGroupId(id)
             budgetGroupDao.deleteById(id)
         }
     }

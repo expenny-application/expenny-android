@@ -172,7 +172,7 @@ class BudgetOverviewViewModel @Inject constructor(
     private fun subscribeToBudget() = intent {
         combine(
             intervalTypeReducer.stateFlow,
-            accountsFilterReducer.stateFlow
+            accountsFilterReducer.stateFlow,
         ) { intervalTypeState, accountsFilterState ->
             intervalTypeState to accountsFilterState
         }.flatMapLatest { (intervalTypeState, accountsFilterState) ->

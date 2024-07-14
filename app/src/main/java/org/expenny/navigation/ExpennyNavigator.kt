@@ -300,18 +300,17 @@ class ExpennyNavigator(
         )
     }
 
-    override fun navigateToPeriodicBudgetOverviewScreen(id: Long, intervalType: IntervalType, budgetType: BudgetType) {
+    override fun navigateToBudgetOverviewScreen(id: Long, intervalType: IntervalType?) {
         navController.navigate(
             direction = BudgetOverviewScreenDestination(
                 budgetGroupId = id,
                 intervalType = intervalType,
-                budgetType = budgetType
             ) within navGraph
         )
     }
 
     override fun navigateToCreateOnetimeBudgetScreen() {
-
+        // TODO
     }
 
     override fun restartApplication(isDataCleanupRequested: Boolean) {

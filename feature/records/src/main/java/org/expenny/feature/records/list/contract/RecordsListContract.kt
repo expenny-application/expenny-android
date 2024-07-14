@@ -2,7 +2,7 @@ package org.expenny.feature.records.list.contract
 
 import org.expenny.core.common.models.StringResource
 import org.expenny.core.common.types.IntervalType
-import org.expenny.core.common.types.RecordActionType
+import org.expenny.core.common.types.ItemActionType
 import org.expenny.core.common.types.RecordType
 import org.expenny.core.common.types.RecordsFilterType
 import org.expenny.core.ui.data.ItemUi
@@ -23,7 +23,12 @@ data class RecordsListState(
 ) {
     sealed interface Dialog {
         data object DeleteRecordDialog : Dialog
-        data object RecordActionsDialog : Dialog
+
+        data class RecordActionsDialog(
+            val actions: List<ItemActionType> = listOf(
+                ItemActionType.Select, ItemActionType.Edit, ItemActionType.Delete
+            )
+        ) : Dialog
 
         data class IntervalTypesDialog(
             val data: List<ItemUi<IntervalType>>,
@@ -55,7 +60,7 @@ data class RecordsListState(
 sealed interface RecordsListAction {
     sealed interface Dialog : RecordsListAction {
         class OnIntervalTypeSelect(val selection: SingleSelectionUi<IntervalType>) : Dialog
-        class OnRecordActionSelect(val action: RecordActionType) : Dialog
+        class OnRecordActionSelect(val action: ItemActionType) : Dialog
         class OnAccountsSelect(val selection: MultiSelectionUi<Long>) : Dialog
         class OnLabelsSelect(val selection: MultiSelectionUi<Int>) : Dialog
         class OnCategoriesSelect(val selection: MultiSelectionUi<Long>) : Dialog

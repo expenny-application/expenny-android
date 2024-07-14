@@ -21,9 +21,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -33,6 +36,7 @@ import org.expenny.core.ui.components.ExpennyAccountsFilter
 import org.expenny.core.ui.components.ExpennyCard
 import org.expenny.core.ui.components.ExpennyDateRangeFilter
 import org.expenny.core.ui.components.ExpennyMessage
+import org.expenny.core.ui.components.ExpennyVerticalListPaddingValues
 import org.expenny.core.ui.data.BudgetUi
 import org.expenny.core.ui.extensions.asRawString
 import org.expenny.core.ui.extensions.isScrollingUp
@@ -48,6 +52,12 @@ internal fun BudgetOverviewContent(
     onAction: (BudgetOverviewAction) -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val toolbarTitle by rememberUpdatedState(
+        newValue = stringResource(
+            R.string.periodic_budget_label,
+            stringArrayResource(R.array.budget_period_type)[state.intervalTypeState.intervalType.ordinal]
+        )
+    )
 
     Scaffold(
         modifier = Modifier
@@ -56,7 +66,7 @@ internal fun BudgetOverviewContent(
         topBar = {
             BudgetOverviewToolbar(
                 scrollBehavior = scrollBehavior,
-                title  = state.toolbarTitle.asRawString(),
+                title= toolbarTitle,
                 displayCurrency = state.displayCurrency,
                 onDisplayCurrencyClick = { onAction(BudgetOverviewAction.OnDisplayCurrencyClick) },
                 onBackClick = { onAction(BudgetOverviewAction.OnBackClick) }
@@ -79,9 +89,9 @@ internal fun BudgetOverviewContent(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .padding(16.dp),
+                .padding(paddingValues),
             state = listState,
+            contentPadding = ExpennyVerticalListPaddingValues,
             verticalArrangement = Arrangement.spacedBy(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

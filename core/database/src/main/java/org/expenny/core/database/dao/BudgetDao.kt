@@ -29,6 +29,9 @@ interface BudgetDao {
     @Query("DELETE FROM budget WHERE budget.budgetId == :id")
     suspend fun deleteById(id: Long)
 
+    @Query("DELETE FROM budget WHERE budget.budgetId IN (:ids)")
+    suspend fun deleteByIds(vararg ids: Long)
+
     @Query("DELETE FROM budget")
     suspend fun deleteAll()
 
