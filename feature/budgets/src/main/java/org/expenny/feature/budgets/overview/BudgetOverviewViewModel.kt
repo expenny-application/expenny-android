@@ -173,13 +173,14 @@ class BudgetOverviewViewModel @Inject constructor(
         combine(
             intervalTypeReducer.stateFlow,
             accountsFilterReducer.stateFlow,
-        ) { intervalTypeState, accountsFilterState ->
-            intervalTypeState to accountsFilterState
-        }.flatMapLatest { (intervalTypeState, accountsFilterState) ->
+            selectedCurrency,
+        ) { intervalTypeState, accountsFilterState, currency ->
+            Triple(intervalTypeState, accountsFilterState, currency)
+        }.flatMapLatest { (intervalTypeState, accountsFilterState, currency) ->
             getPeriodicBudget(
                 budgetGroupId = budgetGroupId,
                 dateRange = intervalTypeState.dateRange,
-                accountIds = accountsFilterState.selectedAccountIds
+                accountIds = accountsFilterState.selectedAccountIds,
             )
         }.filterNotNull().collect {
             reduce {

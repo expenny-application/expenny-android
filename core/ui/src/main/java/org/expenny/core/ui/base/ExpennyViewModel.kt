@@ -1,13 +1,14 @@
 package org.expenny.core.ui.base
 
 import androidx.lifecycle.ViewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import org.expenny.core.common.models.ErrorMessage
 import org.expenny.core.common.models.StringResource
 import org.expenny.core.common.utils.StringResourceProvider
 import timber.log.Timber
 import javax.inject.Inject
+import com.google.firebase.crashlytics.ktx.crashlytics
+import com.google.firebase.ktx.Firebase
 
 abstract class ExpennyViewModel<Action> : ViewModel() {
 
@@ -16,10 +17,10 @@ abstract class ExpennyViewModel<Action> : ViewModel() {
 
     protected fun defaultCoroutineExceptionHandler(): CoroutineExceptionHandler {
         return CoroutineExceptionHandler { _, throwable ->
-            val errorMessage = ErrorMessage(throwable)
-
             Timber.e(throwable.stackTraceToString())
-            onCoroutineException(errorMessage)
+            Firebase.crashlytics.log(throwable.stackTraceToString())
+
+            onCoroutineException(ErrorMessage(throwable))
         }
     }
 

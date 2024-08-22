@@ -22,7 +22,9 @@ import org.expenny.feature.accounts.details.AccountDetailsScreen
 import org.expenny.feature.accounts.destinations.AccountDetailsScreenDestination
 import org.expenny.feature.accounts.destinations.AccountsListScreenDestination
 import org.expenny.feature.budgets.destinations.BudgetLimitDetailsScreenDestination
+import org.expenny.feature.budgets.destinations.BudgetOverviewScreenDestination
 import org.expenny.feature.budgets.limit.BudgetLimitDetailsScreen
+import org.expenny.feature.budgets.overview.BudgetOverviewScreen
 import org.expenny.feature.categories.destinations.CategoriesListScreenDestination
 import org.expenny.feature.currencies.destinations.CurrenciesListScreenDestination
 import org.expenny.feature.currencies.details.CurrencyDetailsScreen
@@ -111,6 +113,13 @@ internal fun ExpennyNavigation(
                 snackbarManager = mainState.snackbarManager,
                 navigator = currentNavigator(),
                 categoryResult = resultRecipient<CategoriesListScreenDestination, LongNavArg>()
+            )
+        }
+        composable(BudgetOverviewScreenDestination) {
+            BudgetOverviewScreen(
+                snackbarManager = mainState.snackbarManager,
+                navigator = currentNavigator(),
+                currencyResult = resultRecipient<CurrenciesListScreenDestination, LongNavArg>(),
             )
         }
     }
