@@ -35,12 +35,7 @@ import org.expenny.core.database.utils.UriConverter
     entities = [
         RecordFileCrossRef::class,
         BudgetGroupBudgetCrossRef::class,
-        // OnetimeBudgetAccountCrossRef::class,
-        // OnetimeBudgetLimitCrossRef::class,
-        // PeriodicBudgetLimitCrossRef::class,
         SettlementCurrencyEntity::class,
-        // PeriodicBudgetEntity::class,
-        // OnetimeBudgetEntity::class,
         BudgetGroupEntity::class,
         BudgetEntity::class,
         ProfileEntity::class,
