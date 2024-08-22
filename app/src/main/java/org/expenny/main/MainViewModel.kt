@@ -68,6 +68,7 @@ class MainViewModel @Inject constructor(
         )
 
     init {
+        fetchAndActivateRemoteConfig()
         subscribeToRemoteConfigChanges()
         storeInstallationId()
     }
@@ -97,11 +98,24 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    private fun fetchAndActivateRemoteConfig() {
+        Firebase.remoteConfig
+            .fetchAndActivate()
+            .addOnSuccessListener {
+                Timber.tag("Firebase").i("Config updated")
+            }
+            .addOnFailureListener {
+                Timber.tag("Firebase").i("Failed to update config")
+            }
+    }
+
     private fun subscribeToRemoteConfigChanges() {
         Firebase.remoteConfig.apply {
             addOnConfigUpdateListener(
                 object : ConfigUpdateListener {
                     override fun onUpdate(configUpdate : ConfigUpdate) {
+                        Timber.tag("Firebase").i("Config update: ${configUpdate.updatedKeys}")
+
                         if (configUpdate.updatedKeys.contains(IS_GOCARDLESS_SDK_ENABLED_CONFIG_KEY)) {
                             activate().addOnSuccessListener {
                                 Timber.tag("Firebase").i("Config updated keys: ${configUpdate.updatedKeys}")
