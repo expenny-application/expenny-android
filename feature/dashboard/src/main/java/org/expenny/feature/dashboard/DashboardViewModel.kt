@@ -41,8 +41,7 @@ import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
 
 @HiltViewModel
-class
-DashboardViewModel @Inject constructor(
+class DashboardViewModel @Inject constructor(
     private val getCategoriesStatements: GetCategoriesStatementsUseCase,
     private val getCurrencyAmountSum: GetCurrencyAmountSumUseCase,
     private val getRecords: GetRecordsUseCase,

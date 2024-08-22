@@ -9,10 +9,14 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import org.expenny.core.ui.base.ExpennySnackbarManager
+import org.expenny.core.ui.extensions.toast
 import org.expenny.feature.settings.contract.SettingsEvent
 import org.expenny.feature.settings.navigation.SettingsNavigator
 import org.expenny.feature.settings.view.SettingsContent
@@ -29,12 +33,18 @@ fun SettingsScreen(
 ) {
     val vm: SettingsViewModel = hiltViewModel()
     val state by vm.collectAsState()
-    val activity = LocalContext.current as Activity
+    val clipboardManager = LocalClipboardManager.current
+    val context = LocalContext.current
+    val activity = context as Activity
     val profileActionsSheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
 
     vm.collectSideEffect {
         when (it) {
+            is SettingsEvent.CopyInstallationId -> {
+                clipboardManager.setText(AnnotatedString(it.installationId))
+                context.toast(org.expenny.core.resources.R.string.installation_id_copied_label)
+            }
             is SettingsEvent.NavigateBack -> {
                 navigator.navigateBack()
             }
@@ -61,8 +71,6 @@ fun SettingsScreen(
             }
             is SettingsEvent.RestartApplication -> {
                 navigator.restartApplication(it.isDataCleanupRequested)
-//                activity.finish()
-//                activity.startActivity(activity.intent)
             }
         }
     }

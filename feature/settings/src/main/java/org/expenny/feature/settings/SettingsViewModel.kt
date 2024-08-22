@@ -22,6 +22,7 @@ import org.expenny.core.domain.usecase.preferences.GetBiometricStatusUseCase
 import org.expenny.core.domain.usecase.preferences.DeletePasscodePreferenceUseCase
 import org.expenny.core.domain.usecase.preferences.GetBiometricPreferenceUseCase
 import org.expenny.core.domain.usecase.preferences.GetCanSendAlarmsUseCase
+import org.expenny.core.domain.usecase.preferences.GetInstallationIdUseCase
 import org.expenny.core.domain.usecase.preferences.GetPasscodePreferenceUseCase
 import org.expenny.core.domain.usecase.preferences.GetReminderPreferenceUseCase
 import org.expenny.core.domain.usecase.preferences.GetReminderTimePreferenceUseCase
@@ -70,6 +71,7 @@ class SettingsViewModel @Inject constructor(
     private val getCanSendAlarms: GetCanSendAlarmsUseCase,
     private val setApplicationTheme: SetApplicationThemeUseCase,
     private val getApplicationTheme: GetApplicationThemeUseCase,
+    private val getInstallationId: GetInstallationIdUseCase,
     private val profileMapper: ProfileMapper,
 ) : ExpennyViewModel<SettingsAction>(), ContainerHost<SettingsState, SettingsEvent> {
 
@@ -90,6 +92,7 @@ class SettingsViewModel @Inject constructor(
             launch { subscribeToBiometricPreference() }
             launch { subscribeToReminderTimePreference() }
             launch { subscribeToReminderPreference() }
+            launch { subscribeToInstallationId() }
         }
     }
 
@@ -97,6 +100,7 @@ class SettingsViewModel @Inject constructor(
         when (action) {
             is SettingsAction.OnSettingsItemTypeClick -> handleOnSettingsItemTypeClick(action)
             is SettingsAction.OnBackClick -> handleOnBackClick()
+            is SettingsAction.OnCopyInstallationIdClick -> handleOnCopyInstallationIdClick(action)
             is SettingsAction.Dialog.OnDialogDismiss -> handleOnDialogDismiss()
             is SettingsAction.Dialog.OnLanguageSelect -> handleOnLanguageSelect(action)
             is SettingsAction.Dialog.OnThemeSelect -> handleOnThemeSelect(action)
@@ -176,6 +180,10 @@ class SettingsViewModel @Inject constructor(
 
     private fun handleOnBackClick() = intent {
         postSideEffect(SettingsEvent.NavigateBack)
+    }
+
+    private fun handleOnCopyInstallationIdClick(action: SettingsAction.OnCopyInstallationIdClick) = intent {
+        postSideEffect(SettingsEvent.CopyInstallationId(action.installationId))
     }
 
     private fun handleOnSettingsItemTypeClick(action: SettingsAction.OnSettingsItemTypeClick) = intent {
@@ -328,6 +336,12 @@ class SettingsViewModel @Inject constructor(
             reduce {
                 state.copy(isReminderTimeEnabled = it, isReminderSelected = it)
             }
+        }
+    }
+
+    private fun subscribeToInstallationId() = intent {
+        getInstallationId().collect {
+            reduce { state.copy(installationId = it) }
         }
     }
 

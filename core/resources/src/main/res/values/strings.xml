@@ -186,6 +186,8 @@
     <string name="show_posted_label">Show posted</string>
     <string name="amount_range_label">Amount range</string>
     <string name="text_label">Text</string>
+    <string name="installation_id_copied_label">Installation ID copied!</string>
+    <string name="copy_installation_id_label">Copy Installation ID</string>
     <string name="date_range_label">Date range</string>
     <string name="select_range_label">Select range</string>
     <string name="start_date_label">Start date</string>

@@ -23,6 +23,7 @@ data class SettingsState(
     val isReminderSelected: Boolean = false,
     val isReminderTimeEnabled: Boolean = false,
     val reminderTime: LocalTime? = null,
+    val installationId: String? = null,
     val dialog: Dialog? = null,
 ) {
     val reminderTimeString: String
@@ -69,12 +70,14 @@ sealed interface SettingsAction {
         data object OnDialogDismiss : Dialog
     }
     class OnSettingsItemTypeClick(val type: SettingsItemType) : SettingsAction
+    class OnCopyInstallationIdClick(val installationId: String) : SettingsAction
     data object OnBackClick : SettingsAction
 }
 
 sealed interface SettingsEvent {
     class ShowMessage(val message: StringResource) : SettingsEvent
     class RestartApplication(val isDataCleanupRequested: Boolean = false) : SettingsEvent
+    class CopyInstallationId(val installationId: String) : SettingsEvent
     data object NavigateToCreateProfile : SettingsEvent
     data object NavigateToCategoriesList : SettingsEvent
     data object NavigateToCreatePasscode : SettingsEvent
