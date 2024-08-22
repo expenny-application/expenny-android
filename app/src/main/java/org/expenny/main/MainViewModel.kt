@@ -2,7 +2,9 @@ package org.expenny.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.installations.FirebaseInstallations
+import com.google.firebase.installations.ktx.installations
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ConfigUpdate
 import com.google.firebase.remoteconfig.ConfigUpdateListener
@@ -68,6 +70,7 @@ class MainViewModel @Inject constructor(
         )
 
     init {
+        fetchAndActivateRemoteConfig()
         subscribeToRemoteConfigChanges()
         storeInstallationId()
     }
@@ -97,11 +100,24 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    private fun fetchAndActivateRemoteConfig() {
+        Firebase.remoteConfig
+            .fetchAndActivate()
+            .addOnSuccessListener {
+                Timber.tag("Firebase").i("Config updated")
+            }
+            .addOnFailureListener {
+                Timber.tag("Firebase").i("Failed to update config")
+            }
+    }
+
     private fun subscribeToRemoteConfigChanges() {
         Firebase.remoteConfig.apply {
             addOnConfigUpdateListener(
                 object : ConfigUpdateListener {
                     override fun onUpdate(configUpdate : ConfigUpdate) {
+                        Timber.tag("Firebase").i("Config update: ${configUpdate.updatedKeys}")
+
                         if (configUpdate.updatedKeys.contains(IS_GOCARDLESS_SDK_ENABLED_CONFIG_KEY)) {
                             activate().addOnSuccessListener {
                                 Timber.tag("Firebase").i("Config updated keys: ${configUpdate.updatedKeys}")
@@ -118,13 +134,14 @@ class MainViewModel @Inject constructor(
     }
 
     private fun storeInstallationId() {
-        FirebaseInstallations.getInstance().id.addOnCompleteListener { task ->
+        Firebase.installations.id.addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 Timber.tag("Firebase").i("Installation ID: ${task.result}")
 
                 viewModelScope.launch {
                     setInstallationId(SetInstallationIdUseCase.Params(task.result))
                 }
+                Firebase.crashlytics.setUserId(task.result)
             } else {
                 Timber.tag("Firebase").i("Unable to get Installation ID")
             }

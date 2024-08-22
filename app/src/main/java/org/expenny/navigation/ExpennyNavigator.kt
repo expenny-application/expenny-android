@@ -7,6 +7,8 @@ import com.ramcosta.composedestinations.dynamic.within
 import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.spec.NavGraphSpec
 import com.ramcosta.composedestinations.utils.navGraph
+import org.expenny.core.common.types.BudgetType
+import org.expenny.core.common.types.IntervalType
 import org.expenny.core.common.types.RecordType
 import org.expenny.core.common.utils.Constants.NULL_ID
 import org.expenny.core.ui.data.navargs.LongNavArg
@@ -18,6 +20,12 @@ import org.expenny.feature.accounts.destinations.AccountsListScreenDestination
 import org.expenny.feature.accounts.destinations.AccountTypeScreenDestination
 import org.expenny.feature.accounts.type.navigation.AccountTypeNavigator
 import org.expenny.feature.accounts.list.navigation.AccountsListNavigator
+import org.expenny.feature.budgets.destinations.BudgetLimitDetailsScreenDestination
+import org.expenny.feature.budgets.destinations.BudgetOverviewScreenDestination
+import org.expenny.feature.budgets.list.navigation.BudgetsListNavigator
+import org.expenny.feature.budgets.destinations.BudgetsListScreenDestination
+import org.expenny.feature.budgets.limit.navigation.BudgetLimitDetailsNavigator
+import org.expenny.feature.budgets.overview.navigation.BudgetOverviewNavigator
 import org.expenny.feature.categories.destinations.CategoriesListScreenDestination
 import org.expenny.feature.categories.list.navigation.CategoriesListNavigator
 import org.expenny.feature.categories.destinations.CategoryDetailsScreenDestination
@@ -46,6 +54,7 @@ import org.expenny.feature.institution.list.navigation.InstitutionsListNavigator
 import org.expenny.feature.welcome.navigation.WelcomeNavigator
 import org.expenny.main.MainActivity
 import org.expenny.main.DrawerTab
+import java.time.LocalDate
 
 class ExpennyNavigator(
     private val navGraph: NavGraphSpec,
@@ -65,7 +74,10 @@ class ExpennyNavigator(
     CategoryDetailsNavigator,
     AccountTypeNavigator,
     InstitutionsListNavigator,
-    InstitutionRequisitionNavigator {
+    InstitutionRequisitionNavigator,
+    BudgetsListNavigator,
+    BudgetOverviewNavigator,
+    BudgetLimitDetailsNavigator {
 
     override fun navigateToHome() {
         navController.navigate(ExpennyNavGraphs.home) {
@@ -122,6 +134,26 @@ class ExpennyNavigator(
         )
     }
 
+    override fun navigateToBudgetLimitDetailsScreen(
+        budgetId: Long?,
+        budgetGroupId: Long,
+        budgetType: BudgetType,
+        startDate: LocalDate,
+        endDate: LocalDate,
+        excludeCategoriesIds: LongArray
+    ) {
+        navController.navigate(
+            direction = BudgetLimitDetailsScreenDestination(
+                budgetId = budgetId,
+                budgetGroupId = budgetGroupId,
+                budgetType = budgetType,
+                startDate = startDate,
+                endDate = endDate,
+                excludeCategoriesIds = excludeCategoriesIds
+            ) within navGraph
+        )
+    }
+
     override fun navigateToEditCurrencyScreen(currencyId: Long) {
         navController.navigate(
             direction = CurrencyDetailsScreenDestination(currencyId = currencyId) within navGraph
@@ -162,6 +194,18 @@ class ExpennyNavigator(
     override fun navigateToCategorySelectionListScreen(selection: LongNavArg) {
         navController.navigate(
             direction = CategoriesListScreenDestination(selection = selection) within navGraph
+        )
+    }
+
+    override fun navigateToCategorySelectionListScreen(
+        selection: LongNavArg,
+        excludeIds: LongArray?
+    ) {
+        navController.navigate(
+            direction = CategoriesListScreenDestination(
+                selection = selection,
+                excludeIds = excludeIds
+            ) within navGraph
         )
     }
 
@@ -209,6 +253,10 @@ class ExpennyNavigator(
         navController.navigate(AccountsListScreenDestination() within navGraph)
     }
 
+    override fun navigateToBudgetsListScreen() {
+        navController.navigate(BudgetsListScreenDestination() within navGraph)
+    }
+
     override fun navigateToRecordsListScreen(filter: RecordsListFilterNavArg?) {
         // navController.navigateTab(ExpennyNavGraphs.records)
         navController.navigate(
@@ -250,6 +298,19 @@ class ExpennyNavigator(
         navController.navigate(
             direction = InstitutionRequisitionScreenDestination(institutionId) within navGraph
         )
+    }
+
+    override fun navigateToBudgetOverviewScreen(id: Long, intervalType: IntervalType?) {
+        navController.navigate(
+            direction = BudgetOverviewScreenDestination(
+                budgetGroupId = id,
+                intervalType = intervalType,
+            ) within navGraph
+        )
+    }
+
+    override fun navigateToCreateOnetimeBudgetScreen() {
+        // TODO
     }
 
     override fun restartApplication(isDataCleanupRequested: Boolean) {

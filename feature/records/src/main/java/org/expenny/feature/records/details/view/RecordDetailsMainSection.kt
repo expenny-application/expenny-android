@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,7 +16,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableList
-import org.expenny.core.common.extensions.toCurrencyAmountString
+import org.expenny.core.common.extensions.toMonetaryString
 import org.expenny.core.common.types.RecordType
 import org.expenny.core.resources.R
 import org.expenny.core.ui.components.ExpennyInputField
@@ -134,7 +133,7 @@ private fun AmountInputField(
 ) {
     val description = buildString {
         convertedAmount?.let {
-            append(convertedAmount.toCurrencyAmountString())
+            append(convertedAmount.toMonetaryString())
             convertedAmountCurrency?.let {
                 append(" ")
                 append(convertedAmountCurrency)

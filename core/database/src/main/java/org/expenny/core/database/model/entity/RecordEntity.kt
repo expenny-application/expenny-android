@@ -5,6 +5,7 @@ import androidx.room.PrimaryKey
 import org.expenny.core.common.types.RecordType
 import java.math.BigDecimal
 import java.time.LocalDateTime
+import java.time.OffsetDateTime
 
 @Entity(tableName = "record")
 data class RecordEntity(
@@ -18,7 +19,7 @@ data class RecordEntity(
     val type: RecordType,
     val transferAmount: BigDecimal? = null,
     val amount: BigDecimal,
-    val date: LocalDateTime,
+    val date: OffsetDateTime,
     val description: String,
     val labels: List<String>,
 ) {
@@ -31,7 +32,7 @@ data class RecordEntity(
         val type: RecordType,
         val transferAmount: BigDecimal? = null,
         val amount: BigDecimal,
-        val date: LocalDateTime,
+        val date: OffsetDateTime,
         val description: String,
         val labels: List<String>,
     )

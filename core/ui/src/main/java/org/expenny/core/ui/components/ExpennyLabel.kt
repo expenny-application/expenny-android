@@ -28,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -46,7 +47,9 @@ fun ExpennyLabel(
     modifier: Modifier = Modifier,
     content: @Composable ExpennyLabelScope.() -> Unit,
     leadingContent: (@Composable ExpennyLabelScope.() -> Unit)? = null,
-    onClick: () -> Unit = {}
+    contentColor: Color = MaterialTheme.colorScheme.onSecondaryContainer,
+    containerColor: Color = MaterialTheme.colorScheme.secondaryContainer,
+    onClick: (() -> Unit)? = null
 ) {
     val scope = remember { ExpennyLabelScope() }
 
@@ -55,8 +58,8 @@ fun ExpennyLabel(
             modifier = modifier
                 .height(28.dp)
                 .clip(MaterialTheme.shapes.extraSmall)
-                .background(MaterialTheme.colorScheme.secondaryContainer)
-                .clickable { onClick() },
+                .background(containerColor)
+                .then(if (onClick != null) Modifier.clickable { onClick() } else Modifier),
             contentAlignment = Alignment.Center
         ) {
             Row(
@@ -75,7 +78,7 @@ fun ExpennyLabel(
                 )
             ) {
                 CompositionLocalProvider(
-                    LocalContentColor provides MaterialTheme.colorScheme.onSecondaryContainer,
+                    LocalContentColor provides contentColor,
                     LocalTextStyle provides MaterialTheme.typography.bodySmall
                 ) {
                     leadingContent?.invoke(scope)
@@ -120,10 +123,8 @@ private fun ExpennyLabelPreview(
     @PreviewParameter(BooleanPreviewParameterProvider::class) isEnabled: Boolean
 ) {
     ExpennyThemePreview {
-        var isSelected by remember { mutableStateOf(false) }
-
         ExpennyLabel(
-            onClick = { isSelected = !isSelected },
+            onClick = {},
             content = {
                 LabelText(text = ExpennyLoremIpsum(6).text)
             },

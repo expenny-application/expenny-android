@@ -14,6 +14,7 @@ sealed class StringResource : Parcelable {
         fun fromRes(@StringRes id: Int, vararg args: Any): StringResource = IdStringResource(id, *args)
         fun fromArrayRes(@ArrayRes id: Int, index: Int): StringResource = IdArrayStringResource(id, index)
         fun fromPluralRes(@PluralsRes id: Int, plural: Int): StringResource = IdQuantityStringResource(id, plural)
+        fun empty(): StringResource = SimpleStringResource("")
     }
 
     class SimpleStringResource(val str: String) : StringResource()

@@ -2,11 +2,11 @@ package org.expenny.core.data.repository
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import org.expenny.core.data.mapper.DataMapper.toModel
+import org.expenny.core.common.utils.RemoteResult
 import org.expenny.core.common.utils.remoteResultMediator
+import org.expenny.core.data.mapper.DataMapper.toModel
 import org.expenny.core.domain.repository.CurrencyUnitRepository
 import org.expenny.core.model.currency.CurrencyUnit
-import org.expenny.core.common.utils.RemoteResult
 import org.expenny.core.network.EcbService
 import org.expenny.core.network.EcbService.Companion.ECB_BASE_UNIT
 import java.util.Currency

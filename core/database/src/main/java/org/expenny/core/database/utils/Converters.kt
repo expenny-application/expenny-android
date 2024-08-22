@@ -4,7 +4,10 @@ import android.net.Uri
 import androidx.core.net.toUri
 import androidx.room.TypeConverter
 import java.math.BigDecimal
-import java.time.*
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 
 class BigDecimalConverter {
 
@@ -23,34 +26,64 @@ class BigDecimalConverter {
 class LocalDateTimeConverter {
 
     @TypeConverter
-    fun longToLocalDateTime(input: Long?): LocalDateTime? {
-        // Converts utc epoch to local date time
-        return input?.let {
-            LocalDateTime.ofInstant(Instant.ofEpochMilli(input), ZoneOffset.systemDefault())
+    fun stringToLocalDateTime(input: String?): LocalDateTime? {
+        return input?.let { LocalDateTime.parse(input) }
+    }
+
+    @TypeConverter
+    fun localDateTimeToString(input: LocalDateTime?): String? {
+        return input?.toString()
+    }
+}
+
+class OffsetDateTimeConverter {
+    private val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME
+
+    @TypeConverter
+    fun stringToOffsetDateTime(value: String?): OffsetDateTime? {
+        return value?.let {
+            return formatter.parse(value, OffsetDateTime::from)
         }
     }
 
     @TypeConverter
-    fun localDateTimeToLong(input: LocalDateTime?): Long? {
-        // Converts local date time to utc epoch
-        return input?.atZone(ZoneId.systemDefault())?.toInstant()?.toEpochMilli()
+    fun offsetDateTimeToString(date: OffsetDateTime?): String? {
+        return date?.format(formatter)
     }
 }
 
 class LocalDateConverter {
 
     @TypeConverter
-    fun longToLocalDate(input: Long?): LocalDate? {
-        // Converts utc epoch to local date
-        return input?.let {
-            LocalDate.ofInstant(Instant.ofEpochMilli(input), ZoneOffset.systemDefault())
-        }
+    fun stringToLocalDate(input: String?): LocalDate? {
+        return input?.let { LocalDate.parse(input) }
     }
 
     @TypeConverter
-    fun localDateToLong(input: LocalDate?): Long? {
-        // Converts local date to utc epoch
-        return input?.atStartOfDay()?.atZone(ZoneId.systemDefault())?.toInstant()?.toEpochMilli()
+    fun localDateToString(input: LocalDate?): String? {
+        return input?.toString()
+    }
+}
+
+class ClosedLocalDateRangeConverter {
+
+    @TypeConverter
+    fun stringToClosedLocalDateRange(input: String?): ClosedRange<LocalDate>? {
+        return if (input != null) {
+            val (startDate, endDate) = input.split("..")
+            val startLocalDate = LocalDate.parse(startDate)
+            val endLocalDate = LocalDate.parse(endDate)
+
+            startLocalDate.rangeTo(endLocalDate)
+        } else null
+    }
+
+    @TypeConverter
+    fun closedLocalDateRangeToString(input: ClosedRange<LocalDate>?): String? {
+        val startDate = input?.start?.toString()
+        val endDate = input?.endInclusive?.toString()
+
+        return if (startDate != null && endDate != null) "$startDate..$endDate" else null
     }
 }
 

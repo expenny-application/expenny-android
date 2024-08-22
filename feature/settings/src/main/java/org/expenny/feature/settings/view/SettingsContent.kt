@@ -69,7 +69,8 @@ internal fun SettingsContent(
                 .padding(paddingValues)
                 .padding(16.dp),
             state = state,
-            onSettingsItemTypeClick = { onAction(SettingsAction.OnSettingsItemTypeClick(it)) }
+            onSettingsItemTypeClick = { onAction(SettingsAction.OnSettingsItemTypeClick(it)) },
+            onCopyInstallationIdClick = { onAction(SettingsAction.OnCopyInstallationIdClick(it)) }
         )
     }
 }
@@ -79,6 +80,7 @@ internal fun SettingsList(
     modifier: Modifier,
     state: SettingsState,
     onSettingsItemTypeClick: (SettingsItemType) -> Unit,
+    onCopyInstallationIdClick: (String) -> Unit
 ) {
     Column(
         modifier = modifier,
@@ -115,6 +117,10 @@ internal fun SettingsList(
             onAboutClick = { onSettingsItemTypeClick(SettingsItemType.About) },
             onRateApplicationClick = { onSettingsItemTypeClick(SettingsItemType.RateApplication) },
             onClearAllDataClick = { onSettingsItemTypeClick(SettingsItemType.DeleteApplicationData) },
+        )
+        SettingsInstallationId(
+            installationId = state.installationId,
+            onCopyClick = onCopyInstallationIdClick
         )
     }
 }

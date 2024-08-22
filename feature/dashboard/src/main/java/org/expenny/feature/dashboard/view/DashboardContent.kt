@@ -86,9 +86,7 @@ internal fun DashboardContent(
             DashboardAccountsSection(
                 modifier = Modifier.fillMaxWidth(),
                 accountsListState = accountsListState,
-                selectAll = state.selectAllAccounts,
-                accounts = state.accounts,
-                selectedAccounts = state.selectedAccounts,
+                accountsFilterState = state.accountsFilterState,
                 balance = state.balanceData,
                 onSelectAll = { onAction(DashboardAction.OnAllAccountsSelect) },
                 onSelect = { onAction(DashboardAction.OnAccountSelect(it)) },

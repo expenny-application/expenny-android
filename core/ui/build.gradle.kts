@@ -44,4 +44,6 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.joda.money)
     implementation(libs.orbit.core)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.crashlytics)
 }

@@ -21,6 +21,8 @@ import org.expenny.core.data.repository.ProfileRepositoryImpl
 import org.expenny.core.data.repository.RecordFileRepositoryImpl
 import org.expenny.core.data.repository.RecordRepositoryImpl
 import org.expenny.core.data.repository.AlarmRepositoryImpl
+import org.expenny.core.data.repository.BudgetGroupRepositoryImpl
+import org.expenny.core.data.repository.BudgetRepositoryImpl
 import org.expenny.core.data.repository.InstitutionAccountRepositoryImpl
 import org.expenny.core.data.repository.InstitutionCountryRepositoryImpl
 import org.expenny.core.data.repository.InstitutionRepositoryImpl
@@ -80,6 +82,12 @@ interface DataModule {
 
     @Binds
     fun bindInstitutionAccountRepository(institutionAccountRepositoryImpl: InstitutionAccountRepositoryImpl): InstitutionAccountRepository
+
+    @Binds
+    fun bindBudgetGroupRepository(budgetGroupRepositoryImpl: BudgetGroupRepositoryImpl): BudgetGroupRepository
+
+    @Binds
+    fun bindBudgetLimitRepository(budgetLimitRepositoryImpl: BudgetRepositoryImpl): BudgetRepository
 
     companion object {
 

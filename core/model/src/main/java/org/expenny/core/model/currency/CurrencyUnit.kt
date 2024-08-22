@@ -4,6 +4,7 @@ data class CurrencyUnit(
     val id: Long,
     val name: String,
     val code: String,
+    val symbol: String = "",
     val scale: Int
 ) {
 

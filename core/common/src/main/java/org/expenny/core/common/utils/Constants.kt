@@ -1,5 +1,7 @@
 package org.expenny.core.common.utils
 
+import java.math.BigDecimal
+
 object Constants {
     const val DEFAULT_PASSCODE_LENGTH = 4
     const val CURRENCY_RATE_SCALE = 5

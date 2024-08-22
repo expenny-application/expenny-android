@@ -23,6 +23,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import org.expenny.core.ui.base.ExpennyLoremIpsum
 import org.expenny.core.ui.base.ExpennyPreview
@@ -54,6 +56,8 @@ fun ExpennyCard(
     onLongClick: () -> Unit = {},
     content: @Composable BoxScope.() -> Unit
 ) {
+    val haptic = LocalHapticFeedback.current
+
     CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurface) {
         Box(
             modifier = modifier
@@ -68,7 +72,10 @@ fun ExpennyCard(
                     indication = LocalIndication.current,
                     enabled = true,
                     onClick = onClick,
-                    onLongClick = onLongClick
+                    onLongClick = {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        onLongClick()
+                    }
                 ),
             propagateMinConstraints = true,
             content = content,

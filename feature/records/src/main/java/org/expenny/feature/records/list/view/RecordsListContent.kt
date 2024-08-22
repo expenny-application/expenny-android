@@ -86,7 +86,7 @@ internal fun RecordsListContent(
             ExpennyDateRangeFilter(
                 modifier = Modifier.navigationBarsPadding(),
                 isVisible = lazyListState.isScrollingUp() && !state.isSelectionMode,
-                currentDateRange = state.intervalState.dateRange,
+                dateRange = state.intervalState.dateRange,
                 onClick = { onAction(RecordsListAction.OnSelectIntervalTypeClick) },
                 onPreviousDateRangeClick = { onAction(RecordsListAction.OnPreviousIntervalClick) },
                 onNextDateRangeClick = { onAction(RecordsListAction.OnNextIntervalClick) }
@@ -201,8 +201,6 @@ private fun RecordsListItem(
     onClick: (Long) -> Unit,
     onLongClick: (Long) -> Unit,
 ) {
-    val haptic = LocalHapticFeedback.current
-
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -224,7 +222,6 @@ private fun RecordsListItem(
             onClick = { onClick(record.id) },
             onLongClick = {
                 if (!isSelectionMode) {
-                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     onLongClick(record.id)
                 }
             }

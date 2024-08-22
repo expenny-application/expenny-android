@@ -41,7 +41,7 @@ fun ExpennySection(
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Row(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .height(32.dp)
                 .clickable { onClick() },

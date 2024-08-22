@@ -2,11 +2,10 @@ package org.expenny.core.domain.usecase.account
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import org.expenny.core.common.extensions.toDatesList
+import org.expenny.core.common.extensions.toList
 import org.expenny.core.common.types.AccountTrendType
 import org.expenny.core.common.types.TransactionType
 import org.expenny.core.model.common.DatedAmount
-import org.threeten.extra.LocalDateRange
 import java.math.BigDecimal
 import java.time.LocalDate
 import javax.inject.Inject
@@ -21,7 +20,7 @@ class GetAccountTrendUseCase @Inject constructor(
             .map { accountHistory ->
                 // Build a trend for given date range and account history
                 return@map buildList {
-                    params.dateRange.toDatesList().forEach { date ->
+                    params.dateRange.toList().forEach { date ->
                         val amount = accountHistory.getNearestAmount(date)
                         add(DatedAmount(amount, date))
                     }
@@ -59,7 +58,7 @@ class GetAccountTrendUseCase @Inject constructor(
 
     data class Params(
         val accountId: Long,
-        val dateRange: LocalDateRange,
+        val dateRange: ClosedRange<LocalDate>,
         val trendType: AccountTrendType,
     )
 }

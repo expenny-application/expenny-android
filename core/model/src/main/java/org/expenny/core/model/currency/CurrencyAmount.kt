@@ -1,7 +1,7 @@
 package org.expenny.core.model.currency
 
 import org.expenny.core.common.extensions.isZero
-import org.expenny.core.common.extensions.toCurrencyAmountString
+import org.expenny.core.common.extensions.toMonetaryString
 import org.joda.money.Money
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -43,7 +43,7 @@ data class CurrencyAmount(
 
     override fun toString(): String {
         return buildString {
-            append(value.toCurrencyAmountString())
+            append(value.toMonetaryString())
             append(' ')
             append(currency.unit.code)
         }

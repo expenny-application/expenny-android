@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.map
 import org.expenny.core.common.types.RecordType
 import org.expenny.core.domain.repository.RecordRepository
 import org.expenny.core.model.record.Record
-import org.threeten.extra.LocalDateRange
+import java.time.LocalDate
 import javax.inject.Inject
 
 class GetRecordsUseCase @Inject constructor(
@@ -62,7 +62,7 @@ class GetRecordsUseCase @Inject constructor(
         return types.isEmpty() || this.recordType in types
     }
 
-    private fun Record.matchesDateRangeFilter(dateRange: LocalDateRange?): Boolean {
+    private fun Record.matchesDateRangeFilter(dateRange: ClosedRange<LocalDate>?): Boolean {
         return dateRange?.contains(this.date.toLocalDate()) ?: true
     }
 
@@ -71,7 +71,7 @@ class GetRecordsUseCase @Inject constructor(
         val labels: List<String> = listOf(),
         val categories: List<Long> = listOf(),
         val types: List<RecordType> = listOf(),
-        val dateRange: LocalDateRange? = null,
+        val dateRange: ClosedRange<LocalDate>? = null,
         val withoutCategory: Boolean = false,
     )
 }

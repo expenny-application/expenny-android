@@ -46,12 +46,16 @@
     <string name="record_type_label">Record type</string>
     <string name="without_category_label">Without category</string>
     <string name="cash_label">Cash</string>
+    <string name="periodic_label">Periodic</string>
+    <string name="onetime_label">Onetime</string>
     <string name="expense_label">Expense</string>
     <string name="income_label">Income</string>
     <string name="transfer_label">Transfer</string>
+    <string name="remaining_funds_label">Remaining funds</string>
     <string name="select_label">Select</string>
     <string name="selected_label">%1$d Selected</string>
     <string name="clone_label">Clone</string>
+    <string name="view_label">View</string>
     <string name="share_label">Share</string>
     <string name="delete_label">Delete</string>
     <string name="sort_by_label">Sort by</string>
@@ -92,6 +96,8 @@
     <string name="delete_category_question_label">Delete category?</string>
     <string name="delete_receipt_question_label">Delete receipt?</string>
     <string name="delete_currency_question_label">Delete currency?</string>
+    <string name="delete_budget_question_label">Delete budget?</string>
+    <string name="delete_budget_limit_question_label">Delete budget limit?</string>
     <string name="amount_conversion_label">Amount conversion</string>
     <string name="transfers_label">Transfers</string>
     <string name="passcode_setup_label">Passcode setup</string>
@@ -112,7 +118,8 @@
     <string name="show_more_label">Show more</string>
     <string name="more_label">More</string>
     <string name="edit_label">Edit</string>
-    <string name="na_label">N/A</string>
+    <string name="budget_limits_label">Budget limits</string>
+    <string name="not_assigned_label">N/A</string>
     <string name="no_fees_label">No fees</string>
     <string name="no_description_label">No description</string>
     <string name="dashboard_label">Dashboard</string>
@@ -128,6 +135,8 @@
     <string name="discounts_label">Discounts</string>
     <string name="debts_label">Debts</string>
     <string name="banks_connections_label">Banks connections</string>
+    <string name="add_budget_limit_label">Add limit</string>
+    <string name="edit_budget_limit_label">Edit limit</string>
     <string name="add_category_label">Add category</string>
     <string name="add_account_label">Add account</string>
     <string name="add_label_label">Add label</string>
@@ -153,11 +162,15 @@
     <string name="main_label">Main</string>
     <string name="rates_label">Rates</string>
     <string name="amount_to_receive_label">Amount to receive: %1$s</string>
+    <string name="periodic_budget_label">%1$s budget</string>
+    <string name="spent_label">%1$s spent</string>
+    <string name="left_label">%1$s left</string>
     <string name="amount_label">Amount</string>
     <string name="conversion_rate_label">Conversion rate</string>
     <string name="account_label">Account</string>
     <string name="transfer_account_label">Transfer account</string>
     <string name="payee_payer_label">Payee/payer</string>
+    <string name="limit_label">Limit</string>
     <string name="receipts_label">Receipts</string>
     <string name="category_label">Category</string>
     <string name="datetime_label">Datetime</string>
@@ -173,6 +186,8 @@
     <string name="show_posted_label">Show posted</string>
     <string name="amount_range_label">Amount range</string>
     <string name="text_label">Text</string>
+    <string name="installation_id_copied_label">Installation ID copied!</string>
+    <string name="copy_installation_id_label">Copy Installation ID</string>
     <string name="date_range_label">Date range</string>
     <string name="select_range_label">Select range</string>
     <string name="start_date_label">Start date</string>
@@ -203,6 +218,8 @@
     <string name="delete_record_paragraph">Confirmation will affect the account balance change</string>
     <string name="delete_paragraph">Confirmation will result in permanent deletion of the data</string>
     <string name="set_cash_balance_paragraph">I want to setup my current cash balance</string>
+    <string name="readonly_budget_overview_paragraph">This budget overview is readonly</string>
+    <string name="enable_periodic_budget_limit_paragraph">Automatically apply for all future periodic budget plans for this period</string>
     <string name="image_source_paragraph">Please choose a way to add an image</string>
     <string name="amount_conversion_paragraph">The currencies of the selected accounts differ, therefore automatic conversion is applied to the final amount using preset currency rate. You can change it whenever you want</string>
     <string name="passcode_setup_paragraph">Ensure your passcode meets length criteria. Remember, the passcode cannot be reset if forgotten, so it\'s crucial to save or memorize it securely</string>
@@ -211,6 +228,8 @@
 
     <!-- Buttons -->
     <string name="add_button">Add</string>
+    <string name="add_new_button">Add new</string>
+    <string name="set_limit_button">Set limit</string>
     <string name="save_button">Save</string>
     <string name="clear_button">Clear</string>
     <string name="reset_all_button">Reset all</string>
@@ -255,6 +274,13 @@
         <item>3M</item>
         <item>6M</item>
         <item>1Y</item>
+    </string-array>
+    <string-array name="budget_period_type">
+        <item>Daily</item>
+        <item>Weekly</item>
+        <item>Monthly</item>
+        <item>Quarterly</item>
+        <item>Annually</item>
     </string-array>
     <string-array name="interval_type">
         <item>Day</item>

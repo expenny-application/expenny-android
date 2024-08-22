@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -17,6 +18,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -28,18 +31,42 @@ import org.expenny.core.common.extensions.toDateRangeString
 import org.expenny.core.resources.R
 import org.expenny.core.ui.base.ExpennyPreview
 import org.expenny.core.ui.foundation.ExpennyThemePreview
-import org.threeten.extra.LocalDateRange
+import org.expenny.core.ui.reducers.IntervalTypeStateReducer
 import java.time.LocalDate
 
 @Composable
 fun ExpennyDateRangeFilter(
     modifier: Modifier = Modifier,
-    currentDateRange: LocalDateRange,
+    state: IntervalTypeStateReducer.State,
     isVisible: Boolean = true,
-    onClick: () -> Unit,
+    onClick: () -> Unit  = {},
     onNextDateRangeClick: () -> Unit,
     onPreviousDateRangeClick: () -> Unit,
 ) {
+    ExpennyDateRangeFilter(
+        modifier = modifier,
+        dateRange = state.dateRange,
+        bounds = state.bounds,
+        isVisible = isVisible,
+        onClick = onClick,
+        onNextDateRangeClick = onNextDateRangeClick,
+        onPreviousDateRangeClick = onPreviousDateRangeClick,
+    )
+}
+
+@Composable
+fun ExpennyDateRangeFilter(
+    modifier: Modifier = Modifier,
+    dateRange: ClosedRange<LocalDate>,
+    bounds: ClosedRange<LocalDate>? = null,
+    isVisible: Boolean = true,
+    onClick: () -> Unit  = {},
+    onNextDateRangeClick: () -> Unit,
+    onPreviousDateRangeClick: () -> Unit,
+) {
+    val showLeftButton by rememberUpdatedState(bounds == null || bounds.start < dateRange.start)
+    val showRightButton by rememberUpdatedState(bounds == null || bounds.endInclusive > dateRange.endInclusive)
+
     AnimatedVisibility(
         visible = isVisible,
         enter = enterAnimation,
@@ -59,25 +86,33 @@ fun ExpennyDateRangeFilter(
                 Row(
                     modifier = Modifier
                         .sizeIn(minHeight = 56.dp)
-                        .height(IntrinsicSize.Min),
+                        .height(IntrinsicSize.Min)
+                        .padding(
+                            start = if (showLeftButton) 0.dp else 24.dp,
+                            end = if (showRightButton) 0.dp else 24.dp,
+                        ),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    IconButton(onClick = onPreviousDateRangeClick) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_chevron_left),
-                            contentDescription = null
-                        )
+                    if (showLeftButton) {
+                        IconButton(onClick = onPreviousDateRangeClick) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_chevron_left),
+                                contentDescription = null
+                            )
+                        }
                     }
                     Text(
-                        text = currentDateRange.toDateRangeString(),
+                        text = dateRange.toDateRangeString(),
                         style = MaterialTheme.typography.titleSmall
                     )
-                    IconButton(onClick = onNextDateRangeClick) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_chevron_right),
-                            contentDescription = null
-                        )
+                    if (showRightButton) {
+                        IconButton(onClick = onNextDateRangeClick) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_chevron_right),
+                                contentDescription = null
+                            )
+                        }
                     }
                 }
             }
@@ -104,10 +139,8 @@ private val exitAnimation = fadeOut(
 private fun ExpennyDateRangeFilterPreview() {
     ExpennyThemePreview {
         ExpennyDateRangeFilter(
-            currentDateRange = LocalDateRange.of(
-                LocalDate.of(2024, 6, 24),
-                LocalDate.of(2024, 7, 1),
-            ),
+            dateRange = LocalDate.of(2024, 6, 24)
+                .rangeTo(LocalDate.of(2024, 7, 1)),
             isVisible = true,
             onClick = {},
             onNextDateRangeClick = {},

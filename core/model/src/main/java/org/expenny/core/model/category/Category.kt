@@ -8,4 +8,13 @@ data class Category(
     val name: String,
     val iconResName: String,
     val colorArgb: Int,
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Category) return false
+        if (id != other.id) return false
+        return true
+    }
+
+    override fun hashCode() = id.hashCode()
+}
