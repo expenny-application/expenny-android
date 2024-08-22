@@ -11,8 +11,8 @@ plugins {
 android {
     defaultConfig {
         applicationId = "org.expenny"
-        versionCode = 45
-        versionName = "0.0.45"
+        versionCode = 46
+        versionName = "0.0.46"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
