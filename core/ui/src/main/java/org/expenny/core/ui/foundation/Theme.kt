@@ -1,5 +1,6 @@
 package org.expenny.core.ui.foundation
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -29,7 +30,9 @@ fun ExpennyThemePreview(
 ) {
     ExpennyTheme {
         Column(
-            modifier = Modifier.padding(8.dp),
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.surface)
+                .padding(8.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             content = content
         )

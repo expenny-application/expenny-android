@@ -1,11 +1,9 @@
 package org.expenny.core.ui.components
 
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
-import androidx.compose.foundation.interaction.InteractionSource
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Column
@@ -86,7 +84,7 @@ fun ExpennyInputField(
     val disabledPlaceholderColor by rememberDisabledPlaceholderColor(isEnabled)
     val disabledLabelColor by rememberDisabledLabelColor(isEnabled)
     val disabledTextColor by rememberDisabledTextColor(isEnabled)
-    val errorContainerColor by rememberErrorContainerColorAsState(isFocused)
+    val disabledContainerColor by rememberDisabledContainerColorAsState(!isEnabled)
     val border by animateBorderAsState(isEnabled, isError, isFocused)
     val maxLines by rememberUpdatedState(if (isSingleLine) 1 else 5)
 
@@ -150,7 +148,7 @@ fun ExpennyInputField(
                 ),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.transparent,
                     focusedTextColor = MaterialTheme.colorScheme.onSurface,
                     unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
                     errorTextColor = MaterialTheme.colorScheme.onSurface,
@@ -158,7 +156,7 @@ fun ExpennyInputField(
                     unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     errorPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     cursorColor = MaterialTheme.colorScheme.primary,
-                    errorContainerColor = errorContainerColor,
+                    errorContainerColor = MaterialTheme.colorScheme.transparent,
                     errorLabelColor = MaterialTheme.colorScheme.error,
                     errorCursorColor = MaterialTheme.colorScheme.error,
                     errorSupportingTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -174,7 +172,7 @@ fun ExpennyInputField(
                     unfocusedLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     unfocusedIndicatorColor = MaterialTheme.colorScheme.transparent,
                     disabledIndicatorColor = MaterialTheme.colorScheme.transparent,
-                    disabledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    disabledContainerColor = disabledContainerColor,
                     disabledSupportingTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     disabledLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     disabledTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -390,12 +388,12 @@ private fun InputLabel(
 }
 
 @Composable
-private fun rememberErrorContainerColorAsState(
-    isFocused: Boolean,
+private fun rememberDisabledContainerColorAsState(
+    isDisabled: Boolean,
 ): State<Color> {
     return rememberUpdatedState(
-        if (isFocused) MaterialTheme.colorScheme.surface
-        else MaterialTheme.colorScheme.surfaceContainer
+        if (isDisabled) MaterialTheme.colorScheme.surfaceContainer
+        else MaterialTheme.colorScheme.transparent
     )
 }
 
@@ -406,12 +404,12 @@ private fun animateBorderAsState(
     isFocused: Boolean
 ): State<BorderStroke> {
     val focusedBorderWidth = 2.dp
-    val unfocusedBorderWidth = if (isError) 1.dp else 0.dp
+    val unfocusedBorderWidth = 1.dp
     val borderColor = rememberUpdatedState(
         when {
             isError -> MaterialTheme.colorScheme.error
             isFocused -> MaterialTheme.colorScheme.primary
-            else -> MaterialTheme.colorScheme.transparent
+            else -> MaterialTheme.colorScheme.outlineVariant
         }
     )
     val targetWidth = if (isFocused) focusedBorderWidth else unfocusedBorderWidth
@@ -478,16 +476,23 @@ private fun ExpennyInputPreview() {
             description = "Preview description",
             onValueChange = {}
         )
+        ExpennyMonetaryInputField(
+            label = "Preview label",
+            value = BigDecimal.ZERO.setScale(2),
+            currency = "PLN",
+            onValueChange = {}
+        )
         ExpennySelectInputField(
             label = "Preview label",
             value = "Preview value",
             onClick = {},
             onValueChange = {}
         )
-        ExpennyMonetaryInputField(
+        ExpennySelectInputField(
             label = "Preview label",
-            value = BigDecimal.ZERO.setScale(2),
-            currency = "PLN",
+            value = "Preview value",
+            isEnabled = false,
+            onClick = {},
             onValueChange = {}
         )
         ExpennyInputField(
