@@ -4,6 +4,5 @@ enum class DashboardWidgetType {
     Records,
     Accounts,
     Budgets,
-    Analytics,
-    Debts
+    Analytics
 }
