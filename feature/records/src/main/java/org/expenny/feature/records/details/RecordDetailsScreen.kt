@@ -1,7 +1,9 @@
 package org.expenny.feature.records.details
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -23,6 +25,7 @@ import org.expenny.core.ui.base.ExpennySnackbarManager
 import org.expenny.core.ui.data.navargs.LongNavArg
 import org.expenny.core.ui.data.navargs.NavArgResult
 import org.expenny.core.ui.data.navargs.StringArrayNavArg
+import org.expenny.core.ui.extensions.toast
 import org.expenny.core.ui.utils.ManagedTakePhotoResultLauncher
 import org.expenny.core.ui.utils.TakePhoto
 import org.expenny.core.ui.utils.rememberLauncherForTakePhotoResult
@@ -55,6 +58,11 @@ fun RecordDetailsScreen(
 
     val takePhotoLauncher = rememberCameraLauncher(
         onSuccess = { vm.onAction(RecordDetailsAction.OnReceiptCapture(it)) }
+    )
+
+    val permissionLauncher = rememberCameraPermissionLauncher(
+        onGranted = { vm.onAction(RecordDetailsAction.OnGrantCameraPermissions) },
+        onDenied = { context.toast("Access denied") }
     )
 
     labelResult.onNavResult { res ->
@@ -90,6 +98,14 @@ fun RecordDetailsScreen(
             is RecordDetailsEvent.OpenCamera -> {
                 takePhotoLauncher.launch(it.uri)
             }
+            is RecordDetailsEvent.CheckCameraPermissions -> {
+                val permissionCheckResult = ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+                if (permissionCheckResult == PackageManager.PERMISSION_GRANTED) {
+                    vm.onAction(RecordDetailsAction.OnGrantCameraPermissions)
+                } else {
+                    permissionLauncher.launch(Manifest.permission.CAMERA)
+                }
+            }
             is RecordDetailsEvent.NavigateBack -> {
                 navigator.navigateBack()
             }
@@ -123,6 +139,14 @@ private fun launchImageViewer(context: Context, uri: Uri) {
         flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
     }
     ContextCompat.startActivity(context, intent, null)
+}
+
+@Composable
+private fun rememberCameraPermissionLauncher(
+    onGranted: () -> Unit,
+    onDenied: () -> Unit
+) = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+    if (isGranted) onGranted() else onDenied()
 }
 
 @Composable
