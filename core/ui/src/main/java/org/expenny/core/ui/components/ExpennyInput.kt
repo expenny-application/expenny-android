@@ -148,7 +148,7 @@ fun ExpennyInputField(
                 ),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.transparent,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                     focusedTextColor = MaterialTheme.colorScheme.onSurface,
                     unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
                     errorTextColor = MaterialTheme.colorScheme.onSurface,
@@ -156,7 +156,7 @@ fun ExpennyInputField(
                     unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     errorPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     cursorColor = MaterialTheme.colorScheme.primary,
-                    errorContainerColor = MaterialTheme.colorScheme.transparent,
+                    errorContainerColor = MaterialTheme.colorScheme.surface,
                     errorLabelColor = MaterialTheme.colorScheme.error,
                     errorCursorColor = MaterialTheme.colorScheme.error,
                     errorSupportingTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -393,7 +393,7 @@ private fun rememberDisabledContainerColorAsState(
 ): State<Color> {
     return rememberUpdatedState(
         if (isDisabled) MaterialTheme.colorScheme.surfaceContainer
-        else MaterialTheme.colorScheme.transparent
+        else MaterialTheme.colorScheme.surface
     )
 }
 
