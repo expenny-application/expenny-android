@@ -70,6 +70,7 @@ sealed interface RecordDetailsAction {
     class OnReceiptCapture(val uri: Uri?) : RecordDetailsAction
     class OnDeleteReceiptClick(val uri: Uri) : RecordDetailsAction
     class OnViewReceiptClick(val uri: Uri) : RecordDetailsAction
+    data object OnGrantCameraPermissions : RecordDetailsAction
     data object OnTransferDisclaimerClick : RecordDetailsAction
     data object OnAddReceiptClick : RecordDetailsAction
     data object OnSelectDateTimeClick : RecordDetailsAction
@@ -89,6 +90,7 @@ sealed interface RecordDetailsEvent {
     class NavigateToLabelsSelectionList(val selection: StringArrayNavArg) : RecordDetailsEvent
     class OpenCamera(val uri: Uri) : RecordDetailsEvent
     class OpenImageViewer(val uri: Uri) : RecordDetailsEvent
+    data object CheckCameraPermissions : RecordDetailsEvent
     data object RequestAmountInputFocus : RecordDetailsEvent
     data object OpenImagePicker : RecordDetailsEvent
     data object NavigateBack : RecordDetailsEvent

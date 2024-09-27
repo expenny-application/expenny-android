@@ -110,6 +110,7 @@ class RecordDetailsViewModel @Inject constructor(
             is RecordDetailsAction.OnBackClick -> handleOnBackClick()
             is RecordDetailsAction.OnSaveClick -> handleOnSaveClick()
             is RecordDetailsAction.OnDeleteClick -> handleOnDeleteClick()
+            is RecordDetailsAction.OnGrantCameraPermissions -> handleOnGrantCameraPermissions()
             is RecordDetailsAction.Dialog.OnDateTimeChange -> handleOnDateTimeChange(action)
             is RecordDetailsAction.Dialog.OnReceiptSourceDialogCameraSelect -> handleOnReceiptSourceDialogCameraSelect()
             is RecordDetailsAction.Dialog.OnReceiptSourceDialogGallerySelect -> handleOnReceiptSourceDialogGallerySelect()
@@ -139,6 +140,10 @@ class RecordDetailsViewModel @Inject constructor(
 
     private fun handleOnReceiptSourceDialogCameraSelect() = intent {
         dismissDialog()
+        postSideEffect(RecordDetailsEvent.CheckCameraPermissions)
+    }
+
+    private fun handleOnGrantCameraPermissions() = intent {
         val uri = filesDirectoryHandler.getPersistentImageUri()
         postSideEffect(RecordDetailsEvent.OpenCamera(uri))
     }
