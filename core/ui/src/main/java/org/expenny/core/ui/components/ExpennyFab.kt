@@ -43,6 +43,7 @@ import org.expenny.core.resources.R
 import org.expenny.core.ui.base.BooleanPreviewParameterProvider
 import org.expenny.core.ui.base.ExpennyPreview
 import org.expenny.core.ui.foundation.ExpennyThemePreview
+import org.expenny.core.ui.foundation.primaryContrast
 
 
 @Composable
@@ -63,7 +64,7 @@ fun ExpennyFab(
         },
         enabled = isEnabled,
         shape = MaterialTheme.shapes.small,
-        color = MaterialTheme.colorScheme.primary,
+        color = MaterialTheme.colorScheme.primaryContrast,
         contentColor = contentColor,
         interactionSource = remember { MutableInteractionSource() },
         shadowElevation = 3.dp,
@@ -122,7 +123,7 @@ fun ExpennyFab(
         },
         enabled = isEnabled,
         shape = MaterialTheme.shapes.small,
-        color = MaterialTheme.colorScheme.primary,
+        color = MaterialTheme.colorScheme.primaryContrast,
         contentColor = contentColor,
         interactionSource = remember { MutableInteractionSource() },
         shadowElevation = 3.dp,

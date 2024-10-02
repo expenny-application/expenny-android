@@ -24,6 +24,7 @@ import org.expenny.core.resources.R
 import org.expenny.core.ui.base.BooleanPreviewParameterProvider
 import org.expenny.core.ui.base.ExpennyPreview
 import org.expenny.core.ui.foundation.ExpennyThemePreview
+import org.expenny.core.ui.foundation.primaryContrast
 
 @Composable
 fun ExpennyButton(
@@ -46,10 +47,10 @@ fun ExpennyButton(
         interactionSource = remember { MutableInteractionSource() },
         shape = MaterialTheme.shapes.small,
         colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primary,
+            containerColor = MaterialTheme.colorScheme.primaryContrast,
             contentColor = MaterialTheme.colorScheme.onPrimary,
-            disabledContainerColor = MaterialTheme.colorScheme.primary.copy(0.12f),
-            disabledContentColor = MaterialTheme.colorScheme.primary.copy(0.38f),
+            disabledContainerColor = MaterialTheme.colorScheme.primaryContrast.copy(0.12f),
+            disabledContentColor = MaterialTheme.colorScheme.primaryContrast.copy(0.38f),
         ),
         contentPadding = PaddingValues(
             start = if (leadingContent == null) 24.dp else 16.dp,

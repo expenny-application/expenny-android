@@ -86,7 +86,7 @@ private fun BiometricButton(
 ) {
     val iconColor =
         if (isEnabled) MaterialTheme.colorScheme.primary
-        else MaterialTheme.colorScheme.surfaceVariant
+        else MaterialTheme.colorScheme.onSurfaceVariant
 
     KeyboardButton(
         modifier = modifier,
@@ -111,7 +111,7 @@ private fun BackspaceButton(
 ) {
     val iconColor =
         if (isEnabled) MaterialTheme.colorScheme.primary
-        else MaterialTheme.colorScheme.surfaceVariant
+        else MaterialTheme.colorScheme.onSurfaceVariant
 
     KeyboardButton(
         modifier = modifier,

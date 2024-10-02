@@ -31,6 +31,7 @@ import org.expenny.core.common.extensions.toDateRangeString
 import org.expenny.core.resources.R
 import org.expenny.core.ui.base.ExpennyPreview
 import org.expenny.core.ui.foundation.ExpennyThemePreview
+import org.expenny.core.ui.foundation.primaryContrast
 import org.expenny.core.ui.reducers.IntervalTypeStateReducer
 import java.time.LocalDate
 
@@ -78,7 +79,7 @@ fun ExpennyDateRangeFilter(
                 },
                 onClick = onClick,
                 shape = MaterialTheme.shapes.small,
-                color = MaterialTheme.colorScheme.primary,
+                color = MaterialTheme.colorScheme.primaryContrast,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
                 tonalElevation = 0.dp,
                 shadowElevation = 3.dp,

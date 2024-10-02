@@ -21,7 +21,7 @@ data class IconUi(
             @Composable get() = IconUi(
                 iconResId = R.drawable.ic_unknown,
                 iconResName = "ic_unknown",
-                color = MaterialTheme.colorScheme.surfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
     }
 }
