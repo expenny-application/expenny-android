@@ -72,24 +72,26 @@ internal fun BudgetOverviewProgressIndicator(
                 )
             }
         }
-        Row(
-            modifier = Modifier.then(
-                with(LocalDensity.current) {
-                    Modifier.width(progressIndicatorWidth.width.toDp() + 44.dp)
-                }
-            ),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = lowerBound.toMonetaryString(),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Text(
-                text = upperBound.toMonetaryString(),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+        if (progressIndicatorWidth != IntSize.Zero) {
+            Row(
+                modifier = Modifier.then(
+                    with(LocalDensity.current) {
+                        Modifier.width(progressIndicatorWidth.width.toDp() + 44.dp)
+                    }
+                ),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = lowerBound.toMonetaryString(),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text = upperBound.toMonetaryString(),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         }
     }
 }

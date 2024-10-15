@@ -46,9 +46,9 @@ fun ExpennyBottomSheet(
     val scope = remember { ExpennyBottomSheetScope() }
 
     ModalBottomSheet(
-        modifier = modifier,
+        modifier = modifier.padding(16.dp),
         sheetState = sheetState,
-        shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+        shape = RoundedCornerShape(16.dp),
         dragHandle = { BottomSheetDefaults.DragHandle() },
         onDismissRequest = onDismiss,
         windowInsets = WindowInsets(0),

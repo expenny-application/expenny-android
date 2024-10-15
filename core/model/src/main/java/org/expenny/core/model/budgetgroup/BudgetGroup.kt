@@ -17,13 +17,13 @@ sealed interface BudgetGroup {
     val budgets: List<Budget>
 
     val totalSpentValue: BigDecimal
-        get() = budgets.sumByDecimal { it.spentValue }
+        get() = budgets.sumByDecimal { it.spentValue }.setScale(currency.unit.scale)
 
     val totalLimitValue: BigDecimal
-        get() = budgets.sumByDecimal { it.limitValue }
+        get() = budgets.sumByDecimal { it.limitValue }.setScale(currency.unit.scale)
 
     val totalLeftValue: BigDecimal
-        get() = budgets.sumByDecimal { it.leftValue }
+        get() = budgets.sumByDecimal { it.leftValue }.setScale(currency.unit.scale)
 
     val totalProgressPercentage: BigDecimal
         get() = totalSpentValue.percentageOf(totalLimitValue).setScale(0, RoundingMode.HALF_UP)

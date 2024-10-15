@@ -27,6 +27,7 @@ import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -133,7 +134,8 @@ internal fun BudgetsListContent(
                         items = state.periodicBudgets,
                         key = { it.id }
                     ) {
-                        PeriodicBudgetItem(
+                        BudgetItem(
+                            modifier = Modifier.fillMaxWidth(),
                             data = it,
                             onClick = { onAction(BudgetsListAction.OnPeriodicBudgetClick(it.id, it.intervalType)) },
                             onLongClick = { onAction(BudgetsListAction.OnPeriodicBudgetLongClick(it.id, it.intervalType)) }
@@ -184,37 +186,15 @@ private fun PeriodicBudgetIntervalType(
 }
 
 @Composable
-private fun PeriodicBudgetItem(
-    modifier: Modifier = Modifier,
-    data: PeriodicBudgetUi,
-    onClick: () -> Unit,
-    onLongClick: () -> Unit
-) {
-    Column(modifier = modifier.fillMaxWidth()) {
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(32.dp),
-            text = stringArrayResource(R.array.budget_period_type)[data.intervalType.ordinal],
-            style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        BudgetItem(
-            modifier = Modifier.fillMaxWidth(),
-            data = data,
-            onClick = onClick,
-            onLongClick = onLongClick
-        )
-    }
-}
-
-@Composable
 private fun BudgetItem(
     modifier: Modifier = Modifier,
     data: PeriodicBudgetUi,
     onClick: () -> Unit,
     onLongClick: () -> Unit
 ) {
+    val periodType = stringArrayResource(R.array.budget_period_type)[data.intervalType.ordinal]
+    val title = stringResource(R.string.periodic_budget_label, periodType)
+
     ExpennyCard(
         modifier = modifier,
         onClick = onClick,
@@ -226,21 +206,20 @@ private fun BudgetItem(
             horizontalAlignment = Alignment.Start
         ) {
             Row(
-                verticalAlignment = Alignment.Top,
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = stringResource(R.string.remaining_funds_label),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                    Text(
-                        text = data.leftAmount.displayValue,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        style = MaterialTheme.typography.titleLarge
-                    )
-                }
+                Text(
+                    text = title,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Text(
+                    text = data.limitValue.displayValue,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = MaterialTheme.typography.titleMedium
+                )
             }
             Column(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -260,18 +239,17 @@ private fun BudgetItem(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = data.spentValue.toString(),
+                        text = data.spentValue.value.toString(),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         style = MaterialTheme.typography.bodySmall
                     )
                     Text(
-                        text = data.limitValue.toString(),
+                        text = data.leftAmount.value.toString(),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
             }
-
             if (data.categories.isNotEmpty()) {
                 Row(
                     modifier = Modifier
