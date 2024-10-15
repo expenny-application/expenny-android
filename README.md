@@ -22,3 +22,6 @@ Android app for tracking and analysing cash-flow<br/>
   <img src="./docs/frame_5.png" height="480">
   <img src="./docs/frame_6.png" height="480">
 </p>
+
+## Architecture diagram
+<img src="./docs/architecture_diagram.svg" height="640" alt="Architecture diagram">
