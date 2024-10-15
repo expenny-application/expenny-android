@@ -86,46 +86,37 @@ internal fun BudgetOverviewContent(
         contentWindowInsets = WindowInsets.statusBars,
         containerColor = MaterialTheme.colorScheme.surface,
     ) { paddingValues ->
-        LazyColumn(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues),
-            state = listState,
-            contentPadding = ExpennyVerticalListPaddingValues,
+                .padding(paddingValues)
+                .padding(ExpennyVerticalListPaddingValues),
             verticalArrangement = Arrangement.spacedBy(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            item {
-                ExpennyAccountsFilter(
-                    modifier = Modifier.fillMaxWidth(),
-                    listState = accountsFilterListState,
-                    state = state.accountsFilterState,
-                    onSelect = { onAction(BudgetOverviewAction.OnAccountSelect(it)) },
-                    onSelectAll = { onAction(BudgetOverviewAction.OnAllAccountsSelect) }
-                )
-            }
+            ExpennyAccountsFilter(
+                modifier = Modifier.fillMaxWidth(),
+                listState = accountsFilterListState,
+                state = state.accountsFilterState,
+                onSelect = { onAction(BudgetOverviewAction.OnAccountSelect(it)) },
+                onSelectAll = { onAction(BudgetOverviewAction.OnAllAccountsSelect) }
+            )
             if (state.isReadonly) {
-                item {
-                    ExpennyMessage {
-                        MessageText(text = stringResource(id = R.string.readonly_budget_overview_paragraph))
-                    }
+                ExpennyMessage {
+                    MessageText(text = stringResource(id = R.string.readonly_budget_overview_paragraph))
                 }
             }
-            item {
-                BudgetOverviewProgressIndicator(
-                    progress = state.overview.progressValue,
-                    lowerBound = state.overview.spentValue,
-                    upperBound = state.overview.limitValue,
-                    value = state.overview.leftAmount?.displayValue ?: stringResource(R.string.not_assigned_label)
-                )
-            }
-            item {
-                BudgetLimitsList(
-                    limits = state.overview.budgets,
-                    onClick = { onAction(BudgetOverviewAction.OnBudgetLimitClick(it)) },
-                    onAddNewClick = { onAction(BudgetOverviewAction.OnAddBudgetLimitClick) },
-                )
-            }
+            BudgetOverviewProgressIndicator(
+                progress = state.overview.progressValue,
+                lowerBound = state.overview.spentValue,
+                upperBound = state.overview.limitValue,
+                value = state.overview.leftAmount?.displayValue ?: stringResource(R.string.not_assigned_label)
+            )
+            BudgetLimitsList(
+                limits = state.overview.budgets,
+                onClick = { onAction(BudgetOverviewAction.OnBudgetLimitClick(it)) },
+                onAddNewClick = { onAction(BudgetOverviewAction.OnAddBudgetLimitClick) },
+            )
         }
     }
 }

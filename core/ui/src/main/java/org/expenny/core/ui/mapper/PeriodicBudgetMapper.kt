@@ -12,14 +12,16 @@ class PeriodicBudgetMapper @Inject constructor(
 
     operator fun invoke(model: BudgetGroup.Periodic): PeriodicBudgetUi {
         val leftAmount = amountMapper(CurrencyAmount(model.totalLeftValue, model.currency))
+        val spentAmount = amountMapper(CurrencyAmount(model.totalSpentValue, model.currency))
+        val limitAmount = amountMapper(CurrencyAmount(model.totalLimitValue, model.currency))
         val categories = categoryMapper(model.budgets.map { it.category })
 
         return with(model) {
             PeriodicBudgetUi(
                 id = id,
                 leftAmount = leftAmount,
-                spentValue = totalSpentValue,
-                limitValue = totalLimitValue,
+                spentValue = spentAmount,
+                limitValue = limitAmount,
                 progressValue = totalProgressPercentage.toFloat().div(100f),
                 intervalType = intervalType,
                 categories = categories,
