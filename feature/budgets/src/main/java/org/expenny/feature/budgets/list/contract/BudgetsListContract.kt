@@ -7,7 +7,7 @@ import org.expenny.core.common.types.ItemActionType
 import org.expenny.core.ui.data.PeriodicBudgetUi
 
 data class BudgetsListState(
-    val budgetTypes: List<BudgetType> = BudgetType.entries,
+    val budgetTypes: List<BudgetType> = emptyList(),
     val selectedBudgetType: BudgetType = BudgetType.Periodic,
     val periodicBudgets: List<PeriodicBudgetUi> = emptyList(),
     val dialog: Dialog? = null,

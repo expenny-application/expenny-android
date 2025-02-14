@@ -32,6 +32,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
@@ -128,6 +129,7 @@ private fun NavigationDrawerContent(
     ) {
         tabs.forEach { tab ->
             NavigationDrawerOption(
+                isEnabled = tab != DrawerTab.Analytics,
                 isSelected = tab.navGraph == currentOption,
                 icon = painterResource(tab.iconResId),
                 label = stringResource(tab.labelResId),
@@ -167,6 +169,7 @@ private fun NavigationDrawerFooter(
 @Composable
 private fun NavigationDrawerOption(
     modifier: Modifier = Modifier,
+    isEnabled: Boolean = true,
     isSelected: Boolean,
     icon: Painter,
     label: String,
@@ -191,7 +194,8 @@ private fun NavigationDrawerOption(
             .background(backgroundColor)
             .height(48.dp)
             .fillMaxWidth()
-            .clickable { onSelect() }
+            .alpha(if (isEnabled) 1f else 0.6f)
+            .clickable { if (isEnabled) onSelect() }
             .padding(horizontal = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp)

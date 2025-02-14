@@ -118,16 +118,19 @@ internal fun BudgetsListContent(
                 bottom = 16.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
             )
         ) {
-            item {
-                ExpennySegmentedSurfaceTabs(
-                    modifier = Modifier.fillMaxWidth(),
-                    tabs = state.budgetTypes.map { it.label },
-                    selectedTabIndex = state.budgetTypes.indexOf(state.selectedBudgetType),
-                    onTabSelect = {
-                        onAction(BudgetsListAction.OnBudgetTypeChange(state.budgetTypes[it]))
-                    }
-                )
+            if (state.budgetTypes.isNotEmpty()) {
+                item {
+                    ExpennySegmentedSurfaceTabs(
+                        modifier = Modifier.fillMaxWidth(),
+                        tabs = state.budgetTypes.map { it.label },
+                        selectedTabIndex = state.budgetTypes.indexOf(state.selectedBudgetType),
+                        onTabSelect = {
+                            onAction(BudgetsListAction.OnBudgetTypeChange(state.budgetTypes[it]))
+                        }
+                    )
+                }
             }
+
             when (state.selectedBudgetType) {
                 BudgetType.Periodic -> {
                     items(
@@ -151,7 +154,7 @@ internal fun BudgetsListContent(
                     }
                 }
                 BudgetType.Onetime -> {
-
+                    // TODO
                 }
             }
         }

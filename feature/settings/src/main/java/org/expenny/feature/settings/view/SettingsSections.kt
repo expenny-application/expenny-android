@@ -31,24 +31,12 @@ import org.expenny.core.ui.extensions.label
 @Composable
 internal fun SettingsMoreSection(
     modifier: Modifier = Modifier,
-    onAboutClick: () -> Unit,
-    onRateApplicationClick: () -> Unit,
     onClearAllDataClick: () -> Unit,
 ) {
     SettingsSection(
         modifier = modifier.fillMaxWidth(),
         title = stringResource(R.string.more_label)
     ) {
-        SectionItem(
-            title = stringResource(R.string.about_label),
-            icon = painterResource(R.drawable.ic_smile),
-            onClick = onAboutClick
-        )
-        SectionItem(
-            title = stringResource(R.string.rate_application_label),
-            icon = painterResource(R.drawable.ic_rate),
-            onClick = onRateApplicationClick
-        )
         SectionActionItem(
             title = stringResource(R.string.delete_application_data_label),
             icon = painterResource(R.drawable.ic_delete),
@@ -66,7 +54,6 @@ internal fun SettingsSecuritySection(
     isBiometricEnabled: Boolean,
     onSetPasscodeClick: () -> Unit,
     onUseBiometricClick: () -> Unit,
-    onBackupClick: () -> Unit,
 ) {
     SettingsSection(
         modifier = modifier.fillMaxWidth(),
@@ -84,11 +71,6 @@ internal fun SettingsSecuritySection(
             title = stringResource(R.string.use_bioemtric_label),
             icon = painterResource(R.drawable.ic_biometric),
             onClick = onUseBiometricClick
-        )
-        SectionItem(
-            title = stringResource(R.string.backup_label),
-            icon = painterResource(R.drawable.ic_storage),
-            onClick = onBackupClick
         )
     }
 }
@@ -285,12 +267,14 @@ private fun SectionSwitchItem(
 @Composable
 private fun SectionItem(
     modifier: Modifier = Modifier,
+    isEnabled: Boolean = true,
     title: String,
     icon: Painter,
     onClick: () -> Unit
 ) {
     SectionItem(
         modifier = modifier,
+        isEnabled = isEnabled,
         onClick = onClick,
         leadingContent = {
             Icon(

@@ -73,7 +73,6 @@ val DashboardWidgetType.label: String
             DashboardWidgetType.Records -> R.string.records_label
             DashboardWidgetType.Accounts -> R.string.accounts_label
             DashboardWidgetType.Budgets -> R.string.budgets_label
-            DashboardWidgetType.Analytics -> R.string.analytics_label
         }
     )
 
@@ -83,7 +82,6 @@ val DashboardWidgetType.icon: Painter
             DashboardWidgetType.Records -> R.drawable.ic_records
             DashboardWidgetType.Accounts -> R.drawable.ic_wallet
             DashboardWidgetType.Budgets -> R.drawable.ic_calculator
-            DashboardWidgetType.Analytics -> R.drawable.ic_analytics
         }
     )
 

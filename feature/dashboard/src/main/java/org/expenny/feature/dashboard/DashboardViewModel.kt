@@ -129,9 +129,6 @@ class DashboardViewModel @Inject constructor(
             DashboardWidgetType.Accounts -> postSideEffect(DashboardEvent.NavigateToAccounts)
             DashboardWidgetType.Records -> postSideEffect(DashboardEvent.NavigateToRecords())
             DashboardWidgetType.Budgets -> postSideEffect(DashboardEvent.NavigateToBudgets)
-            else -> {
-                // TODO
-            }
         }
     }
 

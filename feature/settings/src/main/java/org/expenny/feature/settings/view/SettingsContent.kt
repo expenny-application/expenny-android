@@ -111,11 +111,8 @@ internal fun SettingsList(
             isBiometricEnabled = state.isBiometricEnabled,
             onSetPasscodeClick = { onSettingsItemTypeClick(SettingsItemType.Passcode) },
             onUseBiometricClick = { onSettingsItemTypeClick(SettingsItemType.Biometric) },
-            onBackupClick = { onSettingsItemTypeClick(SettingsItemType.Backup) },
         )
         SettingsMoreSection(
-            onAboutClick = { onSettingsItemTypeClick(SettingsItemType.About) },
-            onRateApplicationClick = { onSettingsItemTypeClick(SettingsItemType.RateApplication) },
             onClearAllDataClick = { onSettingsItemTypeClick(SettingsItemType.DeleteApplicationData) },
         )
         SettingsInstallationId(
